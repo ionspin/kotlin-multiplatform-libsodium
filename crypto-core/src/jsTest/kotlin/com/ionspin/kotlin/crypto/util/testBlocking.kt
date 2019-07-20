@@ -14,14 +14,15 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.util
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.promise
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-interface Hash
-
-interface UpdateableHash : Hash
-
+actual fun testBlocking(block: suspend (scope: CoroutineScope) -> Unit) : dynamic = GlobalScope.promise { block(this) }

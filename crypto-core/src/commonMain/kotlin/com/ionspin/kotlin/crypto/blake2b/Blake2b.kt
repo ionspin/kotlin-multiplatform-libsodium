@@ -22,8 +22,6 @@ import com.ionspin.kotlin.crypto.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlin.text.chunked
 
 /**
  * Created by Ugljesa Jovanovic
@@ -32,7 +30,7 @@ import kotlin.text.chunked
  */
 @ExperimentalStdlibApi
 @ExperimentalUnsignedTypes
-class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : StreamingHash {
+class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdateableHash {
     companion object : Hash {
 
         const val BITS_IN_WORD = 64
@@ -250,7 +248,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Streami
         requestedHashLenght
     )
 
-    val job = Job()
+    var job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
 
@@ -268,7 +266,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Streami
         }
     }
 
-    fun updateBlocking(array: Array<UByte>) {
+    fun update(array: Array<UByte>) {
         if (array.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
         }
@@ -309,8 +307,8 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Streami
 
     }
 
-    fun updateBlocking(input: String) {
-        updateBlocking(input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+    fun update(input: String) {
+        update(input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
     }
 
     private fun appendToBuffer(array: Array<UByte>, start: Int) {
@@ -321,12 +319,6 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Streami
     private fun consumeBlock(block: Array<UByte>) {
         h = compress(h, block, counter, false)
     }
-
-    suspend fun update(array: Array<UByte>) {
-
-
-    }
-
 
     fun digest(): Array<UByte> {
         val lastBlockPadded = padToBlock(buffer)

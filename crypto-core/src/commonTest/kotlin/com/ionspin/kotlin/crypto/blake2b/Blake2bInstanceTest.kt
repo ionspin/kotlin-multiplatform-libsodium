@@ -16,6 +16,9 @@
 
 package com.ionspin.kotlin.crypto.blake2b
 
+import com.ionspin.kotlin.crypto.util.testBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -26,10 +29,10 @@ import kotlin.test.assertTrue
  */
 @ExperimentalUnsignedTypes
 @ExperimentalStdlibApi
-class Blake2bStreaming {
+class Blake2bInstanceTest {
 
     @Test
-    fun testStreamingBlake2b() {
+    fun testUpdateableBlake2b() {
         val updates = 14
         val input = "1234567890"
         val expectedResult = arrayOf<UByte>(
@@ -44,7 +47,7 @@ class Blake2bStreaming {
 
         val blake2b = Blake2b()
         for (i in 0 until updates) {
-            blake2b.updateBlocking(input)
+            blake2b.update(input)
         }
         val result = blake2b.digest()
 
@@ -62,7 +65,7 @@ class Blake2bStreaming {
 
         val blake2b = Blake2b()
         for (i in 0 until updates) {
-            blake2b.updateBlocking(input)
+            blake2b.update(input)
         }
         val result = blake2b.digestString()
         assertTrue {
@@ -75,7 +78,7 @@ class Blake2bStreaming {
         val test = "abc"
         val key = "key"
         val blake2b = Blake2b(key)
-        blake2b.updateBlocking(test)
+        blake2b.update(test)
         val result = blake2b.digest()
         val printout = result.map { it.toString(16) }.chunked(16)
         printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }

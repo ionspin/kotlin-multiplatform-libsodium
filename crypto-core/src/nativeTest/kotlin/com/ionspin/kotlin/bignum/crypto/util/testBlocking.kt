@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.util
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-interface Hash
-
-interface UpdateableHash : Hash
-
+actual fun testBlocking(block: suspend (scope: CoroutineScope) -> Unit) = runBlocking { block(this) }
