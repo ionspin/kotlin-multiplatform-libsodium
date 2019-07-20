@@ -30,6 +30,8 @@ import com.ionspin.kotlin.crypto.rotateRight
 class Sha512 : Hash {
     companion object {
         const val BLOCK_SIZE = 1024
+        const val BLOCK_SIZE_IN_BYTES = 128
+        const val CHUNK_SIZE = 80
         const val ULONG_MASK = 0xFFFFFFFFFFFFFFFFUL
 
         val k = arrayOf(
@@ -133,102 +135,29 @@ class Sha512 : Hash {
 
         fun digest(message: Array<UByte>): Array<UByte> {
 
-            var h0 = 0x6a09e667f3bcc908UL
-            var h1 = 0xbb67ae8584caa73bUL
-            var h2 = 0x3c6ef372fe94f82bUL
-            var h3 = 0xa54ff53a5f1d36f1UL
-            var h4 = 0x510e527fade682d1UL
-            var h5 = 0x9b05688c2b3e6c1fUL
-            var h6 = 0x1f83d9abfb41bd6bUL
-            var h7 = 0x5be0cd19137e2179UL
+            var h = iv.copyOf()
 
-            val originalMessageSizeInBits = message.size * 8
-
-
-            //K such that L + 1 + K + 64 is a multiple of 512
-            val expandedRemainderOf1024 = (originalMessageSizeInBits + 130) % BLOCK_SIZE
-            val zeroAddAmount = when (expandedRemainderOf1024) {
-                0 -> 0
-                else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
-            }
-            val expansionArray = Array<UByte>(zeroAddAmount + 1) {
-                when (it) {
-                    0 -> 0b10000000U
-                    else -> 0U
-                }
-            }
+            val expansionArray = createExpansionArray(message.size)
 
             val chunks =
-                (message + expansionArray + originalMessageSizeInBits.toULong().toPadded128BitByteArray()).chunked(128)
+                (message + expansionArray + (message.size * 8).toULong().toPadded128BitByteArray()).chunked(
+                    BLOCK_SIZE_IN_BYTES)
 
             chunks.forEach { chunk ->
-                val w = Array<ULong>(80) {
-                    when (it) {
-                        in 0 until 16 -> {
-                            var collected = (chunk[(it * 8)].toULong() shl 56) +
-                                    (chunk[(it * 8) + 1].toULong() shl 48) +
-                                    (chunk[(it * 8) + 2].toULong() shl 40) +
-                                    (chunk[(it * 8) + 3].toULong() shl 32) +
-                                    (chunk[(it * 8) + 4].toULong() shl 24) +
-                                    (chunk[(it * 8) + 5].toULong() shl 16) +
-                                    (chunk[(it * 8) + 6].toULong() shl 8) +
-                                    (chunk[(it * 8) + 7].toULong())
-                            collected
-                        }
-                        else -> 0UL
-                    }
-                }
-                for (i in 16 until 80) {
-                    val s0 = scheduleSigma0(w[i - 15])
-                    val s1 = scheduleSigma1(w[i - 2])
-                    w[i] = w[i - 16] + s0 + w[i - 7] + s1
-                }
-
-                var a = h0
-                var b = h1
-                var c = h2
-                var d = h3
-                var e = h4
-                var f = h5
-                var g = h6
-                var h = h7
-
-                for (i in 0 until 80) {
-                    val s1 = compressionSigma1(e)
-                    val ch = ch(e, f, g)
-                    val temp1 = h + s1 + ch + k[i] + w[i]
-                    val s0 = compressionSigma0(a)
-                    val maj = maj(a, b, c)
-                    val temp2 = s0 + maj
-                    h = g
-                    g = f
-                    f = e
-                    e = d + temp1
-                    d = c
-                    c = b
-                    b = a
-                    a = temp1 + temp2
-                }
-
-                h0 += a
-                h1 += b
-                h2 += c
-                h3 += d
-                h4 += e
-                h5 += f
-                h6 += g
-                h7 += h
+                val w = expandChunk(chunk)
+                mix(h, w)
 
             }
 
-            val digest = h0.toPaddedByteArray() +
-                    h1.toPaddedByteArray() +
-                    h2.toPaddedByteArray() +
-                    h3.toPaddedByteArray() +
-                    h4.toPaddedByteArray() +
-                    h5.toPaddedByteArray() +
-                    h6.toPaddedByteArray() +
-                    h7.toPaddedByteArray()
+            val digest =
+                    h[0].toPaddedByteArray() +
+                    h[1].toPaddedByteArray() +
+                    h[2].toPaddedByteArray() +
+                    h[3].toPaddedByteArray() +
+                    h[4].toPaddedByteArray() +
+                    h[5].toPaddedByteArray() +
+                    h[6].toPaddedByteArray() +
+                    h[7].toPaddedByteArray()
             return digest
         }
 
@@ -254,6 +183,86 @@ class Sha512 : Hash {
 
         private fun maj(x: ULong, y: ULong, z: ULong): ULong {
             return ((x and y) xor (x and z) xor (y and z))
+        }
+
+        private fun expandChunk(chunk: Array<UByte>): Array<ULong> {
+            val w = Array<ULong>(CHUNK_SIZE) {
+                when (it) {
+                    in 0 until 16 -> {
+                        var collected = (chunk[(it * 8)].toULong() shl 56) +
+                                (chunk[(it * 8) + 1].toULong() shl 48) +
+                                (chunk[(it * 8) + 2].toULong() shl 40) +
+                                (chunk[(it * 8) + 3].toULong() shl 32) +
+                                (chunk[(it * 8) + 4].toULong() shl 24) +
+                                (chunk[(it * 8) + 5].toULong() shl 16) +
+                                (chunk[(it * 8) + 6].toULong() shl 8) +
+                                (chunk[(it * 8) + 7].toULong())
+                        collected
+                    }
+                    else -> 0UL
+                }
+            }
+            for (i in 16 until CHUNK_SIZE) {
+                val s0 = scheduleSigma0(w[i - 15])
+                val s1 = scheduleSigma1(w[i - 2])
+                w[i] = w[i - 16] + s0 + w[i - 7] + s1
+            }
+            return w
+        }
+
+        private fun mix(h: Array<ULong>, w: Array<ULong>): Array<ULong> {
+            var paramA = h[0]
+            var paramB = h[1]
+            var paramC = h[2]
+            var paramD = h[3]
+            var paramE = h[4]
+            var paramF = h[5]
+            var paramG = h[6]
+            var paramH = h[7]
+
+            for (i in 0 until CHUNK_SIZE) {
+                val s1 = compressionSigma1(paramE)
+                val ch = ch(paramE, paramF, paramG)
+                val temp1 = paramH + s1 + ch + k[i] + w[i]
+                val s0 = compressionSigma0(paramA)
+                val maj = maj(paramA, paramB, paramC)
+                val temp2 = s0 + maj
+                paramH = paramG
+                paramG = paramF
+                paramF = paramE
+                paramE = paramD + temp1
+                paramD = paramC
+                paramC = paramB
+                paramB = paramA
+                paramA = temp1 + temp2
+            }
+
+            h[0] += paramA
+            h[1] += paramB
+            h[2] += paramC
+            h[3] += paramD
+            h[4] += paramE
+            h[5] += paramF
+            h[6] += paramG
+            h[7] += paramH
+            return h
+        }
+
+        fun createExpansionArray(originalSizeInBytes : Int) : Array<UByte> {
+            val originalMessageSizeInBits = originalSizeInBytes * 8
+
+            val expandedRemainderOf1024 = (originalMessageSizeInBits + 129) % BLOCK_SIZE
+            val zeroAddAmount = when (expandedRemainderOf1024) {
+                0 -> 0
+                else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
+            }
+            val expansionArray = Array<UByte>(zeroAddAmount + 1) {
+                when (it) {
+                    0 -> 0b10000000U
+                    else -> 0U
+                }
+            }
+            return expansionArray
         }
 
 
@@ -292,6 +301,86 @@ class Sha512 : Hash {
                 }
             }
         }
+    }
+
+    var h = iv.copyOf()
+    var counter = 0
+    var bufferCounter = 0
+    var buffer = Array<UByte>(BLOCK_SIZE_IN_BYTES) { 0U }
+
+    @ExperimentalStdlibApi
+    fun update(message: String) {
+        return update(message.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+    }
+
+    fun update(array: Array<UByte>) {
+        if (array.isEmpty()) {
+            throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
+        }
+
+        when {
+            bufferCounter + array.size < BLOCK_SIZE_IN_BYTES -> appendToBuffer(array, bufferCounter)
+            bufferCounter + array.size >= BLOCK_SIZE_IN_BYTES -> {
+                val chunked = array.chunked(BLOCK_SIZE_IN_BYTES)
+                chunked.forEach { chunk ->
+                    if (bufferCounter + chunk.size < BLOCK_SIZE_IN_BYTES) {
+                        appendToBuffer(chunk, bufferCounter)
+                    } else {
+                        chunk.copyInto(
+                            destination = buffer,
+                            destinationOffset = bufferCounter,
+                            startIndex = 0,
+                            endIndex = BLOCK_SIZE_IN_BYTES - bufferCounter
+                        )
+                        counter += BLOCK_SIZE_IN_BYTES
+                        consumeBlock(buffer)
+                        buffer = Array<UByte>(BLOCK_SIZE_IN_BYTES) {
+                            when (it) {
+                                in (0 until (chunk.size - (BLOCK_SIZE_IN_BYTES - bufferCounter))) -> {
+                                    chunk[it + (BLOCK_SIZE_IN_BYTES - bufferCounter)]
+                                }
+                                else -> {
+                                    0U
+                                }
+                            }
+
+                        }
+                        bufferCounter = chunk.size - (BLOCK_SIZE_IN_BYTES - bufferCounter)
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun consumeBlock(block: Array<UByte>) {
+        val w = expandChunk(block)
+        mix(h, w).copyInto(h)
+    }
+
+    fun digest() : Array<UByte> {
+        val length = counter + bufferCounter
+        val expansionArray = createExpansionArray(length)
+        val finalBlock = buffer.copyOfRange(0, bufferCounter) + expansionArray + (length * 8).toULong().toPadded128BitByteArray()
+        finalBlock.chunked(BLOCK_SIZE_IN_BYTES).forEach {
+            consumeBlock(it)
+        }
+
+
+        val digest = h[0].toPaddedByteArray() +
+                h[1].toPaddedByteArray() +
+                h[2].toPaddedByteArray() +
+                h[3].toPaddedByteArray() +
+                h[4].toPaddedByteArray() +
+                h[5].toPaddedByteArray() +
+                h[6].toPaddedByteArray() +
+                h[7].toPaddedByteArray()
+        return digest
+    }
+
+    private fun appendToBuffer(array: Array<UByte>, start: Int) {
+        array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
+        bufferCounter += array.size
     }
 
 

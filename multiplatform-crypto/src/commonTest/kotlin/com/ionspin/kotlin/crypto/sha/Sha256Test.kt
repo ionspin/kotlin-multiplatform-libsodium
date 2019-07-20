@@ -50,4 +50,31 @@ class Sha256Test {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
         }
     }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testWellKnown3() { //It's good that I'm consistent with names.
+
+
+        val resultDoubleBlock = Sha256.digest(message = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
+        println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
+        val expectedResultForDoubleBlock = "cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1"
+        assertTrue {
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testWellKnownLong() {
+        val inputBuilder = StringBuilder()
+        for (i in 0 until 1000000) {
+            inputBuilder.append("a")
+        }
+        val resultDoubleBlock = Sha256.digest(message = (inputBuilder.toString()).encodeToByteArray().map { it.toUByte() }.toTypedArray())
+        val expectedResultForDoubleBlock = "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
+        assertTrue {
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+    }
 }
