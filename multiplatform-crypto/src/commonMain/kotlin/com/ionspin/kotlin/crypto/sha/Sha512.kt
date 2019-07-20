@@ -146,14 +146,14 @@ class Sha512 : Hash {
 
 
             //K such that L + 1 + K + 64 is a multiple of 512
-            val expandedRemainderOf1024 = (originalMessageSizeInBits + 129) % BLOCK_SIZE
+            val expandedRemainderOf1024 = (originalMessageSizeInBits + 130) % BLOCK_SIZE
             val zeroAddAmount = when (expandedRemainderOf1024) {
                 0 -> 0
                 else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
             }
             val expansionArray = Array<UByte>(zeroAddAmount + 1) {
                 when (it) {
-                    0 -> 0b10000000U //TODO This wont work if there the byte needs to be shared with the L (length) ULong
+                    0 -> 0b10000000U
                     else -> 0U
                 }
             }
