@@ -28,7 +28,7 @@ import kotlinx.coroutines.Job
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jul-2019
  */
-@ExperimentalStdlibApi
+
 @ExperimentalUnsignedTypes
 class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdateableHash {
     companion object : Hash {
@@ -75,8 +75,6 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         internal fun mixRound(input: Array<ULong>, message: Array<ULong>, round: Int): Array<ULong> {
             var v = input
             val selectedSigma = sigma[round % 10]
-            val printout = v.map { it.toString(16) }.chunked(3)
-            printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
             v = mix(v, 0, 4, 8, 12, message[selectedSigma[0]], message[selectedSigma[1]])
             v = mix(v, 1, 5, 9, 13, message[selectedSigma[2]], message[selectedSigma[3]])
             v = mix(v, 2, 6, 10, 14, message[selectedSigma[4]], message[selectedSigma[5]])
@@ -120,11 +118,11 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
                 acc[slot] = acc[slot] + (byte.toULong() shl ((position) * 8))
                 acc
             }
-
-            println("m")
-            val printout = m.map { it.toString(16) }.chunked(4)
-            printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-            println("Offset ${offsetCounter}")
+            if (Config.DEBUG) {
+                val printout = m.map { it.toString(16) }.chunked(4)
+                printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+                println("Offset ${offsetCounter}")
+            }
 
             v[12] = v[12] xor offsetCounter.ulongValue()
             v[13] = v[13] xor (offsetCounter shr BITS_IN_WORD).ulongValue()
@@ -144,7 +142,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
             return h
         }
 
-
+        @ExperimentalStdlibApi
         fun digest(inputString: String, key: String? = null): Array<UByte> {
             val chunked = inputString.encodeToByteArray().map { it.toUByte() }.toList().chunked(BLOCK_BYTES)
                 .map { it.toTypedArray() }.toTypedArray()
@@ -239,7 +237,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
 
         }
     }
-
+    @ExperimentalStdlibApi
     constructor(
         key: String?,
         requestedHashLenght: Int = 64
@@ -247,10 +245,6 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         (key?.encodeToByteArray()?.map { it.toUByte() }?.toTypedArray() ?: emptyArray<UByte>()),
         requestedHashLenght
     )
-
-    var job = Job()
-    val scope = CoroutineScope(Dispatchers.Default + job)
-
 
     var h = iv.copyOf()
     var counter = BigInteger.ZERO
@@ -306,7 +300,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         }
 
     }
-
+    @ExperimentalStdlibApi
     fun update(input: String) {
         update(input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
     }
@@ -326,13 +320,20 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         compress(h, lastBlockPadded, counter, true)
 
         val result = formatResult(h)
-        println(result.map { it.toString(16) }.joinToString(separator = ""))
+        reset()
         return result
 
     }
 
     fun digestString(): String {
         return digest().map { it.toString(16) }.joinToString(separator = "")
+    }
+
+    private fun reset() {
+        h = iv.copyOf()
+        counter = BigInteger.ZERO
+        bufferCounter = 0
+        buffer = Array<UByte>(BLOCK_BYTES) { 0U }
     }
 
 

@@ -80,10 +80,6 @@ class Blake2bInstanceTest {
         val blake2b = Blake2b(key)
         blake2b.update(test)
         val result = blake2b.digest()
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-
-
 
         assertTrue {
             result.isNotEmpty()

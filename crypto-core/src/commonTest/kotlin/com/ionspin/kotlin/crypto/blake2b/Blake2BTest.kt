@@ -44,7 +44,6 @@ class Blake2BTest {
                 "1234567890" +
                 "1234567890" +
                 "1234567890"
-        print("|$test|")
 
         val result = Blake2b.digest(test)
         //Generated with b2sum 8.31
@@ -57,9 +56,6 @@ class Blake2BTest {
             0xb1U, 0x1eU, 0x32U, 0xa4U
             //@formatter:on
         )
-
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -79,16 +75,12 @@ class Blake2BTest {
                 "1234567890" +
                 "1234567890"
 
-        print("|$test|")
 
         val result = Blake2b.digest(test)
         val expectedResultString = "800bb78cd4da18995c8074713bb674" +
                 "3cd94b2b6490a693fe4000ed00833b88b7b474d94af9cfed246b1b" +
                 "4ce1935a76154d7ea7c410493557741d18ec3a08da75"
         val expectedResult = expectedResultString.chunked(2).map { it.toUByte(16) }.toTypedArray()
-
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -111,9 +103,6 @@ class Blake2BTest {
             //@formatter:on
         )
 
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-
         assertTrue {
             result.contentEquals(expectedResult)
         }
@@ -126,10 +115,6 @@ class Blake2BTest {
         val key = "key"
 
         val result = Blake2b.digest(test, key)
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-
-
 
         assertTrue {
             result.isNotEmpty()
@@ -159,9 +144,6 @@ class Blake2BTest {
 
         )
         //@formatter:on
-        val printout = result.map { it.toString(16) }.chunked(16)
-        printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-
         assertTrue {
             result.contentEquals(expectedResult)
         }
@@ -290,9 +272,6 @@ class Blake2BTest {
             val inputRound = mixChain[i]
             val round = i
             val result = Blake2b.mixRound(inputRound, message, round)
-            println("Result: ")
-            val printout = result.map { it.toString(16) }.chunked(3)
-            printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
             val expectedResult = mixChain[i + 1]
             assertTrue {
                 result.contentEquals(expectedResult)
