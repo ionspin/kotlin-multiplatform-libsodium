@@ -26,5 +26,5 @@ pluginManagement {
 }
 enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "KotlinMultiplatformCrypto"
-include("crypto-core")
+include("multiplatform-crypto")
 

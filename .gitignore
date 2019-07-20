@@ -6,8 +6,11 @@
 */build
 build/
 /captures
-/crypto/node_modules
+/multiplatform-crypto/node_modules
 gradle.properties
 /buildSrc/out
-/crypto/package.json
+/multiplatform-crypto/package.json
+/multiplatform-crypto/package-lock.json
 /package.json
+/multiplatform-crypto/src/jsMain/npm/node_modules
+/multiplatform-crypto/src/jsMain/npm/package-lock.json
