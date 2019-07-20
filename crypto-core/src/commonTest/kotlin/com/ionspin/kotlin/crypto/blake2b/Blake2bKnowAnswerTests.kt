@@ -48,6 +48,21 @@ class Blake2bKnowAnswerTests {
         }
     }
 
+    @Test
+    fun knownAnswerTestStreaming() {
+
+        kat.forEach { kat ->
+            val parsedInput = kat.input.chunked(2).map { it.toUByte(16) }.toTypedArray()
+            val chunkedInput = parsedInput.toList().chunked(128).map { it.toTypedArray() }.toTypedArray()
+            val blake2b = Blake2b(key = kat.key.chunked(2).map { it.toUByte(16) }.toTypedArray())
+            chunkedInput.forEach { blake2b.updateBlocking(it) }
+            val result = blake2b.digest()
+            assertTrue("KAT ${kat.input} \nkey: ${kat.key} \nexpected: {${kat.hash}") {
+                result.contentEquals(kat.hash.chunked(2).map { it.toUByte(16) }.toTypedArray())
+            }
+        }
+    }
+
     val kat = arrayOf(
         KnownAnswerTest(
             input = "",

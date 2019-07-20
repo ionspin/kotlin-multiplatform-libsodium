@@ -18,8 +18,12 @@ package com.ionspin.kotlin.crypto.blake2b
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import com.ionspin.kotlin.crypto.hexColumsPrint
-import com.ionspin.kotlin.crypto.rotateRight
+import com.ionspin.kotlin.crypto.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlin.text.chunked
 
 /**
  * Created by Ugljesa Jovanovic
@@ -28,8 +32,8 @@ import com.ionspin.kotlin.crypto.rotateRight
  */
 @ExperimentalStdlibApi
 @ExperimentalUnsignedTypes
-class Blake2b {
-    companion object {
+class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : StreamingHash {
+    companion object : Hash {
 
         const val BITS_IN_WORD = 64
         const val ROUNDS_IN_COMPRESS = 12
@@ -143,9 +147,9 @@ class Blake2b {
         }
 
 
-
         fun digest(inputString: String, key: String? = null): Array<UByte> {
-            val chunked = inputString.encodeToByteArray().map {it.toUByte() }.toList().chunked(BLOCK_BYTES).map { it.toTypedArray() }.toTypedArray()
+            val chunked = inputString.encodeToByteArray().map { it.toUByte() }.toList().chunked(BLOCK_BYTES)
+                .map { it.toTypedArray() }.toTypedArray()
             val keyBytes = key?.run {
                 encodeToByteArray().map { it.toUByte() }.toTypedArray()
             } ?: emptyArray()
@@ -161,7 +165,6 @@ class Blake2b {
             val h = iv.copyOf()
 
             h[0] = h[0] xor 0x01010000UL xor (secretKey.size.toULong() shl 8) xor hashLength.toULong()
-
 
 
             val message = if (secretKey.isEmpty()) {
@@ -181,7 +184,6 @@ class Blake2b {
             if (message.size > 1) {
                 for (i in 0 until message.size - 1) {
                     compress(h, message[i], ((i + 1) * BLOCK_BYTES).toBigInteger(), false).copyInto(h)
-                    h.hexColumsPrint()
                 }
             }
 
@@ -201,6 +203,10 @@ class Blake2b {
             compress(h, lastBlockPadded, lastSize.toBigInteger(), true).copyInto(h)
 
 
+            return formatResult(h)
+        }
+
+        private fun formatResult(h: Array<ULong>): Array<UByte> {
             return h.map {
                 arrayOf(
                     (it and 0xFFUL).toUByte(),
@@ -217,7 +223,7 @@ class Blake2b {
             }.toTypedArray()
         }
 
-        private inline fun padToBlock(unpadded: Array<UByte>): Array<UByte> {
+        private fun padToBlock(unpadded: Array<UByte>): Array<UByte> {
             if (unpadded.size == BLOCK_BYTES) {
                 return unpadded
             }
@@ -236,17 +242,106 @@ class Blake2b {
         }
     }
 
-    fun digest(inputString: String, key: String? = null): Array<UByte> {
-        return Blake2b.digest(inputString, key)
+    constructor(
+        key: String?,
+        requestedHashLenght: Int = 64
+    ) : this(
+        (key?.encodeToByteArray()?.map { it.toUByte() }?.toTypedArray() ?: emptyArray<UByte>()),
+        requestedHashLenght
+    )
+
+    val job = Job()
+    val scope = CoroutineScope(Dispatchers.Default + job)
+
+
+    var h = iv.copyOf()
+    var counter = BigInteger.ZERO
+    var bufferCounter = 0
+    var buffer = Array<UByte>(BLOCK_BYTES) { 0U }
+
+
+    init {
+        h[0] = h[0] xor 0x01010000UL xor (key?.run { size.toULong() shl 8 } ?: 0UL) xor hashLength.toULong()
+
+        if (!key.isNullOrEmpty()) {
+            appendToBuffer(padToBlock(key), bufferCounter)
+        }
+    }
+
+    fun updateBlocking(array: Array<UByte>) {
+        if (array.isEmpty()) {
+            throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
+        }
+
+        when {
+            bufferCounter + array.size < BLOCK_BYTES -> appendToBuffer(array, bufferCounter)
+            bufferCounter + array.size >= BLOCK_BYTES -> {
+                val chunked = array.chunked(BLOCK_BYTES)
+                chunked.forEach { chunk ->
+                    if (bufferCounter + chunk.size < BLOCK_BYTES) {
+                        appendToBuffer(chunk, bufferCounter)
+                    } else {
+                        chunk.copyInto(
+                            destination = buffer,
+                            destinationOffset = bufferCounter,
+                            startIndex = 0,
+                            endIndex = BLOCK_BYTES - bufferCounter
+                        )
+                        counter += BLOCK_BYTES
+                        consumeBlock(buffer)
+                        buffer = Array<UByte>(BLOCK_BYTES) {
+                            when (it) {
+                                in (0 until (chunk.size - (BLOCK_BYTES - bufferCounter))) -> {
+                                    chunk[it + (BLOCK_BYTES - bufferCounter)]
+                                }
+                                else -> {
+                                    0U
+                                }
+                            }
+
+                        }
+                        bufferCounter = chunk.size - (BLOCK_BYTES - bufferCounter)
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    fun updateBlocking(input: String) {
+        updateBlocking(input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+    }
+
+    private fun appendToBuffer(array: Array<UByte>, start: Int) {
+        array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
+        bufferCounter += array.size
+    }
+
+    private fun consumeBlock(block: Array<UByte>) {
+        h = compress(h, block, counter, false)
+    }
+
+    suspend fun update(array: Array<UByte>) {
+
+
     }
 
 
+    fun digest(): Array<UByte> {
+        val lastBlockPadded = padToBlock(buffer)
+        counter += bufferCounter
+        compress(h, lastBlockPadded, counter, true)
 
+        val result = formatResult(h)
+        println(result.map { it.toString(16) }.joinToString(separator = ""))
+        return result
 
+    }
 
-
-
-
+    fun digestString(): String {
+        return digest().map { it.toString(16) }.joinToString(separator = "")
+    }
 
 
 }
