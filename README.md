@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/ionspin/kotlin-multiplatform-crypto.svg?branch=master)](https://travis-ci.com/ionspin/kotlin-multiplatform-crypto)
+![Maven Central](https://img.shields.io/maven-central/v/com.ionspin.kotlin/multiplatform-crypto.svg)
+
 # Kotlin Multiplatform Crypto Library
 
 Kotlin Multiplatform Crypto is a library for various cryptographic applications. 
