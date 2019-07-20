@@ -1,0 +1,13 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+*/build
+build/
+/captures
+/crypto/node_modules
+gradle.properties
+/buildSrc/out
+/crypto/package.json
+/package.json
