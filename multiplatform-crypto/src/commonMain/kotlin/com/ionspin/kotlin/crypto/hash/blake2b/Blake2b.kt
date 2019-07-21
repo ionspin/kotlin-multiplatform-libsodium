@@ -14,14 +14,13 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.blake2b
+package com.ionspin.kotlin.crypto.hash.blake2b
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.ionspin.kotlin.crypto.hash.StatelessHash
+import com.ionspin.kotlin.crypto.hash.UpdatableHash
 
 /**
  * Created by Ugljesa Jovanovic
@@ -30,13 +29,14 @@ import kotlinx.coroutines.Job
  */
 
 @ExperimentalUnsignedTypes
-class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdateableHash {
-    companion object : Hash {
+class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdatableHash {
+
+    companion object : StatelessHash {
 
         const val BITS_IN_WORD = 64
         const val ROUNDS_IN_COMPRESS = 12
         const val BLOCK_BYTES = 128
-        const val MAX_HASH_BYTES = 64
+        override val MAX_HASH_BYTES = 64
         const val MIN_HASH_BYTES = 1
         const val MAX_KEY_BYTES = 64
         const val MIN_KEY_BYTES = 0
@@ -143,38 +143,39 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         }
 
         @ExperimentalStdlibApi
-        fun digest(inputString: String, key: String? = null): Array<UByte> {
-            val chunked = inputString.encodeToByteArray().map { it.toUByte() }.toList().chunked(BLOCK_BYTES)
-                .map { it.toTypedArray() }.toTypedArray()
+        override fun digest(inputString: String, key: String?, hashLength: Int): Array<UByte> {
+            val array = inputString.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray()
             val keyBytes = key?.run {
                 encodeToByteArray().map { it.toUByte() }.toTypedArray()
             } ?: emptyArray()
-            return digest(inputMessage = chunked, secretKey = keyBytes)
+            return digest(inputMessage = array, key = keyBytes)
 
         }
 
-        fun digest(
-            inputMessage: Array<Array<UByte>> = emptyArray(),
-            secretKey: Array<UByte> = emptyArray(),
-            hashLength: Int = MAX_HASH_BYTES
+        override fun digest(
+            inputMessage: Array<UByte>,
+            key: Array<UByte>,
+            hashLength: Int
         ): Array<UByte> {
+            val chunkedMessage = inputMessage.chunked(BLOCK_BYTES)
+
             val h = iv.copyOf()
 
-            h[0] = h[0] xor 0x01010000UL xor (secretKey.size.toULong() shl 8) xor hashLength.toULong()
+            h[0] = h[0] xor 0x01010000UL xor (key.size.toULong() shl 8) xor hashLength.toULong()
 
 
-            val message = if (secretKey.isEmpty()) {
-                if (inputMessage.isEmpty()) {
+            val message = if (key.isEmpty()) {
+                if (chunkedMessage.isEmpty()) {
                     Array(1) {
                         Array<UByte>(128) {
                             0U
                         }
                     }
                 } else {
-                    inputMessage
+                    chunkedMessage
                 }
             } else {
-                arrayOf(padToBlock(secretKey), *inputMessage)
+                arrayOf(padToBlock(key), *chunkedMessage)
             }
 
             if (message.size > 1) {
@@ -246,6 +247,8 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         requestedHashLenght
     )
 
+    override val MAX_HASH_BYTES: Int = Blake2b.MAX_HASH_BYTES
+
     var h = iv.copyOf()
     var counter = BigInteger.ZERO
     var bufferCounter = 0
@@ -260,15 +263,15 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         }
     }
 
-    fun update(array: Array<UByte>) {
-        if (array.isEmpty()) {
+    override fun update(data: Array<UByte>) {
+        if (data.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
         }
 
         when {
-            bufferCounter + array.size < BLOCK_BYTES -> appendToBuffer(array, bufferCounter)
-            bufferCounter + array.size >= BLOCK_BYTES -> {
-                val chunked = array.chunked(BLOCK_BYTES)
+            bufferCounter + data.size < BLOCK_BYTES -> appendToBuffer(data, bufferCounter)
+            bufferCounter + data.size >= BLOCK_BYTES -> {
+                val chunked = data.chunked(BLOCK_BYTES)
                 chunked.forEach { chunk ->
                     if (bufferCounter + chunk.size < BLOCK_BYTES) {
                         appendToBuffer(chunk, bufferCounter)
@@ -301,8 +304,8 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
 
     }
     @ExperimentalStdlibApi
-    fun update(input: String) {
-        update(input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+    override fun update(data: String) {
+        update(data.encodeToByteArray().map { it.toUByte() }.toTypedArray())
     }
 
     private fun appendToBuffer(array: Array<UByte>, start: Int) {
@@ -314,7 +317,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
         h = compress(h, block, counter, false)
     }
 
-    fun digest(): Array<UByte> {
+    override fun digest(): Array<UByte> {
         val lastBlockPadded = padToBlock(buffer)
         counter += bufferCounter
         compress(h, lastBlockPadded, counter, true)
@@ -325,7 +328,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatea
 
     }
 
-    fun digestString(): String {
+    override fun digestString(): String {
         return digest().map { it.toString(16) }.joinToString(separator = "")
     }
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.blake2b
+package com.ionspin.kotlin.crypto.hash.blake2b
 
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -37,10 +37,9 @@ class Blake2bKnowAnswerTests {
     fun knownAnswerTest() {
         kat.forEach {
             val parsedInput = it.input.chunked(2).map { it.toUByte(16) }.toTypedArray()
-            val chunkedInput = parsedInput.toList().chunked(128).map { it.toTypedArray() }.toTypedArray()
             val result = Blake2b.digest(
-                inputMessage = chunkedInput,
-                secretKey = it.key.chunked(2).map { it.toUByte(16) }.toTypedArray()
+                inputMessage = parsedInput,
+                key = it.key.chunked(2).map { it.toUByte(16) }.toTypedArray()
             )
             assertTrue {
                 result.contentEquals(it.hash.chunked(2).map { it.toUByte(16) }.toTypedArray())

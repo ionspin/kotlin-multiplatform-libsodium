@@ -14,11 +14,8 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.blake2b
+package com.ionspin.kotlin.crypto.hash.blake2b
 
-import com.ionspin.kotlin.crypto.util.testBlocking
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -32,7 +29,7 @@ import kotlin.test.assertTrue
 class Blake2bInstanceTest {
 
     @Test
-    fun testUpdateableBlake2b() {
+    fun testUpdatableBlake2b() {
         val updates = 14
         val input = "1234567890"
         val expectedResult = arrayOf<UByte>(

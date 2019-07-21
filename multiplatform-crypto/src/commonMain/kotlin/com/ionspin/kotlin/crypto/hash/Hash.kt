@@ -14,14 +14,37 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.hash
+
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-interface Hash
+interface Hash {
+    val MAX_HASH_BYTES : Int
+}
 
-interface UpdateableHash : Hash
+@ExperimentalUnsignedTypes
+interface UpdatableHash : Hash {
+    fun update(data : Array<UByte>)
+
+    fun update(data : String)
+
+    fun digest() : Array<UByte>
+
+    fun digestString() : String
+}
+
+@ExperimentalUnsignedTypes
+interface StatelessHash : Hash {
+    fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): Array<UByte>
+
+    fun digest(
+        inputMessage: Array<UByte> = emptyArray(),
+        key: Array<UByte> = emptyArray(),
+        hashLength: Int = MAX_HASH_BYTES
+    ): Array<UByte>
+}
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.blake2b
+package com.ionspin.kotlin.crypto.hash.blake2b
 
 import kotlin.test.Test
 import kotlin.test.assertTrue

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.sha
+package com.ionspin.kotlin.crypto.hash.sha
 
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -31,7 +31,7 @@ class Sha256Test {
     @Test
     fun testWellKnownValue() {
 
-        val result = Sha256.digest(message = "abc")
+        val result = Sha256.digest(inputString = "abc")
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
@@ -44,8 +44,35 @@ class Sha256Test {
     @Test
     fun testWellKnownDoubleBlock() {
 
-        val resultDoubleBlock = Sha256.digest(message = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
+        val resultDoubleBlock = Sha256.digest(inputString = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
         val expectedResultForDoubleBlock = "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
+        assertTrue {
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testWellKnown3() { //It's good that I'm consistent with names.
+
+
+        val resultDoubleBlock = Sha256.digest(inputString = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
+        println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
+        val expectedResultForDoubleBlock = "cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1"
+        assertTrue {
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testWellKnownLong() {
+        val inputBuilder = StringBuilder()
+        for (i in 0 until 1000000) {
+            inputBuilder.append("a")
+        }
+        val resultDoubleBlock = Sha256.digest(inputMessage = (inputBuilder.toString()).encodeToByteArray().map { it.toUByte() }.toTypedArray())
+        val expectedResultForDoubleBlock = "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
         assertTrue {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
         }
