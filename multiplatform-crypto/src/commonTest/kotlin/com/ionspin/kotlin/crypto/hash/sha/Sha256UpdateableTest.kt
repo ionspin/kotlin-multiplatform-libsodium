@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
  * on 17-Jul-2019
  */
 @ExperimentalUnsignedTypes
-class Sha256UpdateableTest {
+class Sha256UpdatableTest {
 
     @ExperimentalStdlibApi
     @Test
@@ -38,8 +38,6 @@ class Sha256UpdateableTest {
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
         }
-
-
     }
 
     @ExperimentalStdlibApi
@@ -99,5 +97,4 @@ class Sha256UpdateableTest {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toTypedArray())
         }
     }
-    //50e72a0e 26442fe2 552dc393 8ac58658 228c0cbf b1d2ca87 2ae43526 6fcd055e
 }

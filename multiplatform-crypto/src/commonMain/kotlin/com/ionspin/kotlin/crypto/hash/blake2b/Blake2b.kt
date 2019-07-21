@@ -20,7 +20,7 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
 import com.ionspin.kotlin.crypto.hash.StatelessHash
-import com.ionspin.kotlin.crypto.hash.UpdateableHash
+import com.ionspin.kotlin.crypto.hash.UpdatableHash
 
 /**
  * Created by Ugljesa Jovanovic
@@ -29,7 +29,7 @@ import com.ionspin.kotlin.crypto.hash.UpdateableHash
  */
 
 @ExperimentalUnsignedTypes
-class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdateableHash {
+class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : UpdatableHash {
 
     companion object : StatelessHash {
 

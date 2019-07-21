@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 21-Jul-2019
  */
-class Sha512UpdateableTest {
+class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownValue() {

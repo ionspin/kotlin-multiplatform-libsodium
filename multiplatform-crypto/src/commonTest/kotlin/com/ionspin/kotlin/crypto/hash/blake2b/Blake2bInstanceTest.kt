@@ -29,7 +29,7 @@ import kotlin.test.assertTrue
 class Blake2bInstanceTest {
 
     @Test
-    fun testUpdateableBlake2b() {
+    fun testUpdatableBlake2b() {
         val updates = 14
         val input = "1234567890"
         val expectedResult = arrayOf<UByte>(

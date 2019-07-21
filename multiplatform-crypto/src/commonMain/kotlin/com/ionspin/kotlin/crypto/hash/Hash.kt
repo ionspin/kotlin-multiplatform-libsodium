@@ -27,7 +27,7 @@ interface Hash {
 }
 
 @ExperimentalUnsignedTypes
-interface UpdateableHash : Hash {
+interface UpdatableHash : Hash {
     fun update(data : Array<UByte>)
 
     fun update(data : String)

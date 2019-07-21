@@ -97,4 +97,31 @@ class ReadmeTest {
 
 
     }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun sha256UpdatableExample() {
+        val sha256 = Sha256()
+        sha256.update("abc")
+        val result = sha256.digest()
+        val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        assertTrue {
+            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun sha512UpdatableExample() {
+        val sha512 = Sha512()
+        sha512.update("abc")
+        val result = sha512.digest()
+        val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
+                "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+        assertTrue {
+            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
+        }
+
+
+    }
 }
