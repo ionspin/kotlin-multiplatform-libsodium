@@ -14,11 +14,8 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.blake2b
+package com.ionspin.kotlin.crypto.hash.blake2b
 
-import com.ionspin.kotlin.crypto.util.testBlocking
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

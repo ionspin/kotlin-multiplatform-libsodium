@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.sha
+package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.Hash
 import com.ionspin.kotlin.crypto.chunked
+import com.ionspin.kotlin.crypto.hash.StatelessHash
+import com.ionspin.kotlin.crypto.hash.UpdateableHash
 import com.ionspin.kotlin.crypto.rotateRight
 
 
@@ -29,14 +30,19 @@ import com.ionspin.kotlin.crypto.rotateRight
 
 
 @ExperimentalUnsignedTypes
-class Sha256 : Hash {
+class Sha256 : UpdateableHash {
 
-    companion object {
+    override val MAX_HASH_BYTES: Int = 32
+
+
+    companion object : StatelessHash {
         const val BLOCK_SIZE = 512
         const val BLOCK_SIZE_IN_BYTES = 64
         const val UINT_MASK = 0xFFFFFFFFU
         const val BYTE_MASK_FROM_ULONG = 0xFFUL
         const val BYTE_MASK_FROM_UINT = 0xFFU
+
+        override val MAX_HASH_BYTES: Int = 32
 
         val iv = arrayOf(
             0x6a09e667U,
@@ -61,22 +67,25 @@ class Sha256 : Hash {
         )
 
         @ExperimentalStdlibApi
-        fun digest(message: String): Array<UByte> {
-            return digest(message.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+        override fun digest(inputString: String, key: String?, hashLength: Int): Array<UByte> {
+            return digest(
+                inputString.encodeToByteArray().map { it.toUByte() }.toTypedArray(),
+                key?.run { encodeToByteArray().map { it.toUByte() }.toTypedArray() } ?: emptyArray<UByte>(),
+                hashLength)
         }
 
-        fun digest(message: Array<UByte>): Array<UByte> {
+        override fun digest(inputMessage: Array<UByte>, key: Array<UByte>, hashLength: Int): Array<UByte> {
 
             var h = iv.copyOf()
 
-            val expansionArray = createExpansionArray(message.size)
+            val expansionArray = createExpansionArray(inputMessage.size)
 
             val chunks = (
-                        message +
-                                expansionArray +
-                                (message.size * 8).toULong().toPaddedByteArray()
-                        )
-                    .chunked(BLOCK_SIZE_IN_BYTES)
+                    inputMessage +
+                            expansionArray +
+                            (inputMessage.size * 8).toULong().toPaddedByteArray()
+                    )
+                .chunked(BLOCK_SIZE_IN_BYTES)
 
             chunks.forEach { chunk ->
                 val w = expandChunk(chunk)
@@ -179,7 +188,7 @@ class Sha256 : Hash {
         }
 
 
-        fun createExpansionArray(originalSizeInBytes : Int) : Array<UByte> {
+        fun createExpansionArray(originalSizeInBytes: Int): Array<UByte> {
             val originalMessageSizeInBits = originalSizeInBytes * 8
 
 
@@ -236,19 +245,19 @@ class Sha256 : Hash {
     var buffer = Array<UByte>(BLOCK_SIZE_IN_BYTES) { 0U }
 
     @ExperimentalStdlibApi
-    fun update(message: String) {
-        return update(message.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+    override fun update(data: String) {
+        return update(data.encodeToByteArray().map { it.toUByte() }.toTypedArray())
     }
 
-    fun update(array: Array<UByte>) {
-        if (array.isEmpty()) {
+    override fun update(data: Array<UByte>) {
+        if (data.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
         }
 
         when {
-            bufferCounter + array.size < BLOCK_SIZE_IN_BYTES -> appendToBuffer(array, bufferCounter)
-            bufferCounter + array.size >= BLOCK_SIZE_IN_BYTES -> {
-                val chunked = array.chunked(BLOCK_SIZE_IN_BYTES)
+            bufferCounter + data.size < BLOCK_SIZE_IN_BYTES -> appendToBuffer(data, bufferCounter)
+            bufferCounter + data.size >= BLOCK_SIZE_IN_BYTES -> {
+                val chunked = data.chunked(BLOCK_SIZE_IN_BYTES)
                 chunked.forEach { chunk ->
                     if (bufferCounter + chunk.size < BLOCK_SIZE_IN_BYTES) {
                         appendToBuffer(chunk, bufferCounter)
@@ -285,10 +294,11 @@ class Sha256 : Hash {
         mix(h, w).copyInto(h)
     }
 
-    fun digest() : Array<UByte> {
+    override fun digest(): Array<UByte> {
         val length = counter + bufferCounter
         val expansionArray = createExpansionArray(length)
-        val finalBlock = buffer.copyOfRange(0, bufferCounter) + expansionArray + (length * 8).toULong().toPaddedByteArray()
+        val finalBlock =
+            buffer.copyOfRange(0, bufferCounter) + expansionArray + (length * 8).toULong().toPaddedByteArray()
         finalBlock.chunked(BLOCK_SIZE_IN_BYTES).forEach {
             consumeBlock(it)
         }
@@ -305,11 +315,14 @@ class Sha256 : Hash {
         return digest
     }
 
+    override fun digestString(): String {
+        return digest().map { it.toString(16) }.joinToString(separator = "")
+    }
+
     private fun appendToBuffer(array: Array<UByte>, start: Int) {
         array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
         bufferCounter += array.size
     }
-
 
 
 }

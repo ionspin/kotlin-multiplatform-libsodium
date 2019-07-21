@@ -16,9 +16,9 @@
 
 package com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.crypto.blake2b.Blake2b
-import com.ionspin.kotlin.crypto.sha.Sha256
-import com.ionspin.kotlin.crypto.sha.Sha512
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
+import com.ionspin.kotlin.crypto.hash.sha.Sha256
+import com.ionspin.kotlin.crypto.hash.sha.Sha512
 import kotlin.test.Test
 
 import kotlin.test.assertTrue
@@ -74,7 +74,7 @@ class ReadmeTest {
     @Test
     fun sha256Example() {
         val input ="abc"
-        val result = Sha256.digest(message = input)
+        val result = Sha256.digest(inputString = input)
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
@@ -87,7 +87,7 @@ class ReadmeTest {
     @Test
     fun sha512Example() {
         val input ="abc"
-        val result = Sha512.digest(message = input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+        val result = Sha512.digest(inputMessage = input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
         println(result.map {it.toString(16)})
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
                 "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
