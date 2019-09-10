@@ -27,4 +27,29 @@ class AesTest {
             aes.stateMatrix[0][0] == 0xEDU.toUByte()
         }
     }
+
+    @Test
+    fun testShiftRows() {
+        val fakeState = arrayOf(
+                ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
+                ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
+                ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
+                ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray()
+        )
+        val expectedState = arrayOf(
+                ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
+                ubyteArrayOf(1U, 2U, 3U, 0U).toTypedArray(),
+                ubyteArrayOf(2U, 3U, 0U, 1U).toTypedArray(),
+                ubyteArrayOf(3U, 0U, 1U, 2U).toTypedArray()
+        )
+        val aes = Aes()
+        fakeState.copyInto(aes.stateMatrix)
+        aes.shiftRows()
+        aes.stateMatrix.forEach{
+            println(it.joinToString { it.toString(16) })
+        }
+        assertTrue {
+            aes.stateMatrix.contentDeepEquals(expectedState)
+        }
+    }
 }

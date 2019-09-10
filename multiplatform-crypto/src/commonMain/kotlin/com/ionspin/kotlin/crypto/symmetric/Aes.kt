@@ -60,6 +60,13 @@ class Aes {
         }
     }
 
+    fun shiftRows() {
+        stateMatrix[0] = arrayOf(stateMatrix[0][0], stateMatrix[0][1], stateMatrix[0][2], stateMatrix[0][3])
+        stateMatrix[1] = arrayOf(stateMatrix[1][1], stateMatrix[1][2], stateMatrix[1][3], stateMatrix[1][0])
+        stateMatrix[2] = arrayOf(stateMatrix[2][2], stateMatrix[2][3], stateMatrix[2][0], stateMatrix[2][1])
+        stateMatrix[3] = arrayOf(stateMatrix[3][3], stateMatrix[3][0], stateMatrix[3][1], stateMatrix[3][2])
+    }
+
     fun expandKey(key: AesKey) {
 
     }
