@@ -52,4 +52,15 @@ class AesTest {
             aes.stateMatrix.contentDeepEquals(expectedState)
         }
     }
+
+    @Test
+    fun testGaloisMultiply() {
+        val a = 0x57U
+        val b = 0x83U
+        val aes = Aes()
+        val c = aes.galoisFieldMultiply(a.toUByte(), b.toUByte())
+        assertTrue {
+            c == 0xC1U.toUByte()
+        }
+    }
 }
