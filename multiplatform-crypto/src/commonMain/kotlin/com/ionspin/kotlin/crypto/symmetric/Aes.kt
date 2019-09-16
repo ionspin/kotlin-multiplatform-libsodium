@@ -92,6 +92,24 @@ class Aes {
         stateMatrix[3] = arrayOf(stateMatrix[3][3], stateMatrix[3][0], stateMatrix[3][1], stateMatrix[3][2])
     }
 
+    fun mixColumns() {
+        val stateMixed : Array<Array<UByte>> = (0 until 4).map {
+            Array<UByte>(4) { 0U }
+        }.toTypedArray()
+        for (c in 0 .. 3) {
+
+            stateMixed[0][c] = (2U gfm stateMatrix[0][c]) xor galoisFieldMultiply(3U, stateMatrix[1][c]) xor stateMatrix[2][c] xor stateMatrix[3][c]
+            stateMixed[1][c] = stateMatrix[0][c] xor (2U gfm stateMatrix[1][c]) xor (3U gfm stateMatrix[2][c]) xor stateMatrix[3][c]
+            stateMixed[2][c] = stateMatrix[0][c] xor stateMatrix[1][c] xor (2U gfm stateMatrix[2][c]) xor (3U gfm stateMatrix[3][c])
+            stateMixed[3][c] = 3U gfm stateMatrix[0][c] xor stateMatrix[1][c] xor stateMatrix[2][c] xor (2U gfm stateMatrix[3][c])
+        }
+        stateMixed.copyInto(stateMatrix)
+    }
+
+    fun galoisFieldAdd(first : UByte, second : UByte) : UByte {
+        return first xor second
+    }
+
     fun galoisFieldMultiply(first : UByte, second : UByte) : UByte {
         var result : UInt = 0U
         var firstInt = first.toUInt()
@@ -110,6 +128,10 @@ class Aes {
             firstInt = firstInt and 0xFFU
         }
         return result.toUByte()
+    }
+
+    infix fun UInt.gfm(second : UByte) : UByte {
+        return galoisFieldMultiply(this.toUByte(), second)
     }
 
     fun expandKey(key: AesKey) {
