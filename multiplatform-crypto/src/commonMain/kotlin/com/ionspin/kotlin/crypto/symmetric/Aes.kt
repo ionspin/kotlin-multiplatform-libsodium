@@ -4,7 +4,7 @@ package com.ionspin.kotlin.crypto.symmetric
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
 @ExperimentalUnsignedTypes
-class Aes {
+class Aes(val aesKey: AesKey) {
     companion object {
         val sBox: UByteArray =
             ubyteArrayOf(
@@ -50,23 +50,10 @@ class Aes {
                 // @formatter:on
             )
 
+        val rcon: UByteArray = ubyteArrayOf(0x8DU, 0x01U, 0x02U, 0x04U, 0x08U, 0x10U, 0x20U, 0x40U, 0x80U, 0x1BU, 0x36U)
+
     }
 
-    sealed class AesKey(val key: String, val keyLength: Int) {
-        class Aes128Key(key: String) : AesKey(key, 128)
-        class Aes192Key(key: String) : AesKey(key, 192)
-        class Aes256Key(key: String) : AesKey(key, 256)
-
-        init {
-            checkKeyLength(key, keyLength)
-        }
-
-        fun checkKeyLength(key: String, expectedLength: Int) {
-            if ((key.length / 2) != expectedLength) {
-                throw RuntimeException("Invalid key length")
-            }
-        }
-    }
 
     val state: UByteArray = UByteArray(16) { 0U }
 
@@ -74,15 +61,21 @@ class Aes {
         Array<UByte>(4) { 0U }
     }.toTypedArray()
 
+    val expandedKey: Array<Array<UByte>> = expandKey()
+
+
     fun subBytes() {
         stateMatrix.forEachIndexed { indexRow, row ->
             row.forEachIndexed { indexColumn, element ->
-                val firstDigit = (element / 16U).toInt()
-                val secondDigit = (element % 16U).toInt()
-                val substitutionValue = sBox[firstDigit * 16 + secondDigit]
-                stateMatrix[indexRow][indexColumn] = substitutionValue
+                stateMatrix[indexRow][indexColumn] = getSBoxValue(element)
             }
         }
+    }
+
+    fun getSBoxValue(element: UByte): UByte {
+        val firstDigit = (element / 16U).toInt()
+        val secondDigit = (element % 16U).toInt()
+        return sBox[firstDigit * 16 + secondDigit]
     }
 
     fun shiftRows() {
@@ -93,29 +86,35 @@ class Aes {
     }
 
     fun mixColumns() {
-        val stateMixed : Array<Array<UByte>> = (0 until 4).map {
+        val stateMixed: Array<Array<UByte>> = (0 until 4).map {
             Array<UByte>(4) { 0U }
         }.toTypedArray()
-        for (c in 0 .. 3) {
+        for (c in 0..3) {
 
-            stateMixed[0][c] = (2U gfm stateMatrix[0][c]) xor galoisFieldMultiply(3U, stateMatrix[1][c]) xor stateMatrix[2][c] xor stateMatrix[3][c]
-            stateMixed[1][c] = stateMatrix[0][c] xor (2U gfm stateMatrix[1][c]) xor (3U gfm stateMatrix[2][c]) xor stateMatrix[3][c]
-            stateMixed[2][c] = stateMatrix[0][c] xor stateMatrix[1][c] xor (2U gfm stateMatrix[2][c]) xor (3U gfm stateMatrix[3][c])
-            stateMixed[3][c] = 3U gfm stateMatrix[0][c] xor stateMatrix[1][c] xor stateMatrix[2][c] xor (2U gfm stateMatrix[3][c])
+            stateMixed[0][c] = (2U gfm stateMatrix[0][c]) xor galoisFieldMultiply(
+                3U,
+                stateMatrix[1][c]
+            ) xor stateMatrix[2][c] xor stateMatrix[3][c]
+            stateMixed[1][c] =
+                stateMatrix[0][c] xor (2U gfm stateMatrix[1][c]) xor (3U gfm stateMatrix[2][c]) xor stateMatrix[3][c]
+            stateMixed[2][c] =
+                stateMatrix[0][c] xor stateMatrix[1][c] xor (2U gfm stateMatrix[2][c]) xor (3U gfm stateMatrix[3][c])
+            stateMixed[3][c] =
+                3U gfm stateMatrix[0][c] xor stateMatrix[1][c] xor stateMatrix[2][c] xor (2U gfm stateMatrix[3][c])
         }
         stateMixed.copyInto(stateMatrix)
     }
 
-    fun galoisFieldAdd(first : UByte, second : UByte) : UByte {
+    fun galoisFieldAdd(first: UByte, second: UByte): UByte {
         return first xor second
     }
 
-    fun galoisFieldMultiply(first : UByte, second : UByte) : UByte {
-        var result : UInt = 0U
+    fun galoisFieldMultiply(first: UByte, second: UByte): UByte {
+        var result: UInt = 0U
         var firstInt = first.toUInt()
         var secondInt = second.toUInt()
-        var carry : UInt = 0U
-        for (i in 0 .. 7) {
+        var carry: UInt = 0U
+        for (i in 0..7) {
             if (secondInt and 0x01U == 1U) {
                 result = result xor firstInt
             }
@@ -130,11 +129,73 @@ class Aes {
         return result.toUByte()
     }
 
-    infix fun UInt.gfm(second : UByte) : UByte {
+    fun addRoundKey() {
+
+    }
+
+    infix fun UInt.gfm(second: UByte): UByte {
         return galoisFieldMultiply(this.toUByte(), second)
     }
 
-    fun expandKey(key: AesKey) {
+    fun expandKey(): Array<Array<UByte>> {
+        val expandedKey = (0 until 4 * (aesKey.numberOfRounds + 1)).map {
+            Array<UByte>(4) { 0U }
+        }.toTypedArray()
+        // First round
+        for (i in 0 until aesKey.numberOf32BitWords) {
+            expandedKey[i][0] = aesKey.keyArray[i * 4 + 0]
+            expandedKey[i][1] = aesKey.keyArray[i * 4 + 1]
+            expandedKey[i][2] = aesKey.keyArray[i * 4 + 2]
+            expandedKey[i][3] = aesKey.keyArray[i * 4 + 3]
+        }
 
+        for (i in aesKey.numberOf32BitWords until 4 * (aesKey.numberOfRounds + 1)) {
+            val temp = expandedKey[i - 1].copyOf()
+            if (i % aesKey.numberOf32BitWords == 0) {
+                //RotWord
+                val tempTemp = temp[0]
+                temp[0] = temp[1]
+                temp[1] = temp[2]
+                temp[2] = temp[3]
+                temp[3] = tempTemp
+
+                //SubWord
+                temp[0] = getSBoxValue(temp[0])
+                temp[1] = getSBoxValue(temp[1])
+                temp[2] = getSBoxValue(temp[2])
+                temp[3] = getSBoxValue(temp[3])
+
+                temp[0] = temp[0] xor rcon[i / aesKey.numberOf32BitWords]
+
+            } else if (aesKey is AesKey.Aes256Key && i % aesKey.numberOf32BitWords == 4) {
+                temp[0] = getSBoxValue(temp[0])
+                temp[1] = getSBoxValue(temp[1])
+                temp[2] = getSBoxValue(temp[2])
+                temp[3] = getSBoxValue(temp[3])
+            }
+            expandedKey[i] = expandedKey[i - aesKey.numberOf32BitWords].mapIndexed { index, it ->
+                it xor temp[index]
+            }.toTypedArray()
+        }
+        return expandedKey
+    }
+}
+
+sealed class AesKey(val key: String, val keyLength: Int, val numberOfRounds: Int) {
+    val keyArray: Array<UByte> = key.chunked(2).map { it.toUByte(16) }.toTypedArray()
+    val numberOf32BitWords = keyLength / 32
+
+    class Aes128Key(key: String) : AesKey(key, 128, 10)
+    class Aes192Key(key: String) : AesKey(key, 192, 12)
+    class Aes256Key(key: String) : AesKey(key, 256, 14)
+
+    init {
+        checkKeyLength(key, keyLength)
+    }
+
+    fun checkKeyLength(key: String, expectedLength: Int) {
+        if ((key.length / 2) != expectedLength / 8) {
+            throw RuntimeException("Invalid key length")
+        }
     }
 }
