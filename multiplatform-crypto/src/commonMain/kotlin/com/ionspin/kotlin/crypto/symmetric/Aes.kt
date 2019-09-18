@@ -4,7 +4,7 @@ package com.ionspin.kotlin.crypto.symmetric
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
 @ExperimentalUnsignedTypes
-class Aes(val aesKey: AesKey) {
+class Aes(val aesKey: AesKey, val input: Array<UByte>) {
     companion object {
         val sBox: UByteArray =
             ubyteArrayOf(
@@ -54,20 +54,33 @@ class Aes(val aesKey: AesKey) {
 
     }
 
+    init {
+        if (input.size != 16) {
+            throw RuntimeException("Invalid input size ${input.size}")
+        }
+    }
 
-    val state: UByteArray = UByteArray(16) { 0U }
-
-    val stateMatrix: Array<Array<UByte>> = (0 until 4).map {
-        Array<UByte>(4) { 0U }
+    val state: Array<Array<UByte>> = (0 until 4).map{ outerCounter ->
+        Array<UByte>(4) { innerCounter -> input[innerCounter * 4 + outerCounter] }
     }.toTypedArray()
+
+    val numberOfRounds = when(aesKey) {
+        is AesKey.Aes128Key -> 10
+        is AesKey.Aes192Key -> 12
+        is AesKey.Aes256Key -> 14
+    }
 
     val expandedKey: Array<Array<UByte>> = expandKey()
 
 
+
+    var round = 0
+
+
     fun subBytes() {
-        stateMatrix.forEachIndexed { indexRow, row ->
+        state.forEachIndexed { indexRow, row ->
             row.forEachIndexed { indexColumn, element ->
-                stateMatrix[indexRow][indexColumn] = getSBoxValue(element)
+                state[indexRow][indexColumn] = getSBoxValue(element)
             }
         }
     }
@@ -79,10 +92,10 @@ class Aes(val aesKey: AesKey) {
     }
 
     fun shiftRows() {
-        stateMatrix[0] = arrayOf(stateMatrix[0][0], stateMatrix[0][1], stateMatrix[0][2], stateMatrix[0][3])
-        stateMatrix[1] = arrayOf(stateMatrix[1][1], stateMatrix[1][2], stateMatrix[1][3], stateMatrix[1][0])
-        stateMatrix[2] = arrayOf(stateMatrix[2][2], stateMatrix[2][3], stateMatrix[2][0], stateMatrix[2][1])
-        stateMatrix[3] = arrayOf(stateMatrix[3][3], stateMatrix[3][0], stateMatrix[3][1], stateMatrix[3][2])
+        state[0] = arrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
+        state[1] = arrayOf(state[1][1], state[1][2], state[1][3], state[1][0])
+        state[2] = arrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
+        state[3] = arrayOf(state[3][3], state[3][0], state[3][1], state[3][2])
     }
 
     fun mixColumns() {
@@ -91,18 +104,18 @@ class Aes(val aesKey: AesKey) {
         }.toTypedArray()
         for (c in 0..3) {
 
-            stateMixed[0][c] = (2U gfm stateMatrix[0][c]) xor galoisFieldMultiply(
+            stateMixed[0][c] = (2U gfm state[0][c]) xor galoisFieldMultiply(
                 3U,
-                stateMatrix[1][c]
-            ) xor stateMatrix[2][c] xor stateMatrix[3][c]
+                state[1][c]
+            ) xor state[2][c] xor state[3][c]
             stateMixed[1][c] =
-                stateMatrix[0][c] xor (2U gfm stateMatrix[1][c]) xor (3U gfm stateMatrix[2][c]) xor stateMatrix[3][c]
+                state[0][c] xor (2U gfm state[1][c]) xor (3U gfm state[2][c]) xor state[3][c]
             stateMixed[2][c] =
-                stateMatrix[0][c] xor stateMatrix[1][c] xor (2U gfm stateMatrix[2][c]) xor (3U gfm stateMatrix[3][c])
+                state[0][c] xor state[1][c] xor (2U gfm state[2][c]) xor (3U gfm state[3][c])
             stateMixed[3][c] =
-                3U gfm stateMatrix[0][c] xor stateMatrix[1][c] xor stateMatrix[2][c] xor (2U gfm stateMatrix[3][c])
+                3U gfm state[0][c] xor state[1][c] xor state[2][c] xor (2U gfm state[3][c])
         }
-        stateMixed.copyInto(stateMatrix)
+        stateMixed.copyInto(state)
     }
 
     fun galoisFieldAdd(first: UByte, second: UByte): UByte {
@@ -131,6 +144,13 @@ class Aes(val aesKey: AesKey) {
 
     fun addRoundKey() {
 
+        for (i in 0 until 4) {
+            state[0][i] = state[0][i] xor expandedKey[round * 4 + i][0]
+            state[1][i] = state[1][i] xor expandedKey[round * 4 + i][1]
+            state[2][i] = state[2][i] xor expandedKey[round * 4 + i][2]
+            state[3][i] = state[3][i] xor expandedKey[round * 4 + i][3]
+        }
+        round++
     }
 
     infix fun UInt.gfm(second: UByte): UByte {
@@ -138,7 +158,7 @@ class Aes(val aesKey: AesKey) {
     }
 
     fun expandKey(): Array<Array<UByte>> {
-        val expandedKey = (0 until 4 * (aesKey.numberOfRounds + 1)).map {
+        val expandedKey = (0 until 4 * (numberOfRounds + 1)).map {
             Array<UByte>(4) { 0U }
         }.toTypedArray()
         // First round
@@ -149,7 +169,7 @@ class Aes(val aesKey: AesKey) {
             expandedKey[i][3] = aesKey.keyArray[i * 4 + 3]
         }
 
-        for (i in aesKey.numberOf32BitWords until 4 * (aesKey.numberOfRounds + 1)) {
+        for (i in aesKey.numberOf32BitWords until 4 * (numberOfRounds + 1)) {
             val temp = expandedKey[i - 1].copyOf()
             if (i % aesKey.numberOf32BitWords == 0) {
                 //RotWord
@@ -179,15 +199,44 @@ class Aes(val aesKey: AesKey) {
         }
         return expandedKey
     }
+
+    fun encrypt() : Array<UByte> {
+        addRoundKey()
+
+        for (i in 0 until numberOfRounds - 1) {
+            subBytes()
+            shiftRows()
+            mixColumns()
+            addRoundKey()
+        }
+
+        subBytes()
+        shiftRows()
+        addRoundKey()
+        return state.flatten().toTypedArray()
+    }
+
+    fun decrypt() : Array<UByte> {
+        return ubyteArrayOf().toTypedArray()
+    }
+
+    fun printState() {
+        println()
+        state.forEach {
+            println(it.joinToString(separator = " ") { it.toString(16)  })
+        }
+    }
+
+
 }
 
-sealed class AesKey(val key: String, val keyLength: Int, val numberOfRounds: Int) {
+sealed class AesKey(val key: String, val keyLength: Int) {
     val keyArray: Array<UByte> = key.chunked(2).map { it.toUByte(16) }.toTypedArray()
     val numberOf32BitWords = keyLength / 32
 
-    class Aes128Key(key: String) : AesKey(key, 128, 10)
-    class Aes192Key(key: String) : AesKey(key, 192, 12)
-    class Aes256Key(key: String) : AesKey(key, 256, 14)
+    class Aes128Key(key: String) : AesKey(key, 128)
+    class Aes192Key(key: String) : AesKey(key, 192)
+    class Aes256Key(key: String) : AesKey(key, 256)
 
     init {
         checkKeyLength(key, keyLength)
@@ -199,3 +248,5 @@ sealed class AesKey(val key: String, val keyLength: Int, val numberOfRounds: Int
         }
     }
 }
+
+

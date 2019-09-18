@@ -9,6 +9,9 @@ import kotlin.test.assertTrue
 @ExperimentalUnsignedTypes
 class AesTest {
 
+    val irrelevantKey = "01234567890123345678901234567890"
+    val irrelevantInput = UByteArray(16) { 0U }.toTypedArray()
+
     @Test
     fun testSubBytes() {
         val fakeState = arrayOf(
@@ -17,14 +20,14 @@ class AesTest {
             ubyteArrayOf(0U, 0U, 0U, 0U).toTypedArray(),
             ubyteArrayOf(0U, 0U, 0U, 0U).toTypedArray()
         )
-        val aes = Aes(AesKey.Aes128Key("2b7e151628aed2a6abf7158809cf4f3c"))
-        fakeState.copyInto(aes.stateMatrix)
+        val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
+        fakeState.copyInto(aes.state)
         aes.subBytes()
-        aes.stateMatrix.forEach {
+        aes.state.forEach {
             println(it.joinToString { it.toString(16) })
         }
         assertTrue {
-            aes.stateMatrix[0][0] == 0xEDU.toUByte()
+            aes.state[0][0] == 0xEDU.toUByte()
         }
     }
 
@@ -42,14 +45,14 @@ class AesTest {
             ubyteArrayOf(2U, 3U, 0U, 1U).toTypedArray(),
             ubyteArrayOf(3U, 0U, 1U, 2U).toTypedArray()
         )
-        val aes = Aes(AesKey.Aes128Key("2b7e151628aed2a6abf7158809cf4f3c"))
-        fakeState.copyInto(aes.stateMatrix)
+        val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
+        fakeState.copyInto(aes.state)
         aes.shiftRows()
-        aes.stateMatrix.forEach {
+        aes.state.forEach {
             println(it.joinToString { it.toString(16) })
         }
         assertTrue {
-            aes.stateMatrix.contentDeepEquals(expectedState)
+            aes.state.contentDeepEquals(expectedState)
         }
     }
 
@@ -59,7 +62,7 @@ class AesTest {
         assertTrue {
             val a = 0x57U
             val b = 0x83U
-            val aes = Aes(AesKey.Aes128Key("2b7e151628aed2a6abf7158809cf4f3c"))
+            val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
             val c = aes.galoisFieldMultiply(a.toUByte(), b.toUByte())
             c == 0xC1U.toUByte()
         }
@@ -67,7 +70,7 @@ class AesTest {
         assertTrue {
             val a = 0x57U
             val b = 0x13U
-            val aes = Aes(AesKey.Aes128Key("2b7e151628aed2a6abf7158809cf4f3c"))
+            val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
             val c = aes.galoisFieldMultiply(a.toUByte(), b.toUByte())
             c == 0xFEU.toUByte()
         }
@@ -92,14 +95,14 @@ class AesTest {
             ubyteArrayOf(0xbcU, 0x9dU, 0x01U, 0xc6U).toTypedArray()
         )
 
-        val aes = Aes(AesKey.Aes128Key("2b7e151628aed2a6abf7158809cf4f3c"))
-        fakeState.copyInto(aes.stateMatrix)
+        val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
+        fakeState.copyInto(aes.state)
         aes.mixColumns()
-        aes.stateMatrix.forEach {
+        aes.state.forEach {
             println(it.joinToString { it.toString(16) })
         }
         assertTrue {
-            aes.stateMatrix.contentDeepEquals(expectedState)
+            aes.state.contentDeepEquals(expectedState)
         }
 
     }
@@ -122,7 +125,7 @@ class AesTest {
             ).toTypedArray()
 
 
-            val aes = Aes(AesKey.Aes128Key(key))
+            val aes = Aes(AesKey.Aes128Key(key), irrelevantInput)
             val result = aes.expandedKey.map {
                 it.foldIndexed(0U) { index, acc, uByte ->
                     acc + (uByte.toUInt() shl (24 - index * 8))
@@ -146,7 +149,7 @@ class AesTest {
             ).toTypedArray()
 
 
-            val aes = Aes(AesKey.Aes192Key(key))
+            val aes = Aes(AesKey.Aes192Key(key), irrelevantInput)
             val result = aes.expandedKey.map {
                 it.foldIndexed(0U) { index, acc, uByte ->
                     acc + (uByte.toUInt() shl (24 - index * 8))
@@ -172,7 +175,7 @@ class AesTest {
             ).toTypedArray()
 
 
-            val aes = Aes(AesKey.Aes256Key(key))
+            val aes = Aes(AesKey.Aes256Key(key), irrelevantInput)
             val result = aes.expandedKey.map {
                 it.foldIndexed(0U) { index, acc, uByte ->
                     acc + (uByte.toUInt() shl (24 - index * 8))
@@ -181,6 +184,18 @@ class AesTest {
             expectedExpandedKey.contentEquals(result)
         }
 
+    }
 
+    @Test
+    fun testEncryption() {
+        val input = "3243f6a8885a308d313198a2e0370734"
+        val key = "2b7e151628aed2a6abf7158809cf4f3c"
+        val expectedResult = "3902dc1925dc116a8409850b1dfb9732"
+
+        val aes = Aes(AesKey.Aes128Key(key), input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+        val result = aes.encrypt()
+        assertTrue {
+            result.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+        }
     }
 }
