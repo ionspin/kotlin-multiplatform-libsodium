@@ -4,9 +4,9 @@ package com.ionspin.kotlin.crypto.symmetric
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
 @ExperimentalUnsignedTypes
-class Aes(val aesKey: AesKey, val input: Array<UByte>) {
+internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UByte>) {
     companion object {
-        val sBox: UByteArray =
+        private val sBox: UByteArray =
             ubyteArrayOf(
                 // @formatter:off
                 0x63U, 0x7cU, 0x77U, 0x7bU, 0xf2U, 0x6bU, 0x6fU, 0xc5U, 0x30U, 0x01U, 0x67U, 0x2bU, 0xfeU, 0xd7U, 0xabU, 0x76U,
@@ -28,7 +28,7 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
                     // @formatter:on
             )
 
-        val inverseSBox: UByteArray =
+        private val inverseSBox: UByteArray =
             ubyteArrayOf(
                 // @formatter:off
                 0x52U, 0x09U, 0x6aU, 0xd5U, 0x30U, 0x36U, 0xa5U, 0x38U, 0xbfU, 0x40U, 0xa3U, 0x9eU, 0x81U, 0xf3U, 0xd7U, 0xfbU,
@@ -52,6 +52,14 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
 
         val rcon: UByteArray = ubyteArrayOf(0x8DU, 0x01U, 0x02U, 0x04U, 0x08U, 0x10U, 0x20U, 0x40U, 0x80U, 0x1BU, 0x36U)
 
+        fun encrypt(aesKey: AesKey, input: Array<UByte>): Array<UByte> {
+            return Aes(aesKey, input).encrypt()
+        }
+
+        fun decrypt(aesKey: AesKey, input: Array<UByte>): Array<UByte> {
+            return Aes(aesKey, input).decrypt()
+        }
+
     }
 
     init {
@@ -60,18 +68,17 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
         }
     }
 
-    val state: Array<Array<UByte>> = (0 until 4).map{ outerCounter ->
+    val state: Array<Array<UByte>> = (0 until 4).map { outerCounter ->
         Array<UByte>(4) { innerCounter -> input[innerCounter * 4 + outerCounter] }
     }.toTypedArray()
 
-    val numberOfRounds = when(aesKey) {
+    val numberOfRounds = when (aesKey) {
         is AesKey.Aes128Key -> 10
         is AesKey.Aes192Key -> 12
         is AesKey.Aes256Key -> 14
     }
 
     val expandedKey: Array<Array<UByte>> = expandKey()
-
 
 
     var round = 0
@@ -91,11 +98,32 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
         return sBox[firstDigit * 16 + secondDigit]
     }
 
+    fun inverseSubBytes() {
+        state.forEachIndexed { indexRow, row ->
+            row.forEachIndexed { indexColumn, element ->
+                state[indexRow][indexColumn] = getInverseSBoxValue(element)
+            }
+        }
+    }
+
+    fun getInverseSBoxValue(element: UByte): UByte {
+        val firstDigit = (element / 16U).toInt()
+        val secondDigit = (element % 16U).toInt()
+        return inverseSBox[firstDigit * 16 + secondDigit]
+    }
+
     fun shiftRows() {
         state[0] = arrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
         state[1] = arrayOf(state[1][1], state[1][2], state[1][3], state[1][0])
         state[2] = arrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
         state[3] = arrayOf(state[3][3], state[3][0], state[3][1], state[3][2])
+    }
+
+    fun inversShiftRows() {
+        state[0] = arrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
+        state[1] = arrayOf(state[1][3], state[1][0], state[1][1], state[1][2])
+        state[2] = arrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
+        state[3] = arrayOf(state[3][1], state[3][2], state[3][3], state[3][0])
     }
 
     fun mixColumns() {
@@ -104,16 +132,27 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
         }.toTypedArray()
         for (c in 0..3) {
 
-            stateMixed[0][c] = (2U gfm state[0][c]) xor galoisFieldMultiply(
-                3U,
-                state[1][c]
-            ) xor state[2][c] xor state[3][c]
+            stateMixed[0][c] = (2U gfm state[0][c]) xor (3U gfm state[1][c]) xor state[2][c] xor state[3][c]
+            stateMixed[1][c] = state[0][c] xor (2U gfm state[1][c]) xor (3U gfm state[2][c]) xor state[3][c]
+            stateMixed[2][c] = state[0][c] xor state[1][c] xor (2U gfm state[2][c]) xor (3U gfm state[3][c])
+            stateMixed[3][c] = 3U gfm state[0][c] xor state[1][c] xor state[2][c] xor (2U gfm state[3][c])
+        }
+        stateMixed.copyInto(state)
+    }
+
+    fun inverseMixColumns() {
+        val stateMixed: Array<Array<UByte>> = (0 until 4).map {
+            Array<UByte>(4) { 0U }
+        }.toTypedArray()
+        for (c in 0..3) {
+            stateMixed[0][c] =
+                (0x0eU gfm state[0][c]) xor (0x0bU gfm state[1][c]) xor (0x0dU gfm state[2][c]) xor (0x09U gfm state[3][c])
             stateMixed[1][c] =
-                state[0][c] xor (2U gfm state[1][c]) xor (3U gfm state[2][c]) xor state[3][c]
+                (0x09U gfm state[0][c]) xor (0x0eU gfm state[1][c]) xor (0x0bU gfm state[2][c]) xor (0x0dU gfm state[3][c])
             stateMixed[2][c] =
-                state[0][c] xor state[1][c] xor (2U gfm state[2][c]) xor (3U gfm state[3][c])
+                (0x0dU gfm state[0][c]) xor (0x09U gfm state[1][c]) xor (0x0eU gfm state[2][c]) xor (0x0bU gfm state[3][c])
             stateMixed[3][c] =
-                3U gfm state[0][c] xor state[1][c] xor state[2][c] xor (2U gfm state[3][c])
+                (0x0bU gfm state[0][c]) xor (0x0dU gfm state[1][c]) xor (0x09U gfm state[2][c]) xor (0x0eU gfm state[3][c])
         }
         stateMixed.copyInto(state)
     }
@@ -151,6 +190,16 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
             state[3][i] = state[3][i] xor expandedKey[round * 4 + i][3]
         }
         round++
+    }
+
+    fun inverseAddRoundKey() {
+        for (i in 0 until 4) {
+            state[0][i] = state[0][i] xor expandedKey[round * 4 + i][0]
+            state[1][i] = state[1][i] xor expandedKey[round * 4 + i][1]
+            state[2][i] = state[2][i] xor expandedKey[round * 4 + i][2]
+            state[3][i] = state[3][i] xor expandedKey[round * 4 + i][3]
+        }
+        round--
     }
 
     infix fun UInt.gfm(second: UByte): UByte {
@@ -200,30 +249,85 @@ class Aes(val aesKey: AesKey, val input: Array<UByte>) {
         return expandedKey
     }
 
-    fun encrypt() : Array<UByte> {
+    fun encrypt(): Array<UByte> {
+        printState()
         addRoundKey()
-
+        printState()
         for (i in 0 until numberOfRounds - 1) {
             subBytes()
+            printState()
             shiftRows()
+            printState()
             mixColumns()
+            printState()
             addRoundKey()
+            printState()
         }
 
         subBytes()
+        printState()
         shiftRows()
+        printState()
         addRoundKey()
-        return state.flatten().toTypedArray()
+        printState()
+        val transposedMatrix = (0 until 4).map { outerCounter ->
+            Array<UByte>(4) { 0U }
+        }.toTypedArray()
+        for (i in 0 until 4) {
+            for (j in 0 until 4) {
+                transposedMatrix[i][j] = state[j][i]
+            }
+        }
+//        printState(transposedMatrix)
+        return transposedMatrix.flatten().toTypedArray()
     }
 
-    fun decrypt() : Array<UByte> {
-        return ubyteArrayOf().toTypedArray()
+    fun decrypt(): Array<UByte> {
+        round = numberOfRounds
+        printState()
+        inverseAddRoundKey()
+        printState()
+        for (i in 0 until numberOfRounds - 1) {
+            inversShiftRows()
+            printState()
+            inverseSubBytes()
+            printState()
+            inverseAddRoundKey()
+            printState()
+            inverseMixColumns()
+            printState()
+        }
+
+        inversShiftRows()
+        printState()
+        inverseSubBytes()
+        printState()
+        inverseAddRoundKey()
+        printState()
+
+        val transposedMatrix =  (0 until 4).map { outerCounter ->
+            Array<UByte>(4) { 0U }
+        }.toTypedArray()
+        for (i in 0 until 4) {
+            for (j in 0 until 4) {
+                transposedMatrix[i][j] = state[j][i]
+            }
+        }
+        printState(transposedMatrix)
+        return transposedMatrix.flatten().toTypedArray()
     }
 
     fun printState() {
         println()
         state.forEach {
-            println(it.joinToString(separator = " ") { it.toString(16)  })
+            println(it.joinToString(separator = " ") { it.toString(16) })
+        }
+    }
+
+    fun printState(specific : Array<Array<UByte>>) {
+        println()
+        specific.forEach {
+            println(it.joinToString(separator = " ") { it.toString(16) })
         }
     }
 

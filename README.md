@@ -17,7 +17,16 @@ After that tenative plan is to add 25519 curve based signing and key exchange ne
 
 ## Should I use this in production?
 
-No, it's untested and unproven. 
+No.
+
+## Should I use this in code that is critical in any way, shape or form?
+
+No.
+
+## Why?
+
+This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
+It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
 
 ## Supported
 
@@ -25,6 +34,9 @@ No, it's untested and unproven.
 * Blake2b
 * SHA512
 * SHA256
+
+## Symmetric cipher 
+* AES
 
 More to come.
 
