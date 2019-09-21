@@ -18,7 +18,6 @@ package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.chunked
-import com.ionspin.kotlin.crypto.toHexString
 import com.ionspin.kotlin.crypto.xor
 
 /**
@@ -125,7 +124,11 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
     }
 
     fun decrypt(): Array<UByte> {
-        return output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes }
+        val removePaddingCount = output.last().last()
+        val removedPadding = output.last().dropLast(removePaddingCount.toInt() and 0x7F)
+        val preparedOutput = output.dropLast(1).toTypedArray() + removedPadding.toTypedArray()
+
+        return preparedOutput.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes }
     }
 
     private fun appendToBuffer(array: Array<UByte>, start: Int) {
