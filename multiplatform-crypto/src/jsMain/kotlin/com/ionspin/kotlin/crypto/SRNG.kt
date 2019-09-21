@@ -22,7 +22,8 @@ package com.ionspin.kotlin.crypto
  * on 21-Sep-2019
  */
 actual object SRNG {
+    var counter = 0
     actual fun getRandomBytes(amount: Int): Array<UByte> {
-        TODO("not implemented yet")
+        return arrayOf((counter++).toUByte()) // TODO Wow. Such random. Very entropy.
     }
 }

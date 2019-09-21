@@ -16,13 +16,19 @@
 
 package com.ionspin.kotlin.crypto
 
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-actual object SRNG {
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
-        TODO("not implemented yet")
+class SRNGTest {
+    @Test
+    fun testSrng() {
+        val randomBytes1 = SRNG.getRandomBytes(10)
+        val randomBytes2 = SRNG.getRandomBytes(10)
+        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
     }
 }

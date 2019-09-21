@@ -16,13 +16,26 @@
 
 package com.ionspin.kotlin.crypto
 
+import kotlinx.cinterop.*
+import platform.posix.*
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
 actual object SRNG {
+    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
     actual fun getRandomBytes(amount: Int): Array<UByte> {
-        TODO("not implemented yet")
+        memScoped {
+            val array = allocArray<UByteVar>(amount)
+            val urandomFile = fopen("/dev/urandom", "rb")
+            if (urandomFile != null) {
+                fread(array, 1, amount.convert(), urandomFile)
+            }
+            return Array(amount) {
+                array[it]
+            }
+        }
     }
 }

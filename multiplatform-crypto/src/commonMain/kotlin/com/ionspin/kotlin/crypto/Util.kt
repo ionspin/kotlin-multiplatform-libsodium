@@ -72,3 +72,19 @@ infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     }
     return this.copyOf().mapIndexed { index, it -> it xor other[index] }.toTypedArray()
 }
+
+@ExperimentalUnsignedTypes
+fun String.hexStringToUByteArray() : Array<UByte> {
+    return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
+}
+
+@ExperimentalUnsignedTypes
+fun Array<UByte>.toHexString() : String {
+    return this.joinToString(separator = "") {
+        if (it <= 0x0FU) {
+            "0${it.toString(16)}"
+        } else {
+            it.toString(16)
+        }
+    }
+}

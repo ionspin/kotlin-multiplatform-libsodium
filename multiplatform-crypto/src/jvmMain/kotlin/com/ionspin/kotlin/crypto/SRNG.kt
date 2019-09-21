@@ -16,13 +16,19 @@
 
 package com.ionspin.kotlin.crypto
 
+import java.security.SecureRandom
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
+@ExperimentalUnsignedTypes
 actual object SRNG {
+    val secureRandom = SecureRandom()
     actual fun getRandomBytes(amount: Int): Array<UByte> {
-        TODO("not implemented yet")
+        val byteArray = ByteArray(amount)
+        secureRandom.nextBytes(byteArray)
+        return byteArray.toUByteArray().toTypedArray()
     }
 }
