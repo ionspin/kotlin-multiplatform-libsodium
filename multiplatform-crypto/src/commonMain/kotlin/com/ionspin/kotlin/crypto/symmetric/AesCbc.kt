@@ -18,6 +18,7 @@ package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.chunked
+import com.ionspin.kotlin.crypto.toHexString
 import com.ionspin.kotlin.crypto.xor
 
 /**
@@ -145,10 +146,10 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             Mode.DECRYPT -> {
                 if (currentOutput.isEmpty()) {
                     currentOutput = Aes.decrypt(aesKey, data) xor iv
-                    previousEncrypted = data
                 } else {
                     currentOutput = Aes.decrypt(aesKey, data) xor previousEncrypted
                 }
+                previousEncrypted = data
                 currentOutput
             }
         }

@@ -38,7 +38,7 @@ class AesCbcTest {
         val aesCbc = AesCbc(AesKey.Aes128Key(key), mode = Mode.ENCRYPT, initializationVector = iv.hexStringToUByteArray())
         aesCbc.addData(plaintext.hexStringToUByteArray())
         val encrypted = aesCbc.encrypt()
-        println("Decrypted: ${encrypted.toHexString()}")
+        println("Encrypted: ${encrypted.toHexString()}")
         assertTrue {
             expectedCipherText == encrypted.toHexString()
         }
@@ -54,12 +54,14 @@ class AesCbcTest {
         val aesCbc = AesCbc(AesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
         aesCbc.addData(cipherText.hexStringToUByteArray())
         val decrypted = aesCbc.decrypt()
-        println("Encrypted: ${decrypted.toHexString()}")
+        println("Decrypted: ${decrypted.toHexString()}")
         assertTrue {
             expectedPlainText == decrypted.toHexString()
         }
 
     }
+
+
 
 
 
