@@ -6,6 +6,8 @@ package com.ionspin.kotlin.crypto.symmetric
 @ExperimentalUnsignedTypes
 internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UByte>) {
     companion object {
+        private val debug = false
+
         private val sBox: UByteArray =
             ubyteArrayOf(
                 // @formatter:off
@@ -317,14 +319,22 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         return transposedMatrix.flatten().toTypedArray()
     }
 
-    fun printState() {
+
+
+    private fun printState() {
+        if (!debug) {
+            return
+        }
         println()
         state.forEach {
             println(it.joinToString(separator = " ") { it.toString(16) })
         }
     }
 
-    fun printState(specific : Array<Array<UByte>>) {
+    private fun printState(specific : Array<Array<UByte>>) {
+        if (!debug) {
+            return
+        }
         println()
         specific.forEach {
             println(it.joinToString(separator = " ") { it.toString(16) })
