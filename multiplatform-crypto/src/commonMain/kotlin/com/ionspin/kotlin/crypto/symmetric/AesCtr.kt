@@ -16,6 +16,9 @@
 
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.bignum.Endianness
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.chunked
 import com.ionspin.kotlin.crypto.xor
@@ -23,13 +26,15 @@ import com.ionspin.kotlin.crypto.xor
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 21-Sep-2019
+ * on 22-Sep-2019
  */
 @ExperimentalUnsignedTypes
-class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: Array<UByte>? = null) {
+class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: Array<UByte>? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
+
+        val modularCreator = ModularBigInteger.creatorForModulo(BigInteger.ONE.shl(129) - 1)
 
         fun encrypt(aesKey: AesKey, data: Array<UByte>): Array<UByte> {
             val aesCbc = AesCbc(aesKey, Mode.ENCRYPT)
@@ -65,7 +70,8 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     var currentOutput: Array<UByte> = arrayOf()
     var previousEncrypted: Array<UByte> = arrayOf()
-    val iv = initializationVector ?: SRNG.getRandomBytes(16)
+    val counterStart = initialCounter ?: SRNG.getRandomBytes(16)
+    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart, Endianness.BIG))
 
     val output = MutableList<Array<UByte>>(0) { arrayOf() }
 
@@ -88,7 +94,8 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
                             startIndex = 0,
                             endIndex = BLOCK_BYTES - bufferCounter
                         )
-                        output += consumeBlock(buffer)
+                        output += consumeBlock(buffer, blockCounter)
+                        blockCounter += 1
                         buffer = Array<UByte>(BLOCK_BYTES) {
                             when (it) {
                                 in (0 until (chunk.size - (BLOCK_BYTES - bufferCounter))) -> {
@@ -114,10 +121,11 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             val lastBlockPadded = padToBlock(buffer)
             if (lastBlockPadded.size > BLOCK_BYTES) {
                 val chunks = lastBlockPadded.chunked(BLOCK_BYTES)
-                output += consumeBlock(chunks[0])
-                output += consumeBlock(chunks[1])
+                output += consumeBlock(chunks[0], blockCounter)
+                blockCounter += 1
+                output += consumeBlock(chunks[1], blockCounter)
             } else {
-                output += consumeBlock(lastBlockPadded)
+                output += consumeBlock(lastBlockPadded, blockCounter)
             }
         }
         return output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes }
@@ -125,20 +133,13 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     fun decrypt(): Array<UByte> {
         val removePaddingCount = output.last().last()
-
-
-        val removedPadding = if (removePaddingCount > 0U && removePaddingCount < 16U) {
-            output.last().dropLast(removePaddingCount.toInt() and 0x7F)
-        } else {
-            output.last().toList()
-        }
+        val removedPadding = output.last().dropLast(removePaddingCount.toInt() and 0x7F)
         val preparedOutput = output.dropLast(1).toTypedArray() + removedPadding.toTypedArray()
         //JS compiler freaks out here if we don't supply exact type
         val reversed : List<Array<UByte>> = preparedOutput.reversed() as List<Array<UByte>>
         val folded : Array<UByte> = reversed.foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc ->
             acc + arrayOfUBytes }
         return folded
-
     }
 
     private fun appendToBuffer(array: Array<UByte>, start: Int) {
@@ -146,24 +147,13 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         bufferCounter += array.size
     }
 
-    private fun consumeBlock(data: Array<UByte>): Array<UByte> {
+    private fun consumeBlock(data: Array<UByte>, blockCount: ModularBigInteger): Array<UByte> {
         return when (mode) {
             Mode.ENCRYPT -> {
-                currentOutput = if (currentOutput.isEmpty()) {
-                    Aes.encrypt(aesKey, data xor iv)
-                } else {
-                    Aes.encrypt(aesKey, data xor currentOutput)
-                }
-                currentOutput
+                Aes.encrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
             }
             Mode.DECRYPT -> {
-                if (currentOutput.isEmpty()) {
-                    currentOutput = Aes.decrypt(aesKey, data) xor iv
-                } else {
-                    currentOutput = Aes.decrypt(aesKey, data) xor previousEncrypted
-                }
-                previousEncrypted = data
-                currentOutput
+                Aes.decrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
             }
         }
 

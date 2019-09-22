@@ -84,7 +84,8 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
 
 
     var round = 0
-
+    var completed : Boolean = false
+        private set
 
     fun subBytes() {
         state.forEachIndexed { indexRow, row ->
@@ -247,11 +248,16 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
             expandedKey[i] = expandedKey[i - aesKey.numberOf32BitWords].mapIndexed { index, it ->
                 it xor temp[index]
             }.toTypedArray()
+            clearArray(temp)
         }
         return expandedKey
     }
 
     fun encrypt(): Array<UByte> {
+        if (completed) {
+            throw RuntimeException("Encrypt can only be called once per Aes instance, since the state is cleared at the " +
+                    "end of the operation")
+        }
         printState()
         addRoundKey()
         printState()
@@ -280,11 +286,16 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
                 transposedMatrix[i][j] = state[j][i]
             }
         }
-//        printState(transposedMatrix)
+        state.forEach { clearArray(it) }
+        completed = true
         return transposedMatrix.flatten().toTypedArray()
     }
 
     fun decrypt(): Array<UByte> {
+        if (completed) {
+            throw RuntimeException("Decrypt can only be called once per Aes instance, since the state is cleared at the " +
+                    "end of the operation")
+        }
         round = numberOfRounds
         printState()
         inverseAddRoundKey()
@@ -316,7 +327,13 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
             }
         }
         printState(transposedMatrix)
+        state.forEach { clearArray(it) }
+        completed = true
         return transposedMatrix.flatten().toTypedArray()
+    }
+
+    private fun clearArray(array : Array<UByte>) {
+        array.indices.forEach { array[it] = 0U }
     }
 
 

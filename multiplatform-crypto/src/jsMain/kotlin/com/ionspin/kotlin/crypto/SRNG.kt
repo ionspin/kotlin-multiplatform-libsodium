@@ -23,7 +23,14 @@ package com.ionspin.kotlin.crypto
  */
 actual object SRNG {
     var counter = 0
+    @ExperimentalUnsignedTypes
     actual fun getRandomBytes(amount: Int): Array<UByte> {
+//        val runningOnNode = js("(typeof window === 'undefined')").unsafeCast<Boolean>()
+//        if (runningOnNode) {
+//            js("var crypto = require('crypto')").asDynamic().randomBytes(amount)
+//        } else {
+//            throw RuntimeException("Secure random not supported yet for non-nodejs environment")
+//        }
         return arrayOf((counter++).toUByte()) // TODO Wow. Such random. Very entropy.
     }
 }
