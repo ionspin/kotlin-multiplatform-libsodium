@@ -133,7 +133,11 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 
     fun decrypt(): Array<UByte> {
         val removePaddingCount = output.last().last()
-        val removedPadding = output.last().dropLast(removePaddingCount.toInt() and 0x7F)
+        val removedPadding = if (removePaddingCount > 0U && removePaddingCount < 16U) {
+            output.last().dropLast(removePaddingCount.toInt() and 0x7F)
+        } else {
+            output.last().toList()
+        }
         val preparedOutput = output.dropLast(1).toTypedArray() + removedPadding.toTypedArray()
         //JS compiler freaks out here if we don't supply exact type
         val reversed : List<Array<UByte>> = preparedOutput.reversed() as List<Array<UByte>>
@@ -153,7 +157,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
                 Aes.encrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
             }
             Mode.DECRYPT -> {
-                Aes.decrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
+                Aes.encrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
             }
         }
 
