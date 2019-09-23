@@ -64,12 +64,6 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
 
     }
 
-    init {
-        if (input.size != 16) {
-            throw RuntimeException("Invalid input size ${input.size}")
-        }
-    }
-
     val state: Array<Array<UByte>> = (0 until 4).map { outerCounter ->
         Array<UByte>(4) { innerCounter -> input[innerCounter * 4 + outerCounter] }
     }.toTypedArray()

@@ -97,7 +97,11 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     var currentOutput: Array<UByte> = arrayOf()
     var previousEncrypted: Array<UByte> = arrayOf()
-    val iv = initializationVector ?: SRNG.getRandomBytes(16)
+    val initVector = if (initializationVector.isNullOrEmpty()) {
+        SRNG.getRandomBytes(16)
+    } else {
+        initializationVector
+    }
 
     val output = MutableList<Array<UByte>>(0) { arrayOf() }
 
@@ -158,7 +162,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         }
         return EncryptedDataAndInitializationVector(
             output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
-            iv
+            initVector
         )
     }
 
@@ -193,7 +197,8 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         return when (mode) {
             Mode.ENCRYPT -> {
                 currentOutput = if (currentOutput.isEmpty()) {
-                    Aes.encrypt(aesKey, data xor iv)
+                    println("IV: $initVector")
+                    Aes.encrypt(aesKey, data xor initVector)
                 } else {
                     Aes.encrypt(aesKey, data xor currentOutput)
                 }
@@ -201,7 +206,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             }
             Mode.DECRYPT -> {
                 if (currentOutput.isEmpty()) {
-                    currentOutput = Aes.decrypt(aesKey, data) xor iv
+                    currentOutput = Aes.decrypt(aesKey, data) xor initVector
                 } else {
                     currentOutput = Aes.decrypt(aesKey, data) xor previousEncrypted
                 }

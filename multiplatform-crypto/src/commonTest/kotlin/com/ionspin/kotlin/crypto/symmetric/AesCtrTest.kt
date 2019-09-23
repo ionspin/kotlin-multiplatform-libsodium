@@ -49,20 +49,23 @@ class AesCtrTest {
                     ic == encrypted.initialCounter.toHexString()
         }
 
-        assertTrue {
-            val keyString = "4278b840fb44aaa757c1bf04acbe1a3e"
-            val key = AesKey.Aes128Key(keyString)
-            val plainText = "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"
+    }
 
-            val encryptedDataAndInitializationVector = AesCtr.encrypt(key, plainText.hexStringToUByteArray())
-            val decrypted = AesCtr.decrypt(
-                key,
-                encryptedDataAndInitializationVector.encryptedData,
-                encryptedDataAndInitializationVector.initialCounter
-            )
+    @Test
+    fun testEncryptionApi() {
+        val keyString = "4278b840fb44aaa757c1bf04acbe1a3e"
+        val key = AesKey.Aes128Key(keyString)
+        val plainText = "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"
+
+        val encryptedDataAndInitializationVector = AesCtr.encrypt(key, plainText.hexStringToUByteArray())
+        val decrypted = AesCtr.decrypt(
+            key,
+            encryptedDataAndInitializationVector.encryptedData,
+            encryptedDataAndInitializationVector.initialCounter
+        )
+        assertTrue {
             plainText == decrypted.toHexString()
         }
-
     }
 
     @Test
@@ -81,7 +84,13 @@ class AesCtrTest {
             expectedPlainText == decrypted.toHexString()
         }
 
-        assertTrue {
+
+
+    }
+
+    @Test
+    fun testCtrDecryptionApi() {
+                assertTrue {
             val key = "2b7e151628aed2a6abf7158809cf4f3c"
             val ic = "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
             val cipherText =
@@ -92,6 +101,5 @@ class AesCtrTest {
             println("Decrypted: ${decrypted.toHexString()}")
             expectedPlainText == decrypted.toHexString()
         }
-
     }
 }

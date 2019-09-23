@@ -149,8 +149,6 @@ kotlin {
         }
         val nativeMain by creating {
             dependsOn(commonMain)
-            dependencies {
-            }
         }
         val nativeTest by creating {
 

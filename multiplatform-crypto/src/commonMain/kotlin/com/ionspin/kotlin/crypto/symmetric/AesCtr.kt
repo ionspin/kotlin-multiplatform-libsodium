@@ -78,7 +78,11 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 
     var currentOutput: Array<UByte> = arrayOf()
     var previousEncrypted: Array<UByte> = arrayOf()
-    val counterStart = initialCounter ?: SRNG.getRandomBytes(16)
+    val counterStart = if (initialCounter.isNullOrEmpty()) {
+        SRNG.getRandomBytes(16)
+    } else {
+        initialCounter
+    }
     var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart, Endianness.BIG))
 
     val output = MutableList<Array<UByte>>(0) { arrayOf() }
@@ -158,15 +162,27 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
     }
 
     private fun consumeBlock(data: Array<UByte>, blockCount: ModularBigInteger): Array<UByte> {
+        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
-                Aes.encrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
+                Aes.encrypt(aesKey, blockCountAsByteArray) xor data
             }
             Mode.DECRYPT -> {
-                Aes.encrypt(aesKey, blockCount.toUByteArray(Endianness.BIG)) xor data
+                Aes.encrypt(aesKey, blockCountAsByteArray) xor data
             }
         }
 
+    }
+
+    private fun Array<UByte>.expandCounterTo16Bytes() : Array<UByte> {
+        return if (this.size < 16) {
+            println("Expanding")
+            val diff = 16 - this.size
+            val pad = Array<UByte>(diff) { 0U }
+            pad + this
+        } else {
+            this
+        }
     }
 
 }

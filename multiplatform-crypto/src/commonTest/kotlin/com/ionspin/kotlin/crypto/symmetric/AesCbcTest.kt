@@ -46,6 +46,12 @@ class AesCbcTest {
                     iv == encrypted.initilizationVector.toHexString()
         }
 
+
+
+    }
+
+    @Test
+    fun testEncryptionApi() {
         assertTrue {
             val keyString = "4278b840fb44aaa757c1bf04acbe1a3e"
             val key = AesKey.Aes128Key(keyString)
@@ -60,8 +66,6 @@ class AesCbcTest {
             )
             plainText == decrypted.toHexString()
         }
-
-
     }
 
     @Test
@@ -80,6 +84,12 @@ class AesCbcTest {
             expectedPlainText == decrypted.toHexString()
         }
 
+
+
+    }
+
+    @Test
+    fun testDecryptionApi() {
         assertTrue {
             val key = "4278b840fb44aaa757c1bf04acbe1a3e"
             val iv = "57f02a5c5339daeb0a2908a06ac6393f"
@@ -90,8 +100,8 @@ class AesCbcTest {
 
             expectedPlainText == decrypted.toHexString()
         }
-
     }
+
 
 
 }

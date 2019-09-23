@@ -31,6 +31,6 @@ actual object SRNG {
 //        } else {
 //            throw RuntimeException("Secure random not supported yet for non-nodejs environment")
 //        }
-        return arrayOf((counter++).toUByte()) // TODO Wow. Such random. Very entropy.
+        return Array<UByte>(amount) { (counter++).toUByte() } // TODO Wow. Such random. Very entropy.
     }
 }
