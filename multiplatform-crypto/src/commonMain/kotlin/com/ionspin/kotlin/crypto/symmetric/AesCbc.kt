@@ -21,6 +21,12 @@ import com.ionspin.kotlin.crypto.chunked
 import com.ionspin.kotlin.crypto.xor
 
 /**
+ * Advanced encryption standard with cipher block chaining and PKCS #5
+ *
+ * For bulk encryption/decryption use [AesCbc.encrypt] and [AesCbc.decrypt]
+ *
+ * To get an instance of AesCbc and then feed it data sequentially with [addData] use [createEncryptor] and [createDecryptor]
+ *
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
@@ -30,11 +36,37 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     companion object {
         const val BLOCK_BYTES = 16
+        /**
+         * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
+         * data call [encrypt]
+         */
+        fun createEncryptor(aesKey: AesKey) : AesCbc {
+            return AesCbc(aesKey, Mode.ENCRYPT)
+        }
+        /**
+         * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
+         * data call [decrypt]
+         */
+        fun createDecryptor(aesKey : AesKey) : AesCbc {
+            return AesCbc(aesKey, Mode.DECRYPT)
+        }
 
-        fun encrypt(aesKey: AesKey, data: Array<UByte>): Array<UByte> {
+        /**
+         * Bulk encryption, returns encrypted data and a random initialization vector
+         */
+        fun encrypt(aesKey: AesKey, data: Array<UByte>): EncryptedDataAndInitializationVector {
             val aesCbc = AesCbc(aesKey, Mode.ENCRYPT)
             aesCbc.addData(data)
             return aesCbc.encrypt()
+        }
+
+        /**
+         * Bulk decryption, returns decrypted data
+         */
+        fun decrypt(aesKey: AesKey, data: Array<UByte>, initialCounter: Array<UByte>? = null): Array<UByte> {
+            val aesCbc = AesCbc(aesKey, Mode.DECRYPT, initialCounter)
+            aesCbc.addData(data)
+            return aesCbc.decrypt()
         }
 
         private fun padToBlock(unpadded: Array<UByte>): Array<UByte> {
@@ -109,7 +141,11 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     }
 
-    fun encrypt(): Array<UByte> {
+    /**
+     * Encrypt fed data and return it alongside the randomly chosen initialization vector
+     * @return Encrypted data and initialization vector
+     */
+    fun encrypt(): EncryptedDataAndInitializationVector {
         if (bufferCounter > 0) {
             val lastBlockPadded = padToBlock(buffer)
             if (lastBlockPadded.size > BLOCK_BYTES) {
@@ -120,9 +156,16 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
                 output += consumeBlock(lastBlockPadded)
             }
         }
-        return output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes }
+        return EncryptedDataAndInitializationVector(
+            output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
+            iv
+        )
     }
 
+    /**
+     * Decrypt data
+     * @return Decrypted data
+     */
     fun decrypt(): Array<UByte> {
         val removePaddingCount = output.last().last()
 
@@ -169,4 +212,25 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 
     }
 
+}
+
+@ExperimentalUnsignedTypes
+data class EncryptedDataAndInitializationVector(val encryptedData : Array<UByte>, val initilizationVector : Array<UByte>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as EncryptedDataAndInitializationVector
+
+        if (!encryptedData.contentEquals(other.encryptedData)) return false
+        if (!initilizationVector.contentEquals(other.initilizationVector)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = encryptedData.contentHashCode()
+        result = 31 * result + initilizationVector.contentHashCode()
+        return result
+    }
 }

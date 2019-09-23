@@ -21,9 +21,17 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.chunked
+import com.ionspin.kotlin.crypto.symmetric.AesCtr.Companion.encrypt
 import com.ionspin.kotlin.crypto.xor
 
 /**
+ *
+ *  Advanced encryption standard with counter mode
+ *
+ * For bulk encryption/decryption use [AesCtr.encrypt] and [AesCtr.decrypt]
+ *
+ * To get an instance of AesCtr and then feed it data sequentially with [addData] use [createEncryptor] and [createDecryptor]
+ *
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 22-Sep-2019
@@ -34,38 +42,38 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
     companion object {
         const val BLOCK_BYTES = 16
 
-        val modularCreator = ModularBigInteger.creatorForModulo(BigInteger.ONE.shl(129) - 1)
-
-        fun encrypt(aesKey: AesKey, data: Array<UByte>): Array<UByte> {
-            val aesCbc = AesCbc(aesKey, Mode.ENCRYPT)
-            aesCbc.addData(data)
-            return aesCbc.encrypt()
+        val modularCreator = ModularBigInteger.creatorForModulo(BigInteger.ONE.shl(128) - 1)
+        /**
+         * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
+         * data call [encrypt]
+         */
+        fun createEncryptor(aesKey: AesKey) : AesCtr {
+            return AesCtr(aesKey, Mode.ENCRYPT)
+        }
+        /**
+         * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
+         * data call [decrypt]
+         */
+        fun createDecryptor(aesKey : AesKey) : AesCtr {
+            return AesCtr(aesKey, Mode.DECRYPT)
+        }
+        /**
+         * Bulk encryption, returns encrypted data and a random initial counter 
+         */
+        fun encrypt(aesKey: AesKey, data: Array<UByte>): EncryptedDataAndInitialCounter {
+            val aesCtr = AesCtr(aesKey, Mode.ENCRYPT)
+            aesCtr.addData(data)
+            return aesCtr.encrypt()
+        }
+        /**
+         * Bulk decryption, returns decrypted data
+         */
+        fun decrypt(aesKey: AesKey, data: Array<UByte>, initialCounter: Array<UByte>? = null): Array<UByte> {
+            val aesCtr = AesCtr(aesKey, Mode.DECRYPT, initialCounter)
+            aesCtr.addData(data)
+            return aesCtr.decrypt()
         }
 
-        private fun padToBlock(unpadded: Array<UByte>): Array<UByte> {
-            val paddingSize = 16 - unpadded.size
-            if (unpadded.size == BLOCK_BYTES) {
-                return unpadded
-            }
-
-            if (unpadded.size == BLOCK_BYTES) {
-                return Array(BLOCK_BYTES) {
-                    BLOCK_BYTES.toUByte()
-                }
-            }
-
-            if (unpadded.size > BLOCK_BYTES) {
-                throw IllegalStateException("Block larger than 128 bytes")
-            }
-
-            return Array(BLOCK_BYTES) {
-                when (it) {
-                    in unpadded.indices -> unpadded[it]
-                    else -> paddingSize.toUByte()
-                }
-            }
-
-        }
     }
 
     var currentOutput: Array<UByte> = arrayOf()
@@ -115,34 +123,32 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
         }
 
     }
-
-    fun encrypt(): Array<UByte> {
+    /**
+     * Encrypt fed data and return it alongside the randomly chosen initial counter state
+     * @return Encrypted data and initial counter state
+     */
+    fun encrypt(): EncryptedDataAndInitialCounter {
         if (bufferCounter > 0) {
-            val lastBlockPadded = padToBlock(buffer)
-            if (lastBlockPadded.size > BLOCK_BYTES) {
-                val chunks = lastBlockPadded.chunked(BLOCK_BYTES)
-                output += consumeBlock(chunks[0], blockCounter)
-                blockCounter += 1
-                output += consumeBlock(chunks[1], blockCounter)
-            } else {
-                output += consumeBlock(lastBlockPadded, blockCounter)
-            }
+            output += consumeBlock(buffer, blockCounter)
         }
-        return output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes }
+        return EncryptedDataAndInitialCounter(
+            output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
+            counterStart
+        )
     }
-
+    /**
+     * Decrypt data
+     * @return Decrypted data
+     */
     fun decrypt(): Array<UByte> {
-        val removePaddingCount = output.last().last()
-        val removedPadding = if (removePaddingCount > 0U && removePaddingCount < 16U) {
-            output.last().dropLast(removePaddingCount.toInt() and 0x7F)
-        } else {
-            output.last().toList()
+        if (bufferCounter > 0) {
+            output += consumeBlock(buffer, blockCounter)
         }
-        val preparedOutput = output.dropLast(1).toTypedArray() + removedPadding.toTypedArray()
         //JS compiler freaks out here if we don't supply exact type
-        val reversed : List<Array<UByte>> = preparedOutput.reversed() as List<Array<UByte>>
-        val folded : Array<UByte> = reversed.foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc ->
-            acc + arrayOfUBytes }
+        val reversed: List<Array<UByte>> = output.reversed() as List<Array<UByte>>
+        val folded: Array<UByte> = reversed.foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc ->
+            acc + arrayOfUBytes
+        }
         return folded
     }
 
@@ -163,4 +169,25 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 
     }
 
+}
+
+@ExperimentalUnsignedTypes
+data class EncryptedDataAndInitialCounter(val encryptedData : Array<UByte>, val initialCounter : Array<UByte>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as EncryptedDataAndInitializationVector
+
+        if (!encryptedData.contentEquals(other.encryptedData)) return false
+        if (!initialCounter.contentEquals(other.initilizationVector)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = encryptedData.contentHashCode()
+        result = 31 * result + initialCounter.contentHashCode()
+        return result
+    }
 }
