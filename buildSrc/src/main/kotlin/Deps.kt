@@ -16,16 +16,16 @@
 
 object Versions {
     val klock = "1.1.1"
-    val kotlinCoroutines = "1.3.0-M2"
+    val kotlinCoroutines = "1.3.0"
     val timber = "5.0.0-SNAPSHOT"
     val oshi = "3.12.0"
-    val kotlin = "1.3.40"
+    val kotlin = "1.3.50"
     val ktor = "1.1.1"
     val kotlinSerialization = "0.11.1"
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "0.9.18"
 
-    val kotlinBigNumVersion = "0.1.0-SNAPSHOT"
+    val kotlinBigNumVersion = "0.1.1-SNAPSHOT"
 
 
 }

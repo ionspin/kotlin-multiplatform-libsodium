@@ -64,3 +64,27 @@ infix fun UInt.rotateRight(places: Int): UInt {
 infix fun ULong.rotateRight(places: Int): ULong {
     return (this shr places) xor (this shl (64 - places))
 }
+
+@ExperimentalUnsignedTypes
+infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
+    if (this.size != other.size) {
+        throw RuntimeException("Operands of different sizes are not supported yet")
+    }
+    return this.copyOf().mapIndexed { index, it -> it xor other[index] }.toTypedArray()
+}
+
+@ExperimentalUnsignedTypes
+fun String.hexStringToUByteArray() : Array<UByte> {
+    return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
+}
+
+@ExperimentalUnsignedTypes
+fun Array<UByte>.toHexString() : String {
+    return this.joinToString(separator = "") {
+        if (it <= 0x0FU) {
+            "0${it.toString(16)}"
+        } else {
+            it.toString(16)
+        }
+    }
+}

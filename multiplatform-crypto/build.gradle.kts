@@ -149,9 +149,6 @@ kotlin {
         }
         val nativeMain by creating {
             dependsOn(commonMain)
-            dependencies {
-                implementation(Deps.Native.coroutines)
-            }
         }
         val nativeTest by creating {
 
