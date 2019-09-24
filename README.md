@@ -31,12 +31,16 @@ No.
 This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
 It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
 
+## Integration
+
+
+
 ## Hashing functions
 * Blake2b
 * SHA512
 * SHA256
 
-## Symmetric cipher 
+## Symmetric cipher (Currently only available only in 0.0.3-SNAPSHOT)
 * AES
   * Modes: CBC, CTR
 
@@ -46,7 +50,7 @@ More to come.
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:crypto:0.0.1")
+implementation("com.ionspin.kotlin:crypto:0.0.2")
 ```
 
 #### Snapshot builds
@@ -56,7 +60,7 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-implementation("com.ionspin.kotlin:crypto:0.0.1-SNAPSHOT")
+implementation("com.ionspin.kotlin:crypto:0.0.3-SNAPSHOT")
 
 ```
 
