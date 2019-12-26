@@ -63,6 +63,13 @@ kotlin {
                 println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
         }
+        nodejs() {
+            testTask {
+                useMocha() {
+                    timeout = "10s"
+                }
+            }
+        }
     }
     linuxX64("linux") {
         binaries {
@@ -101,6 +108,36 @@ kotlin {
         }
     }
 
+    mingwX64() {
+        binaries {
+            staticLib {
+
+            }
+        }
+    }
+
+    mingwX86() {
+        binaries {
+            staticLib {
+
+            }
+        }
+    }
+
+    linuxArm32Hfp() {
+        binaries {
+            staticLib {
+            }
+        }
+    }
+
+    linuxArm64() {
+        binaries {
+            staticLib {
+            }
+        }
+    }
+
     println(targets.names)
 
     sourceSets {
@@ -116,6 +153,7 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
+                implementation(Deps.Common.coroutines)
             }
         }
         val jvmMain by getting {
@@ -130,7 +168,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Jvm.test))
                 implementation(kotlin(Deps.Jvm.testJUnit))
-                implementation(Deps.Jvm.oshi)
                 implementation(Deps.Jvm.coroutinesTest)
                 implementation(kotlin(Deps.Jvm.reflection))
             }
@@ -151,7 +188,10 @@ kotlin {
             dependsOn(commonMain)
         }
         val nativeTest by creating {
-
+            dependsOn(commonTest)
+            dependencies {
+                implementation(Deps.Native.coroutines)
+            }
         }
         
         val iosMain by getting {
@@ -187,6 +227,38 @@ kotlin {
         val linuxTest by getting {
             dependsOn(nativeTest)
         }
+
+        val mingwX86Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val mingwX86Test by getting {
+            dependsOn(nativeTest)
+        }
+
+        val mingwX64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val mingwX64Test by getting {
+            dependsOn(nativeTest)
+        }
+
+        val linuxArm32HfpMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val linuxArm32HfpTest by getting {
+            dependsOn(nativeTest)
+        }
+
+        val linuxArm64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val linuxArm64Test by getting {
+            dependsOn(nativeTest)
+        }
     }
 
 
@@ -206,39 +278,6 @@ tasks {
     val npmInstall by getting
     val compileKotlinJs by getting(AbstractCompile::class)
     val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
-    val jsTest by getting
-
-
-    val populateNodeModulesForTests by creating {
-        dependsOn(npmInstall, compileKotlinJs, compileTestKotlinJs)
-        doLast {
-            copy {
-                from(compileKotlinJs.destinationDir)
-                configurations["jsRuntimeClasspath"].forEach {
-                    from(zipTree(it.absolutePath).matching { include("*.js") })
-                }
-                configurations["jsTestRuntimeClasspath"].forEach {
-                    from(zipTree(it.absolutePath).matching { include("*.js") })
-                }
-
-                into("$projectDir/node_modules")
-            }
-        }
-    }
-
-
-    val runTestsWithMocha by creating(NodeTask::class) {
-        dependsOn(populateNodeModulesForTests)
-        setScript(file("$projectDir/node_modules/mocha/bin/mocha"))
-        setArgs(listOf(
-            compileTestKotlinJs.outputFile,
-            "--reporter-options",
-            "topLevelSuite=${project.name}-tests"
-        ))
-    }
-
-    jsTest.dependsOn("copyPackageJson")
-    jsTest.dependsOn(runTestsWithMocha)
 
     create<Jar>("javadocJar") {
         dependsOn(dokka)
