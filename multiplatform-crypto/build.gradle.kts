@@ -63,11 +63,10 @@ kotlin {
                 println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
         }
-        nodejs()
-        browser() {
+        nodejs() {
             testTask {
-                useKarma {
-                    usePhantomJS()
+                useMocha() {
+                    timeout = "10s"
                 }
             }
         }
