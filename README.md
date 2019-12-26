@@ -50,7 +50,7 @@ More to come.
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:crypto:0.0.2")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.2")
 ```
 
 #### Snapshot builds
@@ -60,7 +60,7 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-implementation("com.ionspin.kotlin:crypto:0.0.3-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.3-SNAPSHOT")
 
 ```
 
