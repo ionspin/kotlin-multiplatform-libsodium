@@ -49,7 +49,12 @@ repositories {
 group = "com.ionspin.kotlin"
 version = "0.0.3-SNAPSHOT"
 
+val ideaActive = System.getProperty("idea.active") == "true"
+
 kotlin {
+    if (ideaActive) {
+        linuxX64("native")
+    }
     jvm()
     js {
         compilations {
@@ -194,15 +199,35 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(Deps.Native.coroutines)
+        val nativeMain = if (ideaActive) {
+            val nativeMain by getting {
+                dependsOn(commonMain)
             }
+            nativeMain
+        } else {
+            val nativeMain by creating {
+                dependsOn(commonMain)
+            }
+            nativeMain
         }
+        val nativeTest = if (ideaActive) {
+            val nativeTest by getting {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+            nativeTest
+        } else {
+            val nativeTest by creating {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+            nativeTest
+        }
+
         
         val iosMain by getting {
             dependsOn(nativeMain)

@@ -24,6 +24,7 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 05-Jan-2020
  */
+@ExperimentalUnsignedTypes
 class SRNGJsTest {
 
     @Test
