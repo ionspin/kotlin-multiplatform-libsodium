@@ -25,12 +25,27 @@ actual object SRNG {
     var counter = 0
     @ExperimentalUnsignedTypes
     actual fun getRandomBytes(amount: Int): Array<UByte> {
-//        val runningOnNode = js("(typeof window === 'undefined')").unsafeCast<Boolean>()
-//        if (runningOnNode) {
-//            js("var crypto = require('crypto')").asDynamic().randomBytes(amount)
-//        } else {
-//            throw RuntimeException("Secure random not supported yet for non-nodejs environment")
-//        }
-        return Array<UByte>(amount) { (counter++).toUByte() } // TODO Wow. Such random. Very entropy.
+        val runningOnNode = js(
+            "if (typeof window === 'undefined') {\n" +
+                    "             true;\n" +
+                    "    } else {\n" +
+                    "            false;\n" +
+                    "    }"
+        )
+        val randomBytes = if (runningOnNode) {
+            js("require('crypto')").randomBytes(amount).toJSON().data
+        } else {
+            js(
+            """
+                var randomArray = new Uint8Array(amount);
+                var crypto = (self.crypto || self.msCrypto);        
+                crypto.getRandomValues(randomArray);
+            """
+            )
+            var randomArrayResult = js("Array.prototype.slice.call(randomArray);")
+            randomArrayResult
+        }
+
+        return randomBytes as Array<UByte>
     }
 }

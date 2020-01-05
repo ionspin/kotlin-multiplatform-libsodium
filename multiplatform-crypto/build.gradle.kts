@@ -19,6 +19,8 @@
 
 import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.tasks.testing.logging.TestLogging
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
@@ -63,13 +65,21 @@ kotlin {
                 println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
         }
-        nodejs() {
+        browser {
+            testTask {
+                useKarma {
+                    useChrome()
+                }
+            }
+        }
+        nodejs {
             testTask {
                 useMocha() {
                     timeout = "10s"
                 }
             }
         }
+
     }
     linuxX64("linux") {
         binaries {
@@ -304,10 +314,31 @@ tasks {
         }
     }
 
+    val linuxTest by getting(KotlinNativeTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+            // showStandardStreams = true
+        }
+    }
+
+    val jsNodeTest by getting(KotlinJsTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+             showStandardStreams = true
+        }
+    }
+
+    val jsBrowserTest by getting(KotlinJsTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+             showStandardStreams = true
+        }
+    }
+
 }
-
-
-
 
 
 
