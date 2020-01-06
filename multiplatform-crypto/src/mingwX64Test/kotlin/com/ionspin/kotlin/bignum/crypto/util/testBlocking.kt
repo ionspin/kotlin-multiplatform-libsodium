@@ -14,24 +14,14 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.util
 
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 21-Sep-2019
+ * on 20-Jul-2019
  */
-class SRNGTest {
-    @Test
-    fun testSrng() {
-        //Just a sanity test, need to add better srng tests.
-        val randomBytes1 = SRNG.getRandomBytes(10)
-        val randomBytes2 = SRNG.getRandomBytes(10)
-        randomBytes1.forEach { println("RB1: $it")}
-        randomBytes2.forEach { println("RB2: $it")}
-        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
-    }
-}
+actual fun testBlocking(block: suspend (scope: CoroutineScope) -> Unit) = runBlocking { block(this) }

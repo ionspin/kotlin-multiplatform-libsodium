@@ -51,9 +51,22 @@ version = "0.0.3-SNAPSHOT"
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
+fun getHostOsName(): String {
+    val target = System.getProperty("os.name")
+    if (target == "Linux") return "linux"
+    if (target.startsWith("Windows")) return "windows"
+    if (target.startsWith("Mac")) return "macos"
+    return "unknown"
+}
+
 kotlin {
+    val hostOsName = getHostOsName()
     if (ideaActive) {
-        linuxX64("native")
+        when(hostOsName) {
+            "linux" -> linuxX64("native")
+            "macos" -> macosX64("native")
+            "windows" -> mingwX64("native")
+        }
     }
     jvm()
     js {
@@ -131,13 +144,13 @@ kotlin {
         }
     }
 
-    mingwX86() {
-        binaries {
-            staticLib {
-
-            }
-        }
-    }
+//    mingwX86() {
+//        binaries {
+//            staticLib {
+//
+//            }
+//        }
+//    }
 
     linuxArm32Hfp() {
         binaries {
@@ -168,7 +181,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
-                implementation(Deps.Common.coroutines)
             }
         }
         val jvmMain by getting {
@@ -263,20 +275,26 @@ kotlin {
             dependsOn(nativeTest)
         }
 
-        val mingwX86Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX86Test by getting {
-            dependsOn(nativeTest)
-        }
+//        val mingwX86Main by getting {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation(Deps.Native.coroutines)
+//            }
+//        }
+//
+//        val mingwX86Test by getting {
+//            dependsOn(commonTest)
+//        }
 
         val mingwX64Main by getting {
-            dependsOn(nativeMain)
+            dependsOn(commonMain)
+            dependencies {
+                implementation(Deps.Native.coroutines)
+            }
         }
 
         val mingwX64Test by getting {
-            dependsOn(nativeTest)
+            dependsOn(commonTest)
         }
 
         val linuxArm32HfpMain by getting {
@@ -344,6 +362,14 @@ tasks {
         testLogging {
             events("PASSED", "FAILED", "SKIPPED")
             // showStandardStreams = true
+        }
+    }
+
+    val mingwX64Test by getting(KotlinNativeTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+            showStandardStreams = true
         }
     }
 
