@@ -88,3 +88,22 @@ fun Array<UByte>.toHexString() : String {
         }
     }
 }
+
+// UInt / Array utils
+@ExperimentalUnsignedTypes
+fun UInt.toBigEndianUByteArray() : Array<UByte> {
+    return Array<UByte> (4) {
+        ((this shr (24 - (it * 8))) and 0xFFU).toUByte()
+    }
+}
+@ExperimentalUnsignedTypes
+fun UInt.toLittleEndianUByteArray() : Array<UByte> {
+    return Array<UByte> (4) {
+        ((this shr (it * 8)) and 0xFFU).toUByte()
+    }
+}
+
+@ExperimentalUnsignedTypes
+operator fun UInt.plus(other : Array<UByte>) : Array<UByte> {
+    return this.toLittleEndianUByteArray() + other
+}
