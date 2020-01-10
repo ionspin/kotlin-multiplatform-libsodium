@@ -43,6 +43,12 @@ It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be 
 ## Symmetric cipher (Currently only available only in 0.0.3-SNAPSHOT)
 * AES
   * Modes: CBC, CTR
+  
+## Key Derivation 
+
+* Argon2
+
+## AEAD
 
 More to come.
 
