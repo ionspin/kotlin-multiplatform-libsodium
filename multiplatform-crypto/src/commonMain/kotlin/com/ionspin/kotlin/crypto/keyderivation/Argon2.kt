@@ -17,8 +17,7 @@
 package com.ionspin.kotlin.crypto.keyderivation
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
-import com.ionspin.kotlin.crypto.plus
-import com.ionspin.kotlin.crypto.toLittleEndianUByteArray
+import com.ionspin.kotlin.crypto.util.*
 
 /**
  * https://tools.ietf.org/html/draft-irtf-cfrg-argon2-03
@@ -42,13 +41,14 @@ class Argon2 internal constructor(
     val numberOfIterations: UInt,
     val versionNumber: UInt,
     val key: Array<UByte>,
-    associatedData: Array<UByte>
+    val associatedData: Array<UByte>,
     val type: ArgonType
 ) {
     enum class ArgonType {
         Argon2i, Argon2d, Argon2id
     }
 
+    @ExperimentalStdlibApi
     companion object {
 
 
@@ -70,47 +70,88 @@ class Argon2 internal constructor(
                     .plus(listOf(vLast))
                     .foldRight(emptyArray<UByte>()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
 
-
-
             return concat
         }
 
-        fun compressionFunctionG(x : Array<UByte>, y : Array<UByte>) : Array<Array<Array<UByte>>> {
-            val r = Array<UByte>(1024) { 0U }
+        fun compressionFunctionG(x: Array<UByte>, y: Array<UByte>): Array<UByte> {
+            val r = Array<UByte>(1024) { 0U } // view as 8x8 matrix of 16 byte registers
             x.forEachIndexed { index, it -> r[index] = it xor y[index] }
-            // mix rounds
-            return emptyArray() // TODO
+            val q = Array<UByte>(1024) { 0U }
+            val z = Array<UByte>(1024) { 0U }
+            // Do the argon/blake2b mixing on rows
+            for (i in 0..7) {
+                val startOfRow = (i * 8 * 16)
+                val endOfRow = startOfRow + (8 * 16)
+                mixRound(r.copyOfRange(startOfRow, endOfRow))
+                    .map { it.toLittleEndianUByteArray() }
+                    .flatMap { it.asIterable() }
+                    .toTypedArray()
+                    .copyInto(q, startOfRow, endOfRow)
+            }
+            // Do the argon/blake2b mixing on columns
+            for (i in 0..7) {
+                copyIntoGBlockColumn(
+                    z,
+                    i,
+                    mixRound(extractColumnFromGBlock(q, i))
+                        .map { it.toLittleEndianUByteArray() }
+                        .flatMap { it.asIterable() }
+                        .toTypedArray()
+                )
+            }
+            // Z = Z xor R
+            r.forEachIndexed { index, it -> z[index] = it xor z[index] }
+            return z
         }
 
-        // --------- Unmodified blake2b mixing
-        /*
-        internal fun mixRound(input: Array<ULong>, message: Array<ULong>, round: Int): Array<ULong> {
-            var v = input
-            val selectedSigma = sigma[round % 10]
-            v = mix(v, 0, 4, 8, 12, message[selectedSigma[0]], message[selectedSigma[1]])
-            v = mix(v, 1, 5, 9, 13, message[selectedSigma[2]], message[selectedSigma[3]])
-            v = mix(v, 2, 6, 10, 14, message[selectedSigma[4]], message[selectedSigma[5]])
-            v = mix(v, 3, 7, 11, 15, message[selectedSigma[6]], message[selectedSigma[7]])
-            v = mix(v, 0, 5, 10, 15, message[selectedSigma[8]], message[selectedSigma[9]])
-            v = mix(v, 1, 6, 11, 12, message[selectedSigma[10]], message[selectedSigma[11]])
-            v = mix(v, 2, 7, 8, 13, message[selectedSigma[12]], message[selectedSigma[13]])
-            v = mix(v, 3, 4, 9, 14, message[selectedSigma[14]], message[selectedSigma[15]])
+        private fun extractColumnFromGBlock(gBlock: Array<UByte>, columnPosition: Int): Array<UByte> {
+            val result = Array<UByte>(128) { 0U }
+            for (i in 0..7) {
+                result[i] = gBlock[i * 8 + columnPosition]
+            }
+            return result
+        }
+
+        private fun copyIntoGBlockColumn(gBlock: Array<UByte>, columnPosition: Int, columnData: Array<UByte>) {
+            for (i in 0..7) {
+                gBlock[i * 8 + columnPosition] = columnData[i]
+            }
+        }
+
+
+        //based on Blake2b mixRound
+        internal fun mixRound(input: Array<UByte>): Array<ULong> {
+            var v = input.chunked(4).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
+            v = mix(v, 0, 4, 8, 12)
+            v = mix(v, 1, 5, 9, 13)
+            v = mix(v, 2, 6, 10, 14)
+            v = mix(v, 3, 7, 11, 15)
+            v = mix(v, 0, 5, 10, 15)
+            v = mix(v, 1, 6, 11, 12)
+            v = mix(v, 2, 7, 8, 13)
+            v = mix(v, 3, 4, 9, 14)
             return v
 
         }
 
-        private fun mix(v: Array<ULong>, a: Int, b: Int, c: Int, d: Int, x: ULong, y: ULong): Array<ULong> {
-            v[a] = (v[a] + v[b] + x)
+        const val R1 = 32
+        const val R2 = 24
+        const val R3 = 16
+        const val R4 = 63
+
+        //Based on Blake2b mix
+        private fun mix(v: Array<ULong>, a: Int, b: Int, c: Int, d: Int): Array<ULong> {
+            v[a] = (v[a] + v[b] * 2U * a.toUInt() * b.toUInt())
             v[d] = (v[d] xor v[a]) rotateRight R1
-            v[c] = (v[c] + v[d])
+            v[c] = (v[c] + v[d] * 2U * c.toUInt() * d.toUInt())
             v[b] = (v[b] xor v[c]) rotateRight R2
-            v[a] = (v[a] + v[b] + y)
+            v[a] = (v[a] + v[b] * 2U * a.toUInt() * b.toUInt())
             v[d] = (v[d] xor v[a]) rotateRight R3
-            v[c] = (v[c] + v[d])
+            v[c] = (v[c] + v[d] * 2U * c.toUInt() * d.toUInt())
             v[b] = (v[b] xor v[c]) rotateRight R4
             return v
         }
-         */
+
 
         internal fun derive(
             password: Array<UByte>,
@@ -155,9 +196,26 @@ class Argon2 internal constructor(
                     argonHash(h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(), 64U)
             }
 
+            for (i in 0..parallelism.toInt()) {
+                for (j in 1..columnCount.toInt()) {
+                    //TODO i,j choosing based on type
+                    val iPrim = -1
+                    val jPrim = -1
+                    matrix[i][j] = compressionFunctionG(matrix[i][j - 1], matrix[iPrim][jPrim])
+                }
+            }
+
+            val result = matrix.foldIndexed(emptyArray<UByte>()) { index, acc, arrayOfArrays ->
+                return if (acc.size == 0) {
+                    acc + arrayOfArrays[columnCount.toInt() - 1]
+                } else {
+                    acc.mapIndexed { index, it -> it xor arrayOfArrays[columnCount.toInt() - 1][index] }.toTypedArray()
+                }
+            }
 
 
-            return emptyArray()
+
+            return result
         }
 
     }

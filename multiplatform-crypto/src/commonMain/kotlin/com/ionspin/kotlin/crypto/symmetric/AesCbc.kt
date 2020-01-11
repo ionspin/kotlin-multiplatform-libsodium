@@ -17,8 +17,8 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
-import com.ionspin.kotlin.crypto.chunked
-import com.ionspin.kotlin.crypto.xor
+import com.ionspin.kotlin.crypto.util.chunked
+import com.ionspin.kotlin.crypto.util.xor
 
 /**
  * Advanced encryption standard with cipher block chaining and PKCS #5

@@ -21,6 +21,8 @@ import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
 import com.ionspin.kotlin.crypto.hash.StatelessHash
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
+import com.ionspin.kotlin.crypto.util.chunked
+import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
  * Created by Ugljesa Jovanovic

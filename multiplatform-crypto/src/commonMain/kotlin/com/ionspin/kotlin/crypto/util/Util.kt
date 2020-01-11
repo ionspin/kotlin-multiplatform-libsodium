@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.util
 
 /**
  * Created by Ugljesa Jovanovic
@@ -101,6 +101,43 @@ fun UInt.toLittleEndianUByteArray() : Array<UByte> {
     return Array<UByte> (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
+}
+
+// UInt / Array utils
+@ExperimentalUnsignedTypes
+fun ULong.toBigEndianUByteArray() : Array<UByte> {
+    return Array<UByte> (8) {
+        ((this shr (56 - (it * 8))) and 0xFFU).toUByte()
+    }
+}
+@ExperimentalUnsignedTypes
+fun ULong.toLittleEndianUByteArray() : Array<UByte> {
+    return Array<UByte> (8) {
+        ((this shr (it * 8)) and 0xFFU).toUByte()
+    }
+}
+@ExperimentalUnsignedTypes
+fun Array<UByte>.fromLittleEndianArrayToULong() : ULong {
+    if (this.size > 8) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (index * 8))}
+    return ulong
+}
+
+
+@ExperimentalUnsignedTypes
+fun Array<UByte>.fromBigEndianArrayToULong() : ULong {
+    if (this.size > 8) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var ulong = this.foldIndexed(0UL) {
+            index, acc, uByte ->
+        val res = acc or (uByte.toULong() shl (56 - (index * 8)))
+        res
+
+    }
+    return ulong
 }
 
 @ExperimentalUnsignedTypes
