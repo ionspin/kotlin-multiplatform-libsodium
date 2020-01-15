@@ -141,6 +141,25 @@ fun Array<UByte>.fromBigEndianArrayToULong() : ULong {
 }
 
 @ExperimentalUnsignedTypes
+fun Array<UByte>.fromLittleEndianArrayToUInt() : ULong {
+    if (this.size > 4) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (index * 8))}
+    return ulong
+}
+
+
+@ExperimentalUnsignedTypes
+fun Array<UByte>.fromBigEndianArrayToUInt() : ULong {
+    if (this.size > 4) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (24 - (index * 8))) }
+    return ulong
+}
+
+@ExperimentalUnsignedTypes
 operator fun UInt.plus(other : Array<UByte>) : Array<UByte> {
     return this.toLittleEndianUByteArray() + other
 }
