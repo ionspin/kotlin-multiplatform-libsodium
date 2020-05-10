@@ -70,7 +70,7 @@ infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     if (this.size != other.size) {
         throw RuntimeException("Operands of different sizes are not supported yet")
     }
-    return this.copyOf().mapIndexed { index, it -> it xor other[index] }.toTypedArray()
+    return Array(this.size) { this[it] xor other [it]}
 }
 
 @ExperimentalUnsignedTypes
@@ -141,22 +141,22 @@ fun Array<UByte>.fromBigEndianArrayToULong() : ULong {
 }
 
 @ExperimentalUnsignedTypes
-fun Array<UByte>.fromLittleEndianArrayToUInt() : ULong {
+fun Array<UByte>.fromLittleEndianArrayToUInt() : UInt {
     if (this.size > 4) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
     }
-    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (index * 8))}
-    return ulong
+    var uint = this.foldIndexed(0U) { index, acc, uByte -> acc or (uByte.toUInt() shl (index * 8))}
+    return uint
 }
 
 
 @ExperimentalUnsignedTypes
-fun Array<UByte>.fromBigEndianArrayToUInt() : ULong {
+fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
     if (this.size > 4) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
     }
-    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (24 - (index * 8))) }
-    return ulong
+    var uint = this.foldIndexed(0U) { index, acc, uByte -> acc or (uByte.toUInt() shl (24 - (index * 8))) }
+    return uint
 }
 
 @ExperimentalUnsignedTypes

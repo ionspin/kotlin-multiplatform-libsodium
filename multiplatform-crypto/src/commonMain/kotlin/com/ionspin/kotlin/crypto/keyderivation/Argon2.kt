@@ -13,12 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.ionspin.kotlin.crypto.keyderivation
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.util.*
-
 /**
  *
  * Further resources and examples of implementation:
@@ -63,8 +61,16 @@ class Argon2 internal constructor(
     }
 
 
+
     @ExperimentalStdlibApi
     companion object {
+
+        fun Array<UByte>.xor(target : Array<UByte>, other : Array<UByte>) {
+            if (this.size != other.size || this.size != target.size) {
+                throw RuntimeException("Invalid array sizes, this ${this.size}, other ${other.size}")
+            }
+            target.mapIndexed { index, _ -> this[index] xor other[index]}
+        }
 
 
         fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
@@ -88,9 +94,11 @@ class Argon2 internal constructor(
             return concat
         }
 
+
         fun compressionFunctionG(x: Array<UByte>, y: Array<UByte>): Array<UByte> {
-            val r = Array<UByte>(1024) { 0U } // view as 8x8 matrix of 16 byte registers
-            x.forEachIndexed { index, it -> r[index] = it xor y[index] }
+            val r = x xor y
+//            val r = Array<UByte>(1024) { 0U } // view as 8x8 matrix of 16 byte registers
+//            x.forEachIndexed { index, it -> r[index] = it xor y[index] } // R = X xor Y
             val q = Array<UByte>(1024) { 0U }
             val z = Array<UByte>(1024) { 0U }
             // Do the argon/blake2b mixing on rows
@@ -115,7 +123,7 @@ class Argon2 internal constructor(
                 )
             }
             // Z = Z xor R
-            r.forEachIndexed { index, it -> z[index] = it xor z[index] }
+            z.xor(z, r)
             return z
         }
 
@@ -168,19 +176,23 @@ class Argon2 internal constructor(
         }
 
         private fun computeIndexes(
-            block: Array<Array<Array<UByte>>>,
-            pass: Long,
-            lane: Int,
-            column: Int,
-            blockCount: UInt,
-            iterationCount: UInt,
-            type: ArgonType,
-            laneCounter : Int
-
+            indexContext: IndexContext,
+            matrix : Array<Array<Array<UByte>>>
         ): Pair<Int, Int> {
+            val block = indexContext.indexMatrix
+            val parallelism = indexContext.parallelism
+            val pass = indexContext.pass
+            val lane = indexContext.lane
+            val column = indexContext.column
+            val blockCount = indexContext.blockCount
+            val iterationCount = indexContext.iterationCount
+            val type = indexContext.type
+            val laneCounter = indexContext.laneCounter
+
             var counter = laneCounter
             val sliceNumber = column / 4
             val sliceLength = blockCount / 4U
+
             val (j1, j2) = when (type) {
                 ArgonType.Argon2i -> {
                     val firstPass = compressionFunctionG(
@@ -205,36 +217,43 @@ class Argon2 internal constructor(
                                 counter.toUInt().toLittleEndianUByteArray() +
                                 Array<UByte>(968) { 0U }
                     )
-                    Pair(firstPass, secondPass)
+                    Pair(1U, 1U)
                 }
                 ArgonType.Argon2d -> {
                     Pair(
-                        (block[laneCounter][column - 1].sliceArray(0..3).fromLittleEndianArrayToUInt()),
-                        (block[laneCounter][column - 1].sliceArray(4..7).fromLittleEndianArrayToUInt())
+                        (matrix[laneCounter][column - 1].sliceArray(0..3).fromLittleEndianArrayToUInt()),
+                        (matrix[laneCounter][column - 1].sliceArray(4..7).fromLittleEndianArrayToUInt())
                     )
                 }
                 ArgonType.Argon2id -> {
-                    Pair(emptyArray<UByte>(), emptyArray<UByte>())
+                    Pair(1U, 1U)
                 }
             }
+
+            val l = if (pass == 0L && sliceNumber == 0) {
+                2U
+            } else {
+                j2 % parallelism
+            }
+
+//            val availableIndices = if ()
+
 
             return Pair(1, 1)
 
         }
 
-        fun populateSegment(
-            matrix: Array<Array<Array<UByte>>>,
-            pass: Long,
-            lane: Int,
-            column: Int,
-            blockCount: UInt,
-            iterationCount: UInt,
-            type: ArgonType,
-            laneCounter : Int
-        ) {
-            //TODO handle segment by segment
-        }
-
+        data class IndexContext(
+            val indexMatrix: Array<UByte>,
+            val parallelism: UInt,
+            val pass: Long,
+            val lane: Int,
+            val column: Int,
+            val blockCount: UInt,
+            val iterationCount: UInt,
+            val type: ArgonType,
+            val laneCounter: Int
+        )
 
         internal fun derive(
             password: Array<UByte>,
@@ -257,11 +276,11 @@ class Argon2 internal constructor(
                         associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
             )
 
-            val blockCount = (memorySize / (4U * parallelism)) * (4U * parallelism) //
+            val blockCount = (memorySize / (4U * parallelism)) * (4U * parallelism) // TODO hmmm
             val columnCount = blockCount / parallelism
 
             //TODO pass handling
-            val allPasses = (0 .. numberOfIterations.toLong()).map { pass ->
+            val allPasses = (0..numberOfIterations.toLong()).map { pass ->
                 //Allocate memory as Array of parallelism rows and columnCount colums
                 val matrix = Array(parallelism.toInt()) {
                     Array(columnCount.toInt()) {
@@ -291,7 +310,7 @@ class Argon2 internal constructor(
                     for (j in 1..columnCount.toInt()) {
 
                         val counter = 0 //TODO handle counter
-                        computeIndexes(matrix, pass, i, j, blockCount, numberOfIterations, type)
+                        computeIndexes(matrix, parallelism, pass, i, j, blockCount, numberOfIterations, type)
                         val iPrim = -1
                         val jPrim = -1
                         matrix[i][j] = compressionFunctionG(matrix[i][j - 1], matrix[iPrim][jPrim])

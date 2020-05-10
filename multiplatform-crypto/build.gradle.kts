@@ -312,6 +312,9 @@ kotlin {
         val linuxArm64Test by getting {
             dependsOn(nativeTest)
         }
+        all {
+            languageSettings.enableLanguageFeature("InlineClasses")
+        }
     }
 
 
