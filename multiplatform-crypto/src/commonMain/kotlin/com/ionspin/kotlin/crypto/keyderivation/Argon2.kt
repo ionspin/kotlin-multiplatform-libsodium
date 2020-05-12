@@ -15,6 +15,7 @@
  */
 package com.ionspin.kotlin.crypto.keyderivation
 
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.util.*
 /**
@@ -31,6 +32,7 @@ import com.ionspin.kotlin.crypto.util.*
  * on 08-Jan-2020
  *
  */
+@ExperimentalStdlibApi
 @ExperimentalUnsignedTypes
 class Argon2 internal constructor(
     val password: Array<UByte>,
@@ -78,13 +80,13 @@ class Argon2 internal constructor(
                 return Blake2b.digest(length + input)
             }
             //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
-            val numberOfBlocks = (1U + ((length - 1U) / 32U) - 1U).toInt() // equivalent  to ceil(length/32) - 1
-            val v = Array<Array<UByte>>(numberOfBlocks) { emptyArray() }
+            val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
+            val v = Array<Array<UByte>>(numberOf64ByteBlocks) { emptyArray() }
             v[0] = Blake2b.digest(length + input)
-            for (i in 1 until numberOfBlocks - 1) {
+            for (i in 1 until numberOf64ByteBlocks) {
                 v[i] = Blake2b.digest(v[i - 1])
             }
-            val remainingPartOfInput = input.copyOfRange(input.size - numberOfBlocks * 32, input.size)
+            val remainingPartOfInput = input.copyOfRange(length.toInt() - numberOf64ByteBlocks * 32, input.size)
             val vLast = Blake2b.digest(remainingPartOfInput, hashLength = remainingPartOfInput.size)
             val concat =
                 (v.map { it.copyOfRange(0, 32) })
@@ -217,6 +219,7 @@ class Argon2 internal constructor(
                                 counter.toUInt().toLittleEndianUByteArray() +
                                 Array<UByte>(968) { 0U }
                     )
+                    secondPass.hexColumsPrint()
                     Pair(1U, 1U)
                 }
                 ArgonType.Argon2d -> {
@@ -255,6 +258,63 @@ class Argon2 internal constructor(
             val laneCounter: Int
         )
 
+        private fun computeIndexNew(matrix : Array<Array<Array<UByte>>>, lane: Int, column: Int, columnCount: Int, parallelism: Int, iteration : Int, slice : Int, argonType: ArgonType) : Pair<Int, Int> {
+            val (j1, j2) = when (argonType) {
+                ArgonType.Argon2d -> {
+                    val previousBlock = if (column == 0) {
+                        matrix[lane - 1][columnCount - 1]
+                    } else {
+                        matrix[lane][column - 1]
+                    }
+                    val first32Bit = previousBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
+                    val second32Bit = previousBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                    Pair(first32Bit, second32Bit)
+                }
+                ArgonType.Argon2i -> TODO()
+                ArgonType.Argon2id -> TODO()
+            }
+
+
+            //If this is first iteration and first slice, block is taken from the current lane
+            val l = if (iteration == 0 && slice == 0) {
+                lane
+            } else {
+                val lol = (j2.toBigInteger() % parallelism).intValue()
+                lol
+            }
+
+            //From Argon 2 2020 draft
+
+            // The set W contains the indices that can be referenced according to
+            // the following rules:
+            // 1.  If l is the current lane, then W includes the indices of all
+            // blocks in the last SL - 1 = 3 segments computed and finished, as
+            // well as the blocks computed in the current segment in the current
+            //         pass excluding B[i][j-1].
+            //
+            // 2.  If l is not the current lane, then W includes the indices of all
+            // blocks in the last SL - 1 = 3 segments computed and finished in
+            //         lane l.  If B[i][j] is the first block of a segment, then the
+            // very last index from W is excluded.
+            if (iteration == 0) {
+                if (slice == 0) {
+                    //All indices except the previous
+                    val from0Until = column - 1
+                } else {
+                    if (lane == l) {
+                        //Same lane
+                        val from0Until = slice * (columnCount / 4) + column - 1
+                    } else {
+                        val from0Until = slice * (columnCount / 4) + if(column == 0) { -1 } else { 0 }
+                    }
+                }
+            }
+
+            val availableIndicesSet =
+
+            return Pair(l, j2.toInt())
+        }
+
         internal fun derive(
             password: Array<UByte>,
             salt: Array<UByte>,
@@ -267,61 +327,100 @@ class Argon2 internal constructor(
             associatedData: Array<UByte>,
             type: ArgonType
         ): Array<UByte> {
+
+            val toDigest = parallelism.toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
+                    numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() + type.typeId.toUInt().toLittleEndianUByteArray() +
+                    password.size.toUInt().toLittleEndianUByteArray() + password +
+                    salt.size.toUInt().toLittleEndianUByteArray() + salt +
+                    key.size.toUInt().toLittleEndianUByteArray() + key +
+                    associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
+            toDigest.hexColumsPrint(16)
             val h0 = Blake2b.digest(
                 parallelism.toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
-                        numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() +
+                        numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() + type.typeId.toUInt().toLittleEndianUByteArray()+
                         password.size.toUInt().toLittleEndianUByteArray() + password +
                         salt.size.toUInt().toLittleEndianUByteArray() + salt +
                         key.size.toUInt().toLittleEndianUByteArray() + key +
                         associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
             )
 
-            val blockCount = (memorySize / (4U * parallelism)) * (4U * parallelism) // TODO hmmm
-            val columnCount = blockCount / parallelism
+            h0.hexColumsPrint(8)
 
-            //TODO pass handling
-            val allPasses = (0..numberOfIterations.toLong()).map { pass ->
-                //Allocate memory as Array of parallelism rows and columnCount colums
-                val matrix = Array(parallelism.toInt()) {
-                    Array(columnCount.toInt()) {
-                        Array<UByte>(1024) { 0U }
+            val blockCount = (memorySize / (4U * parallelism)) * (4U * parallelism)
+            val columnCount = (blockCount / parallelism).toInt()
+            val segmentLength = columnCount / 4
+
+            // First iteration
+
+            //Allocate memory as Array of parallelism rows (lanes) and columnCount columns
+            val matrix = Array(parallelism.toInt()) {
+                Array(columnCount) {
+                    Array<UByte>(1024) { 0U }
+                }
+            }
+//            matrix.hexPrint()
+
+            //Compute B[i][0]
+            for (i in 0 until parallelism.toInt()) {
+                matrix[i][0] =
+                    argonBlake2bArbitraryLenghtHash(
+                        h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
+                        1024U
+                    )
+            }
+
+            //Compute B[i][1]
+            for (i in 0 until parallelism.toInt()) {
+                matrix[i][1] =
+                    argonBlake2bArbitraryLenghtHash(
+                        h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
+                        1024U
+                    )
+            }
+
+            //Compute B[i][j]
+            //Using B[i][j] = G(B[i][j], B[l][z]) where l and z are provided bu computeIndexes
+            for (i in 0 until parallelism.toInt()) {
+                for (j in 2..columnCount) {
+                    val (l, z) = computeIndexNew(matrix, i, j, columnCount, parallelism.toInt(), 0, 0, type)
+                    matrix[i][j] = compressionFunctionG(matrix[i][j], matrix[l][z])
+                }
+            }
+            //Remaining iteration
+            val remainingIterations = (1..numberOfIterations.toInt()).map { iteration ->
+
+                for (i in 0 until parallelism.toInt()) {
+                    for (j in 0 until columnCount) {
+//                        val indexContext = IndexContext(
+//                            indexMatrix = emptyArray(),
+//                            parallelism = parallelism,
+//                            pass = pass,
+//                            lane = i,
+//                            column = j,
+//                            blockCount = blockCount,
+//                            iterationCount = numberOfIterations,
+//                            type = type,
+//                            laneCounter = 0
+//                        )
+
+                        val (l,z) = computeIndexNew(matrix, i, j, columnCount, parallelism.toInt(), iteration, iteration / segmentLength, type)
+                        if (j == 0) {
+                            matrix[i][j] = compressionFunctionG(matrix[i][columnCount - 1], matrix[l][z])
+                        } else {
+                            matrix[i][j] = compressionFunctionG(matrix[i][j - 1], matrix[l][z])
+                        }
+
                     }
                 }
 
-                //Compute B[i][0]
-                for (i in 0..parallelism.toInt()) {
-                    matrix[i][0] =
-                        argonBlake2bArbitraryLenghtHash(
-                            h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
-                            64U
-                        )
-                }
 
-                //Compute B[i][1]
-                for (i in 0..parallelism.toInt()) {
-                    matrix[i][0] =
-                        argonBlake2bArbitraryLenghtHash(
-                            h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
-                            64U
-                        )
-                }
 
-                for (i in 0..parallelism.toInt()) {
-                    for (j in 1..columnCount.toInt()) {
-
-                        val counter = 0 //TODO handle counter
-                        computeIndexes(matrix, parallelism, pass, i, j, blockCount, numberOfIterations, type)
-                        val iPrim = -1
-                        val jPrim = -1
-                        matrix[i][j] = compressionFunctionG(matrix[i][j - 1], matrix[iPrim][jPrim])
-                    }
-                }
-
-                val result = matrix.foldIndexed(emptyArray<UByte>()) { index, acc, arrayOfArrays ->
+                val result = matrix.foldIndexed(emptyArray<UByte>()) { lane, acc, laneArray ->
                     return if (acc.size == 0) {
-                        acc + arrayOfArrays[columnCount.toInt() - 1]
+                        acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
                     } else {
-                        acc.mapIndexed { index, it -> it xor arrayOfArrays[columnCount.toInt() - 1][index] }
+                        // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
+                        acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }
                             .toTypedArray()
                     }
                 }
@@ -330,10 +429,27 @@ class Argon2 internal constructor(
 
 
 
-            return allPasses.foldRight(emptyArray()) { arrayOfUBytes, acc -> acc xor arrayOfUBytes } //TODO placeholder
+            return remainingIterations.foldRight(emptyArray()) { arrayOfUBytes, acc -> acc xor arrayOfUBytes } //TODO placeholder
         }
 
     }
 
+    fun calculate(): Array<UByte> {
+        return derive(
+            password, salt, parallelism, tagLength, memorySize, numberOfIterations, versionNumber, key, associatedData, type
+        )
+    }
 
+
+}
+
+internal object ArgonDebugUtils {
+    fun Array<Array<Array<UByte>>>.hexPrint() {
+        forEachIndexed { i, lane ->
+            lane.forEachIndexed { j, column ->
+                println("Printing position at [$i], [$j]")
+                column.hexColumsPrint(32)
+            }
+        }
+    }
 }

@@ -26,8 +26,8 @@ fun Array<Byte>.hexColumsPrint() {
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 }
 
-fun Array<UByte>.hexColumsPrint() {
-    val printout = this.map { it.toString(16) }.chunked(16)
+fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
+    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 }
 
