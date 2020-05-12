@@ -86,8 +86,8 @@ class Argon2 internal constructor(
             for (i in 1 until numberOf64ByteBlocks) {
                 v[i] = Blake2b.digest(v[i - 1])
             }
-            val remainingPartOfInput = input.copyOfRange(length.toInt() - numberOf64ByteBlocks * 32, input.size)
-            val vLast = Blake2b.digest(remainingPartOfInput, hashLength = remainingPartOfInput.size)
+            val remainingPartOfInput = length.toInt() - numberOf64ByteBlocks * 32
+            val vLast = Blake2b.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
             val concat =
                 (v.map { it.copyOfRange(0, 32) })
                     .plus(listOf(vLast))
@@ -328,6 +328,7 @@ class Argon2 internal constructor(
             type: ArgonType
         ): Array<UByte> {
 
+            println("H0 Input")
             val toDigest = parallelism.toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
                     numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() + type.typeId.toUInt().toLittleEndianUByteArray() +
                     password.size.toUInt().toLittleEndianUByteArray() + password +
@@ -335,6 +336,7 @@ class Argon2 internal constructor(
                     key.size.toUInt().toLittleEndianUByteArray() + key +
                     associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
             toDigest.hexColumsPrint(16)
+            println("Marker H0 Input end")
             val h0 = Blake2b.digest(
                 parallelism.toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
                         numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() + type.typeId.toUInt().toLittleEndianUByteArray()+
@@ -345,6 +347,7 @@ class Argon2 internal constructor(
             )
 
             h0.hexColumsPrint(8)
+            println("Marker H0")
 
             val blockCount = (memorySize / (4U * parallelism)) * (4U * parallelism)
             val columnCount = (blockCount / parallelism).toInt()
@@ -367,6 +370,8 @@ class Argon2 internal constructor(
                         h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
                         1024U
                     )
+                matrix[i][0].hexColumsPrint(16)
+                println("Marker, matrix [$i][0]")
             }
 
             //Compute B[i][1]
@@ -376,6 +381,8 @@ class Argon2 internal constructor(
                         h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
                         1024U
                     )
+                matrix[i][1].hexColumsPrint(16)
+                println("Marker, matrix [$i][1]")
             }
 
             //Compute B[i][j]
