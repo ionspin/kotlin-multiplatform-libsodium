@@ -70,7 +70,7 @@ infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     if (this.size != other.size) {
         throw RuntimeException("Operands of different sizes are not supported yet")
     }
-    return Array(this.size) { this[it] xor other [it]}
+    return Array(this.size) { this[it] xor other[it] }
 }
 
 @ExperimentalUnsignedTypes
