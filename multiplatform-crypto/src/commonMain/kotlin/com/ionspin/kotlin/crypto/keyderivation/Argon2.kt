@@ -113,13 +113,9 @@ class Argon2 internal constructor(
             val z = Array<UByte>(1024) { 0U }
             // Do the argon/blake2b mixing on rows
             for (i in 0..7) {
-                println("Q round $i")
-                q.hexColumsPrint(16)
                 val startOfRow = (i * 8 * 16)
                 val endOfRow = startOfRow + (8 * 16)
                 val rowToMix = r.copyOfRange(startOfRow, endOfRow)
-                println("Mixing row:")
-                rowToMix.hexColumsPrint(16)
                 mixRound(rowToMix)
                     .map { it.toLittleEndianUByteArray() }
                     .flatMap { it.asIterable() }
@@ -130,6 +126,7 @@ class Argon2 internal constructor(
             q.hexColumsPrint(16)
             // Do the argon/blake2b mixing on columns
             for (i in 0..7) {
+                println("Z round ${i}")
                 copyIntoGBlockColumn(
                     z,
                     i,
@@ -142,7 +139,7 @@ class Argon2 internal constructor(
             println("---- Z -----")
             z.hexColumsPrint(16)
             val final = if (xorWithCurrentBlock) {
-                println("Z xor R xoe CURRENT")
+                println("Z xor R xor CURRENT")
                 (z xor r) xor ((x xor y) xor currentBlock)
             } else {
                 println("Z xor R")
@@ -156,14 +153,18 @@ class Argon2 internal constructor(
         private fun extractColumnFromGBlock(gBlock: Array<UByte>, columnPosition: Int): Array<UByte> {
             val result = Array<UByte>(128) { 0U }
             for (i in 0..7) {
-                result[i] = gBlock[i * 8 + columnPosition]
+                gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16).copyInto(result, i * 16)
             }
             return result
         }
 
         private fun copyIntoGBlockColumn(gBlock: Array<UByte>, columnPosition: Int, columnData: Array<UByte>) {
             for (i in 0..7) {
-                gBlock[i * 8 + columnPosition] = columnData[i]
+                println("Mixed column data ${i}")
+                val column = columnData.copyOfRange(i * 16, i * 16 + 16)
+                column.hexColumsPrint(16)
+                column.copyInto(gBlock, i * 128 + columnPosition * 16)
+//                gBlock[i * 8 + columnPosition] = columnData[i]
             }
         }
 
@@ -180,6 +181,7 @@ class Argon2 internal constructor(
             v = mix(v, 1, 6, 11, 12)
             v = mix(v, 2, 7, 8, 13)
             v = mix(v, 3, 4, 9, 14)
+            v.hexColumsPrint(2)
             return v
 
         }
