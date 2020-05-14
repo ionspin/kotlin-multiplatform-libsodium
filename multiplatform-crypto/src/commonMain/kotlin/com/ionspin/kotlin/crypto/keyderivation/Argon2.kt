@@ -104,9 +104,8 @@ class Argon2 internal constructor(
             xorWithCurrentBlock: Boolean
         ): Array<UByte> {
             val r = x xor y
-            println("R = X xor Y")
-            r.hexColumsPrint(16)
-            // Xor works in first pass!
+//            println("R = X xor Y")
+//            r.hexColumsPrint(16)
 //            val r = Array<UByte>(1024) { 0U } // view as 8x8 matrix of 16 byte registers
 //            x.forEachIndexed { index, it -> r[index] = it xor y[index] } // R = X xor Y
             val q = Array<UByte>(1024) { 0U }
@@ -122,11 +121,10 @@ class Argon2 internal constructor(
                     .toTypedArray()
                     .copyInto(q, startOfRow)
             }
-            println("---- Q -----")
-            q.hexColumsPrint(16)
+//            println("---- Q -----")
+//            q.hexColumsPrint(16)
             // Do the argon/blake2b mixing on columns
             for (i in 0..7) {
-                println("Z round ${i}")
                 copyIntoGBlockColumn(
                     z,
                     i,
@@ -136,17 +134,17 @@ class Argon2 internal constructor(
                         .toTypedArray()
                 )
             }
-            println("---- Z -----")
-            z.hexColumsPrint(16)
+//            println("---- Z -----")
+//            z.hexColumsPrint(16)
             val final = if (xorWithCurrentBlock) {
-                println("Z xor R xor CURRENT")
+//                println("Z xor R xor CURRENT")
                 (z xor r) xor ((x xor y) xor currentBlock)
             } else {
-                println("Z xor R")
+//                println("Z xor R")
                 z xor r
             }
 
-            final.hexColumsPrint(16)
+//            final.hexColumsPrint(16)
             return final
         }
 
@@ -160,11 +158,8 @@ class Argon2 internal constructor(
 
         private fun copyIntoGBlockColumn(gBlock: Array<UByte>, columnPosition: Int, columnData: Array<UByte>) {
             for (i in 0..7) {
-                println("Mixed column data ${i}")
                 val column = columnData.copyOfRange(i * 16, i * 16 + 16)
-                column.hexColumsPrint(16)
                 column.copyInto(gBlock, i * 128 + columnPosition * 16)
-//                gBlock[i * 8 + columnPosition] = columnData[i]
             }
         }
 
@@ -172,7 +167,6 @@ class Argon2 internal constructor(
         //based on Blake2b mixRound
         internal fun mixRound(input: Array<UByte>): Array<ULong> {
             var v = input.chunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
-            v.forEach { println(it.toString(16)) }
             v = mix(v, 0, 4, 8, 12)
             v = mix(v, 1, 5, 9, 13)
             v = mix(v, 2, 6, 10, 14)
@@ -181,7 +175,6 @@ class Argon2 internal constructor(
             v = mix(v, 1, 6, 11, 12)
             v = mix(v, 2, 7, 8, 13)
             v = mix(v, 3, 4, 9, 14)
-            v.hexColumsPrint(2)
             return v
 
         }
@@ -319,8 +312,8 @@ class Argon2 internal constructor(
             val l = if (iteration == 0 && slice == 0) {
                 lane
             } else {
-                val lol = (j2.toBigInteger() % parallelism).intValue()
-                lol
+                (j2.toBigInteger() % parallelism).intValue()
+
             }
 
             //From Argon 2 2020 draft
@@ -377,7 +370,9 @@ class Argon2 internal constructor(
                     (slice + 1) * (columnCount / 4) //TODO replace all of these with segment length when consolidating variables
                 }
             }
-
+            if ( (startPosition + z.toInt()) % columnCount == -1) {
+                println("Debug")
+            }
             val absolutePosition = (startPosition + z.toInt()) % columnCount
 
             return Pair(l, absolutePosition)
@@ -479,9 +474,9 @@ class Argon2 internal constructor(
                         h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
                         1024U
                     )
-                println("Start, matrix [$i][0]")
-                matrix[i][0].hexColumsPrint(16)
-                println("Marker, matrix [$i][0]")
+//                println("Start, matrix [$i][0]")
+//                matrix[i][0].hexColumsPrint(16)
+//                println("Marker, matrix [$i][0]")
             }
 
             //Compute B[i][1]
@@ -491,9 +486,9 @@ class Argon2 internal constructor(
                         h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
                         1024U
                     )
-                println("Start, matrix [$i][1]")
-                matrix[i][1].hexColumsPrint(16)
-                println("Marker, matrix [$i][1]")
+//                println("Start, matrix [$i][1]")
+//                matrix[i][1].hexColumsPrint(16)
+//                println("Marker, matrix [$i][1]")
             }
 
             // ---- Good until here at least ----
@@ -556,7 +551,7 @@ class Argon2 internal constructor(
                             compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], false)
                     }
                 } else {
-                    for (column in (slice * segmentLength)..((slice + 1) * segmentLength)) {
+                    for (column in (slice * segmentLength) until ((slice + 1) * segmentLength)) {
                         val (l, z) = computeIndexNew(
                             matrix,
                             lane,
@@ -573,10 +568,10 @@ class Argon2 internal constructor(
                     }
                 }
             } else {
-                val (l, z) = computeIndexNew(matrix, lane, 0, columnCount, parallelism.toInt(), 0, 0, type)
-                matrix[lane][0] = compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][columnCount], true)
+                val (l, z) = computeIndexNew(matrix, lane, 0, columnCount, parallelism.toInt(), iteration, slice, type)
+                matrix[lane][0] = compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][0], true)
                 for (column in 1..(slice * segmentLength)) {
-                    val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), 0, 0, type)
+                    val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
                     println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                     matrix[lane][column] =
                         compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
