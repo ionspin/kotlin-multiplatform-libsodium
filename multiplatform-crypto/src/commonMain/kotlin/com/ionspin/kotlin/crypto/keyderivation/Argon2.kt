@@ -98,12 +98,12 @@ class Argon2 internal constructor(
 
 
         fun compressionFunctionG(
-            x: Array<UByte>,
-            y: Array<UByte>,
+            previousBlock: Array<UByte>,
+            referenceBlock: Array<UByte>,
             currentBlock: Array<UByte>,
             xorWithCurrentBlock: Boolean
         ): Array<UByte> {
-            val r = x xor y
+            val r = referenceBlock xor previousBlock
 //            println("R = X xor Y")
 //            r.hexColumsPrint(16)
 //            val r = Array<UByte>(1024) { 0U } // view as 8x8 matrix of 16 byte registers
@@ -138,7 +138,7 @@ class Argon2 internal constructor(
 //            z.hexColumsPrint(16)
             val final = if (xorWithCurrentBlock) {
 //                println("Z xor R xor CURRENT")
-                (z xor r) xor ((x xor y) xor currentBlock)
+                (z xor r) xor currentBlock
             } else {
 //                println("Z xor R")
                 z xor r
@@ -329,10 +329,11 @@ class Argon2 internal constructor(
             // blocks in the last SL - 1 = 3 segments computed and finished in
             //         lane l.  If B[i][j] is the first block of a segment, then the
             // very last index from W is excluded.
+            val segmentIndex = column - (slice * (columnCount / 4))
             val referenceAreaSize = if (iteration == 0) {
                 if (slice == 0) {
                     //All indices except the previous
-                    column - 1
+                    (column % (columnCount / 4)) - 1
                 } else {
                     if (lane == l) {
                         //Same lane
@@ -347,9 +348,9 @@ class Argon2 internal constructor(
                 }
             } else {
                 if (lane == l) {
-                    columnCount - (columnCount / 4) + column - 1
+                    columnCount - (columnCount / 4) + (column % (columnCount / 4) - 1)
                 } else {
-                    columnCount - (columnCount / 4) + if (column == 0) {
+                    columnCount - (columnCount / 4) + if (column % (columnCount / 4) == 0)  {
                         -1
                     } else {
                         0
@@ -575,15 +576,26 @@ class Argon2 internal constructor(
                     }
                 }
             } else {
-                val (l, z) = computeIndexNew(matrix, lane, 0, columnCount, parallelism.toInt(), iteration, slice, type)
-                matrix[lane][0] = compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][0], true)
-                for (column in 1..(slice * segmentLength)) {
-                    val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
-                    println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
-                    matrix[lane][column] =
-                        compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
+                if (slice == 0) {
+                    val (l, z) = computeIndexNew(matrix, lane, 0, columnCount, parallelism.toInt(), iteration, slice, type)
+                    matrix[lane][0] = compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][0], true)
+                    for (column in 1 until segmentLength) {
+                        val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
+                        println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
+                        matrix[lane][column] =
+                            compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
 //                    matrix[lane][column].hexColumsPrint(16)
+                    }
+                } else {
+                    for (column in slice * segmentLength until (slice + 1) * segmentLength) {
+                        val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
+                        println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
+                        matrix[lane][column] =
+                            compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
+//                    matrix[lane][column].hexColumsPrint(16)
+                    }
                 }
+
 
             }
 
