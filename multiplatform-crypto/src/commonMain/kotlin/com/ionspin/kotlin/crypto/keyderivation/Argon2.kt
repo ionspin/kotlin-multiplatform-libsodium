@@ -509,6 +509,9 @@ class Argon2 internal constructor(
                         processSegment(argonContext, argonInternalContext, segmentPosition)
                     }
                 }
+                println("Done with $iteration")
+                argonInternalContext.matrix[0][0].slice(0 .. 7).toTypedArray().hexColumsPrint(8)
+                argonInternalContext.matrix[argonContext.parallelism.toInt() - 1][argonInternalContext.columnCount - 1].slice(1016 .. 1023).toTypedArray().hexColumsPrint(8)
             }
         }
 
@@ -549,7 +552,9 @@ class Argon2 internal constructor(
                         println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                         matrix[lane][column] =
                             compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], false)
+//                        matrix[lane][column].hexColumsPrint(16)
                     }
+
                 } else {
                     for (column in (slice * segmentLength) until ((slice + 1) * segmentLength)) {
                         val (l, z) = computeIndexNew(
@@ -565,6 +570,8 @@ class Argon2 internal constructor(
                         println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                         matrix[lane][column] =
                             compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], false)
+//                        matrix[lane][column].hexColumsPrint(16)
+                        println("debug")
                     }
                 }
             } else {
@@ -575,9 +582,12 @@ class Argon2 internal constructor(
                     println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                     matrix[lane][column] =
                         compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
+//                    matrix[lane][column].hexColumsPrint(16)
                 }
 
             }
+
+
 
 
 //            //Remaining iteration
