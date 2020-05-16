@@ -353,9 +353,7 @@ task<Copy>("copyPackageJson") {
 }
 
 tasks {
-    val npmInstall by getting
-    val compileKotlinJs by getting(AbstractCompile::class)
-    val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
+
 
     create<Jar>("javadocJar") {
         dependsOn(dokka)
@@ -376,6 +374,11 @@ tasks {
         }
     }
     if (getHostOsName() == "linux") {
+
+        val npmInstall by getting
+        val compileKotlinJs by getting(AbstractCompile::class)
+        val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
+        
         val jvmTest by getting(Test::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
