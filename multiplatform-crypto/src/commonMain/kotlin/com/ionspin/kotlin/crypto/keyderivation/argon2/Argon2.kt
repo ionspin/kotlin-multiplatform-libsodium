@@ -110,19 +110,18 @@ class Argon2(
             addressBlock,
             false
         )
-        //Calculate second pass
         val secondPass = compressionFunctionG(
+            Array<UByte>(1024) { 0U },
             firstPass,
-            addressBlock,
-            addressBlock,
+            firstPass,
             false
         )
-        // Put into address block
         return secondPass
     }
 
 
     private fun computeReferenceBlockIndexes(iteration: Int, slice: Int, lane: Int, column: Int, addressBlock: Array<UByte>?): Pair<Int, Int> {
+        val segmentIndex = (column % segmentLength)
         val (j1, j2) = when (argonType) {
             ArgonType.Argon2d -> {
                 val previousBlock = if (column == 0) {
@@ -135,14 +134,13 @@ class Argon2(
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
-                val selectedAddressBlock = addressBlock!!.sliceArray((column * 8) until (column * 8) + 8)
+                val selectedAddressBlock = addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
                 val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
                 val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2id -> TODO()
         }
-
 
         //If this is first iteration and first slice, block is taken from the current lane
         val l = if (iteration == 0 && slice == 0) {
@@ -152,7 +150,7 @@ class Argon2(
 
         }
 
-        val segmentIndex = (column % (columnCount / 4))
+
         val referenceAreaSize = if (iteration == 0) {
             if (slice == 0) {
                 //All indices except the previous
@@ -257,11 +255,11 @@ class Argon2(
                 }
             }
             //Debug prints
-            println("Done with $iteration")
-            matrix[0][0].slice(0..7).toTypedArray().hexColumsPrint(8)
-            matrix[parallelism.toInt() - 1][columnCount - 1].slice(
-                1016..1023
-            ).toTypedArray().hexColumsPrint(8)
+//            println("Done with $iteration")
+//            matrix[0][0].slice(0..7).toTypedArray().hexColumsPrint(8)
+//            matrix[parallelism.toInt() - 1][columnCount - 1].slice(
+//                1016..1023
+//            ).toTypedArray().hexColumsPrint(8)
 
         }
     }
@@ -281,8 +279,6 @@ class Argon2(
             }
             addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock, addressCounter)
             addressCounter++
-
-            addressBlock.hexColumsPrint(16)
         }
 
         val startColumn = if (iteration == 0 && slice == 0) {
@@ -294,7 +290,7 @@ class Argon2(
         for (column in startColumn until (slice + 1) * segmentLength) {
             //Each address block contains 128 addresses, and we use one per iteration,
             //so once we do 128 iterations we need to calculate a new address block
-            if (useIndependentAddressing && column % 128 == 0) {
+            if (useIndependentAddressing && column != 0 && column % 128 == 0) {
                 addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock!!, addressCounter)
                 addressCounter++
             }
@@ -303,6 +299,9 @@ class Argon2(
             } else {
                 column - 1
             }
+            if (iteration == 1) {
+                println("Breakpoint")
+            }
             val (l, z) = computeReferenceBlockIndexes(
                 iteration,
                 slice,
@@ -310,7 +309,7 @@ class Argon2(
                 column,
                 addressBlock
             )
-            println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
+//            println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
             matrix[lane][column] =
                 compressionFunctionG(
                     matrix[lane][previousColumn],
