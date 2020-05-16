@@ -19,8 +19,10 @@ package com.ionspin.kotlin.crypto
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.hash.sha.Sha256
 import com.ionspin.kotlin.crypto.hash.sha.Sha512
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
+import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import kotlin.test.Test
-
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
@@ -73,7 +75,7 @@ class ReadmeTest {
     @ExperimentalStdlibApi
     @Test
     fun sha256Example() {
-        val input ="abc"
+        val input = "abc"
         val result = Sha256.digest(inputString = input)
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
@@ -86,9 +88,9 @@ class ReadmeTest {
     @ExperimentalStdlibApi
     @Test
     fun sha512Example() {
-        val input ="abc"
+        val input = "abc"
         val result = Sha512.digest(inputMessage = input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
-        println(result.map {it.toString(16)})
+        println(result.map { it.toString(16) })
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
                 "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
         assertTrue {
@@ -122,6 +124,28 @@ class ReadmeTest {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toTypedArray())
         }
 
+
+    }
+
+    @Test
+    fun argon2StringExample() {
+        val argon2Instance = Argon2(
+            password = "Password",
+            salt = "RandomSalt",
+            parallelism = 8,
+            tagLength = 64U,
+            requestedMemorySize = 256U, //4GB
+            numberOfIterations = 4U,
+            key = "",
+            associatedData = "",
+            argonType = ArgonType.Argon2id
+        )
+        val tag = argon2Instance.derive()
+        val tagString = tag.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "")
+        val expectedTagString = "c255e3e94305817d5e09a7c771e574e3a81cc78fef5da4a9644b6df0" +
+                "0ba1c9b424e3dd0ce7e600b1269b14c84430708186a8a60403e1bfbda935991592b9ff37"
+        println("Tag: ${tagString}")
+        assertEquals(tagString, expectedTagString)
 
     }
 }

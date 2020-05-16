@@ -72,6 +72,15 @@ class UtilTest {
                     converted[3] == 0xAAU.toUByte()
 
         }
+        assertTrue {
+            val original = 123456U
+            val converted = original.toLittleEndianUByteArray()
+            converted[0] == 0x40U.toUByte() &&
+                    converted[1] == 0xE2U.toUByte() &&
+                    converted[2] == 0x01U.toUByte() &&
+                    converted[3] == 0x00U.toUByte()
+
+        }
     }
 
     @Test

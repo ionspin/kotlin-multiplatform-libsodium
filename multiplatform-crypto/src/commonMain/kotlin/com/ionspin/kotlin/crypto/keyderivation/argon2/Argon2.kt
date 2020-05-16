@@ -25,6 +25,7 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bAr
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 
 /**
@@ -164,6 +165,7 @@ class Argon2(
         addressBlock: Array<UByte>?
     ): Pair<Int, Int> {
         val segmentIndex = (column % segmentLength)
+        val independentIndex = segmentIndex % 128 // 128 is the number of addresses in address block
         val (j1, j2) = when (argonType) {
             ArgonType.Argon2d -> {
                 val previousBlock = if (column == 0) {
@@ -176,7 +178,7 @@ class Argon2(
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
-                val selectedAddressBlock = addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
+                val selectedAddressBlock = addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
                 val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
                 val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                 Pair(first32Bit, second32Bit)
@@ -184,7 +186,7 @@ class Argon2(
             ArgonType.Argon2id -> {
                 if (iteration == 0 && (slice == 0 || slice == 1)) {
                     val selectedAddressBlock =
-                        addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
+                        addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
                     val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
                     val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                     Pair(first32Bit, second32Bit)
@@ -338,12 +340,15 @@ class Argon2(
             slice * segmentLength
         }
 
+
         for (column in startColumn until (slice + 1) * segmentLength) {
+            val segmentIndex = column - (slice * segmentLength)
             //Each address block contains 128 addresses, and we use one per iteration,
             //so once we do 128 iterations we need to calculate a new address block
-            if (useIndependentAddressing && column != 0 && column % 128 == 0) {
+            if (useIndependentAddressing && segmentIndex != 0 && segmentIndex % 128 == 0) {
                 addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock!!, addressCounter)
                 addressCounter++
+                addressBlock.hexColumsPrint(16)
             }
             val previousColumn = if (column == 0) {
                 columnCount - 1
