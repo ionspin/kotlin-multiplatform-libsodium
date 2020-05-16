@@ -84,11 +84,12 @@ kotlin {
             }
         }
         browser {
-            testTask {
-                useKarma {
-                    useChrome()
-                }
-            }
+            //Until I figure out how to run headless chrome on travis
+//            testTask {
+//                useKarma {
+//                    useChrome()
+//                }
+//            }
         }
         nodejs {
             testTask {
@@ -143,14 +144,14 @@ kotlin {
             }
         }
     }
-
-    mingwX86() {
-        binaries {
-            staticLib {
-
-            }
-        }
-    }
+// No coroutines support for mingwX86
+//    mingwX86() {
+//        binaries {
+//            staticLib {
+//
+//            }
+//        }
+//    }
 
     linuxArm32Hfp() {
         binaries {
@@ -274,18 +275,18 @@ kotlin {
         val linuxTest by getting {
             dependsOn(nativeTest)
         }
+//      Coroutines don't support mingwx86 yet
+//        val mingwX86Main by getting {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation(Deps.Native.coroutines)
+//            }
+//        }
 
-        val mingwX86Main by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Deps.Native.coroutines)
-            }
-        }
-
-        val mingwX86Test by getting {
-            dependsOn(commonTest)
-        }
-
+//        val mingwX86Test by getting {
+//            dependsOn(commonTest)
+//        }
+//
         val mingwX64Main by getting {
             dependsOn(commonMain)
             dependencies {
