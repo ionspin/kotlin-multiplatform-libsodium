@@ -19,6 +19,7 @@
 package com.ionspin.kotlin.crypto.hash.keyderivation
 
 import com.ionspin.kotlin.crypto.keyderivation.Argon2
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import kotlin.test.Test
 
 /**
@@ -58,6 +59,7 @@ class Argon2Test {
             type = Argon2.ArgonType.Argon2d
         )
         val result = digest.calculate()
+        result.hexColumsPrint(8)
 
     }
 }

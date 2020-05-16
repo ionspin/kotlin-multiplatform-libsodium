@@ -77,7 +77,7 @@ class Argon2 internal constructor(
 
         fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
             if (length <= 64U) {
-                return Blake2b.digest(length + input)
+                return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
             }
             //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
             val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
@@ -151,7 +151,8 @@ class Argon2 internal constructor(
         private fun extractColumnFromGBlock(gBlock: Array<UByte>, columnPosition: Int): Array<UByte> {
             val result = Array<UByte>(128) { 0U }
             for (i in 0..7) {
-                gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16).copyInto(result, i * 16)
+                gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16)
+                    .copyInto(result, i * 16)
             }
             return result
         }
@@ -350,7 +351,7 @@ class Argon2 internal constructor(
                 if (lane == l) {
                     columnCount - (columnCount / 4) + (column % (columnCount / 4) - 1)
                 } else {
-                    columnCount - (columnCount / 4) + if (column % (columnCount / 4) == 0)  {
+                    columnCount - (columnCount / 4) + if (column % (columnCount / 4) == 0) {
                         -1
                     } else {
                         0
@@ -371,7 +372,7 @@ class Argon2 internal constructor(
                     (slice + 1) * (columnCount / 4) //TODO replace all of these with segment length when consolidating variables
                 }
             }
-            if ( (startPosition + z.toInt()) % columnCount == -1) {
+            if ((startPosition + z.toInt()) % columnCount == -1) {
                 println("Debug")
             }
             val absolutePosition = (startPosition + z.toInt()) % columnCount
@@ -492,13 +493,24 @@ class Argon2 internal constructor(
 //                println("Marker, matrix [$i][1]")
             }
 
-            // ---- Good until here at least ----
             val argonInternalContext = ArgonInternalContext(
                 matrix, blockCount, columnCount, segmentLength
             )
             singleThreaded(argonContext, argonInternalContext)
 
-            return emptyArray()
+            val result = matrix.foldIndexed(emptyArray<UByte>()) { lane, acc, laneArray ->
+                if (acc.size == 0) {
+                    acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
+                } else {
+                    // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
+                    acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }
+                        .toTypedArray()
+                }
+            }
+            //Hash the xored last blocks
+            println("Tag:")
+            val hash = argonBlake2bArbitraryLenghtHash(result, tagLength)
+            return hash
         }
 
         fun singleThreaded(argonContext: ArgonContext, argonInternalContext: ArgonInternalContext) {
@@ -511,8 +523,11 @@ class Argon2 internal constructor(
                     }
                 }
                 println("Done with $iteration")
-                argonInternalContext.matrix[0][0].slice(0 .. 7).toTypedArray().hexColumsPrint(8)
-                argonInternalContext.matrix[argonContext.parallelism.toInt() - 1][argonInternalContext.columnCount - 1].slice(1016 .. 1023).toTypedArray().hexColumsPrint(8)
+                argonInternalContext.matrix[0][0].slice(0..7).toTypedArray().hexColumsPrint(8)
+                argonInternalContext.matrix[argonContext.parallelism.toInt() - 1][argonInternalContext.columnCount - 1].slice(
+                    1016..1023
+                ).toTypedArray().hexColumsPrint(8)
+
             }
         }
 
@@ -577,10 +592,29 @@ class Argon2 internal constructor(
                 }
             } else {
                 if (slice == 0) {
-                    val (l, z) = computeIndexNew(matrix, lane, 0, columnCount, parallelism.toInt(), iteration, slice, type)
-                    matrix[lane][0] = compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][0], true)
+                    val (l, z) = computeIndexNew(
+                        matrix,
+                        lane,
+                        0,
+                        columnCount,
+                        parallelism.toInt(),
+                        iteration,
+                        slice,
+                        type
+                    )
+                    matrix[lane][0] =
+                        compressionFunctionG(matrix[lane][columnCount - 1], matrix[l][z], matrix[lane][0], true)
                     for (column in 1 until segmentLength) {
-                        val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
+                        val (l, z) = computeIndexNew(
+                            matrix,
+                            lane,
+                            column,
+                            columnCount,
+                            parallelism.toInt(),
+                            iteration,
+                            slice,
+                            type
+                        )
                         println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                         matrix[lane][column] =
                             compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
@@ -588,7 +622,16 @@ class Argon2 internal constructor(
                     }
                 } else {
                     for (column in slice * segmentLength until (slice + 1) * segmentLength) {
-                        val (l, z) = computeIndexNew(matrix, lane, column, columnCount, parallelism.toInt(), iteration, slice, type)
+                        val (l, z) = computeIndexNew(
+                            matrix,
+                            lane,
+                            column,
+                            columnCount,
+                            parallelism.toInt(),
+                            iteration,
+                            slice,
+                            type
+                        )
                         println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
                         matrix[lane][column] =
                             compressionFunctionG(matrix[lane][column - 1], matrix[l][z], matrix[lane][column], true)
@@ -598,8 +641,6 @@ class Argon2 internal constructor(
 
 
             }
-
-
 
 
 //            //Remaining iteration
