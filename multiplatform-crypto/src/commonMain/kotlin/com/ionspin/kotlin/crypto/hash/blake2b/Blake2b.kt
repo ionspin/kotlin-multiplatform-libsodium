@@ -21,6 +21,8 @@ import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
 import com.ionspin.kotlin.crypto.hash.StatelessHash
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
+import com.ionspin.kotlin.crypto.util.chunked
+import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
  * Created by Ugljesa Jovanovic
@@ -148,7 +150,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatab
             val keyBytes = key?.run {
                 encodeToByteArray().map { it.toUByte() }.toTypedArray()
             } ?: emptyArray()
-            return digest(inputMessage = array, key = keyBytes)
+            return digest(inputMessage = array, key = keyBytes, hashLength = hashLength)
 
         }
 
@@ -157,6 +159,9 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatab
             key: Array<UByte>,
             hashLength: Int
         ): Array<UByte> {
+            if (hashLength > MAX_HASH_BYTES) {
+                throw RuntimeException("Invalid hash length. Requested length more than maximum length. Requested length $hashLength")
+            }
             val chunkedMessage = inputMessage.chunked(BLOCK_BYTES)
 
             val h = iv.copyOf()
@@ -200,7 +205,7 @@ class Blake2b(val key: Array<UByte>? = null, val hashLength: Int = 64) : Updatab
             compress(h, lastBlockPadded, lastSize.toBigInteger(), true).copyInto(h)
 
 
-            return formatResult(h)
+            return formatResult(h).copyOfRange(0, hashLength)
         }
 
         private fun formatResult(h: Array<ULong>): Array<UByte> {

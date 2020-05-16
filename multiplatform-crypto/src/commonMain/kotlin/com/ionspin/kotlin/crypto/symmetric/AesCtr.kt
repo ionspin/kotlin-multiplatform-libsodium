@@ -20,9 +20,9 @@ import com.ionspin.kotlin.bignum.Endianness
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
-import com.ionspin.kotlin.crypto.chunked
+import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.symmetric.AesCtr.Companion.encrypt
-import com.ionspin.kotlin.crypto.xor
+import com.ionspin.kotlin.crypto.util.xor
 
 /**
  *

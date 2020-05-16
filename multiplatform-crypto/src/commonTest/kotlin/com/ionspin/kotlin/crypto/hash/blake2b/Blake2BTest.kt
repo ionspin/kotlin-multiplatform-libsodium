@@ -17,6 +17,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
@@ -280,4 +281,13 @@ class Blake2BTest {
 
 
     }
+
+    @Test
+    fun testInvalidHashLength() {
+        val test = "1234567890"
+        assertFailsWith(RuntimeException::class) {
+            val result = Blake2b.digest(inputString = test, hashLength = 65)
+        }
+    }
+
 }

@@ -16,22 +16,28 @@
 
 package com.ionspin.kotlin.crypto
 
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlinx.cinterop.*
+import platform.windows.*
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-class SRNGTest {
-    @Test
-    fun testSrng() {
-        //Just a sanity test, need to add better srng tests.
-        val randomBytes1 = SRNG.getRandomBytes(10)
-        val randomBytes2 = SRNG.getRandomBytes(10)
-        randomBytes1.forEach { println("RB1: $it")}
-        randomBytes2.forEach { println("RB2: $it")}
-        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
+actual object SRNG {
+    private val advapi by lazy { LoadLibraryA("ADVAPI32.DLL")}
+
+    private val advapiRandom by lazy {
+        GetProcAddress(advapi, "SystemFunction036")?.reinterpret<CFunction<Function2<CPointer<ByteVar>, ULong, Int>>>() ?: error("Failed getting advapi random")
+    }
+
+    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
+    actual fun getRandomBytes(amount: Int): Array<UByte> {
+        memScoped {
+            val randArray = allocArray<ByteVar>(amount)
+            val pointer = randArray.getPointer(this)
+            val status = advapiRandom(pointer.reinterpret(), amount.convert())
+            return Array<UByte>(amount) { pointer[it].toUByte() }
+        }
     }
 }

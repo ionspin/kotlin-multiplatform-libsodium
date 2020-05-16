@@ -14,25 +14,14 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
+package com.ionspin.kotlin.crypto.util
 
-import com.ionspin.kotlin.crypto.chunked
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 17-Jul-2019
+ * on 20-Jul-2019
  */
-class UtilTest {
-
-    @Test
-    fun testSlicer() {
-        val array = arrayOf(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17)
-        val chunked = array.chunked(2)
-        assertTrue {
-            chunked.size == 9 && chunked[8][0] == 17
-        }
-    }
-}
+actual fun testBlocking(block: suspend (scope: CoroutineScope) -> Unit) = runBlocking { block(this) }

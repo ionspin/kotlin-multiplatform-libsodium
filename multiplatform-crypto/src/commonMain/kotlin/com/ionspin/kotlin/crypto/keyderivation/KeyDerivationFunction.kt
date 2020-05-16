@@ -14,24 +14,13 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto
-
-import kotlin.test.Test
-import kotlin.test.assertTrue
+package com.ionspin.kotlin.crypto.keyderivation
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 21-Sep-2019
+ * on 16-May-2020
  */
-class SRNGTest {
-    @Test
-    fun testSrng() {
-        //Just a sanity test, need to add better srng tests.
-        val randomBytes1 = SRNG.getRandomBytes(10)
-        val randomBytes2 = SRNG.getRandomBytes(10)
-        randomBytes1.forEach { println("RB1: $it")}
-        randomBytes2.forEach { println("RB2: $it")}
-        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
-    }
+interface KeyDerivationFunction {
+    fun derive() : Array<UByte>
 }

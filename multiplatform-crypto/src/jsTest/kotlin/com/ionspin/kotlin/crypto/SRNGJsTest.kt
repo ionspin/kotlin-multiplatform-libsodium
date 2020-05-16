@@ -22,16 +22,20 @@ import kotlin.test.assertTrue
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 21-Sep-2019
+ * on 05-Jan-2020
  */
-class SRNGTest {
+@ExperimentalUnsignedTypes
+class SRNGJsTest {
+
     @Test
-    fun testSrng() {
-        //Just a sanity test, need to add better srng tests.
-        val randomBytes1 = SRNG.getRandomBytes(10)
-        val randomBytes2 = SRNG.getRandomBytes(10)
-        randomBytes1.forEach { println("RB1: $it")}
-        randomBytes2.forEach { println("RB2: $it")}
-        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
+    fun testJsSrng() {
+        val bytes1 = SRNG.getRandomBytes(10)
+        val bytes2 = SRNG.getRandomBytes(10)
+        assertTrue {
+            !bytes1.contentEquals(bytes2) &&
+                    bytes1.size == 10 &&
+                    bytes2.size == 10
+        }
+
     }
 }

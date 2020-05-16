@@ -19,6 +19,8 @@
 
 import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.tasks.testing.logging.TestLogging
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
@@ -47,7 +49,25 @@ repositories {
 group = "com.ionspin.kotlin"
 version = "0.0.3-SNAPSHOT"
 
+val ideaActive = System.getProperty("idea.active") == "true"
+
+fun getHostOsName(): String {
+    val target = System.getProperty("os.name")
+    if (target == "Linux") return "linux"
+    if (target.startsWith("Windows")) return "windows"
+    if (target.startsWith("Mac")) return "macos"
+    return "unknown"
+}
+
 kotlin {
+    val hostOsName = getHostOsName()
+    if (ideaActive) {
+        when(hostOsName) {
+            "linux" -> linuxX64("native")
+            "macos" -> macosX64("native")
+            "windows" -> mingwX64("native")
+        }
+    }
     jvm()
     js {
         compilations {
@@ -63,13 +83,23 @@ kotlin {
                 println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
         }
-        nodejs() {
+        //Until I figure out how to run headless chrome on travis
+//        browser {
+//
+//            testTask {
+//                useKarma {
+//                    useChrome()
+//                }
+//            }
+//        }
+        nodejs {
             testTask {
                 useMocha() {
                     timeout = "10s"
                 }
             }
         }
+
     }
     linuxX64("linux") {
         binaries {
@@ -115,14 +145,14 @@ kotlin {
             }
         }
     }
-
-    mingwX86() {
-        binaries {
-            staticLib {
-
-            }
-        }
-    }
+// No coroutines support for mingwX86
+//    mingwX86() {
+//        binaries {
+//            staticLib {
+//
+//            }
+//        }
+//    }
 
     linuxArm32Hfp() {
         binaries {
@@ -153,7 +183,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
-                implementation(Deps.Common.coroutines)
             }
         }
         val jvmMain by getting {
@@ -184,15 +213,35 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(Deps.Native.coroutines)
+        val nativeMain = if (ideaActive) {
+            val nativeMain by getting {
+                dependsOn(commonMain)
             }
+            nativeMain
+        } else {
+            val nativeMain by creating {
+                dependsOn(commonMain)
+            }
+            nativeMain
         }
+        val nativeTest = if (ideaActive) {
+            val nativeTest by getting {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+            nativeTest
+        } else {
+            val nativeTest by creating {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+            nativeTest
+        }
+
         
         val iosMain by getting {
             dependsOn(nativeMain)
@@ -227,21 +276,27 @@ kotlin {
         val linuxTest by getting {
             dependsOn(nativeTest)
         }
+//      Coroutines don't support mingwx86 yet
+//        val mingwX86Main by getting {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation(Deps.Native.coroutines)
+//            }
+//        }
 
-        val mingwX86Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX86Test by getting {
-            dependsOn(nativeTest)
-        }
-
+//        val mingwX86Test by getting {
+//            dependsOn(commonTest)
+//        }
+//
         val mingwX64Main by getting {
-            dependsOn(nativeMain)
+            dependsOn(commonMain)
+            dependencies {
+                implementation(Deps.Native.coroutines)
+            }
         }
 
         val mingwX64Test by getting {
-            dependsOn(nativeTest)
+            dependsOn(commonTest)
         }
 
         val linuxArm32HfpMain by getting {
@@ -258,6 +313,9 @@ kotlin {
 
         val linuxArm64Test by getting {
             dependsOn(nativeTest)
+        }
+        all {
+            languageSettings.enableLanguageFeature("InlineClasses")
         }
     }
 
@@ -304,10 +362,39 @@ tasks {
         }
     }
 
+    val linuxTest by getting(KotlinNativeTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+            // showStandardStreams = true
+        }
+    }
+
+    val mingwX64Test by getting(KotlinNativeTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+            showStandardStreams = true
+        }
+    }
+
+    val jsNodeTest by getting(KotlinJsTest::class) {
+
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+             showStandardStreams = true
+        }
+    }
+
+//    val jsBrowserTest by getting(KotlinJsTest::class) {
+//
+//        testLogging {
+//            events("PASSED", "FAILED", "SKIPPED")
+//             showStandardStreams = true
+//        }
+//    }
+
 }
-
-
-
 
 
 

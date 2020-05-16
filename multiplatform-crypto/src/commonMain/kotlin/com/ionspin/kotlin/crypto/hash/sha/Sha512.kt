@@ -16,10 +16,10 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.chunked
+import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.hash.StatelessHash
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
-import com.ionspin.kotlin.crypto.rotateRight
+import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
  * Created by Ugljesa Jovanovic
