@@ -83,14 +83,15 @@ kotlin {
                 println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
         }
-        browser {
-            //Until I figure out how to run headless chrome on travis
+        //Until I figure out how to run headless chrome on travis
+//        browser {
+//
 //            testTask {
 //                useKarma {
 //                    useChrome()
 //                }
 //            }
-        }
+//        }
         nodejs {
             testTask {
                 useMocha() {
@@ -385,13 +386,13 @@ tasks {
         }
     }
 
-    val jsBrowserTest by getting(KotlinJsTest::class) {
-
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED")
-             showStandardStreams = true
-        }
-    }
+//    val jsBrowserTest by getting(KotlinJsTest::class) {
+//
+//        testLogging {
+//            events("PASSED", "FAILED", "SKIPPED")
+//             showStandardStreams = true
+//        }
+//    }
 
 }
 
