@@ -19,7 +19,6 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
-import com.ionspin.kotlin.crypto.keyderivation.Argon2Template
 import com.ionspin.kotlin.crypto.util.*
 
 /**

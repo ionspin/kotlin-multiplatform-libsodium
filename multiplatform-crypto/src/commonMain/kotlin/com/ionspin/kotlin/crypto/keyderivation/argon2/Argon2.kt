@@ -139,7 +139,24 @@ class Argon2(
                 val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                 Pair(first32Bit, second32Bit)
             }
-            ArgonType.Argon2id -> TODO()
+            ArgonType.Argon2id -> {
+                if (iteration == 0 && (slice == 0 || slice == 1)) {
+                    val selectedAddressBlock = addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
+                    val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
+                    val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                    Pair(first32Bit, second32Bit)
+                } else {
+                    val previousBlock = if (column == 0) {
+                        matrix[lane][columnCount - 1] //Get last block in the SAME lane
+                    } else {
+                        matrix[lane][column - 1]
+                    }
+                    val first32Bit = previousBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
+                    val second32Bit = previousBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                    Pair(first32Bit, second32Bit)
+                }
+
+            }
         }
 
         //If this is first iteration and first slice, block is taken from the current lane

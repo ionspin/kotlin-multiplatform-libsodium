@@ -18,11 +18,9 @@
 
 package com.ionspin.kotlin.crypto.hash.keyderivation
 
-import com.ionspin.kotlin.crypto.keyderivation.Argon2Template
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
-import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -33,39 +31,6 @@ import kotlin.test.assertTrue
  */
 @ExperimentalStdlibApi
 class Argon2Test {
-
-    @Test
-    fun debugTest() {
-        val memory = 32U //KiB
-        val iterations = 3U
-        val parallelism = 4U
-        val tagLength = 32U
-        val password: Array<UByte> = arrayOf(
-            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
-            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
-            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
-            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U
-        )
-        val salt: Array<UByte> =           arrayOf(0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U)
-        val secret: Array<UByte> =         arrayOf(0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U)
-        val associatedData: Array<UByte> = arrayOf(0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U)
-
-        val digest = Argon2Template(
-            password,
-            salt,
-            parallelism,
-            tagLength,
-            memory,
-            iterations,
-            0x13U,
-            secret,
-            associatedData,
-            type = Argon2Template.ArgonType.Argon2d
-        )
-        val result = digest.calculate()
-        result.hexColumsPrint(8)
-
-    }
 
     @Test
     fun argon2dKATTest() {
@@ -142,6 +107,47 @@ class Argon2Test {
             secret,
             associatedData,
             ArgonType.Argon2i
+        )
+        val result = digest.derive()
+        result.hexColumsPrint(8)
+        assertTrue { expected.contentEquals(result) }
+
+    }
+
+    @Test
+    fun argon2idKATTest() {
+        val expected : Array<UByte> = arrayOf(
+            0x0dU, 0x64U, 0x0dU, 0xf5U, 0x8dU, 0x78U, 0x76U, 0x6cU,
+            0x08U, 0xc0U, 0x37U, 0xa3U, 0x4aU, 0x8bU, 0x53U, 0xc9U,
+            0xd0U, 0x1eU, 0xf0U, 0x45U, 0x2dU, 0x75U, 0xb6U, 0x5eU,
+            0xb5U, 0x25U, 0x20U, 0xe9U, 0x6bU, 0x01U, 0xe6U, 0x59U
+        )
+
+
+        val memory = 32U //KiB
+        val iterations = 3U
+        val parallelism = 4U
+        val tagLength = 32U
+        val password: Array<UByte> = arrayOf(
+            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
+            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
+            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U,
+            0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U, 0x01U
+        )
+        val salt: Array<UByte> =           arrayOf(0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U, 0x02U)
+        val secret: Array<UByte> =         arrayOf(0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U)
+        val associatedData: Array<UByte> = arrayOf(0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U)
+
+        val digest = Argon2(
+            password,
+            salt,
+            parallelism.toInt(),
+            tagLength,
+            memory,
+            iterations,
+            secret,
+            associatedData,
+            ArgonType.Argon2id
         )
         val result = digest.derive()
         result.hexColumsPrint(8)
