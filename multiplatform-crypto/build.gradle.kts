@@ -125,7 +125,7 @@ kotlin {
 
     }
 
-    if (hostOsName == "mac") {
+    if (hostOsName == "macos") {
         iosX64("ios") {
             binaries {
                 framework {
@@ -277,7 +277,7 @@ kotlin {
 
         }
 
-        if (hostOsName == "mac") {
+        if (hostOsName == "macos") {
 
             val iosMain by getting {
                 dependsOn(nativeMain)
@@ -378,7 +378,7 @@ tasks {
         val npmInstall by getting
         val compileKotlinJs by getting(AbstractCompile::class)
         val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
-        
+
         val jvmTest by getting(Test::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
