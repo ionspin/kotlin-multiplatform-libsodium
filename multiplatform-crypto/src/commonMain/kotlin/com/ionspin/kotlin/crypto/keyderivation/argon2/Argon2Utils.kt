@@ -135,4 +135,44 @@ object Argon2Utils {
 
         return concat
     }
+
+    /**
+     * Validates the argon 2 parameters.
+     * Since Kotlin arrays that we are currently using cannot have more than 2^31 bytes, we don't need to check
+     * sizes for password, salt, key and associated data. Also since UInt is 32bit we cant set more than 2^32-1 of
+     * tagLength, requested memory size and number of iterations, so no need to check for upper bound, just lower.
+     */
+    fun validateArgonParameters(
+        password: Array<UByte>,
+        salt: Array<UByte>,
+        parallelism: Int ,
+        tagLength: UInt,
+        requestedMemorySize: UInt ,
+        numberOfIterations: UInt ,
+        key: Array<UByte>,
+        associatedData: Array<UByte>,
+        argonType: ArgonType
+    ) {
+
+        //Parallelism
+        if (parallelism > 0xFFFFFF) {
+            throw Argon2LanesTooMany(parallelism)
+        }
+        if (parallelism <= 0) {
+            throw Argon2LanesTooFew(parallelism)
+        }
+        //Tag length
+        if (tagLength <= 0U) {
+            throw Argon2TagTooShort(tagLength)
+        }
+        //Requested memory
+        if (requestedMemorySize < 8U || requestedMemorySize < (8 * parallelism).toUInt()) {
+            throw Argon2MemoryTooLitlle(requestedMemorySize)
+        }
+        //Number of iterations
+        if (numberOfIterations <= 0U) {
+            throw Argon2TimeTooShort(numberOfIterations)
+        }
+
+    }
 }

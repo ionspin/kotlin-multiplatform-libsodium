@@ -22,6 +22,7 @@ import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
@@ -53,6 +54,19 @@ class Argon2(
     val associatedData: Array<UByte> = emptyArray(),
     val argonType: ArgonType = ArgonType.Argon2id
 ) {
+    init {
+        validateArgonParameters(
+            password,
+            salt,
+            parallelism,
+            tagLength,
+            requestedMemorySize,
+            numberOfIterations,
+            key,
+            associatedData,
+            argonType
+        )
+    }
     //We support only the latest version
     val versionNumber: UInt = 0x13U
 
@@ -60,9 +74,6 @@ class Argon2(
     val memorySize = if (requestedMemorySize == 0U) {
         ((8 * parallelism) * 2).toUInt()
     } else {
-        if (requestedMemorySize < (8 * parallelism).toUInt()) {
-            throw RuntimeException("Requested memory size must be larger than 8 * parallelism. Requested size: $requestedMemorySize")
-        }
         requestedMemorySize
     }
     val blockCount = (memorySize / (4U * parallelism.toUInt())) * (4U * parallelism.toUInt())
