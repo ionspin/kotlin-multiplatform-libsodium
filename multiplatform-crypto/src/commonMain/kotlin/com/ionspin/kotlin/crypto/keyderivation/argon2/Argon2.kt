@@ -20,6 +20,7 @@ package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
+import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
@@ -44,16 +45,16 @@ data class SegmentPosition(
 )
 
 class Argon2(
-    val password: Array<UByte>,
-    val salt: Array<UByte> = emptyArray(),
-    val parallelism: Int = 1,
-    val tagLength: UInt = 64U,
+    private val password: Array<UByte>,
+    private val salt: Array<UByte> = emptyArray(),
+    private val parallelism: Int = 1,
+    private val tagLength: UInt = 64U,
     requestedMemorySize: UInt = 0U,
-    val numberOfIterations: UInt = 1U,
-    val key: Array<UByte> = emptyArray(),
-    val associatedData: Array<UByte> = emptyArray(),
-    val argonType: ArgonType = ArgonType.Argon2id
-) {
+    private val numberOfIterations: UInt = 1U,
+    private val key: Array<UByte> = emptyArray(),
+    private val associatedData: Array<UByte> = emptyArray(),
+    private val argonType: ArgonType = ArgonType.Argon2id
+) : KeyDerivationFunction {
     init {
         validateArgonParameters(
             password,
@@ -68,23 +69,23 @@ class Argon2(
         )
     }
     //We support only the latest version
-    val versionNumber: UInt = 0x13U
+    private val versionNumber: UInt = 0x13U
 
     //Use either requested memory size, or default, or throw exception if the requested amount is less than 8*parallelism
-    val memorySize = if (requestedMemorySize == 0U) {
+    private val memorySize = if (requestedMemorySize == 0U) {
         ((8 * parallelism) * 2).toUInt()
     } else {
         requestedMemorySize
     }
-    val blockCount = (memorySize / (4U * parallelism.toUInt())) * (4U * parallelism.toUInt())
-    val columnCount = (blockCount / parallelism.toUInt()).toInt()
-    val segmentLength = columnCount / 4
+    private val blockCount = (memorySize / (4U * parallelism.toUInt())) * (4U * parallelism.toUInt())
+    private val columnCount = (blockCount / parallelism.toUInt()).toInt()
+    private val segmentLength = columnCount / 4
 
-    val useIndependentAddressing = argonType == ArgonType.Argon2id || argonType == ArgonType.Argon2i
+    private val useIndependentAddressing = argonType == ArgonType.Argon2id || argonType == ArgonType.Argon2i
 
 
     // State
-    val matrix = Array(parallelism) {
+    private val matrix = Array(parallelism) {
         Array(columnCount) {
             Array<UByte>(1024) { 0U }
         }
@@ -225,7 +226,7 @@ class Argon2(
         return Pair(l, absolutePosition)
     }
 
-    fun derive(): Array<UByte> {
+    override fun derive(): Array<UByte> {
         val h0 = Blake2b.digest(
             parallelism.toUInt()
                 .toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
@@ -266,33 +267,25 @@ class Argon2(
             }
         }
         //Hash the xored last blocks
-        println("Tag:")
         val hash = argonBlake2bArbitraryLenghtHash(result, tagLength)
+        clearMatrix()
         return hash
 
 
     }
 
-    fun executeArgonWithSingleThread() {
+    private fun executeArgonWithSingleThread() {
         for (iteration in 0 until numberOfIterations.toInt()) {
             for (slice in 0 until 4) {
-                for (lane in 0 until parallelism.toInt()) {
-                    println("Processing segment I: $iteration, S: $slice, L: $lane")
+                for (lane in 0 until parallelism) {
                     val segmentPosition = SegmentPosition(iteration, lane, slice)
                     processSegment(segmentPosition)
                 }
             }
-            //Debug prints
-//            println("Done with $iteration")
-//            matrix[0][0].slice(0..7).toTypedArray().hexColumsPrint(8)
-//            matrix[parallelism.toInt() - 1][columnCount - 1].slice(
-//                1016..1023
-//            ).toTypedArray().hexColumsPrint(8)
-
         }
     }
 
-    fun processSegment(segmentPosition: SegmentPosition) {
+    private fun processSegment(segmentPosition: SegmentPosition) {
         val iteration = segmentPosition.iteration
         val slice = segmentPosition.slice
         val lane = segmentPosition.lane
@@ -308,7 +301,6 @@ class Argon2(
             addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock, addressCounter)
             addressCounter++
         }
-
         val startColumn = if (iteration == 0 && slice == 0) {
             2
         } else {
@@ -327,9 +319,6 @@ class Argon2(
             } else {
                 column - 1
             }
-            if (iteration == 1) {
-                println("Breakpoint")
-            }
             val (l, z) = computeReferenceBlockIndexes(
                 iteration,
                 slice,
@@ -337,7 +326,6 @@ class Argon2(
                 column,
                 addressBlock
             )
-//            println("Calling compress for I: $iteration S: $slice Lane: $lane Column: $column with l: $l z: $z")
             matrix[lane][column] =
                 compressionFunctionG(
                     matrix[lane][previousColumn],

@@ -34,7 +34,7 @@ object Argon2Utils {
     const val R4 = 63
 
     //based on Blake2b mixRound
-    internal inline fun mixRound(input: Array<UByte>): Array<ULong> {
+    private fun mixRound(input: Array<UByte>): Array<ULong> {
         var v = input.chunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
         v = mix(v, 0, 4, 8, 12)
         v = mix(v, 1, 5, 9, 13)
@@ -48,7 +48,7 @@ object Argon2Utils {
     }
 
     //Based on Blake2b mix
-    private inline fun mix(v: Array<ULong>, a: Int, b: Int, c: Int, d: Int): Array<ULong> {
+    private fun mix(v: Array<ULong>, a: Int, b: Int, c: Int, d: Int): Array<ULong> {
         v[a] = (v[a] + v[b] + 2U * (v[a] and 0xFFFFFFFFUL) * (v[b] and 0xFFFFFFFFUL))
         v[d] = (v[d] xor v[a]) rotateRight R1
         v[c] = (v[c] + v[d] + 2U * (v[c] and 0xFFFFFFFFUL) * (v[d] and 0xFFFFFFFFUL))
@@ -76,7 +76,7 @@ object Argon2Utils {
         }
     }
 
-    fun compressionFunctionG(
+    internal fun compressionFunctionG(
         previousBlock: Array<UByte>,
         referenceBlock: Array<UByte>,
         currentBlock: Array<UByte>,
@@ -115,7 +115,7 @@ object Argon2Utils {
         return final
     }
 
-    fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
+    internal fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
         if (length <= 64U) {
             return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
         }
@@ -142,7 +142,7 @@ object Argon2Utils {
      * sizes for password, salt, key and associated data. Also since UInt is 32bit we cant set more than 2^32-1 of
      * tagLength, requested memory size and number of iterations, so no need to check for upper bound, just lower.
      */
-    fun validateArgonParameters(
+    internal fun validateArgonParameters(
         password: Array<UByte>,
         salt: Array<UByte>,
         parallelism: Int ,
