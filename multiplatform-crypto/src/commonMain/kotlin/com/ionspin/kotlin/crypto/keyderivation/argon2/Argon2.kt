@@ -25,7 +25,6 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bAr
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 
 /**
@@ -44,6 +43,7 @@ data class SegmentPosition(
     val slice: Int
 )
 
+@ExperimentalStdlibApi
 class Argon2(
     private val password: Array<UByte>,
     private val salt: Array<UByte> = emptyArray(),
@@ -55,6 +55,29 @@ class Argon2(
     private val associatedData: Array<UByte> = emptyArray(),
     private val argonType: ArgonType = ArgonType.Argon2id
 ) : KeyDerivationFunction {
+
+    constructor(
+        password: String,
+        salt: String = "",
+        parallelism: Int = 1,
+        tagLength: UInt = 64U,
+        requestedMemorySize: UInt = 0U,
+        numberOfIterations: UInt = 10U,
+        key: String = "",
+        associatedData: String = "",
+        argonType: ArgonType = ArgonType.Argon2id
+    ) : this(
+        password.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        salt.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        parallelism,
+        tagLength,
+        requestedMemorySize,
+        numberOfIterations,
+        key.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        associatedData.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        argonType
+    )
+
     init {
         validateArgonParameters(
             password,
@@ -68,6 +91,7 @@ class Argon2(
             argonType
         )
     }
+
     //We support only the latest version
     private val versionNumber: UInt = 0x13U
 
@@ -132,7 +156,13 @@ class Argon2(
     }
 
 
-    private fun computeReferenceBlockIndexes(iteration: Int, slice: Int, lane: Int, column: Int, addressBlock: Array<UByte>?): Pair<Int, Int> {
+    private fun computeReferenceBlockIndexes(
+        iteration: Int,
+        slice: Int,
+        lane: Int,
+        column: Int,
+        addressBlock: Array<UByte>?
+    ): Pair<Int, Int> {
         val segmentIndex = (column % segmentLength)
         val (j1, j2) = when (argonType) {
             ArgonType.Argon2d -> {
@@ -153,7 +183,8 @@ class Argon2(
             }
             ArgonType.Argon2id -> {
                 if (iteration == 0 && (slice == 0 || slice == 1)) {
-                    val selectedAddressBlock = addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
+                    val selectedAddressBlock =
+                        addressBlock!!.sliceArray((segmentIndex * 8) until (segmentIndex * 8) + 8)
                     val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
                     val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                     Pair(first32Bit, second32Bit)
@@ -290,7 +321,7 @@ class Argon2(
         val slice = segmentPosition.slice
         val lane = segmentPosition.lane
 
-        var addressBlock : Array<UByte>? = null
+        var addressBlock: Array<UByte>? = null
         var addressCounter = 1UL //Starts from 1 in each segment as defined by the spec
 
         //Generate initial segment address block
