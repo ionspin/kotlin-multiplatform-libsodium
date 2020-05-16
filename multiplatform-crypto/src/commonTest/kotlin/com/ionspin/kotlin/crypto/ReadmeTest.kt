@@ -132,9 +132,9 @@ class ReadmeTest {
         val argon2Instance = Argon2(
             password = "Password",
             salt = "RandomSalt",
-            parallelism = 8,
+            parallelism = 4,
             tagLength = 64U,
-            requestedMemorySize = 256U, //4GB
+            requestedMemorySize = 32U, //Travis build on mac fails with higher values
             numberOfIterations = 4U,
             key = "",
             associatedData = "",
@@ -142,8 +142,8 @@ class ReadmeTest {
         )
         val tag = argon2Instance.derive()
         val tagString = tag.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "")
-        val expectedTagString = "c255e3e94305817d5e09a7c771e574e3a81cc78fef5da4a9644b6df0" +
-                "0ba1c9b424e3dd0ce7e600b1269b14c84430708186a8a60403e1bfbda935991592b9ff37"
+        val expectedTagString = "ca134003c9f9f76ca8869359c1d9065603ec54ac30f5158f06af647cacaef2c1c3e" +
+                "c71e81960278c0596febc64125acbbe5959146db1c128199a1b7cb38982a9"
         println("Tag: ${tagString}")
         assertEquals(tagString, expectedTagString)
 
