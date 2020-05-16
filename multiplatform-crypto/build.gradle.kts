@@ -47,7 +47,7 @@ repositories {
 
 }
 group = "com.ionspin.kotlin"
-version = "0.0.3-SNAPSHOT"
+version = "0.0.3"
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
@@ -68,22 +68,23 @@ kotlin {
             "windows" -> mingwX64("native")
         }
     }
-    jvm()
-    js {
-        compilations {
-            this.forEach {
-                it.compileKotlinTask.kotlinOptions.sourceMap = true
-                it.compileKotlinTask.kotlinOptions.moduleKind = "commonjs"
-                it.compileKotlinTask.kotlinOptions.metaInfo = true
+    if (hostOsName == "linux") {
+        jvm()
+        js {
+            compilations {
+                this.forEach {
+                    it.compileKotlinTask.kotlinOptions.sourceMap = true
+                    it.compileKotlinTask.kotlinOptions.moduleKind = "commonjs"
+                    it.compileKotlinTask.kotlinOptions.metaInfo = true
 
-                if (it.name == "main") {
-                    it.compileKotlinTask.kotlinOptions.main = "call"
+                    if (it.name == "main") {
+                        it.compileKotlinTask.kotlinOptions.main = "call"
+                    }
+                    println("Compilation name ${it.name} set")
+                    println("Destination dir ${it.compileKotlinTask.destinationDir}")
                 }
-                println("Compilation name ${it.name} set")
-                println("Destination dir ${it.compileKotlinTask.destinationDir}")
             }
-        }
-        //Until I figure out how to run headless chrome on travis
+            //Until I figure out how to run headless chrome on travis
 //        browser {
 //
 //            testTask {
@@ -92,56 +93,76 @@ kotlin {
 //                }
 //            }
 //        }
-        nodejs {
-            testTask {
-                useMocha() {
-                    timeout = "10s"
+            nodejs {
+                testTask {
+                    useMocha() {
+                        timeout = "10s"
+                    }
+                }
+            }
+
+        }
+        linuxX64("linux") {
+            binaries {
+                staticLib {
+
+                }
+            }
+        }
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
+        linuxArm64() {
+            binaries {
+                staticLib {
                 }
             }
         }
 
     }
-    linuxX64("linux") {
-        binaries {
-            staticLib {
 
+    if (hostOsName == "mac") {
+        iosX64("ios") {
+            binaries {
+                framework {
+
+                }
+            }
+        }
+        iosArm64("ios64Arm") {
+            binaries {
+                framework {
+
+                }
+            }
+        }
+
+        iosArm32("ios32Arm") {
+            binaries {
+                framework {
+
+                }
+            }
+        }
+        macosX64() {
+            binaries {
+                framework {
+
+                }
             }
         }
     }
-    iosX64("ios") {
-        binaries {
-            framework {
+    if (hostOsName == "windows") {
 
-            }
-        }
-    }
-    iosArm64("ios64Arm") {
-        binaries {
-            framework {
+        mingwX64() {
+            binaries {
+                staticLib {
 
-            }
-        }
-    }
-
-    iosArm32("ios32Arm") {
-        binaries {
-            framework {
-
-            }
-        }
-    }
-    macosX64() {
-        binaries {
-            framework {
-
-            }
-        }
-    }
-
-    mingwX64() {
-        binaries {
-            staticLib {
-
+                }
             }
         }
     }
@@ -154,19 +175,6 @@ kotlin {
 //        }
 //    }
 
-    linuxArm32Hfp() {
-        binaries {
-            staticLib {
-            }
-        }
-    }
-
-    linuxArm64() {
-        binaries {
-            staticLib {
-            }
-        }
-    }
 
     println(targets.names)
 
@@ -185,34 +193,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.testAnnotation))
             }
         }
-        val jvmMain by getting {
-            dependencies {
-                implementation(kotlin(Deps.Jvm.stdLib))
-                implementation(kotlin(Deps.Jvm.test))
-                implementation(kotlin(Deps.Jvm.testJUnit))
-                implementation(Deps.Jvm.coroutinesCore)
-            }
-        }
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin(Deps.Jvm.test))
-                implementation(kotlin(Deps.Jvm.testJUnit))
-                implementation(Deps.Jvm.coroutinesTest)
-                implementation(kotlin(Deps.Jvm.reflection))
-            }
-        }
-        val jsMain by getting {
-            dependencies {
-                implementation(kotlin(Deps.Js.stdLib))
-                implementation(kotlin(Deps.Js.test))
-                implementation(Deps.Js.coroutines)
-            }
-        }
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
+
         val nativeMain = if (ideaActive) {
             val nativeMain by getting {
                 dependsOn(commonMain)
@@ -242,40 +223,91 @@ kotlin {
             nativeTest
         }
 
-        
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-        val iosTest by getting {
-            dependsOn(nativeTest)
+        if (hostOsName == "linux") {
+            val jvmMain by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.stdLib))
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation(Deps.Jvm.coroutinesCore)
+                }
+            }
+            val jvmTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation(Deps.Jvm.coroutinesTest)
+                    implementation(kotlin(Deps.Jvm.reflection))
+                }
+            }
+            val jsMain by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Js.stdLib))
+                    implementation(kotlin(Deps.Js.test))
+                    implementation(Deps.Js.coroutines)
+                }
+            }
+            val jsTest by getting {
+                dependencies {
+                    implementation(kotlin("test-js"))
+                }
+            }
+            val linuxMain by getting {
+                dependsOn(nativeMain)
+            }
+            val linuxTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val linuxArm32HfpMain by getting {
+                dependsOn(nativeMain)
+            }
+
+            val linuxArm32HfpTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val linuxArm64Main by getting {
+                dependsOn(nativeMain)
+            }
+
+            val linuxArm64Test by getting {
+                dependsOn(nativeTest)
+            }
+
         }
 
-        val ios64ArmMain by getting {
-            dependsOn(nativeMain)
-        }
-        val ios64ArmTest by getting {
-            dependsOn(nativeTest)
+        if (hostOsName == "mac") {
+
+            val iosMain by getting {
+                dependsOn(nativeMain)
+            }
+            val iosTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val ios64ArmMain by getting {
+                dependsOn(nativeMain)
+            }
+            val ios64ArmTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val ios32ArmMain by getting {
+                dependsOn(nativeMain)
+            }
+            val ios32ArmTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val macosX64Main by getting {
+                dependsOn(nativeMain)
+            }
+            val macosX64Test by getting {
+                dependsOn(nativeTest)
+            }
         }
 
-        val ios32ArmMain by getting {
-            dependsOn(nativeMain)
-        }
-        val ios32ArmTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val macosX64Test by getting {
-            dependsOn(nativeTest)
-        }
-        val linuxMain by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxTest by getting {
-            dependsOn(nativeTest)
-        }
 //      Coroutines don't support mingwx86 yet
 //        val mingwX86Main by getting {
 //            dependsOn(commonMain)
@@ -288,32 +320,20 @@ kotlin {
 //            dependsOn(commonTest)
 //        }
 //
-        val mingwX64Main by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(Deps.Native.coroutines)
+        if (hostOsName == "windows") {
+            val mingwX64Main by getting {
+                dependsOn(commonMain)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+
+            val mingwX64Test by getting {
+                dependsOn(commonTest)
             }
         }
 
-        val mingwX64Test by getting {
-            dependsOn(commonTest)
-        }
 
-        val linuxArm32HfpMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxArm32HfpTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxArm64Test by getting {
-            dependsOn(nativeTest)
-        }
         all {
             languageSettings.enableLanguageFeature("InlineClasses")
         }
@@ -355,44 +375,47 @@ tasks {
             platforms = listOf("Common")
         }
     }
-
-    val jvmTest by getting(Test::class) {
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED")
+    if (getHostOsName() == "linux") {
+        val jvmTest by getting(Test::class) {
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+            }
         }
-    }
 
-    val linuxTest by getting(KotlinNativeTest::class) {
+        val linuxTest by getting(KotlinNativeTest::class) {
 
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED")
-            // showStandardStreams = true
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                // showStandardStreams = true
+            }
         }
-    }
 
-    val mingwX64Test by getting(KotlinNativeTest::class) {
+        val jsNodeTest by getting(KotlinJsTest::class) {
 
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED")
-            showStandardStreams = true
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                showStandardStreams = true
+            }
         }
-    }
 
-    val jsNodeTest by getting(KotlinJsTest::class) {
-
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED")
-             showStandardStreams = true
-        }
-    }
-
-//    val jsBrowserTest by getting(KotlinJsTest::class) {
+        //    val jsBrowserTest by getting(KotlinJsTest::class) {
 //
 //        testLogging {
 //            events("PASSED", "FAILED", "SKIPPED")
 //             showStandardStreams = true
 //        }
 //    }
+    }
+
+    if (getHostOsName() == "windows") {
+        val mingwX64Test by getting(KotlinNativeTest::class) {
+
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                showStandardStreams = true
+            }
+        }
+    }
 
 }
 
