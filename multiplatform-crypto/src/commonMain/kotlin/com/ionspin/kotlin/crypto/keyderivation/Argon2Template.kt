@@ -35,7 +35,7 @@ import com.ionspin.kotlin.crypto.util.*
  */
 @ExperimentalStdlibApi
 @ExperimentalUnsignedTypes
-class Argon2 internal constructor(
+class Argon2Template internal constructor(
     val password: Array<UByte>,
     val salt: Array<UByte>,
     val parallelism: UInt,
