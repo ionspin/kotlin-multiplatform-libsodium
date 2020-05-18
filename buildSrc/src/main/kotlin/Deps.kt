@@ -15,9 +15,10 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.3.6"
-    val kotlin = "1.3.72"
-    val kotlinSerialization = "0.20.0"
+    val kotlinCoroutines = "1.3.5-native-mt-1.4-M1"
+    val kotlin = "1.4-M1"
+    val kotlinSerialization = "0.20.0-1.4-M1"
+    val atomicfu = "0.14.2-1.4-M1"
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "0.9.18"
 
@@ -34,6 +35,7 @@ object Deps {
         val testAnnotation = "test-annotations-common"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.kotlinSerialization}"
+        val atomicfu = "org.jetbrains.kotlinx:atomicfu:${Versions.atomicfu}"
 
 
         val kotlinBigNum = "com.ionspin.kotlin:bignum:${Versions.kotlinBigNumVersion}"

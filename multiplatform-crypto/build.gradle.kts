@@ -109,19 +109,20 @@ kotlin {
                 }
             }
         }
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
-
-        linuxArm64() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
+        //Not supported in coroutines at the moment
+//        linuxArm32Hfp() {
+//            binaries {
+//                staticLib {
+//                }
+//            }
+//        }
+        //Not supported in coroutines at the moment
+//        linuxArm64() {
+//            binaries {
+//                staticLib {
+//                }
+//            }
+//        }
 
     }
 
@@ -197,11 +198,17 @@ kotlin {
         val nativeMain = if (ideaActive) {
             val nativeMain by getting {
                 dependsOn(commonMain)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
             }
             nativeMain
         } else {
             val nativeMain by creating {
                 dependsOn(commonMain)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
             }
             nativeMain
         }
@@ -258,22 +265,22 @@ kotlin {
             val linuxTest by getting {
                 dependsOn(nativeTest)
             }
+            //Not supported in coroutines at the moment
+//            val linuxArm32HfpMain by getting {
+//                dependsOn(nativeMain)
+//            }
+//
+//            val linuxArm32HfpTest by getting {
+//                dependsOn(nativeTest)
+//            }
 
-            val linuxArm32HfpMain by getting {
-                dependsOn(nativeMain)
-            }
-
-            val linuxArm32HfpTest by getting {
-                dependsOn(nativeTest)
-            }
-
-            val linuxArm64Main by getting {
-                dependsOn(nativeMain)
-            }
-
-            val linuxArm64Test by getting {
-                dependsOn(nativeTest)
-            }
+//            val linuxArm64Main by getting {
+//                dependsOn(nativeMain)
+//            }
+//
+//            val linuxArm64Test by getting {
+//                dependsOn(nativeTest)
+//            }
 
         }
 
@@ -393,7 +400,7 @@ tasks {
             }
         }
 
-        val jsNodeTest by getting(KotlinJsTest::class) {
+        val jsIrNodeTest by getting(KotlinJsTest::class) {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
@@ -401,13 +408,20 @@ tasks {
             }
         }
 
-        //    val jsBrowserTest by getting(KotlinJsTest::class) {
-//
-//        testLogging {
-//            events("PASSED", "FAILED", "SKIPPED")
-//             showStandardStreams = true
+        val legacyjsNodeTest by getting(KotlinJsTest::class) {
+
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                showStandardStreams = true
+            }
+        }
+
+//        val jsIrBrowserTest by getting(KotlinJsTest::class) {
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                 showStandardStreams = true
+//            }
 //        }
-//    }
     }
 
     if (getHostOsName() == "windows") {
