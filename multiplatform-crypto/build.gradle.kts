@@ -250,13 +250,13 @@ kotlin {
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(kotlin(Deps.Js.test))
                     implementation(Deps.Js.coroutines)
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(kotlin("test-js"))
+                    implementation(Deps.Js.coroutines)
+                    implementation(kotlin(Deps.Js.test))
                 }
             }
             val linuxMain by getting {
@@ -400,21 +400,20 @@ tasks {
             }
         }
 
-        val jsIrNodeTest by getting(KotlinJsTest::class) {
-
+        val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
                 showStandardStreams = true
             }
         }
 
-        val legacyjsNodeTest by getting(KotlinJsTest::class) {
-
-            testLogging {
-                events("PASSED", "FAILED", "SKIPPED")
-                showStandardStreams = true
-            }
-        }
+//        val legacyjsNodeTest by getting(KotlinJsTest::class) {
+//
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
 
 //        val jsIrBrowserTest by getting(KotlinJsTest::class) {
 //            testLogging {

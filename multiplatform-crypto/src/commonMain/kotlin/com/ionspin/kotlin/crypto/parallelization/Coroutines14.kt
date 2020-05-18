@@ -14,15 +14,25 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.util
+package com.ionspin.kotlin.crypto.parallelization
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.promise
-
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 20-Jul-2019
+ * on 17-May-2020
  */
-actual fun testBlocking(block: suspend ()-> Unit) : dynamic = GlobalScope.promise { block() }
+@ExperimentalTime
+object Coroutines14 {
+    fun argonParallel() : Array<UByte> {
+        val argon = Argon2()
+        argon
+        println("Placeholder")
+        return emptyArray()
+    }
+}

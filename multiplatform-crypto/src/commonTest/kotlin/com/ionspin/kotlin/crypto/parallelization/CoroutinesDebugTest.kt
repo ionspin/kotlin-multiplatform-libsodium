@@ -14,15 +14,28 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.util
+package com.ionspin.kotlin.crypto.parallelization
 
+import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.promise
-
+import kotlinx.coroutines.launch
+import kotlin.test.Test
+import kotlin.time.ExperimentalTime
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 20-Jul-2019
+ * on 17-May-2020
  */
-actual fun testBlocking(block: suspend ()-> Unit) : dynamic = GlobalScope.promise { block() }
+@ExperimentalTime
+class CoroutinesDebugTest {
+
+    @Test
+    fun debugTest() = testBlocking {
+        GlobalScope.launch {
+            Coroutines14.argonParallel()
+
+        }
+
+    }
+}

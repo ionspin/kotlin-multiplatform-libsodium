@@ -16,6 +16,8 @@
 
 package com.ionspin.kotlin.crypto
 
+import kotlin.browser.window
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -25,15 +27,7 @@ actual object SRNG {
     var counter = 0
     @ExperimentalUnsignedTypes
     actual fun getRandomBytes(amount: Int): Array<UByte> {
-        val runningOnNode = js(
-            "var isNode = false;\n" +
-                    "if (typeof window === 'undefined') {\n" +
-                    "             isNode = true;\n" +
-                    "    } else {\n" +
-                    "            isNode = false;\n" +
-                    "    }\n" +
-                    "return isNode;"
-        )
+        val runningOnNode = jsTypeOf(window) == "undefined"
         val randomBytes = if (runningOnNode) {
             js("require('crypto')").randomBytes(amount).toJSON().data
         } else {

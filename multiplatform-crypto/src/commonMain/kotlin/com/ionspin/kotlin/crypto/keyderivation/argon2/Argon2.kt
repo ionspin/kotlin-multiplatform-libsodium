@@ -44,6 +44,13 @@ data class SegmentPosition(
     val slice: Int
 )
 
+data class ArgonResult(
+    val hashBytes: Array<UByte>
+) {
+    val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
+
+}
+
 @ExperimentalStdlibApi
 class Argon2(
     private val password: Array<UByte>,
@@ -56,6 +63,17 @@ class Argon2(
     private val associatedData: Array<UByte> = emptyArray(),
     private val argonType: ArgonType = ArgonType.Argon2id
 ) : KeyDerivationFunction {
+
+    companion object {
+        fun derive(
+            password: String,
+            parallelism: Int = 16,
+            memory : Int = 4096,
+            numberOfIterations : Int = 10
+        ) : ArgonResult {
+            return ArgonResult(emptyArray())
+        }
+    }
 
     constructor(
         password: String,
