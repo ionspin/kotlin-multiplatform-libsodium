@@ -408,6 +408,14 @@ tasks {
             }
         }
 
+        val legacyjsNodeTest by getting(KotlinJsTest::class) {
+
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                showStandardStreams = true
+            }
+        }
+
 //        val jsIrBrowserTest by getting(KotlinJsTest::class) {
 //            testLogging {
 //                events("PASSED", "FAILED", "SKIPPED")

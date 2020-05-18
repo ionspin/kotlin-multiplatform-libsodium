@@ -26,11 +26,13 @@ actual object SRNG {
     @ExperimentalUnsignedTypes
     actual fun getRandomBytes(amount: Int): Array<UByte> {
         val runningOnNode = js(
-            "if (typeof window === 'undefined') {\n" +
-                    "             true;\n" +
+            "var isNode = false;\n" +
+                    "if (typeof window === 'undefined') {\n" +
+                    "             isNode = true;\n" +
                     "    } else {\n" +
-                    "            false;\n" +
-                    "    }"
+                    "            isNode = false;\n" +
+                    "    }\n" +
+                    "return isNode;"
         )
         val randomBytes = if (runningOnNode) {
             js("require('crypto')").randomBytes(amount).toJSON().data
