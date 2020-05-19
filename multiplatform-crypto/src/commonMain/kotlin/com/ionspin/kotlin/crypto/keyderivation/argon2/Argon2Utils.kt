@@ -33,19 +33,7 @@ object Argon2Utils {
     const val R3 = 16
     const val R4 = 63
 
-    private fun mixInPlace(input: UByteArray, startPosition: Int) {
-        var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
-        v = mix(v, 0, 4, 8, 12)
-        v = mix(v, 1, 5, 9, 13)
-        v = mix(v, 2, 6, 10, 14)
-        v = mix(v, 3, 7, 11, 15)
-        v = mix(v, 0, 5, 10, 15)
-        v = mix(v, 1, 6, 11, 12)
-        v = mix(v, 2, 7, 8, 13)
-        v = mix(v, 3, 4, 9, 14)
-    }
-
-    //based on Blake2b mixRound //TODO rework so it's in place mix
+    //based on Blake2b mixRound
     private fun mixRound(input: UByteArray): Array<ULong> {
         var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
         v = mix(v, 0, 4, 8, 12)
@@ -130,21 +118,21 @@ object Argon2Utils {
 
     internal fun argonBlake2bArbitraryLenghtHash(input: UByteArray, length: UInt): UByteArray {
         if (length <= 64U) {
-            return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
+            return Blake2b.digest(inputMessage = length + input.toTypedArray(), hashLength = length.toInt()).toUByteArray()
         }
         //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
         val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
-        val v = Array<UByteArray>(numberOf64ByteBlocks) { emptyArray() }
-        v[0] = Blake2b.digest(length + input)
+        val v = Array<UByteArray>(numberOf64ByteBlocks) { ubyteArrayOf() }
+        v[0] = Blake2b.digest(length + input.toTypedArray()).toUByteArray()
         for (i in 1 until numberOf64ByteBlocks) {
-            v[i] = Blake2b.digest(v[i - 1])
+            v[i] = Blake2b.digest(v[i - 1].toTypedArray()).toUByteArray()
         }
         val remainingPartOfInput = length.toInt() - numberOf64ByteBlocks * 32
-        val vLast = Blake2b.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
+        val vLast = Blake2b.digest(v[numberOf64ByteBlocks - 1].toTypedArray(), hashLength = remainingPartOfInput).toUByteArray()
         val concat =
             (v.map { it.copyOfRange(0, 32) })
                 .plus(listOf(vLast))
-                .foldRight(emptyUByteArray()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
+                .foldRight(ubyteArrayOf()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
 
         return concat
     }

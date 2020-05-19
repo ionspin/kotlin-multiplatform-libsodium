@@ -27,6 +27,7 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFun
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
 import com.ionspin.kotlin.crypto.util.toLittleEndianTypedUByteArray
+import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 
 /**
  * Created by Ugljesa Jovanovic
@@ -45,8 +46,8 @@ data class SegmentPosition(
 )
 
 data class ArgonResult(
-    val hashBytes: Array<UByte>,
-    val salt: Array<UByte>
+    val hashBytes: UByteArray,
+    val salt: UByteArray
 ) {
     val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
     val saltString by lazy { salt.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
@@ -55,14 +56,14 @@ data class ArgonResult(
 
 @ExperimentalStdlibApi
 class Argon2(
-    private val password: Array<UByte>,
-    private val salt: Array<UByte> = emptyArray(),
+    private val password: UByteArray,
+    private val salt: UByteArray = ubyteArrayOf(),
     private val parallelism: Int = 1,
     private val tagLength: UInt = 64U,
     requestedMemorySize: UInt = 0U,
     private val numberOfIterations: Int = 1,
-    private val key: Array<UByte> = emptyArray(),
-    private val associatedData: Array<UByte> = emptyArray(),
+    private val key: UByteArray = ubyteArrayOf(),
+    private val associatedData: UByteArray = ubyteArrayOf(),
     private val argonType: ArgonType = ArgonType.Argon2id
 ) : KeyDerivationFunction {
 
@@ -79,14 +80,14 @@ class Argon2(
         ): ArgonResult {
             val salt = SRNG.getRandomBytes(64)
             val argon = Argon2(
-                password.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+                password.encodeToByteArray().toUByteArray(),
                 salt,
                 parallelism,
                 tagLength.toUInt(),
                 memory.toUInt(),
                 numberOfIterations,
-                key.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
-                associatedData.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+                key.encodeToByteArray().toUByteArray(),
+                associatedData.encodeToByteArray().toUByteArray(),
                 ArgonType.Argon2id
             )
             val resultArray = argon.derive()
@@ -105,14 +106,14 @@ class Argon2(
         associatedData: String = "",
         argonType: ArgonType = ArgonType.Argon2id
     ) : this(
-        password.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
-        salt.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        password.encodeToByteArray().toUByteArray(),
+        salt.encodeToByteArray().toUByteArray(),
         parallelism,
         tagLength,
         requestedMemorySize,
         numberOfIterations,
-        key.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
-        associatedData.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+        key.encodeToByteArray().toUByteArray(),
+        associatedData.encodeToByteArray().toUByteArray(),
         argonType
     )
 
@@ -168,25 +169,25 @@ class Argon2(
         iteration: Int,
         slice: Int,
         lane: Int,
-        addressBlock: Array<UByte>,
+        addressBlock: UByteArray,
         addressCounter: ULong
-    ): Array<UByte> {
+    ): UByteArray {
         //Calculate first pass
         val firstPass = compressionFunctionG(
-            Array<UByte>(1024) { 0U },
-            iteration.toULong().toLittleEndianTypedUByteArray() +
-                    lane.toULong().toLittleEndianTypedUByteArray() +
-                    slice.toULong().toLittleEndianTypedUByteArray() +
-                    blockCount.toULong().toLittleEndianTypedUByteArray() +
-                    numberOfIterations.toULong().toLittleEndianTypedUByteArray() +
-                    argonType.typeId.toULong().toLittleEndianTypedUByteArray() +
-                    addressCounter.toLittleEndianTypedUByteArray() +
-                    Array<UByte>(968) { 0U },
+            UByteArray(1024) { 0U },
+            iteration.toULong().toLittleEndianUByteArray() +
+                    lane.toULong().toLittleEndianUByteArray() +
+                    slice.toULong().toLittleEndianUByteArray() +
+                    blockCount.toULong().toLittleEndianUByteArray() +
+                    numberOfIterations.toULong().toLittleEndianUByteArray() +
+                    argonType.typeId.toULong().toLittleEndianUByteArray() +
+                    addressCounter.toLittleEndianUByteArray() +
+                    UByteArray(968) { 0U },
             addressBlock,
             false
         )
         val secondPass = compressionFunctionG(
-            Array<UByte>(1024) { 0U },
+            UByteArray(1024) { 0U },
             firstPass,
             firstPass,
             false
@@ -200,7 +201,7 @@ class Argon2(
         slice: Int,
         lane: Int,
         column: Int,
-        addressBlock: Array<UByte>?
+        addressBlock: UByteArray?
     ): Pair<Int, Int> {
         val segmentIndex = (column % segmentLength)
         val independentIndex = segmentIndex % 128 // 128 is the number of addresses in address block
@@ -298,7 +299,7 @@ class Argon2(
         return Pair(l, absolutePosition)
     }
 
-    override fun derive(): Array<UByte> {
+    override fun derive(): UByteArray {
         val h0 = Blake2b.digest(
             parallelism.toUInt()
                 .toLittleEndianTypedUByteArray() + tagLength.toLittleEndianTypedUByteArray() + memorySize.toLittleEndianTypedUByteArray() +
@@ -309,13 +310,13 @@ class Argon2(
                     salt.size.toUInt().toLittleEndianTypedUByteArray() + salt +
                     key.size.toUInt().toLittleEndianTypedUByteArray() + key +
                     associatedData.size.toUInt().toLittleEndianTypedUByteArray() + associatedData
-        )
+        ).toUByteArray()
 
         //Compute B[i][0]
         for (i in 0 until parallelism) {
             matrix[i][0] =
                 argonBlake2bArbitraryLenghtHash(
-                    h0 + 0.toUInt().toLittleEndianTypedUByteArray() + i.toUInt().toLittleEndianTypedUByteArray(),
+                    (h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
                 ).toUByteArray()
         }
@@ -324,19 +325,19 @@ class Argon2(
         for (i in 0 until parallelism) {
             matrix[i][1] =
                 argonBlake2bArbitraryLenghtHash(
-                    h0 + 1.toUInt().toLittleEndianTypedUByteArray() + i.toUInt().toLittleEndianTypedUByteArray(),
+                    (h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
                 ).toUByteArray()
         }
         executeArgonWithSingleThread()
 
-        val result = matrix.foldIndexed(emptyArray<UByte>()) { lane, acc, laneArray ->
+        val result = matrix.foldIndexed(ubyteArrayOf()) { lane, acc, laneArray ->
             if (acc.size == 0) {
                 acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
             } else {
                 // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
-                acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }
-                    .toTypedArray()
+                acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }.toUByteArray()
+
             }
         }
         //Hash the xored last blocks
@@ -363,12 +364,12 @@ class Argon2(
         val slice = segmentPosition.slice
         val lane = segmentPosition.lane
 
-        var addressBlock: Array<UByte>? = null
+        var addressBlock: UByteArray? = null
         var addressCounter = 1UL //Starts from 1 in each segment as defined by the spec
 
         //Generate initial segment address block
         if (useIndependentAddressing) {
-            addressBlock = Array<UByte>(1024) {
+            addressBlock = UByteArray(1024) {
                 0U
             }
             addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock, addressCounter)

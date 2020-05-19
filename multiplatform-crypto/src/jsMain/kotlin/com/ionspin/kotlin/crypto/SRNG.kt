@@ -26,7 +26,7 @@ import kotlin.browser.window
 actual object SRNG {
     var counter = 0
     @ExperimentalUnsignedTypes
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
+    actual fun getRandomBytes(amount: Int): UByteArray {
         val runningOnNode = jsTypeOf(window) == "undefined"
         val randomBytes = if (runningOnNode) {
             js("require('crypto')").randomBytes(amount).toJSON().data
@@ -42,6 +42,6 @@ actual object SRNG {
             randomArrayResult
         }
 
-        return randomBytes as Array<UByte>
+        return randomBytes as UByteArray
     }
 }

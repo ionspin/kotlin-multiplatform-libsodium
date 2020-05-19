@@ -26,9 +26,9 @@ import java.security.SecureRandom
 @ExperimentalUnsignedTypes
 actual object SRNG {
     val secureRandom = SecureRandom()
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
+    actual fun getRandomBytes(amount: Int): UByteArray {
         val byteArray = ByteArray(amount)
         secureRandom.nextBytes(byteArray)
-        return byteArray.toUByteArray().toTypedArray()
+        return byteArray.toUByteArray()
     }
 }

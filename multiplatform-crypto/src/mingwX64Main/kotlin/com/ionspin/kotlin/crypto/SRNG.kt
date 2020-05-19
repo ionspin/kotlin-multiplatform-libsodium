@@ -32,12 +32,12 @@ actual object SRNG {
     }
 
     @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
+    actual fun getRandomBytes(amount: Int): UByteArray {
         memScoped {
             val randArray = allocArray<ByteVar>(amount)
             val pointer = randArray.getPointer(this)
             val status = advapiRandom(pointer.reinterpret(), amount.convert())
-            return Array<UByte>(amount) { pointer[it].toUByte() }
+            return UByteArray(amount) { pointer[it].toUByte() }
         }
     }
 }

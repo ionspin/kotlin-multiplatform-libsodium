@@ -98,7 +98,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
     var currentOutput: Array<UByte> = arrayOf()
     var previousEncrypted: Array<UByte> = arrayOf()
     val initVector = if (initializationVector.isNullOrEmpty()) {
-        SRNG.getRandomBytes(16)
+        SRNG.getRandomBytes(16).toTypedArray()
     } else {
         initializationVector
     }

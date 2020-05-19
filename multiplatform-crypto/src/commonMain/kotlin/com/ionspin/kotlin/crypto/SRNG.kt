@@ -22,5 +22,5 @@ package com.ionspin.kotlin.crypto
  * on 21-Sep-2019
  */
 expect object SRNG {
-    fun getRandomBytes(amount : Int) : Array<UByte>
+    fun getRandomBytes(amount : Int) : UByteArray
 }

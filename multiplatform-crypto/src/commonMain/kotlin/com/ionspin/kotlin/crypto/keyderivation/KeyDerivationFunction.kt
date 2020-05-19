@@ -22,5 +22,5 @@ package com.ionspin.kotlin.crypto.keyderivation
  * on 16-May-2020
  */
 interface KeyDerivationFunction {
-    fun derive() : Array<UByte>
+    fun derive() : UByteArray
 }

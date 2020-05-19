@@ -33,6 +33,11 @@ fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 }
 
+fun UByteArray.hexColumsPrint(chunk : Int = 16) {
+    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
+    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+}
+
 fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
     val printout = this.map { it.toString(16) }.chunked(chunk)
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
@@ -109,6 +114,13 @@ fun UInt.toBigEndianUByteArray() : Array<UByte> {
 @ExperimentalUnsignedTypes
 fun UInt.toLittleEndianTypedUByteArray() : Array<UByte> {
     return Array<UByte> (4) {
+        ((this shr (it * 8)) and 0xFFU).toUByte()
+    }
+}
+
+@ExperimentalUnsignedTypes
+fun UInt.toLittleEndianUByteArray() : UByteArray {
+    return UByteArray (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
 }

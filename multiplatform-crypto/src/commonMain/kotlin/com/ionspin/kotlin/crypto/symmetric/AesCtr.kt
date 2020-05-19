@@ -79,7 +79,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
     var currentOutput: Array<UByte> = arrayOf()
     var previousEncrypted: Array<UByte> = arrayOf()
     val counterStart = if (initialCounter.isNullOrEmpty()) {
-        SRNG.getRandomBytes(16)
+        SRNG.getRandomBytes(16).toTypedArray()
     } else {
         initialCounter
     }
