@@ -23,8 +23,8 @@ package com.ionspin.kotlin.crypto.keyderivation.argon2
  */
 class Argon2TagTooShort(tagLength: UInt) : RuntimeException("Too short tag (output) requested. Requested: $tagLength")
 class Argon2TagTooLong(tagLength: UInt) : RuntimeException("Too long tag (output) requested. Requested: $tagLength")
-class Argon2TimeTooShort(iterations: UInt) : RuntimeException("Too short time parameter (Too few iterations). Requested iterations: $iterations")
-class Argon2TimeTooLong(iterations: UInt) : RuntimeException("Too long time parameter (Too many iterations). Requested iterations: $iterations")
+class Argon2TimeTooShort(iterations: Int) : RuntimeException("Too short time parameter (Too few iterations). Requested iterations: $iterations")
+class Argon2TimeTooLong(iterations: Int) : RuntimeException("Too long time parameter (Too many iterations). Requested iterations: $iterations")
 class Argon2MemoryTooLitlle(requestedMemorySize: UInt) : RuntimeException("Requested memory size must be larger than 8 * parallelism. Requested size: $requestedMemorySize")
 class Argon2MemoryTooMuch(requestedMemorySize: UInt) : RuntimeException("Requested memory size too large. Requested size: $requestedMemorySize")
 class Argon2LanesTooFew(parallelism: Int) : RuntimeException("Too few, or invalid number of threads requested $parallelism")

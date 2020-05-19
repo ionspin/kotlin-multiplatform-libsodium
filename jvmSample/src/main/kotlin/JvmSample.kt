@@ -14,25 +14,15 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.parallelization
-
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
-
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 17-May-2020
+ * on 19-May-2020
  */
-@ExperimentalTime
-object Coroutines14 {
-    fun argonParallel() : Array<UByte> {
-//        val argon = Argon2()
-//        argon
-        println("Placeholder")
-        return emptyArray()
+class JvmSample {
+    companion object {
+        fun nothing() {
+            println("Nothing")
+        }
     }
 }

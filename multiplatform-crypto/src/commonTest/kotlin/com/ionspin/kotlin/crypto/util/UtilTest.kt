@@ -59,13 +59,13 @@ class UtilTest {
     fun testUIntToLittleEndianArray() {
         assertTrue {
             val original = 1U
-            val converted = original.toLittleEndianUByteArray()
+            val converted = original.toLittleEndianTypedUByteArray()
             converted[3] = 1U
             true
         }
         assertTrue {
             val original = 0xAABBCCDDU
-            val converted = original.toLittleEndianUByteArray()
+            val converted = original.toLittleEndianTypedUByteArray()
             converted[0] == 0xDDU.toUByte() &&
                     converted[1] == 0xCCU.toUByte() &&
                     converted[2] == 0xBBU.toUByte() &&
@@ -74,7 +74,7 @@ class UtilTest {
         }
         assertTrue {
             val original = 123456U
-            val converted = original.toLittleEndianUByteArray()
+            val converted = original.toLittleEndianTypedUByteArray()
             converted[0] == 0x40U.toUByte() &&
                     converted[1] == 0xE2U.toUByte() &&
                     converted[2] == 0x01U.toUByte() &&

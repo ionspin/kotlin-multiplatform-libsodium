@@ -16,7 +16,7 @@
 
 @file:Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
 
-package com.ionspin.kotlin.crypto.hash.keyderivation
+package com.ionspin.kotlin.crypto.hash.argon
 
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
@@ -43,7 +43,7 @@ class Argon2Test {
 
 
         val memory = 32U //KiB
-        val iterations = 3U
+        val iterations = 3
         val parallelism = 4U
         val tagLength = 32U
         val password: Array<UByte> = arrayOf(
@@ -84,7 +84,7 @@ class Argon2Test {
 
 
         val memory = 32U //KiB
-        val iterations = 3U
+        val iterations = 3
         val parallelism = 4U
         val tagLength = 32U
         val password: Array<UByte> = arrayOf(
@@ -125,7 +125,7 @@ class Argon2Test {
 
 
         val memory = 32U //KiB
-        val iterations = 3U
+        val iterations = 3
         val parallelism = 4U
         val tagLength = 32U
         val password: Array<UByte> = arrayOf(

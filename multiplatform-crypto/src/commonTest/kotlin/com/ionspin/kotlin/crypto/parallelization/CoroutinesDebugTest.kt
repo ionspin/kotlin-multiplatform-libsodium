@@ -32,10 +32,6 @@ class CoroutinesDebugTest {
 
     @Test
     fun debugTest() = testBlocking {
-        GlobalScope.launch {
-            Coroutines14.argonParallel()
-
-        }
-
+        Coroutines14.argonParallel()
     }
 }

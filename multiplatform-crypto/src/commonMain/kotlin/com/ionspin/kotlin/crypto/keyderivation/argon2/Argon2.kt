@@ -19,14 +19,14 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
-import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
+import com.ionspin.kotlin.crypto.util.toLittleEndianTypedUByteArray
 
 /**
  * Created by Ugljesa Jovanovic
@@ -45,9 +45,11 @@ data class SegmentPosition(
 )
 
 data class ArgonResult(
-    val hashBytes: Array<UByte>
+    val hashBytes: Array<UByte>,
+    val salt: Array<UByte>
 ) {
     val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
+    val saltString by lazy { salt.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
 
 }
 
@@ -58,7 +60,7 @@ class Argon2(
     private val parallelism: Int = 1,
     private val tagLength: UInt = 64U,
     requestedMemorySize: UInt = 0U,
-    private val numberOfIterations: UInt = 1U,
+    private val numberOfIterations: Int = 1,
     private val key: Array<UByte> = emptyArray(),
     private val associatedData: Array<UByte> = emptyArray(),
     private val argonType: ArgonType = ArgonType.Argon2id
@@ -67,11 +69,28 @@ class Argon2(
     companion object {
         fun derive(
             password: String,
+            salt: String? = null,
+            key: String,
+            associatedData: String,
             parallelism: Int = 16,
-            memory : Int = 4096,
-            numberOfIterations : Int = 10
-        ) : ArgonResult {
-            return ArgonResult(emptyArray())
+            tagLength: Int = 64,
+            memory: Int = 4096,
+            numberOfIterations: Int = 10,
+        ): ArgonResult {
+            val salt = SRNG.getRandomBytes(64)
+            val argon = Argon2(
+                password.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+                salt,
+                parallelism,
+                tagLength.toUInt(),
+                memory.toUInt(),
+                numberOfIterations,
+                key.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+                associatedData.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
+                ArgonType.Argon2id
+            )
+            val resultArray = argon.derive()
+            return ArgonResult(resultArray, salt)
         }
     }
 
@@ -81,7 +100,7 @@ class Argon2(
         parallelism: Int = 1,
         tagLength: UInt = 64U,
         requestedMemorySize: UInt = 0U,
-        numberOfIterations: UInt = 10U,
+        numberOfIterations: Int = 10,
         key: String = "",
         associatedData: String = "",
         argonType: ArgonType = ArgonType.Argon2id
@@ -96,20 +115,6 @@ class Argon2(
         associatedData.encodeToByteArray().map { it.toUByte() }.toList().toTypedArray(),
         argonType
     )
-
-    init {
-        validateArgonParameters(
-            password,
-            salt,
-            parallelism,
-            tagLength,
-            requestedMemorySize,
-            numberOfIterations,
-            key,
-            associatedData,
-            argonType
-        )
-    }
 
     //We support only the latest version
     private val versionNumber: UInt = 0x13U
@@ -126,12 +131,27 @@ class Argon2(
 
     private val useIndependentAddressing = argonType == ArgonType.Argon2id || argonType == ArgonType.Argon2i
 
-
     // State
-    private val matrix = Array(parallelism) {
-        Array(columnCount) {
-            Array<UByte>(1024) { 0U }
+    private val matrix: Array<Array<UByteArray>>
+
+    init {
+        matrix = Array(parallelism) {
+            Array(columnCount) {
+                UByteArray(1024)
+            }
         }
+
+        validateArgonParameters(
+            password,
+            salt,
+            parallelism,
+            tagLength,
+            requestedMemorySize,
+            numberOfIterations,
+            key,
+            associatedData,
+            argonType
+        )
     }
 
     private fun clearMatrix() {
@@ -154,13 +174,13 @@ class Argon2(
         //Calculate first pass
         val firstPass = compressionFunctionG(
             Array<UByte>(1024) { 0U },
-            iteration.toULong().toLittleEndianUByteArray() +
-                    lane.toULong().toLittleEndianUByteArray() +
-                    slice.toULong().toLittleEndianUByteArray() +
-                    blockCount.toULong().toLittleEndianUByteArray() +
-                    numberOfIterations.toULong().toLittleEndianUByteArray() +
-                    argonType.typeId.toULong().toLittleEndianUByteArray() +
-                    addressCounter.toLittleEndianUByteArray() +
+            iteration.toULong().toLittleEndianTypedUByteArray() +
+                    lane.toULong().toLittleEndianTypedUByteArray() +
+                    slice.toULong().toLittleEndianTypedUByteArray() +
+                    blockCount.toULong().toLittleEndianTypedUByteArray() +
+                    numberOfIterations.toULong().toLittleEndianTypedUByteArray() +
+                    argonType.typeId.toULong().toLittleEndianTypedUByteArray() +
+                    addressCounter.toLittleEndianTypedUByteArray() +
                     Array<UByte>(968) { 0U },
             addressBlock,
             false
@@ -196,7 +216,8 @@ class Argon2(
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
-                val selectedAddressBlock = addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
+                val selectedAddressBlock =
+                    addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
                 val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
                 val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                 Pair(first32Bit, second32Bit)
@@ -280,31 +301,32 @@ class Argon2(
     override fun derive(): Array<UByte> {
         val h0 = Blake2b.digest(
             parallelism.toUInt()
-                .toLittleEndianUByteArray() + tagLength.toLittleEndianUByteArray() + memorySize.toLittleEndianUByteArray() +
-                    numberOfIterations.toLittleEndianUByteArray() + versionNumber.toLittleEndianUByteArray() + argonType.typeId.toUInt()
-                .toLittleEndianUByteArray() +
-                    password.size.toUInt().toLittleEndianUByteArray() + password +
-                    salt.size.toUInt().toLittleEndianUByteArray() + salt +
-                    key.size.toUInt().toLittleEndianUByteArray() + key +
-                    associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
+                .toLittleEndianTypedUByteArray() + tagLength.toLittleEndianTypedUByteArray() + memorySize.toLittleEndianTypedUByteArray() +
+                    numberOfIterations.toUInt()
+                        .toLittleEndianTypedUByteArray() + versionNumber.toLittleEndianTypedUByteArray() + argonType.typeId.toUInt()
+                .toLittleEndianTypedUByteArray() +
+                    password.size.toUInt().toLittleEndianTypedUByteArray() + password +
+                    salt.size.toUInt().toLittleEndianTypedUByteArray() + salt +
+                    key.size.toUInt().toLittleEndianTypedUByteArray() + key +
+                    associatedData.size.toUInt().toLittleEndianTypedUByteArray() + associatedData
         )
 
         //Compute B[i][0]
-        for (i in 0 until parallelism.toInt()) {
+        for (i in 0 until parallelism) {
             matrix[i][0] =
                 argonBlake2bArbitraryLenghtHash(
-                    h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
+                    h0 + 0.toUInt().toLittleEndianTypedUByteArray() + i.toUInt().toLittleEndianTypedUByteArray(),
                     1024U
-                )
+                ).toUByteArray()
         }
 
         //Compute B[i][1]
-        for (i in 0 until parallelism.toInt()) {
+        for (i in 0 until parallelism) {
             matrix[i][1] =
                 argonBlake2bArbitraryLenghtHash(
-                    h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray(),
+                    h0 + 1.toUInt().toLittleEndianTypedUByteArray() + i.toUInt().toLittleEndianTypedUByteArray(),
                     1024U
-                )
+                ).toUByteArray()
         }
         executeArgonWithSingleThread()
 
@@ -326,7 +348,7 @@ class Argon2(
     }
 
     private fun executeArgonWithSingleThread() {
-        for (iteration in 0 until numberOfIterations.toInt()) {
+        for (iteration in 0 until numberOfIterations) {
             for (slice in 0 until 4) {
                 for (lane in 0 until parallelism) {
                     val segmentPosition = SegmentPosition(iteration, lane, slice)
@@ -366,7 +388,6 @@ class Argon2(
             if (useIndependentAddressing && segmentIndex != 0 && segmentIndex % 128 == 0) {
                 addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock!!, addressCounter)
                 addressCounter++
-                addressBlock.hexColumsPrint(16)
             }
             val previousColumn = if (column == 0) {
                 columnCount - 1
@@ -386,7 +407,7 @@ class Argon2(
                     matrix[l][z],
                     matrix[lane][column],
                     true
-                )
+                ).toUByteArray()
         }
 
     }

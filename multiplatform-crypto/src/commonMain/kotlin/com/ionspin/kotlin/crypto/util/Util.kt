@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package com.ionspin.kotlin.crypto.util
 
 /**
@@ -74,6 +76,14 @@ infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
 }
 
 @ExperimentalUnsignedTypes
+infix fun UByteArray.xor(other : UByteArray) : UByteArray {
+    if (this.size != other.size) {
+        throw RuntimeException("Operands of different sizes are not supported yet")
+    }
+    return UByteArray(this.size) { this[it] xor other[it] }
+}
+
+@ExperimentalUnsignedTypes
 fun String.hexStringToUByteArray() : Array<UByte> {
     return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
 }
@@ -97,7 +107,7 @@ fun UInt.toBigEndianUByteArray() : Array<UByte> {
     }
 }
 @ExperimentalUnsignedTypes
-fun UInt.toLittleEndianUByteArray() : Array<UByte> {
+fun UInt.toLittleEndianTypedUByteArray() : Array<UByte> {
     return Array<UByte> (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
@@ -111,11 +121,19 @@ fun ULong.toBigEndianUByteArray() : Array<UByte> {
     }
 }
 @ExperimentalUnsignedTypes
-fun ULong.toLittleEndianUByteArray() : Array<UByte> {
+fun ULong.toLittleEndianTypedUByteArray() : Array<UByte> {
     return Array<UByte> (8) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
 }
+
+@ExperimentalUnsignedTypes
+fun ULong.toLittleEndianUByteArray() :UByteArray {
+    return UByteArray (8) {
+        ((this shr (it * 8)) and 0xFFU).toUByte()
+    }
+}
+
 @ExperimentalUnsignedTypes
 fun Array<UByte>.fromLittleEndianArrayToULong() : ULong {
     if (this.size > 8) {
@@ -123,6 +141,33 @@ fun Array<UByte>.fromLittleEndianArrayToULong() : ULong {
     }
     var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (index * 8))}
     return ulong
+}
+
+@ExperimentalUnsignedTypes
+fun UByteArray.fromLittleEndianArrayToULong() : ULong {
+    if (this.size > 8) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var ulong = this.foldIndexed(0UL) { index, acc, uByte -> acc or (uByte.toULong() shl (index * 8))}
+    return ulong
+}
+
+fun UByteArray.arrayChunked(sliceSize: Int): List<UByteArray> {
+    val last = this.size % sliceSize
+    val hasLast = last != 0
+    val numberOfSlices = this.size / sliceSize
+
+
+    val result : MutableList<UByteArray> = MutableList<UByteArray>(0) { ubyteArrayOf() }
+
+    for (i in 0 until numberOfSlices) {
+        result.add(this.sliceArray(i * sliceSize until (i + 1) * sliceSize))
+    }
+    if (hasLast) {
+        result.add(this.sliceArray(numberOfSlices * sliceSize until this.size))
+    }
+
+    return result
 }
 
 
@@ -149,6 +194,17 @@ fun Array<UByte>.fromLittleEndianArrayToUInt() : UInt {
     return uint
 }
 
+@ExperimentalUnsignedTypes
+fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
+    if (this.size > 4) {
+        throw RuntimeException("ore than 8 bytes in input, potential overflow")
+    }
+    var uint = this.foldIndexed(0U) { index, acc, uByte -> acc or (uByte.toUInt() shl (index * 8))}
+    return uint
+}
+
+
+
 
 @ExperimentalUnsignedTypes
 fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
@@ -161,5 +217,5 @@ fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
 
 @ExperimentalUnsignedTypes
 operator fun UInt.plus(other : Array<UByte>) : Array<UByte> {
-    return this.toLittleEndianUByteArray() + other
+    return this.toLittleEndianTypedUByteArray() + other
 }

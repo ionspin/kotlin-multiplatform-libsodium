@@ -16,6 +16,14 @@
  */
 
 pluginManagement {
+    repositories {
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+
+        mavenCentral()
+
+        maven("https://plugins.gradle.org/m2/")
+    }
+
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "kotlin-multiplatform") {
@@ -27,4 +35,5 @@ pluginManagement {
 enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "KotlinMultiplatformCrypto"
 include("multiplatform-crypto")
+include("jvmSample")
 

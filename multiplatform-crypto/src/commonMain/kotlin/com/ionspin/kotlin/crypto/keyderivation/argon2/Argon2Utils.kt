@@ -33,9 +33,21 @@ object Argon2Utils {
     const val R3 = 16
     const val R4 = 63
 
-    //based on Blake2b mixRound
-    private fun mixRound(input: Array<UByte>): Array<ULong> {
-        var v = input.chunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
+    private fun mixInPlace(input: UByteArray, startPosition: Int) {
+        var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
+        v = mix(v, 0, 4, 8, 12)
+        v = mix(v, 1, 5, 9, 13)
+        v = mix(v, 2, 6, 10, 14)
+        v = mix(v, 3, 7, 11, 15)
+        v = mix(v, 0, 5, 10, 15)
+        v = mix(v, 1, 6, 11, 12)
+        v = mix(v, 2, 7, 8, 13)
+        v = mix(v, 3, 4, 9, 14)
+    }
+
+    //based on Blake2b mixRound //TODO rework so it's in place mix
+    private fun mixRound(input: UByteArray): Array<ULong> {
+        var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
         v = mix(v, 0, 4, 8, 12)
         v = mix(v, 1, 5, 9, 13)
         v = mix(v, 2, 6, 10, 14)
@@ -45,6 +57,10 @@ object Argon2Utils {
         v = mix(v, 2, 7, 8, 13)
         v = mix(v, 3, 4, 9, 14)
         return v
+    }
+
+    private fun inPlaceMix(v: UByteArray, a: Int, b: Int, c: Int, d: Int) {
+
     }
 
     //Based on Blake2b mix
@@ -60,8 +76,8 @@ object Argon2Utils {
         return v
     }
 
-    private fun extractColumnFromGBlock(gBlock: Array<UByte>, columnPosition: Int): Array<UByte> {
-        val result = Array<UByte>(128) { 0U }
+    private fun extractColumnFromGBlock(gBlock: UByteArray, columnPosition: Int): UByteArray {
+        val result = UByteArray(128) { 0U }
         for (i in 0..7) {
             gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16)
                 .copyInto(result, i * 16)
@@ -69,7 +85,7 @@ object Argon2Utils {
         return result
     }
 
-    private fun copyIntoGBlockColumn(gBlock: Array<UByte>, columnPosition: Int, columnData: Array<UByte>) {
+    private fun copyIntoGBlockColumn(gBlock: UByteArray, columnPosition: Int, columnData: UByteArray) {
         for (i in 0..7) {
             val column = columnData.copyOfRange(i * 16, i * 16 + 16)
             column.copyInto(gBlock, i * 128 + columnPosition * 16)
@@ -77,24 +93,21 @@ object Argon2Utils {
     }
 
     internal fun compressionFunctionG(
-        previousBlock: Array<UByte>,
-        referenceBlock: Array<UByte>,
-        currentBlock: Array<UByte>,
+        previousBlock: UByteArray,
+        referenceBlock: UByteArray,
+        currentBlock: UByteArray,
         xorWithCurrentBlock: Boolean
-    ): Array<UByte> {
+    ): UByteArray {
         val r = referenceBlock xor previousBlock
-        val q = Array<UByte>(1024) { 0U }
-        val z = Array<UByte>(1024) { 0U }
+        val q = UByteArray(1024) { 0U }
+        val z = UByteArray(1024) { 0U }
         // Do the argon/blake2b mixing on rows
         for (i in 0..7) {
             val startOfRow = (i * 8 * 16)
             val endOfRow = startOfRow + (8 * 16)
             val rowToMix = r.copyOfRange(startOfRow, endOfRow)
             mixRound(rowToMix)
-                .map { it.toLittleEndianUByteArray() }
-                .flatMap { it.asIterable() }
-                .toTypedArray()
-                .copyInto(q, startOfRow)
+
         }
         // Do the argon/blake2b mixing on columns
         for (i in 0..7) {
@@ -102,9 +115,9 @@ object Argon2Utils {
                 z,
                 i,
                 mixRound(extractColumnFromGBlock(q, i))
-                    .map { it.toLittleEndianUByteArray() }
+                    .map { it.toLittleEndianTypedUByteArray() }
                     .flatMap { it.asIterable() }
-                    .toTypedArray()
+                    .toUByteArray()
             )
         }
         val final = if (xorWithCurrentBlock) {
@@ -115,13 +128,13 @@ object Argon2Utils {
         return final
     }
 
-    internal fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
+    internal fun argonBlake2bArbitraryLenghtHash(input: UByteArray, length: UInt): UByteArray {
         if (length <= 64U) {
             return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
         }
         //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
         val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
-        val v = Array<Array<UByte>>(numberOf64ByteBlocks) { emptyArray() }
+        val v = Array<UByteArray>(numberOf64ByteBlocks) { emptyArray() }
         v[0] = Blake2b.digest(length + input)
         for (i in 1 until numberOf64ByteBlocks) {
             v[i] = Blake2b.digest(v[i - 1])
@@ -131,7 +144,7 @@ object Argon2Utils {
         val concat =
             (v.map { it.copyOfRange(0, 32) })
                 .plus(listOf(vLast))
-                .foldRight(emptyArray<UByte>()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
+                .foldRight(emptyUByteArray()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
 
         return concat
     }
@@ -143,14 +156,14 @@ object Argon2Utils {
      * tagLength, requested memory size and number of iterations, so no need to check for upper bound, just lower.
      */
     internal fun validateArgonParameters(
-        password: Array<UByte>,
-        salt: Array<UByte>,
+        password: UByteArray,
+        salt: UByteArray,
         parallelism: Int ,
         tagLength: UInt,
         requestedMemorySize: UInt ,
-        numberOfIterations: UInt ,
-        key: Array<UByte>,
-        associatedData: Array<UByte>,
+        numberOfIterations: Int ,
+        key: UByteArray,
+        associatedData: UByteArray,
         argonType: ArgonType
     ) {
 
@@ -170,7 +183,7 @@ object Argon2Utils {
             throw Argon2MemoryTooLitlle(requestedMemorySize)
         }
         //Number of iterations
-        if (numberOfIterations <= 0U) {
+        if (numberOfIterations <= 0) {
             throw Argon2TimeTooShort(numberOfIterations)
         }
 
