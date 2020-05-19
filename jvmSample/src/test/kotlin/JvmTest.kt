@@ -34,6 +34,9 @@ class JvmTest {
     fun testNothing() {
         JvmSample.nothing()
         assertTrue { true }
+        val arr = ubyteArrayOf(0U)
+        val bla = ubyteArrayOf(1U)
+        arr.copyInto(bla)
 
     }
 

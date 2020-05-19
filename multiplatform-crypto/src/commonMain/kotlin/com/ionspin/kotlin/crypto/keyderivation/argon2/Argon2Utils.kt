@@ -19,7 +19,12 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
-import com.ionspin.kotlin.crypto.util.*
+import com.ionspin.kotlin.crypto.util.arrayChunked
+import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
+import com.ionspin.kotlin.crypto.util.plus
+import com.ionspin.kotlin.crypto.util.rotateRight
+import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
+import com.ionspin.kotlin.crypto.util.xor
 
 /**
  * Created by Ugljesa Jovanovic
@@ -95,6 +100,10 @@ object Argon2Utils {
             val endOfRow = startOfRow + (8 * 16)
             val rowToMix = r.copyOfRange(startOfRow, endOfRow)
             mixRound(rowToMix)
+                .map { it.toLittleEndianUByteArray() }
+                .flatMap { it.asIterable() }
+                .toUByteArray()
+                .copyInto(q, startOfRow)
 
         }
         // Do the argon/blake2b mixing on columns
@@ -103,7 +112,7 @@ object Argon2Utils {
                 z,
                 i,
                 mixRound(extractColumnFromGBlock(q, i))
-                    .map { it.toLittleEndianTypedUByteArray() }
+                    .map { it.toLittleEndianUByteArray() }
                     .flatMap { it.asIterable() }
                     .toUByteArray()
             )

@@ -26,7 +26,6 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bAr
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
-import com.ionspin.kotlin.crypto.util.toLittleEndianTypedUByteArray
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 
 /**
@@ -300,16 +299,18 @@ class Argon2(
     }
 
     override fun derive(): UByteArray {
+        val blakeInput = parallelism.toUInt().toLittleEndianUByteArray() +
+                tagLength.toLittleEndianUByteArray() +
+                memorySize.toLittleEndianUByteArray() +
+                numberOfIterations.toUInt().toLittleEndianUByteArray() +
+                versionNumber.toLittleEndianUByteArray() +
+                argonType.typeId.toUInt().toLittleEndianUByteArray() +
+                password.size.toUInt().toLittleEndianUByteArray() + password +
+                salt.size.toUInt().toLittleEndianUByteArray() + salt +
+                key.size.toUInt().toLittleEndianUByteArray() + key +
+                associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
         val h0 = Blake2b.digest(
-            parallelism.toUInt()
-                .toLittleEndianTypedUByteArray() + tagLength.toLittleEndianTypedUByteArray() + memorySize.toLittleEndianTypedUByteArray() +
-                    numberOfIterations.toUInt()
-                        .toLittleEndianTypedUByteArray() + versionNumber.toLittleEndianTypedUByteArray() + argonType.typeId.toUInt()
-                .toLittleEndianTypedUByteArray() +
-                    password.size.toUInt().toLittleEndianTypedUByteArray() + password +
-                    salt.size.toUInt().toLittleEndianTypedUByteArray() + salt +
-                    key.size.toUInt().toLittleEndianTypedUByteArray() + key +
-                    associatedData.size.toUInt().toLittleEndianTypedUByteArray() + associatedData
+            blakeInput.toTypedArray()
         ).toUByteArray()
 
         //Compute B[i][0]
@@ -318,7 +319,7 @@ class Argon2(
                 argonBlake2bArbitraryLenghtHash(
                     (h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
-                ).toUByteArray()
+                )
         }
 
         //Compute B[i][1]
@@ -327,7 +328,7 @@ class Argon2(
                 argonBlake2bArbitraryLenghtHash(
                     (h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
-                ).toUByteArray()
+                )
         }
         executeArgonWithSingleThread()
 
