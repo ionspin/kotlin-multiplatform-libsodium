@@ -26,6 +26,7 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bAr
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 import com.ionspin.kotlin.crypto.util.xor
 
@@ -202,6 +203,7 @@ class Argon2(
                 }
                 val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
                 val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
+
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
@@ -324,20 +326,14 @@ class Argon2(
         //Run all iterations over all lanes and all segments
         executeArgonWithSingleThread()
 
-//        val result = matrix.foldIndexed(ubyteArrayOf()) { lane, acc, laneArray ->
-//            if (acc.size == 0) {
-//                acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
-//            } else {
-//                // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
-//                acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }.toUByteArray()
-//
-//            }
-//        }
+
         //Temporary fold
         val acc = matrix.getBlockAt(0, columnCount - 1).copyOf()
         for (i in 1 until parallelism) {
-            acc.xor(matrix.getBlockAt(i, columnCount -1))
+            acc.hexColumsPrint(1024)
+            (acc xor matrix.getBlockAt(i, columnCount -1)).copyInto(acc)
         }
+        acc.hexColumsPrint(1024)
         //Hash the xored last blocks
         val hash = argonBlake2bArbitraryLenghtHash(acc, tagLength)
         matrix.clearMatrix()
@@ -400,6 +396,7 @@ class Argon2(
                 column,
                 addressBlock
             )
+
             matrix.setBlockAt(lane, column,
                 compressionFunctionG(
                     matrix.getBlockAt(lane, previousColumn),
