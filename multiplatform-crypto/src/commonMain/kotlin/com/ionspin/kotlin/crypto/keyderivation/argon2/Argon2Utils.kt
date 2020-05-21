@@ -19,6 +19,7 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.BLOCK_SIZE
 import com.ionspin.kotlin.crypto.util.arrayChunked
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
 import com.ionspin.kotlin.crypto.util.plus
@@ -32,6 +33,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 16-May-2020
  */
 object Argon2Utils {
+    const val BLOCK_SIZE = 1024
 
     const val R1 = 32
     const val R2 = 24
@@ -185,4 +187,11 @@ object Argon2Utils {
         }
 
     }
+}
+
+// ------------ Arithmetic and other utils
+
+@ExperimentalUnsignedTypes
+fun UByteArray.xorWithBlock(other : Argon2Matrix, rowPosition: Int, columnPosition: Int) : UByteArray {
+    return UByteArray(BLOCK_SIZE) { this[it] xor other[rowPosition, columnPosition, it] }
 }

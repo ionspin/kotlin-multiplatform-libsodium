@@ -72,7 +72,7 @@ class Argon2MatrixTest {
             zeroesBlock.contentEquals(argon2Matrix.getBlockAt(0, 0)) &&
                     onesBlock.contentEquals(argon2Matrix.getBlockAt(0, 1)) &&
                     twosBlock.contentEquals(argon2Matrix.getBlockAt(1, 0)) &&
-                    threesBlock.contentEquals(argon2Matrix.getBlockAt(1, 1)) 
+                    threesBlock.contentEquals(argon2Matrix.getBlockAt(1, 1))
         }
     }
 }

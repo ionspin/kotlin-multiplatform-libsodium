@@ -25,10 +25,7 @@ import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
-import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
-import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
-import com.ionspin.kotlin.crypto.util.xor
+import com.ionspin.kotlin.crypto.util.*
 
 /**
  * Created by Ugljesa Jovanovic
@@ -330,10 +327,8 @@ class Argon2(
         //Temporary fold
         val acc = matrix.getBlockAt(0, columnCount - 1).copyOf()
         for (i in 1 until parallelism) {
-            acc.hexColumsPrint(1024)
-            (acc xor matrix.getBlockAt(i, columnCount -1)).copyInto(acc)
+            (acc.xorWithBlock(matrix, i, columnCount - 1).copyInto(acc))
         }
-        acc.hexColumsPrint(1024)
         //Hash the xored last blocks
         val hash = argonBlake2bArbitraryLenghtHash(acc, tagLength)
         matrix.clearMatrix()
