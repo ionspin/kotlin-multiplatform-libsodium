@@ -14,9 +14,8 @@ errors when using it.
 
 **The API will move fast and break often until v1.0**
 
-Make SHA hashes "updatable" like Blake2b
-
-After that tenative plan is to add 25519 curve based signing and key exchange next.
+Next step:
+reduce ammount of allocations and introduce parallelization in Argon2
 
 ## Should I use this in production?
 
@@ -31,24 +30,22 @@ No.
 This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
 It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
 
-## Integration
+## Currently supported 
 
-
-
-## Hashing functions
+### Hashing functions
 * Blake2b
 * SHA512
 * SHA256
 
-## Symmetric cipher
+### Symmetric cipher
 * AES
   * Modes: CBC, CTR
   
-## Key Derivation 
+### Key Derivation 
 
 * Argon2
 
-## AEAD
+### AEAD
 
 TODO()
 
@@ -90,11 +87,11 @@ val input = "abc"
 val result = Blake2b.digest(input)
 ```
 
-Result is returned as a `Array<Byte>`
+Result is returned as a `UByteArray`
 
 ##### Updatable instance version
-You can create an instance and feed the data by using `update(input : Array<Byte>)` call. Once all data is supplied,
-you should call `digest()` or `digestString()` convenience method that converts the `Array<Byte>` into hexadecimal string.
+You can create an instance and feed the data by using `update(input : UByteArray)` call. Once all data is supplied,
+you should call `digest()` or `digestString()` convenience method that converts the `UByteArray` into hexadecimal string.
 
 If you want to use Blake2b with a key, you should supply it when creating the `Blake2b` instance.
 
@@ -111,8 +108,8 @@ After digest is called, the instance is reset and can be reused (Keep in mind ke
 
 ##### Stateless version
 
-You need to deliver the complete data that is to be hashed in one go. You can either provide the `Array<Byte>` as input
-or `String`. Result is always returned as `Array<Byte>` (At least in verision 0.0.1)
+You need to deliver the complete data that is to be hashed in one go. You can either provide the `UByteArray` as input
+or `String`. Result is always returned as `UByteArray` (At least in verision 0.0.1)
 
 ```kotlin
 val input = "abc"
@@ -124,7 +121,7 @@ val input ="abc"
 val result = Sha512.digest(message = input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
 ```
 
-Result is returned as a `Array<Byte>`
+Result is returned as a `UByteArray`
 
 ##### Updateable version
 
