@@ -39,7 +39,7 @@ object Argon2Utils {
     const val R4 = 63
 
     //based on Blake2b mixRound
-    private fun mixRound(input: UByteArray): Array<ULong> {
+    internal fun mixRound(input: UByteArray): Array<ULong> {
         var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
         v = mix(v, 0, 4, 8, 12)
         v = mix(v, 1, 5, 9, 13)
@@ -69,7 +69,7 @@ object Argon2Utils {
         return v
     }
 
-    private fun extractColumnFromGBlock(gBlock: UByteArray, columnPosition: Int): UByteArray {
+    internal fun extractColumnFromGBlock(gBlock: UByteArray, columnPosition: Int): UByteArray {
         val result = UByteArray(128) { 0U }
         for (i in 0..7) {
             gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16)

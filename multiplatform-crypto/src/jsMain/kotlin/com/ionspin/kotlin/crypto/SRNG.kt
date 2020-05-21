@@ -49,13 +49,10 @@ actual object SRNG {
             0U
         }
         for (i in 0 until amount) {
-            println("Setting ${randomBytes[i]}")
             js("""
                randomBytesUByteArray[i] = randomBytes[i]  
             """)
-            println("Set value ${randomBytesUByteArray[i]}")
         }
-
         return randomBytesUByteArray
     }
 
