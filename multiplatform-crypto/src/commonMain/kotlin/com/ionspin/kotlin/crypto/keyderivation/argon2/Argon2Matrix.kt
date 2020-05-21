@@ -28,21 +28,67 @@ package com.ionspin.kotlin.crypto.keyderivation.argon2
     internal val storage: UByteArray = UByteArray(columnCount * rowCount * 1024)
 
     operator fun get(rowPosition: Int, columnPosition: Int, inBlockPosition: Int) : UByte {
-        return storage[rowPosition * (columnCount - 1) * 1024 + columnPosition * 1024 + inBlockPosition]
+        if (rowPosition > rowCount - 1) {
+            throw RuntimeException("Invalid row (lane) requested: $rowPosition, rowCount: $rowCount")
+        }
+        if (columnPosition > columnCount - 1) {
+            throw RuntimeException("Invalid column requested: $columnPosition, columnCount: $columnCount")
+        }
+        return storage[getBlockStartPosition(rowPosition, columnPosition) + inBlockPosition]
     }
 
-    operator fun get(rowPosition: Int, columnPosition: Int) : UByteArray {
-        println("Expensive.")
-        return storage.copyOfRange(
-            rowPosition * (columnCount - 1) * 1024 + columnPosition * 1024,
-            rowPosition * (columnCount - 1) * 1024 + columnPosition * 1024 + 1024
+    operator fun set(rowPosition: Int, columnPosition: Int, inBlockPosition: Int, value: UByte) {
+        storage[getBlockStartPosition(rowPosition, columnPosition) + inBlockPosition] = value
+    }
+
+    fun getBlockStartAndEndPositions(rowPosition: Int, columnPosition: Int) : Pair<Int, Int> {
+        val start = getBlockStartPosition(rowPosition, columnPosition)
+        return Pair(
+            start,
+            start + 1024
         )
     }
 
-    operator fun get(rowPosition: Int) : Array<UByteArray> {
-        return Array(columnCount) {
-            this.get(rowPosition, it)
-        }
+    fun sliceArray(indices: IntRange): UByteArray {
+        return storage.sliceArray(indices)
+    }
 
+    fun getBlockAt(rowPosition: Int, columnPosition: Int) : UByteArray {
+                println("Expensive get")
+        return storage.copyOfRange(
+            getBlockStartPosition(rowPosition, columnPosition),
+            getBlockStartPosition(rowPosition, columnPosition) + 1024
+        )
+    }
+
+    fun setBlockAt(rowPosition: Int, columnPosition: Int, blockValue: UByteArray) {
+        println("Expensive set")
+        blockValue.copyInto(
+            storage,
+            getBlockStartPosition(rowPosition, columnPosition)
+            )
+    }
+
+    private inline fun getBlockStartPosition(rowPosition: Int, columnPosition: Int) : Int {
+        return rowPosition * columnCount * 1024 + columnPosition * 1024
+    }
+
+//    operator fun get(rowPosition: Int, columnPosition: Int) : UByteArray {
+//        println("Expensive.")
+//        return storage.copyOfRange(
+//            rowPosition * (columnCount - 1) * 1024 + columnPosition * 1024,
+//            rowPosition * (columnCount - 1) * 1024 + columnPosition * 1024 + 1024
+//        )
+//    }
+//
+//    operator fun get(rowPosition: Int) : Array<UByteArray> {
+//        return Array(columnCount) {
+//            this.get(rowPosition, it)
+//        }
+//
+//    }
+
+    internal fun clearMatrix() {
+        for( index in storage.indices) { storage[index] = 0U }
     }
 }

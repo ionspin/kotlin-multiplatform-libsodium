@@ -27,6 +27,7 @@ import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFun
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
+import com.ionspin.kotlin.crypto.util.xor
 
 /**
  * Created by Ugljesa Jovanovic
@@ -132,15 +133,10 @@ class Argon2(
     private val useIndependentAddressing = argonType == ArgonType.Argon2id || argonType == ArgonType.Argon2i
 
     // State
-    private val matrix: Array<Array<UByteArray>>
+    private val matrix: Argon2Matrix
 
     init {
-        matrix = Array(parallelism) {
-            Array(columnCount) {
-                UByteArray(1024)
-            }
-        }
-
+        matrix = Argon2Matrix(columnCount, parallelism)
         validateArgonParameters(
             password,
             salt,
@@ -154,15 +150,7 @@ class Argon2(
         )
     }
 
-    private fun clearMatrix() {
-        matrix.forEachIndexed { laneIndex, lane ->
-            lane.forEachIndexed { columnIndex, block ->
-                block.forEachIndexed { byteIndex, byte ->
-                    matrix[laneIndex][columnIndex][byteIndex] = 0U
-                }
-            }
-        }
-    }
+
 
     private fun populateAddressBlock(
         iteration: Int,
@@ -202,17 +190,18 @@ class Argon2(
         column: Int,
         addressBlock: UByteArray?
     ): Pair<Int, Int> {
+
         val segmentIndex = (column % segmentLength)
         val independentIndex = segmentIndex % 128 // 128 is the number of addresses in address block
         val (j1, j2) = when (argonType) {
             ArgonType.Argon2d -> {
-                val previousBlock = if (column == 0) {
-                    matrix[lane][columnCount - 1] //Get last block in the SAME lane
+                val (previousBlockStart, previousBlockEnd) = if (column == 0) {
+                    matrix.getBlockStartAndEndPositions(lane, columnCount - 1) //Get last block in the SAME lane
                 } else {
-                    matrix[lane][column - 1]
+                    matrix.getBlockStartAndEndPositions(lane, column - 1)
                 }
-                val first32Bit = previousBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
-                val second32Bit = previousBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
+                val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
@@ -230,13 +219,13 @@ class Argon2(
                     val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
                     Pair(first32Bit, second32Bit)
                 } else {
-                    val previousBlock = if (column == 0) {
-                        matrix[lane][columnCount - 1] //Get last block in the SAME lane
+                    val (previousBlockStart, previousBlockEnd) = if (column == 0) {
+                        matrix.getBlockStartAndEndPositions(lane, columnCount - 1) //Get last block in the SAME lane
                     } else {
-                        matrix[lane][column - 1]
+                        matrix.getBlockStartAndEndPositions(lane, column - 1)
                     }
-                    val first32Bit = previousBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
-                    val second32Bit = previousBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                    val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
+                    val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
                     Pair(first32Bit, second32Bit)
                 }
 
@@ -315,35 +304,43 @@ class Argon2(
 
         //Compute B[i][0]
         for (i in 0 until parallelism) {
-            matrix[i][0] =
+            matrix.setBlockAt(i, 0,
                 argonBlake2bArbitraryLenghtHash(
                     (h0 + 0.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
                 )
+            )
         }
 
         //Compute B[i][1]
         for (i in 0 until parallelism) {
-            matrix[i][1] =
+            matrix.setBlockAt(i, 1,
                 argonBlake2bArbitraryLenghtHash(
                     (h0 + 1.toUInt().toLittleEndianUByteArray() + i.toUInt().toLittleEndianUByteArray()).toUByteArray(),
                     1024U
                 )
+            )
         }
+        //Run all iterations over all lanes and all segments
         executeArgonWithSingleThread()
 
-        val result = matrix.foldIndexed(ubyteArrayOf()) { lane, acc, laneArray ->
-            if (acc.size == 0) {
-                acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
-            } else {
-                // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
-                acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }.toUByteArray()
-
-            }
+//        val result = matrix.foldIndexed(ubyteArrayOf()) { lane, acc, laneArray ->
+//            if (acc.size == 0) {
+//                acc + laneArray[columnCount - 1] // add last element in first lane to the accumulator
+//            } else {
+//                // For each element in our accumulator, xor it with an appropriate element from the last column in current lane (from 1 to `parallelism`)
+//                acc.mapIndexed { index, it -> it xor laneArray[columnCount - 1][index] }.toUByteArray()
+//
+//            }
+//        }
+        //Temporary fold
+        val acc = matrix.getBlockAt(0, columnCount - 1).copyOf()
+        for (i in 1 until parallelism) {
+            acc.xor(matrix.getBlockAt(i, columnCount -1))
         }
         //Hash the xored last blocks
-        val hash = argonBlake2bArbitraryLenghtHash(result, tagLength)
-        clearMatrix()
+        val hash = argonBlake2bArbitraryLenghtHash(acc, tagLength)
+        matrix.clearMatrix()
         return hash
 
 
@@ -403,13 +400,14 @@ class Argon2(
                 column,
                 addressBlock
             )
-            matrix[lane][column] =
+            matrix.setBlockAt(lane, column,
                 compressionFunctionG(
-                    matrix[lane][previousColumn],
-                    matrix[l][z],
-                    matrix[lane][column],
+                    matrix.getBlockAt(lane, previousColumn),
+                    matrix.getBlockAt(l,z),
+                    matrix.getBlockAt(lane,column),
                     true
                 ).toUByteArray()
+            )
         }
 
     }

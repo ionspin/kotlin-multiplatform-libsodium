@@ -36,7 +36,36 @@ class Argon2MatrixTest {
 
 
     @Test
-    fun debugTest() {
+    fun indexAccessTest() {
+        val argon2Matrix = Argon2Matrix(2, 2)
+        (zeroesBlock + onesBlock + twosBlock + threesBlock).copyInto(argon2Matrix.storage)
+        println(argon2Matrix[0, 0, 0])
+        println(argon2Matrix[0, 1, 0])
+        println(argon2Matrix[1, 0, 0])
+        println(argon2Matrix[1, 1, 0])
+//        argon2Matrix.storage.hexColumsPrint(1024)
+        var expectedByteValue = 0U.toUByte()
+        for (lane in 0 until 2) {
+            for (column in 0 until 2) {
+                for (blockPosition in 0 until 1024) {
+                    assertTrue {
+                        argon2Matrix[lane, column, blockPosition] == expectedByteValue
+                    }
+                }
+                expectedByteValue++
+            }
+        }
+        assertTrue {
+            argon2Matrix[0, 0, 0] == 0U.toUByte() &&
+                    argon2Matrix[0, 1, 0] == 1U.toUByte() &&
+                    argon2Matrix[1, 0, 0] == 2U.toUByte() &&
+                    argon2Matrix[1, 1, 0] == 3U.toUByte()
+
+        }
+    }
+
+    @Test
+    fun blockRetrievalTest() {
         val argon2Matrix = Argon2Matrix(2, 2)
         (zeroesBlock + onesBlock + twosBlock + threesBlock).copyInto(argon2Matrix.storage)
         println(argon2Matrix[0, 0, 0])
