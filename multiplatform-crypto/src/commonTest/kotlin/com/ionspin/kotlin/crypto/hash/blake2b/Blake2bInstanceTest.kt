@@ -32,7 +32,7 @@ class Blake2bInstanceTest {
     fun testUpdatableBlake2b() {
         val updates = 14
         val input = "1234567890"
-        val expectedResult = arrayOf<UByte>(
+        val expectedResult = ubyteArrayOf(
             //@formatter:off
             0x2fU, 0x49U, 0xaeU, 0xb6U, 0x13U, 0xe3U, 0x4eU, 0x92U, 0x4eU, 0x17U, 0x5aU, 0x6aU, 0xf2U, 0xfaU, 0xadU,
             0x7bU, 0xc7U, 0x82U, 0x35U, 0xf9U, 0xc5U, 0xe4U, 0x61U, 0xc6U, 0x8fU, 0xd5U, 0xb4U, 0x07U, 0xeeU, 0x8eU,
@@ -83,7 +83,7 @@ class Blake2bInstanceTest {
         }
         val expectedResult = ("5c6a9a4ae911c02fb7e71a991eb9aea371ae993d4842d206e" +
                 "6020d46f5e41358c6d5c277c110ef86c959ed63e6ecaaaceaaff38019a43264ae06acf73b9550b1")
-            .chunked(2).map { it.toUByte(16) }.toTypedArray()
+            .chunked(2).map { it.toUByte(16) }.toUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)

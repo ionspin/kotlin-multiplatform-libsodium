@@ -135,15 +135,15 @@ class Sha512 : UpdatableHash {
         )
 
         @ExperimentalStdlibApi
-        override fun digest(inputString: String, key: String?, hashLength: Int): Array<UByte> {
+        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
-                inputString.encodeToByteArray().map { it.toUByte() }.toTypedArray(),
-                key?.run { encodeToByteArray().map { it.toUByte() }.toTypedArray() } ?: emptyArray<UByte>(),
+                inputString.encodeToByteArray().toUByteArray(),
+                key?.run { encodeToByteArray().toUByteArray() } ?: ubyteArrayOf(),
                 hashLength = hashLength
             )
         }
 
-        override fun digest(inputMessage: Array<UByte>, key: Array<UByte>, hashLength: Int): Array<UByte> {
+        override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
 
             var h = iv.copyOf()
 
@@ -155,7 +155,7 @@ class Sha512 : UpdatableHash {
                 )
 
             chunks.forEach { chunk ->
-                val w = expandChunk(chunk)
+                val w = expandChunk(chunk.toUByteArray())
                 mix(h, w)
 
             }
@@ -196,7 +196,7 @@ class Sha512 : UpdatableHash {
             return ((x and y) xor (x and z) xor (y and z))
         }
 
-        private fun expandChunk(chunk: Array<UByte>): Array<ULong> {
+        private fun expandChunk(chunk: UByteArray): Array<ULong> {
             val w = Array<ULong>(CHUNK_SIZE) {
                 when (it) {
                     in 0 until 16 -> {
@@ -259,7 +259,7 @@ class Sha512 : UpdatableHash {
             return h
         }
 
-        fun createExpansionArray(originalSizeInBytes: Int): Array<UByte> {
+        fun createExpansionArray(originalSizeInBytes: Int): UByteArray {
             val originalMessageSizeInBits = originalSizeInBytes * 8
 
             val expandedRemainderOf1024 = (originalMessageSizeInBits + 129) % BLOCK_SIZE
@@ -267,7 +267,7 @@ class Sha512 : UpdatableHash {
                 0 -> 0
                 else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
             }
-            val expansionArray = Array<UByte>(zeroAddAmount + 1) {
+            val expansionArray = UByteArray(zeroAddAmount + 1) {
                 when (it) {
                     0 -> 0b10000000U
                     else -> 0U
@@ -277,10 +277,10 @@ class Sha512 : UpdatableHash {
         }
 
 
-        private fun ULong.toPaddedByteArray(): Array<UByte> {
+        private fun ULong.toPaddedByteArray(): UByteArray {
             val byteMask = 0xFFUL
             //Ignore messages longer than 64 bits for now
-            return Array(8) {
+            return UByteArray(8) {
                 when (it) {
                     7 -> (this and byteMask).toUByte()
                     6 -> ((this shr 8) and byteMask).toUByte()
@@ -295,10 +295,10 @@ class Sha512 : UpdatableHash {
             }
         }
 
-        private fun ULong.toPadded128BitByteArray(): Array<UByte> {
+        private fun ULong.toPadded128BitByteArray(): UByteArray {
             val byteMask = 0xFFUL
             //Ignore messages longer than 64 bits for now
-            return Array(16) {
+            return UByteArray(16) {
                 when (it) {
                     15 -> (this and byteMask).toUByte()
                     14 -> ((this shr 8) and byteMask).toUByte()
@@ -317,14 +317,14 @@ class Sha512 : UpdatableHash {
     var h = iv.copyOf()
     var counter = 0
     var bufferCounter = 0
-    var buffer = Array<UByte>(BLOCK_SIZE_IN_BYTES) { 0U }
+    var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
 
     @ExperimentalStdlibApi
     override fun update(data: String) {
-        return update(data.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+        return update(data.encodeToByteArray().toUByteArray())
     }
 
-    override fun update(data: Array<UByte>) {
+    override fun update(data: UByteArray) {
         if (data.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
         }
@@ -335,9 +335,9 @@ class Sha512 : UpdatableHash {
                 val chunked = data.chunked(BLOCK_SIZE_IN_BYTES)
                 chunked.forEach { chunk ->
                     if (bufferCounter + chunk.size < BLOCK_SIZE_IN_BYTES) {
-                        appendToBuffer(chunk, bufferCounter)
+                        appendToBuffer(chunk.toUByteArray(), bufferCounter)
                     } else {
-                        chunk.copyInto(
+                        chunk.toUByteArray().copyInto(
                             destination = buffer,
                             destinationOffset = bufferCounter,
                             startIndex = 0,
@@ -345,7 +345,7 @@ class Sha512 : UpdatableHash {
                         )
                         counter += BLOCK_SIZE_IN_BYTES
                         consumeBlock(buffer)
-                        buffer = Array<UByte>(BLOCK_SIZE_IN_BYTES) {
+                        buffer = UByteArray(BLOCK_SIZE_IN_BYTES) {
                             when (it) {
                                 in (0 until (chunk.size - (BLOCK_SIZE_IN_BYTES - bufferCounter))) -> {
                                     chunk[it + (BLOCK_SIZE_IN_BYTES - bufferCounter)]
@@ -364,18 +364,18 @@ class Sha512 : UpdatableHash {
         }
     }
 
-    private fun consumeBlock(block: Array<UByte>) {
+    private fun consumeBlock(block: UByteArray) {
         val w = expandChunk(block)
         mix(h, w).copyInto(h)
     }
 
-    override fun digest(): Array<UByte> {
+    override fun digest(): UByteArray {
         val length = counter + bufferCounter
         val expansionArray = createExpansionArray(length)
         val finalBlock =
             buffer.copyOfRange(0, bufferCounter) + expansionArray + (length * 8).toULong().toPadded128BitByteArray()
         finalBlock.chunked(BLOCK_SIZE_IN_BYTES).forEach {
-            consumeBlock(it)
+            consumeBlock(it.toUByteArray())
         }
 
 
@@ -394,7 +394,7 @@ class Sha512 : UpdatableHash {
         return digest().map { it.toString(16) }.joinToString(separator = "")
     }
 
-    private fun appendToBuffer(array: Array<UByte>, start: Int) {
+    private fun appendToBuffer(array: UByteArray, start: Int) {
         array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
         bufferCounter += array.size
     }

@@ -28,23 +28,23 @@ interface Hash {
 
 @ExperimentalUnsignedTypes
 interface UpdatableHash : Hash {
-    fun update(data : Array<UByte>)
+    fun update(data : UByteArray)
 
     fun update(data : String)
 
-    fun digest() : Array<UByte>
+    fun digest() : UByteArray
 
     fun digestString() : String
 }
 
 @ExperimentalUnsignedTypes
 interface StatelessHash : Hash {
-    fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): Array<UByte>
+    fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): UByteArray
 
     fun digest(
-        inputMessage: Array<UByte> = emptyArray(),
-        key: Array<UByte> = emptyArray(),
+        inputMessage: UByteArray = ubyteArrayOf(),
+        key: UByteArray = ubyteArrayOf(),
         hashLength: Int = MAX_HASH_BYTES
-    ): Array<UByte>
+    ): UByteArray
 }
 

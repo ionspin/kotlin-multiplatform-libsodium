@@ -29,8 +29,10 @@ actual object SRNG {
     actual fun getRandomBytes(amount: Int): UByteArray {
         val runningOnNode = jsTypeOf(window) == "undefined"
         val randomBytes = if (runningOnNode) {
+            println("Running on node")
             js("require('crypto')").randomBytes(amount).toJSON().data
         } else {
+            println("Running in browser")
             js(
             """
                 var randomArray = new Uint8Array(amount);
@@ -41,7 +43,21 @@ actual object SRNG {
             var randomArrayResult = js("Array.prototype.slice.call(randomArray);")
             randomArrayResult
         }
+        println("Random bytes: $randomBytes")
+        print("Byte at ${randomBytes[0]}")
+        val randomBytesUByteArray = UByteArray(amount) {
+            0U
+        }
+        for (i in 0 until amount) {
+            println("Setting ${randomBytes[i]}")
+            js("""
+               randomBytesUByteArray[i] = randomBytes[i]  
+            """)
+            println("Set value ${randomBytesUByteArray[i]}")
+        }
 
-        return randomBytes as UByteArray
+        return randomBytesUByteArray
     }
+
+
 }

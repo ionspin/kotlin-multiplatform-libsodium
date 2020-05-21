@@ -310,8 +310,8 @@ class Argon2(
                 key.size.toUInt().toLittleEndianUByteArray() + key +
                 associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
         val h0 = Blake2b.digest(
-            blakeInput.toTypedArray()
-        ).toUByteArray()
+            blakeInput
+        )
 
         //Compute B[i][0]
         for (i in 0 until parallelism) {

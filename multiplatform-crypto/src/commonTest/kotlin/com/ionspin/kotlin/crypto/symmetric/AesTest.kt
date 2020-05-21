@@ -10,15 +10,15 @@ import kotlin.test.assertTrue
 class AesTest {
 
     val irrelevantKey = "01234567890123345678901234567890"
-    val irrelevantInput = UByteArray(16) { 0U }.toTypedArray()
+    val irrelevantInput = UByteArray(16) { 0U }
 
     @Test
     fun testSubBytes() {
         val fakeState = arrayOf(
-            ubyteArrayOf(0x53U, 0U, 0U, 0U).toTypedArray(),
-            ubyteArrayOf(0U, 0U, 0U, 0U).toTypedArray(),
-            ubyteArrayOf(0U, 0U, 0U, 0U).toTypedArray(),
-            ubyteArrayOf(0U, 0U, 0U, 0U).toTypedArray()
+            ubyteArrayOf(0x53U, 0U, 0U, 0U),
+            ubyteArrayOf(0U, 0U, 0U, 0U),
+            ubyteArrayOf(0U, 0U, 0U, 0U),
+            ubyteArrayOf(0U, 0U, 0U, 0U)
         )
         val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
         fakeState.copyInto(aes.state)
@@ -31,16 +31,16 @@ class AesTest {
     @Test
     fun testShiftRows() {
         val fakeState = arrayOf(
-            ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
-            ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
-            ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
-            ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray()
+            ubyteArrayOf(0U, 1U, 2U, 3U),
+            ubyteArrayOf(0U, 1U, 2U, 3U),
+            ubyteArrayOf(0U, 1U, 2U, 3U),
+            ubyteArrayOf(0U, 1U, 2U, 3U)
         )
         val expectedState = arrayOf(
-            ubyteArrayOf(0U, 1U, 2U, 3U).toTypedArray(),
-            ubyteArrayOf(1U, 2U, 3U, 0U).toTypedArray(),
-            ubyteArrayOf(2U, 3U, 0U, 1U).toTypedArray(),
-            ubyteArrayOf(3U, 0U, 1U, 2U).toTypedArray()
+            ubyteArrayOf(0U, 1U, 2U, 3U),
+            ubyteArrayOf(1U, 2U, 3U, 0U),
+            ubyteArrayOf(2U, 3U, 0U, 1U),
+            ubyteArrayOf(3U, 0U, 1U, 2U)
         )
         val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
         fakeState.copyInto(aes.state)
@@ -76,17 +76,17 @@ class AesTest {
     fun testMixColumns() {
         //Test vectors from wikipedia
         val fakeState = arrayOf(
-            ubyteArrayOf(0xdbU, 0xf2U, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0x13U, 0x0aU, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0x53U, 0x22U, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0x45U, 0x5cU, 0x01U, 0xc6U).toTypedArray()
+            ubyteArrayOf(0xdbU, 0xf2U, 0x01U, 0xc6U),
+            ubyteArrayOf(0x13U, 0x0aU, 0x01U, 0xc6U),
+            ubyteArrayOf(0x53U, 0x22U, 0x01U, 0xc6U),
+            ubyteArrayOf(0x45U, 0x5cU, 0x01U, 0xc6U)
         )
 
         val expectedState = arrayOf(
-            ubyteArrayOf(0x8eU, 0x9fU, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0x4dU, 0xdcU, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0xa1U, 0x58U, 0x01U, 0xc6U).toTypedArray(),
-            ubyteArrayOf(0xbcU, 0x9dU, 0x01U, 0xc6U).toTypedArray()
+            ubyteArrayOf(0x8eU, 0x9fU, 0x01U, 0xc6U),
+            ubyteArrayOf(0x4dU, 0xdcU, 0x01U, 0xc6U),
+            ubyteArrayOf(0xa1U, 0x58U, 0x01U, 0xc6U),
+            ubyteArrayOf(0xbcU, 0x9dU, 0x01U, 0xc6U)
         )
 
         val aes = Aes(AesKey.Aes128Key(irrelevantKey), irrelevantInput)
@@ -183,10 +183,10 @@ class AesTest {
         val key = "2b7e151628aed2a6abf7158809cf4f3c"
         val expectedResult = "3925841d02dc09fbdc118597196a0b32"
 
-        val aes = Aes(AesKey.Aes128Key(key), input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+        val aes = Aes(AesKey.Aes128Key(key), input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
         val result = aes.encrypt()
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+            result.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
         }
     }
 
@@ -196,11 +196,11 @@ class AesTest {
             val input = "3243f6a8885a308d313198a2e0370734"
             val key = "2b7e151628aed2a6abf7158809cf4f3c"
             val expectedResult = "3925841d02dc09fbdc118597196a0b32"
-            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray()
+            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
             val aes = Aes(AesKey.Aes128Key(key), original)
             val encrypted = aes.encrypt()
             assertTrue {
-                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
             }
             val decrypted = Aes.decrypt(AesKey.Aes128Key(key), encrypted)
 
@@ -210,57 +210,57 @@ class AesTest {
             val input = "00112233445566778899aabbccddeeff"
             val key = "000102030405060708090a0b0c0d0e0f"
             val expectedResult = "69c4e0d86a7b0430d8cdb78070b4c55a"
-            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray()
+            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
             val aes = Aes(AesKey.Aes128Key(key), original)
             val encrypted = aes.encrypt()
             assertTrue {
-                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
             }
             val aesDec = Aes(AesKey.Aes128Key(key), encrypted)
             val decrypted = aesDec.decrypt()
             assertTrue {
                 aesDec.expandedKey.contentDeepEquals(aes.expandedKey)
             }
-            decrypted.contentDeepEquals(original)
+            decrypted.contentEquals(original)
         }
 
         assertTrue {
             val input = "00112233445566778899aabbccddeeff"
             val key = "000102030405060708090a0b0c0d0e0f"
             val expectedResult = "69c4e0d86a7b0430d8cdb78070b4c55a"
-            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray()
+            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
             val encrypted = Aes.encrypt(AesKey.Aes128Key(key), original)
             assertTrue {
-                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
             }
             val decrypted = Aes.decrypt(AesKey.Aes128Key(key), encrypted)
-            decrypted.contentDeepEquals(original)
+            decrypted.contentEquals(original)
         }
 
         assertTrue {
             val input = "00112233445566778899aabbccddeeff"
             val key = "000102030405060708090a0b0c0d0e0f1011121314151617"
             val expectedResult = "dda97ca4864cdfe06eaf70a0ec0d7191"
-            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray()
+            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
             val encrypted = Aes.encrypt(AesKey.Aes192Key(key), original)
             assertTrue {
-                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
             }
             val decrypted = Aes.decrypt(AesKey.Aes192Key(key), encrypted)
-            decrypted.contentDeepEquals(original)
+            decrypted.contentEquals(original)
         }
 
         assertTrue {
             val input = "00112233445566778899aabbccddeeff"
             val key = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
             val expectedResult = "8ea2b7ca516745bfeafc49904b496089"
-            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray()
+            val original = input.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
             val encrypted = Aes.encrypt(AesKey.Aes256Key(key), original)
             assertTrue {
-                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toTypedArray())
+                encrypted.contentEquals(expectedResult.chunked(2).map { it.toInt(16).toUByte() }.toUByteArray())
             }
             val decrypted = Aes.decrypt(AesKey.Aes256Key(key), encrypted)
-            decrypted.contentDeepEquals(original)
+            decrypted.contentEquals(original)
         }
     }
 

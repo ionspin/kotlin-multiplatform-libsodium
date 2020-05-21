@@ -31,6 +31,14 @@ class SRNGJsTest {
     fun testJsSrng() {
         val bytes1 = SRNG.getRandomBytes(10)
         val bytes2 = SRNG.getRandomBytes(10)
+        println("BYTES1")
+        bytes1.forEach {
+            print(it.toString(16).padStart(2, '0'))
+        }
+        println("BYTES2")
+        bytes2.forEach {
+            print(it.toString(16).padStart(2, '0'))
+        }
         assertTrue {
             !bytes1.contentEquals(bytes2) &&
                     bytes1.size == 10 &&

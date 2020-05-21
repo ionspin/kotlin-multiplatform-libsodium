@@ -1,10 +1,12 @@
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.crypto.util.flattenToUByteArray
+
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
 @ExperimentalUnsignedTypes
-internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UByte>) {
+internal class Aes internal constructor(val aesKey: AesKey, val input: UByteArray) {
     companion object {
         private val debug = false
 
@@ -54,18 +56,18 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
 
         val rcon: UByteArray = ubyteArrayOf(0x8DU, 0x01U, 0x02U, 0x04U, 0x08U, 0x10U, 0x20U, 0x40U, 0x80U, 0x1BU, 0x36U)
 
-        fun encrypt(aesKey: AesKey, input: Array<UByte>): Array<UByte> {
+        fun encrypt(aesKey: AesKey, input: UByteArray): UByteArray {
             return Aes(aesKey, input).encrypt()
         }
 
-        fun decrypt(aesKey: AesKey, input: Array<UByte>): Array<UByte> {
+        fun decrypt(aesKey: AesKey, input: UByteArray): UByteArray {
             return Aes(aesKey, input).decrypt()
         }
 
     }
 
-    val state: Array<Array<UByte>> = (0 until 4).map { outerCounter ->
-        Array<UByte>(4) { innerCounter -> input[innerCounter * 4 + outerCounter] }
+    val state: Array<UByteArray> = (0 until 4).map { outerCounter ->
+        UByteArray(4) { innerCounter -> input[innerCounter * 4 + outerCounter] }
     }.toTypedArray()
 
     val numberOfRounds = when (aesKey) {
@@ -74,7 +76,7 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         is AesKey.Aes256Key -> 14
     }
 
-    val expandedKey: Array<Array<UByte>> = expandKey()
+    val expandedKey: Array<UByteArray> = expandKey()
 
 
     var round = 0
@@ -110,22 +112,22 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
     }
 
     fun shiftRows() {
-        state[0] = arrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
-        state[1] = arrayOf(state[1][1], state[1][2], state[1][3], state[1][0])
-        state[2] = arrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
-        state[3] = arrayOf(state[3][3], state[3][0], state[3][1], state[3][2])
+        state[0] = ubyteArrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
+        state[1] = ubyteArrayOf(state[1][1], state[1][2], state[1][3], state[1][0])
+        state[2] = ubyteArrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
+        state[3] = ubyteArrayOf(state[3][3], state[3][0], state[3][1], state[3][2])
     }
 
     fun inversShiftRows() {
-        state[0] = arrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
-        state[1] = arrayOf(state[1][3], state[1][0], state[1][1], state[1][2])
-        state[2] = arrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
-        state[3] = arrayOf(state[3][1], state[3][2], state[3][3], state[3][0])
+        state[0] = ubyteArrayOf(state[0][0], state[0][1], state[0][2], state[0][3])
+        state[1] = ubyteArrayOf(state[1][3], state[1][0], state[1][1], state[1][2])
+        state[2] = ubyteArrayOf(state[2][2], state[2][3], state[2][0], state[2][1])
+        state[3] = ubyteArrayOf(state[3][1], state[3][2], state[3][3], state[3][0])
     }
 
     fun mixColumns() {
-        val stateMixed: Array<Array<UByte>> = (0 until 4).map {
-            Array<UByte>(4) { 0U }
+        val stateMixed: Array<UByteArray> = (0 until 4).map {
+            UByteArray(4) { 0U }
         }.toTypedArray()
         for (c in 0..3) {
 
@@ -138,8 +140,8 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
     }
 
     fun inverseMixColumns() {
-        val stateMixed: Array<Array<UByte>> = (0 until 4).map {
-            Array<UByte>(4) { 0U }
+        val stateMixed: Array<UByteArray> = (0 until 4).map {
+            UByteArray(4) { 0U }
         }.toTypedArray()
         for (c in 0..3) {
             stateMixed[0][c] =
@@ -203,9 +205,9 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         return galoisFieldMultiply(this.toUByte(), second)
     }
 
-    fun expandKey(): Array<Array<UByte>> {
+    fun expandKey(): Array<UByteArray> {
         val expandedKey = (0 until 4 * (numberOfRounds + 1)).map {
-            Array<UByte>(4) { 0U }
+            UByteArray(4) { 0U }
         }.toTypedArray()
         // First round
         for (i in 0 until aesKey.numberOf32BitWords) {
@@ -241,13 +243,13 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
             }
             expandedKey[i] = expandedKey[i - aesKey.numberOf32BitWords].mapIndexed { index, it ->
                 it xor temp[index]
-            }.toTypedArray()
+            }.toUByteArray()
             clearArray(temp)
         }
         return expandedKey
     }
 
-    fun encrypt(): Array<UByte> {
+    fun encrypt(): UByteArray {
         if (completed) {
             throw RuntimeException("Encrypt can only be called once per Aes instance, since the state is cleared at the " +
                     "end of the operation")
@@ -273,8 +275,8 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         addRoundKey()
         printState()
         val transposedMatrix = (0 until 4).map { outerCounter ->
-            Array<UByte>(4) { 0U }
-        }.toTypedArray()
+            UByteArray(4) { 0U }
+        }
         for (i in 0 until 4) {
             for (j in 0 until 4) {
                 transposedMatrix[i][j] = state[j][i]
@@ -282,10 +284,10 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         }
         state.forEach { clearArray(it) }
         completed = true
-        return transposedMatrix.flatten().toTypedArray()
+        return transposedMatrix.flattenToUByteArray()
     }
 
-    fun decrypt(): Array<UByte> {
+    fun decrypt(): UByteArray {
         if (completed) {
             throw RuntimeException("Decrypt can only be called once per Aes instance, since the state is cleared at the " +
                     "end of the operation")
@@ -313,20 +315,19 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         printState()
 
         val transposedMatrix =  (0 until 4).map { outerCounter ->
-            Array<UByte>(4) { 0U }
-        }.toTypedArray()
+            UByteArray(4) { 0U }
+        }
         for (i in 0 until 4) {
             for (j in 0 until 4) {
                 transposedMatrix[i][j] = state[j][i]
             }
         }
-        printState(transposedMatrix)
         state.forEach { clearArray(it) }
         completed = true
-        return transposedMatrix.flatten().toTypedArray()
+        return transposedMatrix.flattenToUByteArray()
     }
 
-    private fun clearArray(array : Array<UByte>) {
+    private fun clearArray(array : UByteArray) {
         array.indices.forEach { array[it] = 0U }
     }
 
@@ -342,7 +343,7 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
         }
     }
 
-    private fun printState(specific : Array<Array<UByte>>) {
+    private fun printState(specific : List<UByteArray>) {
         if (!debug) {
             return
         }
@@ -356,7 +357,7 @@ internal class Aes internal constructor(val aesKey: AesKey, val input: Array<UBy
 }
 
 sealed class AesKey(val key: String, val keyLength: Int) {
-    val keyArray: Array<UByte> = key.chunked(2).map { it.toUByte(16) }.toTypedArray()
+    val keyArray: UByteArray = key.chunked(2).map { it.toUByte(16) }.toUByteArray()
     val numberOf32BitWords = keyLength / 32
 
     class Aes128Key(key: String) : AesKey(key, 128)

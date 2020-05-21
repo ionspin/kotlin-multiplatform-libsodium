@@ -37,7 +37,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 22-Sep-2019
  */
 @ExperimentalUnsignedTypes
-class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: Array<UByte>? = null) {
+class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -60,7 +60,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
         /**
          * Bulk encryption, returns encrypted data and a random initial counter 
          */
-        fun encrypt(aesKey: AesKey, data: Array<UByte>): EncryptedDataAndInitialCounter {
+        fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitialCounter {
             val aesCtr = AesCtr(aesKey, Mode.ENCRYPT)
             aesCtr.addData(data)
             return aesCtr.encrypt()
@@ -68,7 +68,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: AesKey, data: Array<UByte>, initialCounter: Array<UByte>? = null): Array<UByte> {
+        fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
             val aesCtr = AesCtr(aesKey, Mode.DECRYPT, initialCounter)
             aesCtr.addData(data)
             return aesCtr.decrypt()
@@ -76,21 +76,21 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 
     }
 
-    var currentOutput: Array<UByte> = arrayOf()
-    var previousEncrypted: Array<UByte> = arrayOf()
+    var currentOutput: UByteArray = ubyteArrayOf()
+    var previousEncrypted: UByteArray = ubyteArrayOf()
     val counterStart = if (initialCounter.isNullOrEmpty()) {
-        SRNG.getRandomBytes(16).toTypedArray()
+        SRNG.getRandomBytes(16)
     } else {
         initialCounter
     }
-    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart, Endianness.BIG))
+    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart.toTypedArray(), Endianness.BIG))
 
-    val output = MutableList<Array<UByte>>(0) { arrayOf() }
+    val output = MutableList<UByteArray>(0) { ubyteArrayOf() }
 
-    var buffer: Array<UByte> = UByteArray(16) { 0U }.toTypedArray()
+    var buffer: UByteArray = UByteArray(16) { 0U }
     var bufferCounter = 0
 
-    fun addData(data: Array<UByte>) {
+    fun addData(data: UByteArray) {
         //Padding
         when {
             bufferCounter + data.size < BLOCK_BYTES -> appendToBuffer(data, bufferCounter)
@@ -98,9 +98,9 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
                 val chunked = data.chunked(BLOCK_BYTES)
                 chunked.forEach { chunk ->
                     if (bufferCounter + chunk.size < BLOCK_BYTES) {
-                        appendToBuffer(chunk, bufferCounter)
+                        appendToBuffer(chunk.toUByteArray(), bufferCounter)
                     } else {
-                        chunk.copyInto(
+                        chunk.toUByteArray().copyInto(
                             destination = buffer,
                             destinationOffset = bufferCounter,
                             startIndex = 0,
@@ -108,7 +108,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
                         )
                         output += consumeBlock(buffer, blockCounter)
                         blockCounter += 1
-                        buffer = Array<UByte>(BLOCK_BYTES) {
+                        buffer = UByteArray(BLOCK_BYTES) {
                             when (it) {
                                 in (0 until (chunk.size - (BLOCK_BYTES - bufferCounter))) -> {
                                     chunk[it + (BLOCK_BYTES - bufferCounter)]
@@ -136,7 +136,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
             output += consumeBlock(buffer, blockCounter)
         }
         return EncryptedDataAndInitialCounter(
-            output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
+            output.reversed().foldRight(UByteArray(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
             counterStart
         )
     }
@@ -144,25 +144,25 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
      * Decrypt data
      * @return Decrypted data
      */
-    fun decrypt(): Array<UByte> {
+    fun decrypt(): UByteArray {
         if (bufferCounter > 0) {
             output += consumeBlock(buffer, blockCounter)
         }
         //JS compiler freaks out here if we don't supply exact type
-        val reversed: List<Array<UByte>> = output.reversed() as List<Array<UByte>>
-        val folded: Array<UByte> = reversed.foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc ->
+        val reversed: List<UByteArray> = output.reversed() as List<UByteArray>
+        val folded: UByteArray = reversed.foldRight(UByteArray(0) { 0U }) { arrayOfUBytes, acc ->
             acc + arrayOfUBytes
         }
         return folded
     }
 
-    private fun appendToBuffer(array: Array<UByte>, start: Int) {
+    private fun appendToBuffer(array: UByteArray, start: Int) {
         array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
         bufferCounter += array.size
     }
 
-    private fun consumeBlock(data: Array<UByte>, blockCount: ModularBigInteger): Array<UByte> {
-        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).expandCounterTo16Bytes()
+    private fun consumeBlock(data: UByteArray, blockCount: ModularBigInteger): UByteArray {
+        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).toUByteArray().expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
                 Aes.encrypt(aesKey, blockCountAsByteArray) xor data
@@ -174,11 +174,11 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 
     }
 
-    private fun Array<UByte>.expandCounterTo16Bytes() : Array<UByte> {
+    private fun UByteArray.expandCounterTo16Bytes() : UByteArray {
         return if (this.size < 16) {
             println("Expanding")
             val diff = 16 - this.size
-            val pad = Array<UByte>(diff) { 0U }
+            val pad = UByteArray(diff) { 0U }
             pad + this
         } else {
             this
@@ -188,7 +188,7 @@ class AesCtr internal constructor(val aesKey: AesKey, val mode: Mode, initialCou
 }
 
 @ExperimentalUnsignedTypes
-data class EncryptedDataAndInitialCounter(val encryptedData : Array<UByte>, val initialCounter : Array<UByte>) {
+data class EncryptedDataAndInitialCounter(val encryptedData : UByteArray, val initialCounter : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

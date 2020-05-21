@@ -32,7 +32,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 21-Sep-2019
  */
 @ExperimentalUnsignedTypes
-class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: Array<UByte>? = null) {
+class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -54,7 +54,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         /**
          * Bulk encryption, returns encrypted data and a random initialization vector
          */
-        fun encrypt(aesKey: AesKey, data: Array<UByte>): EncryptedDataAndInitializationVector {
+        fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitializationVector {
             val aesCbc = AesCbc(aesKey, Mode.ENCRYPT)
             aesCbc.addData(data)
             return aesCbc.encrypt()
@@ -63,20 +63,20 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: AesKey, data: Array<UByte>, initialCounter: Array<UByte>? = null): Array<UByte> {
+        fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
             val aesCbc = AesCbc(aesKey, Mode.DECRYPT, initialCounter)
             aesCbc.addData(data)
             return aesCbc.decrypt()
         }
 
-        private fun padToBlock(unpadded: Array<UByte>): Array<UByte> {
+        private fun padToBlock(unpadded: UByteArray): UByteArray {
             val paddingSize = 16 - unpadded.size
             if (unpadded.size == BLOCK_BYTES) {
                 return unpadded
             }
 
             if (unpadded.size == BLOCK_BYTES) {
-                return Array(BLOCK_BYTES) {
+                return UByteArray(BLOCK_BYTES) {
                     BLOCK_BYTES.toUByte()
                 }
             }
@@ -85,7 +85,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
                 throw IllegalStateException("Block larger than 128 bytes")
             }
 
-            return Array(BLOCK_BYTES) {
+            return UByteArray(BLOCK_BYTES) {
                 when (it) {
                     in unpadded.indices -> unpadded[it]
                     else -> paddingSize.toUByte()
@@ -95,20 +95,20 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         }
     }
 
-    var currentOutput: Array<UByte> = arrayOf()
-    var previousEncrypted: Array<UByte> = arrayOf()
+    var currentOutput: UByteArray = ubyteArrayOf()
+    var previousEncrypted: UByteArray = ubyteArrayOf()
     val initVector = if (initializationVector.isNullOrEmpty()) {
-        SRNG.getRandomBytes(16).toTypedArray()
+        SRNG.getRandomBytes(16)
     } else {
         initializationVector
     }
 
-    val output = MutableList<Array<UByte>>(0) { arrayOf() }
+    val output = MutableList<UByteArray>(0) { ubyteArrayOf() }
 
-    var buffer: Array<UByte> = UByteArray(16) { 0U }.toTypedArray()
+    var buffer: UByteArray = UByteArray(16) { 0U }
     var bufferCounter = 0
 
-    fun addData(data: Array<UByte>) {
+    fun addData(data: UByteArray) {
         //Padding
         when {
             bufferCounter + data.size < BLOCK_BYTES -> appendToBuffer(data, bufferCounter)
@@ -116,16 +116,16 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
                 val chunked = data.chunked(BLOCK_BYTES)
                 chunked.forEach { chunk ->
                     if (bufferCounter + chunk.size < BLOCK_BYTES) {
-                        appendToBuffer(chunk, bufferCounter)
+                        appendToBuffer(chunk.toUByteArray(), bufferCounter)
                     } else {
-                        chunk.copyInto(
+                        chunk.toUByteArray().copyInto(
                             destination = buffer,
                             destinationOffset = bufferCounter,
                             startIndex = 0,
                             endIndex = BLOCK_BYTES - bufferCounter
                         )
                         output += consumeBlock(buffer)
-                        buffer = Array<UByte>(BLOCK_BYTES) {
+                        buffer = UByteArray(BLOCK_BYTES) {
                             when (it) {
                                 in (0 until (chunk.size - (BLOCK_BYTES - bufferCounter))) -> {
                                     chunk[it + (BLOCK_BYTES - bufferCounter)]
@@ -153,7 +153,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
         if (bufferCounter > 0) {
             val lastBlockPadded = padToBlock(buffer)
             if (lastBlockPadded.size > BLOCK_BYTES) {
-                val chunks = lastBlockPadded.chunked(BLOCK_BYTES)
+                val chunks = lastBlockPadded.chunked(BLOCK_BYTES).map { it.toUByteArray() }
                 output += consumeBlock(chunks[0])
                 output += consumeBlock(chunks[1])
             } else {
@@ -161,7 +161,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             }
         }
         return EncryptedDataAndInitializationVector(
-            output.reversed().foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
+            output.reversed().foldRight(UByteArray(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
             initVector
         )
     }
@@ -170,7 +170,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
      * Decrypt data
      * @return Decrypted data
      */
-    fun decrypt(): Array<UByte> {
+    fun decrypt(): UByteArray {
         val removePaddingCount = output.last().last()
 
 
@@ -178,22 +178,23 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             output.last().dropLast(removePaddingCount.toInt() and 0x7F)
         } else {
             output.last().toList()
-        }
-        val preparedOutput = output.dropLast(1).toTypedArray() + removedPadding.toTypedArray()
+        }.toUByteArray()
+        val preparedOutput = (output.dropLast(1) + listOf(removedPadding))
         //JS compiler freaks out here if we don't supply exact type
-        val reversed : List<Array<UByte>> = preparedOutput.reversed() as List<Array<UByte>>
-        val folded : Array<UByte> = reversed.foldRight(Array<UByte>(0) { 0U }) { arrayOfUBytes, acc ->
-            acc + arrayOfUBytes }
+        val reversed : List<UByteArray> = preparedOutput.reversed() as List<UByteArray>
+        val folded : UByteArray = reversed.foldRight(UByteArray(0) { 0U }) { uByteArray, acc ->
+            acc + uByteArray
+        }
         return folded
 
     }
 
-    private fun appendToBuffer(array: Array<UByte>, start: Int) {
+    private fun appendToBuffer(array: UByteArray, start: Int) {
         array.copyInto(destination = buffer, destinationOffset = start, startIndex = 0, endIndex = array.size)
         bufferCounter += array.size
     }
 
-    private fun consumeBlock(data: Array<UByte>): Array<UByte> {
+    private fun consumeBlock(data: UByteArray): UByteArray {
         return when (mode) {
             Mode.ENCRYPT -> {
                 currentOutput = if (currentOutput.isEmpty()) {
@@ -220,7 +221,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
 }
 
 @ExperimentalUnsignedTypes
-data class EncryptedDataAndInitializationVector(val encryptedData : Array<UByte>, val initilizationVector : Array<UByte>) {
+data class EncryptedDataAndInitializationVector(val encryptedData : UByteArray, val initilizationVector : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

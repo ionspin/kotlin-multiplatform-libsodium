@@ -48,7 +48,7 @@ class Blake2BTest {
 
         val result = Blake2b.digest(test)
         //Generated with b2sum 8.31
-        val expectedResult = arrayOf<UByte>(
+        val expectedResult = ubyteArrayOf(
             //@formatter:off
             0x2fU, 0x49U, 0xaeU, 0xb6U, 0x13U, 0xe3U, 0x4eU, 0x92U, 0x4eU, 0x17U, 0x5aU, 0x6aU, 0xf2U, 0xfaU, 0xadU,
             0x7bU, 0xc7U, 0x82U, 0x35U, 0xf9U, 0xc5U, 0xe4U, 0x61U, 0xc6U, 0x8fU, 0xd5U, 0xb4U, 0x07U, 0xeeU, 0x8eU,
@@ -81,7 +81,7 @@ class Blake2BTest {
         val expectedResultString = "800bb78cd4da18995c8074713bb674" +
                 "3cd94b2b6490a693fe4000ed00833b88b7b474d94af9cfed246b1b" +
                 "4ce1935a76154d7ea7c410493557741d18ec3a08da75"
-        val expectedResult = expectedResultString.chunked(2).map { it.toUByte(16) }.toTypedArray()
+        val expectedResult = expectedResultString.chunked(2).map { it.toUByte(16) }.toUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -95,7 +95,7 @@ class Blake2BTest {
 
         val result = Blake2b.digest(test)
         //Generated with b2sum 8.31
-        val expectedResult = arrayOf<UByte>(
+        val expectedResult = ubyteArrayOf(
             //@formatter:off
             0xe0U, 0xabU, 0xb7U, 0x5dU, 0xb2U, 0xc8U, 0xe1U, 0x3cU, 0x5fU, 0x1dU, 0x9fU, 0x55U, 0xc8U, 0x4eU, 0xacU, 0xd7U,
             0xa8U, 0x44U, 0x57U, 0x9bU, 0xc6U, 0x9cU, 0x47U, 0x26U, 0xebU, 0xeaU, 0x2bU, 0xafU, 0x9eU, 0x44U, 0x16U, 0xebU,
@@ -122,7 +122,7 @@ class Blake2BTest {
         }
         val expectedResult = ("5c6a9a4ae911c02fb7e71a991eb9aea371ae993d4842d206e" +
                 "6020d46f5e41358c6d5c277c110ef86c959ed63e6ecaaaceaaff38019a43264ae06acf73b9550b1")
-            .chunked(2).map { it.toUByte(16) }.toTypedArray()
+            .chunked(2).map { it.toUByte(16) }.toUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -136,7 +136,7 @@ class Blake2BTest {
 
         val result = Blake2b.digest(test)
         //@formatter:off
-        val expectedResult = arrayOf<UByte>(
+        val expectedResult = ubyteArrayOf(
 
             0xBAU,0x80U,0xA5U,0x3FU,0x98U,0x1CU,0x4DU,0x0DU,0x6AU,0x27U,0x97U,0xB6U,0x9FU,0x12U,0xF6U,0xE9U,
             0x4CU,0x21U,0x2FU,0x14U,0x68U,0x5AU,0xC4U,0xB7U,0x4BU,0x12U,0xBBU,0x6FU,0xDBU,0xFFU,0xA2U,0xD1U,

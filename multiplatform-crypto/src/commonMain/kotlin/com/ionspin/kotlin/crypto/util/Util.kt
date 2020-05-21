@@ -89,12 +89,28 @@ infix fun UByteArray.xor(other : UByteArray) : UByteArray {
 }
 
 @ExperimentalUnsignedTypes
-fun String.hexStringToUByteArray() : Array<UByte> {
+fun String.hexStringToTypedUByteArray() : Array<UByte> {
     return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
 }
 
 @ExperimentalUnsignedTypes
+fun String.hexStringToUByteArray() : UByteArray {
+    return this.chunked(2).map { it.toUByte(16) }.toUByteArray()
+}
+
+@ExperimentalUnsignedTypes
 fun Array<UByte>.toHexString() : String {
+    return this.joinToString(separator = "") {
+        if (it <= 0x0FU) {
+            "0${it.toString(16)}"
+        } else {
+            it.toString(16)
+        }
+    }
+}
+
+@ExperimentalUnsignedTypes
+fun UByteArray.toHexString() : String {
     return this.joinToString(separator = "") {
         if (it <= 0x0FU) {
             "0${it.toString(16)}"
@@ -228,6 +244,19 @@ fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
 }
 
 @ExperimentalUnsignedTypes
-operator fun UInt.plus(other : Array<UByte>) : Array<UByte> {
-    return this.toLittleEndianTypedUByteArray() + other
+operator fun UInt.plus(other : UByteArray) : UByteArray {
+    return this.toLittleEndianUByteArray() + other
+}
+
+//AES Flatten
+fun Collection<UByteArray>.flattenToUByteArray(): UByteArray {
+    val result = UByteArray(sumBy { it.size })
+    var position = 0
+    for (element in this) {
+        element.forEach { uByte ->
+            result[position] = uByte
+            position++
+        }
+    }
+    return result
 }

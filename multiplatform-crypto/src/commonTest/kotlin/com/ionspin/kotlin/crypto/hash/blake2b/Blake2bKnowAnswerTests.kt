@@ -36,13 +36,13 @@ class Blake2bKnowAnswerTests {
     @Test
     fun knownAnswerTest() {
         kat.forEach {
-            val parsedInput = it.input.chunked(2).map { it.toUByte(16) }.toTypedArray()
+            val parsedInput = it.input.chunked(2).map { it.toUByte(16) }.toUByteArray()
             val result = Blake2b.digest(
                 inputMessage = parsedInput,
-                key = it.key.chunked(2).map { it.toUByte(16) }.toTypedArray()
+                key = it.key.chunked(2).map { it.toUByte(16) }.toUByteArray()
             )
             assertTrue {
-                result.contentEquals(it.hash.chunked(2).map { it.toUByte(16) }.toTypedArray())
+                result.contentEquals(it.hash.chunked(2).map { it.toUByte(16) }.toUByteArray())
             }
         }
     }
@@ -51,13 +51,13 @@ class Blake2bKnowAnswerTests {
     fun knownAnswerTestInstance() {
 
         kat.forEach { kat ->
-            val parsedInput = kat.input.chunked(2).map { it.toUByte(16) }.toTypedArray()
-            val chunkedInput = parsedInput.toList().chunked(128).map { it.toTypedArray() }.toTypedArray()
-            val blake2b = Blake2b(key = kat.key.chunked(2).map { it.toUByte(16) }.toTypedArray())
+            val parsedInput = kat.input.chunked(2).map { it.toUByte(16) }.toUByteArray()
+            val chunkedInput = parsedInput.toList().chunked(128).map { it.toUByteArray() }
+            val blake2b = Blake2b(key = kat.key.chunked(2).map { it.toUByte(16) }.toUByteArray())
             chunkedInput.forEach { blake2b.update(it) }
             val result = blake2b.digest()
             assertTrue("KAT ${kat.input} \nkey: ${kat.key} \nexpected: {${kat.hash}") {
-                result.contentEquals(kat.hash.chunked(2).map { it.toUByte(16) }.toTypedArray())
+                result.contentEquals(kat.hash.chunked(2).map { it.toUByte(16) }.toUByteArray())
             }
         }
     }
