@@ -40,6 +40,18 @@ object Argon2Utils {
     const val R3 = 16
     const val R4 = 63
 
+    internal fun inplaceMixRound(v : ULongArray) : ULongArray{
+        mix(v, 0, 4, 8, 12)
+        mix(v, 1, 5, 9, 13)
+        mix(v, 2, 6, 10, 14)
+        mix(v, 3, 7, 11, 15)
+        mix(v, 0, 5, 10, 15)
+        mix(v, 1, 6, 11, 12)
+        mix(v, 2, 7, 8, 13)
+        mix(v, 3, 4, 9, 14)
+        return v //Just for chaining, array is already mixed
+    }
+
     //based on Blake2b mixRound
     internal fun mixRound(input: UByteArray): Array<ULong> {
         var v = input.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
@@ -71,6 +83,18 @@ object Argon2Utils {
         return v
     }
 
+    //Based on Blake2b mix
+    private fun mix(v: ULongArray, a: Int, b: Int, c: Int, d: Int) {
+        v[a] = (v[a] + v[b] + 2U * (v[a] and 0xFFFFFFFFUL) * (v[b] and 0xFFFFFFFFUL))
+        v[d] = (v[d] xor v[a]) rotateRight R1
+        v[c] = (v[c] + v[d] + 2U * (v[c] and 0xFFFFFFFFUL) * (v[d] and 0xFFFFFFFFUL))
+        v[b] = (v[b] xor v[c]) rotateRight R2
+        v[a] = (v[a] + v[b] + 2U * (v[a] and 0xFFFFFFFFUL) * (v[b] and 0xFFFFFFFFUL))
+        v[d] = (v[d] xor v[a]) rotateRight R3
+        v[c] = (v[c] + v[d] + 2U * (v[c] and 0xFFFFFFFFUL) * (v[d] and 0xFFFFFFFFUL))
+        v[b] = (v[b] xor v[c]) rotateRight R4
+    }
+
     internal fun extractColumnFromGBlock(gBlock: UByteArray, columnPosition: Int): UByteArray {
         val result = UByteArray(128) { 0U }
         for (i in 0..7) {
@@ -86,6 +110,39 @@ object Argon2Utils {
             column.copyInto(gBlock, i * 128 + columnPosition * 16)
         }
     }
+
+//    internal fun allocationlessCompressionFunctionG(
+//        matrix: Argon2Matrix,
+//        previousBlock: BlockPointer,
+//        referenceBlock: BlockPointer,
+//        currentBlock: BlockPointer,
+//        xorWithCurrentBlock: Boolean
+//    ): UByteArray {
+//        val r = referenceBlock xorBlocks previousBlock
+//        val q = Block()
+//        val z = Block()
+//        // Do the argon/blake2b mixing on rows
+//        for (i in 0..7) {
+//            q.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
+//        }
+//        // Do the argon/blake2b mixing on columns
+//        for (i in 0..7) {
+//            copyIntoGBlockColumn(
+//                z,
+//                i,
+//                mixRound(extractColumnFromGBlock(q, i))
+//                    .map { it.toLittleEndianUByteArray() }
+//                    .flatMap { it.asIterable() }
+//                    .toUByteArray()
+//            )
+//        }
+//        val final = if (xorWithCurrentBlock) {
+//            (z xor r) xor currentBlock
+//        } else {
+//            z xor r
+//        }
+//        return final
+//    }
 
     internal fun compressionFunctionG(
         previousBlock: UByteArray,

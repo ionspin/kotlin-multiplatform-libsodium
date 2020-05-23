@@ -52,6 +52,8 @@ data class ArgonResult(
 
 }
 
+
+
 @ExperimentalStdlibApi
 class Argon2(
     private val password: UByteArray,
@@ -198,6 +200,7 @@ class Argon2(
                 } else {
                     matrix.getBlockStartAndEndPositions(lane, column - 1)
                 }
+                val bla = 1 until 3
                 val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
                 val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
 
@@ -325,7 +328,7 @@ class Argon2(
 
 
         //Temporary fold
-        val acc = matrix.getBlockAt(0, columnCount - 1).copyOf()
+        val acc = matrix.getBlockAt(0, columnCount - 1)
         for (i in 1 until parallelism) {
             (acc.xorWithBlock(matrix, i, columnCount - 1).copyInto(acc))
         }

@@ -19,7 +19,12 @@
 package com.ionspin.kotlin.crypto.hash.argon
 
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Matrix
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Block
+import com.ionspin.kotlin.crypto.util.arrayChunked
+import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
+import kotlin.random.Random
+import kotlin.random.nextUBytes
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -33,6 +38,9 @@ class Argon2MatrixTest {
     val onesBlock = UByteArray(1024) { 1U }
     val twosBlock = UByteArray(1024) { 2U }
     val threesBlock = UByteArray(1024) { 3U }
+
+    val random = Random(1)
+    val randomBlockArray = random.nextUBytes(1024)
 
 
     @Test
@@ -75,4 +83,30 @@ class Argon2MatrixTest {
                     threesBlock.contentEquals(argon2Matrix.getBlockAt(1, 1))
         }
     }
+
+    @Test
+    fun blockColumnToUlongTest() {
+        val randomBlock = Block(randomBlockArray)
+        for (columnIndex in 0 until 8) {
+            val startOfRow = (columnIndex * 8 * 16)
+            val endOfRow = startOfRow + (8 * 16)
+            val rowToMix = randomBlockArray.copyOfRange(startOfRow, endOfRow)
+            val expected = rowToMix.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toULongArray()
+
+            val result = randomBlock.getRowOfULongsForMixing(columnIndex)
+
+            assertTrue { expected.contentEquals(result) }
+        }
+    }
+
+    @Test
+    fun blockRowToULongTest() {
+        val randomBlock = Block(randomBlockArray)
+        val columnToMix = Argon2Utils.extractColumnFromGBlock(randomBlockArray, 0)
+        val expected = columnToMix.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toULongArray()
+        val result = randomBlock.getColumnOfULongsForMixing(0)
+
+        assertTrue { expected.contentEquals(result) }
+    }
+
 }
