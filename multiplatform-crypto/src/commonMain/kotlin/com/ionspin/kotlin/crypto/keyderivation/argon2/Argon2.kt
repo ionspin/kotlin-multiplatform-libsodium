@@ -24,6 +24,7 @@ import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.inplaceCompressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.*
 
@@ -133,10 +134,10 @@ class Argon2(
     private val useIndependentAddressing = argonType == ArgonType.Argon2id || argonType == ArgonType.Argon2i
 
     // State
-    private val matrix: Argon2Matrix
+    private val matrix: ArgonMatrix
 
     init {
-        matrix = Argon2Matrix(columnCount, parallelism)
+        matrix = ArgonMatrix(columnCount, parallelism)
         validateArgonParameters(
             password,
             salt,
@@ -156,25 +157,27 @@ class Argon2(
         iteration: Int,
         slice: Int,
         lane: Int,
-        addressBlock: UByteArray,
+        addressBlock: ArgonBlockPointer,
         addressCounter: ULong
-    ): UByteArray {
+    ): ArgonBlockPointer {
         //Calculate first pass
-        val firstPass = compressionFunctionG(
-            UByteArray(1024) { 0U },
-            iteration.toULong().toLittleEndianUByteArray() +
+        val zeroesBlock = ArgonBlock()
+        val firstPass = inplaceCompressionFunctionG(
+            zeroesBlock.getBlockPointer(),
+            ArgonBlock(iteration.toULong().toLittleEndianUByteArray() +
                     lane.toULong().toLittleEndianUByteArray() +
                     slice.toULong().toLittleEndianUByteArray() +
                     blockCount.toULong().toLittleEndianUByteArray() +
                     numberOfIterations.toULong().toLittleEndianUByteArray() +
                     argonType.typeId.toULong().toLittleEndianUByteArray() +
                     addressCounter.toLittleEndianUByteArray() +
-                    UByteArray(968) { 0U },
+                    UByteArray(968) { 0U }
+            ).getBlockPointer(),
             addressBlock,
             false
         )
-        val secondPass = compressionFunctionG(
-            UByteArray(1024) { 0U },
+        val secondPass = inplaceCompressionFunctionG(
+            zeroesBlock.getBlockPointer(),
             firstPass,
             firstPass,
             false
@@ -188,46 +191,41 @@ class Argon2(
         slice: Int,
         lane: Int,
         column: Int,
-        addressBlock: UByteArray?
+        addressBlockPointer: ArgonBlockPointer?
     ): Pair<Int, Int> {
 
         val segmentIndex = (column % segmentLength)
         val independentIndex = segmentIndex % 128 // 128 is the number of addresses in address block
         val (j1, j2) = when (argonType) {
             ArgonType.Argon2d -> {
-                val (previousBlockStart, previousBlockEnd) = if (column == 0) {
-                    matrix.getBlockStartAndEndPositions(lane, columnCount - 1) //Get last block in the SAME lane
+                val previousBlockStart = if (column == 0) {
+                    matrix.getBlockPointer(lane, columnCount - 1) //Get last block in the SAME lane
                 } else {
-                    matrix.getBlockStartAndEndPositions(lane, column - 1)
+                    matrix.getBlockPointer(lane, column - 1)
                 }
-                val bla = 1 until 3
-                val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
-                val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
+                val first32Bit = matrix.sliceArray(previousBlockStart.asInt() until previousBlockStart.asInt() + 4).fromLittleEndianArrayToUInt()
+                val second32Bit = matrix.sliceArray(previousBlockStart.asInt() + 4 until previousBlockStart.asInt() + 8).fromLittleEndianArrayToUInt()
 
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2i -> {
-                val selectedAddressBlock =
-                    addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
-                val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
-                val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                val first32Bit = addressBlockPointer!!.getUIntFromPosition(independentIndex * 8)
+                val second32Bit = addressBlockPointer!!.getUIntFromPosition(independentIndex * 8 + 4)
                 Pair(first32Bit, second32Bit)
             }
             ArgonType.Argon2id -> {
                 if (iteration == 0 && (slice == 0 || slice == 1)) {
-                    val selectedAddressBlock =
-                        addressBlock!!.sliceArray((independentIndex * 8) until (independentIndex * 8) + 8)
-                    val first32Bit = selectedAddressBlock.sliceArray(0 until 4).fromLittleEndianArrayToUInt()
-                    val second32Bit = selectedAddressBlock.sliceArray(4 until 8).fromLittleEndianArrayToUInt()
+                    val first32Bit = addressBlockPointer!!.getUIntFromPosition(independentIndex * 8)
+                    val second32Bit = addressBlockPointer!!.getUIntFromPosition(independentIndex * 8 + 4)
                     Pair(first32Bit, second32Bit)
                 } else {
-                    val (previousBlockStart, previousBlockEnd) = if (column == 0) {
-                        matrix.getBlockStartAndEndPositions(lane, columnCount - 1) //Get last block in the SAME lane
+                    val previousBlockStart = if (column == 0) {
+                        matrix.getBlockPointer(lane, columnCount - 1) //Get last block in the SAME lane
                     } else {
-                        matrix.getBlockStartAndEndPositions(lane, column - 1)
+                        matrix.getBlockPointer(lane, column - 1)
                     }
-                    val first32Bit = matrix.sliceArray(previousBlockStart until previousBlockStart + 4).fromLittleEndianArrayToUInt()
-                    val second32Bit = matrix.sliceArray(previousBlockStart + 4 until previousBlockStart + 8).fromLittleEndianArrayToUInt()
+                    val first32Bit = matrix.sliceArray(previousBlockStart.asInt() until previousBlockStart.asInt() + 4).fromLittleEndianArrayToUInt()
+                    val second32Bit = matrix.sliceArray(previousBlockStart.asInt() + 4 until previousBlockStart.asInt() + 8).fromLittleEndianArrayToUInt()
                     Pair(first32Bit, second32Bit)
                 }
 
@@ -356,14 +354,12 @@ class Argon2(
         val slice = segmentPosition.slice
         val lane = segmentPosition.lane
 
-        var addressBlock: UByteArray? = null
+        var addressBlock: ArgonBlockPointer? = null
         var addressCounter = 1UL //Starts from 1 in each segment as defined by the spec
 
         //Generate initial segment address block
         if (useIndependentAddressing) {
-            addressBlock = UByteArray(1024) {
-                0U
-            }
+            addressBlock = ArgonBlock().getBlockPointer()
             addressBlock = populateAddressBlock(iteration, slice, lane, addressBlock, addressCounter)
             addressCounter++
         }
@@ -396,12 +392,12 @@ class Argon2(
             )
 
             matrix.setBlockAt(lane, column,
-                compressionFunctionG(
-                    matrix.getBlockAt(lane, previousColumn),
-                    matrix.getBlockAt(l,z),
-                    matrix.getBlockAt(lane,column),
+                inplaceCompressionFunctionG(
+                    matrix.getBlockPointer(lane, previousColumn),
+                    matrix.getBlockPointer(l,z),
+                    matrix.getBlockPointer(lane,column),
                     true
-                ).toUByteArray()
+                ).getAsUByteArray()
             )
         }
 

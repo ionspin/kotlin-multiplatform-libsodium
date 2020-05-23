@@ -18,9 +18,7 @@
 
 package com.ionspin.kotlin.crypto.hash.argon
 
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Matrix
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Block
+import com.ionspin.kotlin.crypto.keyderivation.argon2.*
 import com.ionspin.kotlin.crypto.util.arrayChunked
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
 import kotlin.random.Random
@@ -45,7 +43,7 @@ class Argon2MatrixTest {
 
     @Test
     fun indexAccessTest() {
-        val argon2Matrix = Argon2Matrix(2, 2)
+        val argon2Matrix = ArgonMatrix(2, 2)
         (zeroesBlock + onesBlock + twosBlock + threesBlock).copyInto(argon2Matrix.storage)
         println(argon2Matrix[0, 0, 0])
         println(argon2Matrix[0, 1, 0])
@@ -74,7 +72,7 @@ class Argon2MatrixTest {
 
     @Test
     fun blockRetrievalTest() {
-        val argon2Matrix = Argon2Matrix(2, 2)
+        val argon2Matrix = ArgonMatrix(2, 2)
         (zeroesBlock + onesBlock + twosBlock + threesBlock).copyInto(argon2Matrix.storage)
         assertTrue {
             zeroesBlock.contentEquals(argon2Matrix.getBlockAt(0, 0)) &&
@@ -86,14 +84,14 @@ class Argon2MatrixTest {
 
     @Test
     fun blockColumnToUlongTest() {
-        val randomBlock = Block(randomBlockArray)
+        val randomBlock = ArgonBlock(randomBlockArray)
         for (columnIndex in 0 until 8) {
             val startOfRow = (columnIndex * 8 * 16)
             val endOfRow = startOfRow + (8 * 16)
             val rowToMix = randomBlockArray.copyOfRange(startOfRow, endOfRow)
             val expected = rowToMix.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toULongArray()
 
-            val result = randomBlock.getRowOfULongsForMixing(columnIndex)
+            val result = randomBlock.getBlockPointer().getRowOfULongsForMixing(columnIndex)
 
             assertTrue { expected.contentEquals(result) }
         }
@@ -101,12 +99,44 @@ class Argon2MatrixTest {
 
     @Test
     fun blockRowToULongTest() {
-        val randomBlock = Block(randomBlockArray)
-        val columnToMix = Argon2Utils.extractColumnFromGBlock(randomBlockArray, 0)
-        val expected = columnToMix.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toULongArray()
-        val result = randomBlock.getColumnOfULongsForMixing(0)
+        val randomBlock = ArgonBlock(randomBlockArray)
+        for (rowIndex in 0 until 8) {
+            val columnToMix = Argon2Utils.extractColumnFromGBlock(randomBlockArray, rowIndex)
+            val expected = columnToMix.arrayChunked(8).map { it.fromLittleEndianArrayToULong() }.toULongArray()
+            val result = randomBlock.getBlockPointer().getColumnOfULongsForMixing(rowIndex)
 
-        assertTrue { expected.contentEquals(result) }
+            assertTrue { expected.contentEquals(result) }
+        }
+    }
+
+    @Test
+    fun blockSetMixedRowTest() {
+        val randomBlock = ArgonBlock(randomBlockArray)
+        val targetBlockArray = zeroesBlock.copyOf()
+        val targetBlock = ArgonBlock(targetBlockArray)
+        for (rowIndex in 0 until 8) {
+            val extracted = randomBlock.getBlockPointer().getRowOfULongsForMixing(rowIndex)
+            targetBlock.getBlockPointer().setRowFromMixedULongs(rowIndex, extracted)
+        }
+
+        assertTrue {
+            randomBlockArray.contentEquals(targetBlock.storage)
+        }
+    }
+
+    @Test
+    fun blockSetMixedColumnTest() {
+        val randomBlock = ArgonBlock(randomBlockArray)
+        val targetBlockArray = zeroesBlock.copyOf()
+        val targetBlock = ArgonBlock(targetBlockArray)
+        for (columnIndex in 0 until 8) {
+            val extracted = randomBlock.getBlockPointer().getColumnOfULongsForMixing(columnIndex)
+            targetBlock.getBlockPointer().setColumnFromMixedULongs(columnIndex, extracted)
+        }
+
+        assertTrue {
+            randomBlockArray.contentEquals(targetBlock.storage)
+        }
     }
 
 }

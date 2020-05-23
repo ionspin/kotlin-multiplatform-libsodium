@@ -111,38 +111,30 @@ object Argon2Utils {
         }
     }
 
-//    internal fun allocationlessCompressionFunctionG(
-//        matrix: Argon2Matrix,
-//        previousBlock: BlockPointer,
-//        referenceBlock: BlockPointer,
-//        currentBlock: BlockPointer,
-//        xorWithCurrentBlock: Boolean
-//    ): UByteArray {
-//        val r = referenceBlock xorBlocks previousBlock
-//        val q = Block()
-//        val z = Block()
-//        // Do the argon/blake2b mixing on rows
-//        for (i in 0..7) {
-//            q.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
-//        }
-//        // Do the argon/blake2b mixing on columns
-//        for (i in 0..7) {
-//            copyIntoGBlockColumn(
-//                z,
-//                i,
-//                mixRound(extractColumnFromGBlock(q, i))
-//                    .map { it.toLittleEndianUByteArray() }
-//                    .flatMap { it.asIterable() }
-//                    .toUByteArray()
-//            )
-//        }
-//        val final = if (xorWithCurrentBlock) {
-//            (z xor r) xor currentBlock
-//        } else {
-//            z xor r
-//        }
-//        return final
-//    }
+    internal fun inplaceCompressionFunctionG(
+        previousBlock: ArgonBlockPointer,
+        referenceBlock: ArgonBlockPointer,
+        currentBlock: ArgonBlockPointer,
+        xorWithCurrentBlock: Boolean
+    ): ArgonBlockPointer {
+        val r = (referenceBlock xorBlocksAndGetPointerToNewBlock previousBlock).getBlockPointer()
+        val q = ArgonBlock().getBlockPointer()
+        val z = ArgonBlock().getBlockPointer()
+        // Do the argon/blake2b mixing on rows
+        for (i in 0..7) {
+            q.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
+        }
+        // Do the argon/blake2b mixing on columns
+        for (i in 0..7) {
+            z.setColumnFromMixedULongs(i, inplaceMixRound(q.getColumnOfULongsForMixing(i)))
+        }
+        val final = if (xorWithCurrentBlock) {
+            (z xorInplace r) xorInplace  currentBlock
+        } else {
+            z xorInplace r
+        }
+        return final
+    }
 
     internal fun compressionFunctionG(
         previousBlock: UByteArray,
@@ -249,6 +241,6 @@ object Argon2Utils {
 // ------------ Arithmetic and other utils
 
 @ExperimentalUnsignedTypes
-fun UByteArray.xorWithBlock(other : Argon2Matrix, rowPosition: Int, columnPosition: Int) : UByteArray {
+fun UByteArray.xorWithBlock(other : ArgonMatrix, rowPosition: Int, columnPosition: Int) : UByteArray {
     return UByteArray(BLOCK_SIZE) { this[it] xor other[rowPosition, columnPosition, it] }
 }
