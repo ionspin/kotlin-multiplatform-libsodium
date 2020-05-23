@@ -33,7 +33,7 @@ interface ArgonBlockPointer {
 
     operator fun set(blockPosition: Int, value: UByte)
 
-    infix fun xorInplace(other: ArgonBlockPointer) : ArgonBlockPointer {
+    infix fun xorInplaceWith(other: ArgonBlockPointer) : ArgonBlockPointer {
         (0 until 1024).forEach {
             this[it] = this[it] xor other[it]
         }
@@ -237,7 +237,7 @@ inline class ArgonBlock internal constructor(internal val storage: UByteArray) {
         return ArgonBlockPointerWithBlock( this)
     }
 
-    infix fun xorInplace(other: ArgonBlock) : ArgonBlock {
+    infix fun xorInplaceWith(other: ArgonBlock) : ArgonBlock {
         storage.indices.forEach {
             this[it] = this[it] xor other[it]
         }

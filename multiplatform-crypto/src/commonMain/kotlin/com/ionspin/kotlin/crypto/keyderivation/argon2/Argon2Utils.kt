@@ -24,8 +24,6 @@ import com.ionspin.kotlin.crypto.util.arrayChunked
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
 import com.ionspin.kotlin.crypto.util.plus
 import com.ionspin.kotlin.crypto.util.rotateRight
-import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
-import com.ionspin.kotlin.crypto.util.xor
 
 /**
  * Created by Ugljesa Jovanovic
@@ -118,60 +116,20 @@ object Argon2Utils {
         xorWithCurrentBlock: Boolean
     ): ArgonBlockPointer {
         val r = (referenceBlock xorBlocksAndGetPointerToNewBlock previousBlock).getBlockPointer()
-        val q = ArgonBlock().getBlockPointer()
+        //Since we are doing inplace xors, we don't need the Q that exists in specification
         val z = ArgonBlock().getBlockPointer()
         // Do the argon/blake2b mixing on rows
         for (i in 0..7) {
-            q.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
+            z.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
         }
         // Do the argon/blake2b mixing on columns
         for (i in 0..7) {
-            z.setColumnFromMixedULongs(i, inplaceMixRound(q.getColumnOfULongsForMixing(i)))
+            z.setColumnFromMixedULongs(i, inplaceMixRound(z.getColumnOfULongsForMixing(i)))
         }
         val final = if (xorWithCurrentBlock) {
-            (z xorInplace r) xorInplace  currentBlock
+            (z xorInplaceWith r) xorInplaceWith  currentBlock
         } else {
-            z xorInplace r
-        }
-        return final
-    }
-
-    internal fun compressionFunctionG(
-        previousBlock: UByteArray,
-        referenceBlock: UByteArray,
-        currentBlock: UByteArray,
-        xorWithCurrentBlock: Boolean
-    ): UByteArray {
-        val r = referenceBlock xor previousBlock
-        val q = UByteArray(1024) { 0U }
-        val z = UByteArray(1024) { 0U }
-        // Do the argon/blake2b mixing on rows
-        for (i in 0..7) {
-            val startOfRow = (i * 8 * 16)
-            val endOfRow = startOfRow + (8 * 16)
-            val rowToMix = r.copyOfRange(startOfRow, endOfRow)
-            mixRound(rowToMix)
-                .map { it.toLittleEndianUByteArray() }
-                .flatMap { it.asIterable() }
-                .toUByteArray()
-                .copyInto(q, startOfRow)
-
-        }
-        // Do the argon/blake2b mixing on columns
-        for (i in 0..7) {
-            copyIntoGBlockColumn(
-                z,
-                i,
-                mixRound(extractColumnFromGBlock(q, i))
-                    .map { it.toLittleEndianUByteArray() }
-                    .flatMap { it.asIterable() }
-                    .toUByteArray()
-            )
-        }
-        val final = if (xorWithCurrentBlock) {
-            (z xor r) xor currentBlock
-        } else {
-            z xor r
+            z xorInplaceWith r
         }
         return final
     }

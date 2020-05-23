@@ -23,7 +23,6 @@ import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.inplaceCompressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.*
@@ -325,13 +324,13 @@ class Argon2(
         executeArgonWithSingleThread()
 
 
-        //Temporary fold
-        val acc = matrix.getBlockAt(0, columnCount - 1)
+        val acc = ArgonBlock(matrix.getBlockAt(0, columnCount - 1))
+        val accPointer = acc.getBlockPointer()
         for (i in 1 until parallelism) {
-            (acc.xorWithBlock(matrix, i, columnCount - 1).copyInto(acc))
+            accPointer.xorInplaceWith(matrix.getBlockPointer(i, columnCount - 1))
         }
         //Hash the xored last blocks
-        val hash = argonBlake2bArbitraryLenghtHash(acc, tagLength)
+        val hash = argonBlake2bArbitraryLenghtHash(acc.getAsUByteArray(), tagLength)
         matrix.clearMatrix()
         return hash
 
