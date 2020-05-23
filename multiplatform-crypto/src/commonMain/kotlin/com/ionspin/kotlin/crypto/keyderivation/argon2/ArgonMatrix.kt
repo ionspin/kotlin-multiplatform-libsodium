@@ -18,6 +18,8 @@
 
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
+import com.ionspin.kotlin.crypto.util.xor
+
 /**
  * Represents a pointer to a Argon2 Block, this abstracts what the backing structure is, a Argon 2 Matrix or
  * or a UByteArray block
@@ -34,7 +36,7 @@ interface ArgonBlockPointer {
     operator fun set(blockPosition: Int, value: UByte)
 
     infix fun xorInplaceWith(other: ArgonBlockPointer) : ArgonBlockPointer {
-        (0 until 1024).forEach {
+        for (it in 0 until 1024) {
             this[it] = this[it] xor other[it]
         }
         return this //For chaining
@@ -171,7 +173,6 @@ fun ArgonBlockPointer.getUIntFromPosition(positionInBlock: Int) : UInt {
     }
 
     fun setBlockAt(rowPosition: Int, columnPosition: Int, blockValue: UByteArray) {
-        println("Expensive set")
         blockValue.copyInto(
             storage,
             getBlockStartPositionPointer(rowPosition, columnPosition)
@@ -271,7 +272,7 @@ inline class ArgonBlock internal constructor(internal val storage: UByteArray) {
         }
 
         override fun getAsUByteArray(): UByteArray {
-            return storageBlock.storage.slice(blockStartPosition until blockStartPosition + 1024).toUByteArray()
+            return storageBlock.storage
         }
 
     }

@@ -134,7 +134,6 @@ class Blake2b(val key: UByteArray? = null, val hashLength: Int = 64) : Updatable
             v[13] = v[13] xor (offsetCounter shr BITS_IN_WORD).ulongValue()
 
             if (finalBlock) {
-//            v[14] = v[14] xor 0xFFFFFFFFFFFFFFFFUL
                 v[14] = v[14].inv()
             }
 

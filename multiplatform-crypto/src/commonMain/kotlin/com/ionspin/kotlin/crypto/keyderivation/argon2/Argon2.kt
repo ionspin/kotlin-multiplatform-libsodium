@@ -23,7 +23,7 @@ import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.keyderivation.KeyDerivationFunction
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.inplaceCompressionFunctionG
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
 import com.ionspin.kotlin.crypto.util.*
 
@@ -161,7 +161,7 @@ class Argon2(
     ): ArgonBlockPointer {
         //Calculate first pass
         val zeroesBlock = ArgonBlock()
-        val firstPass = inplaceCompressionFunctionG(
+        val firstPass = compressionFunctionG(
             zeroesBlock.getBlockPointer(),
             ArgonBlock(iteration.toULong().toLittleEndianUByteArray() +
                     lane.toULong().toLittleEndianUByteArray() +
@@ -175,7 +175,7 @@ class Argon2(
             addressBlock,
             false
         )
-        val secondPass = inplaceCompressionFunctionG(
+        val secondPass = compressionFunctionG(
             zeroesBlock.getBlockPointer(),
             firstPass,
             firstPass,
@@ -330,7 +330,7 @@ class Argon2(
             accPointer.xorInplaceWith(matrix.getBlockPointer(i, columnCount - 1))
         }
         //Hash the xored last blocks
-        val hash = argonBlake2bArbitraryLenghtHash(acc.getAsUByteArray(), tagLength)
+        val hash = argonBlake2bArbitraryLenghtHash(acc.storage, tagLength)
         matrix.clearMatrix()
         return hash
 
@@ -391,7 +391,7 @@ class Argon2(
             )
 
             matrix.setBlockAt(lane, column,
-                inplaceCompressionFunctionG(
+                compressionFunctionG(
                     matrix.getBlockPointer(lane, previousColumn),
                     matrix.getBlockPointer(l,z),
                     matrix.getBlockPointer(lane,column),

@@ -20,6 +20,7 @@ package com.ionspin.kotlin.crypto.hash.argon
 
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonBlock
+import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
 import kotlin.random.Random
 import kotlin.random.nextUBytes
 import kotlin.test.Test
@@ -75,9 +76,10 @@ class Argon2Test {
             6500029010075826286U,
             16957672821843227543U
         )
-        val result = Argon2Utils.mixRound(input)
+        val preparedInput = input.chunked(8).map { it.toTypedArray().fromLittleEndianArrayToULong() }.toULongArray()
+        val result = Argon2Utils.inplaceMixRound(preparedInput)
         assertTrue {
-            expected.contentEquals(result)
+            expected.contentEquals(result.toTypedArray())
         }
 
     }
@@ -246,7 +248,7 @@ class Argon2Test {
         val randomBlock1 = ArgonBlock(randomBlockAsArray).getBlockPointer()
         val randomBlock2 = ArgonBlock(randomBlockAsArray2).getBlockPointer()
         val randomBlock3 = ArgonBlock(randomBlockAsArray3).getBlockPointer()
-        val resultWithoutXorAndAllocations = Argon2Utils.inplaceCompressionFunctionG(randomBlock1, randomBlock2, randomBlock3, false)
+        val resultWithoutXorAndAllocations = Argon2Utils.compressionFunctionG(randomBlock1, randomBlock2, randomBlock3, false)
         assertTrue {
             expectedWithoutXor.contentEquals(resultWithoutXorAndAllocations.getAsUByteArray())
         }
@@ -391,7 +393,7 @@ class Argon2Test {
         val randomBlock1 = ArgonBlock(randomBlockAsArray).getBlockPointer()
         val randomBlock2 = ArgonBlock(randomBlockAsArray2).getBlockPointer()
         val randomBlock3 = ArgonBlock(randomBlockAsArray3).getBlockPointer()
-        val resultWithoutXorAndAllocations = Argon2Utils.inplaceCompressionFunctionG(randomBlock1, randomBlock2, randomBlock3, true)
+        val resultWithoutXorAndAllocations = Argon2Utils.compressionFunctionG(randomBlock1, randomBlock2, randomBlock3, true)
         assertTrue {
             expectedWithXor.contentEquals(resultWithoutXorAndAllocations.getAsUByteArray())
         }

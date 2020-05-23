@@ -21,9 +21,12 @@ import com.ionspin.kotlin.crypto.hash.sha.Sha256
 import com.ionspin.kotlin.crypto.hash.sha.Sha512
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
+import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 /**
  * Created by Ugljesa Jovanovic
@@ -127,25 +130,28 @@ class ReadmeTest {
 
     }
 
+    @ExperimentalTime
     @Test
-    fun argon2StringExample() {
+    fun argon2StringExample() = testBlocking {
         val argon2Instance = Argon2(
             password = "Password",
             salt = "RandomSalt",
-            parallelism = 4,
+            parallelism = 1,
             tagLength = 64U,
-            requestedMemorySize = 32U, //Travis build on mac fails with higher values
-            numberOfIterations = 4,
+            requestedMemorySize = 4096U, //Travis build on mac fails with higher values
+            numberOfIterations = 100,
             key = "",
             associatedData = "",
             argonType = ArgonType.Argon2id
         )
-        val tag = argon2Instance.derive()
-        val tagString = tag.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "")
-        val expectedTagString = "ca134003c9f9f76ca8869359c1d9065603ec54ac30f5158f06af647cacaef2c1c3e" +
-                "c71e81960278c0596febc64125acbbe5959146db1c128199a1b7cb38982a9"
-        println("Tag: ${tagString}")
-        assertEquals(tagString, expectedTagString)
+        val time = measureTime {
+            val tag = argon2Instance.derive()
+            val tagString = tag.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "")
+            val expectedTagString = "27c61b6538ef9f4a1250f8712cac09fc4329969295f9440249437d38c1617a005c2702d76a8a59e4cda2dfba48e1132261dacdfd31296945906992ea32f1d06e"
+            println("Tag: ${tagString}")
+            assertEquals(tagString, expectedTagString)
+        }
+        println("Time $time")
 
     }
 
