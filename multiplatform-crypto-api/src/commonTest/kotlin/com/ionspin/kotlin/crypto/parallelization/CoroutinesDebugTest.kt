@@ -12,29 +12,26 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
-pluginManagement {
-    repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+package com.ionspin.kotlin.crypto.parallelization
 
-        mavenCentral()
+import com.ionspin.kotlin.crypto.util.testBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.test.Test
+import kotlin.time.ExperimentalTime
 
-        maven("https://plugins.gradle.org/m2/")
-    }
+/**
+ * Created by Ugljesa Jovanovic
+ * ugljesa.jovanovic@ionspin.com
+ * on 17-May-2020
+ */
+@ExperimentalTime
+class CoroutinesDebugTest {
 
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
-        }
+    @Test
+    fun debugTest() = testBlocking {
+        Coroutines14.argonParallel()
     }
 }
-enableFeaturePreview("GRADLE_METADATA")
-rootProject.name = "KotlinMultiplatformCrypto"
-include("multiplatform-crypto")
-include("multiplatform-crypto-api")
-include("sample")
-

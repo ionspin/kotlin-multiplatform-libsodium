@@ -46,7 +46,7 @@ class Blake2BTest {
                 "1234567890" +
                 "1234567890"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2b.digest(test)
         //Generated with b2sum 8.31
         val expectedResult = ubyteArrayOf(
             //@formatter:off
@@ -77,7 +77,7 @@ class Blake2BTest {
                 "1234567890"
 
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2b.digest(test)
         val expectedResultString = "800bb78cd4da18995c8074713bb674" +
                 "3cd94b2b6490a693fe4000ed00833b88b7b474d94af9cfed246b1b" +
                 "4ce1935a76154d7ea7c410493557741d18ec3a08da75"
@@ -93,7 +93,7 @@ class Blake2BTest {
     fun testDigest() {
         val test = "111111111122222222223333333333333"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2b.digest(test)
         //Generated with b2sum 8.31
         val expectedResult = ubyteArrayOf(
             //@formatter:off
@@ -115,7 +115,7 @@ class Blake2BTest {
         val test = "abc"
         val key = "key"
 
-        val result = Blake2bPure.digest(test, key)
+        val result = Blake2b.digest(test, key)
 
         assertTrue {
             result.isNotEmpty()
@@ -134,7 +134,7 @@ class Blake2BTest {
     fun testDigestFromRfc() {
         val test = "abc"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2b.digest(test)
         //@formatter:off
         val expectedResult = ubyteArrayOf(
 
@@ -272,7 +272,7 @@ class Blake2BTest {
         for (i in 0 until mixChain.size - 1) {
             val inputRound = mixChain[i]
             val round = i
-            val result = Blake2bPure.mixRound(inputRound, message, round)
+            val result = Blake2b.mixRound(inputRound, message, round)
             val expectedResult = mixChain[i + 1]
             assertTrue {
                 result.contentEquals(expectedResult)
@@ -286,7 +286,7 @@ class Blake2BTest {
     fun testInvalidHashLength() {
         val test = "1234567890"
         assertFailsWith(RuntimeException::class) {
-            val result = Blake2bPure.digest(inputString = test, hashLength = 65)
+            val result = Blake2b.digest(inputString = test, hashLength = 65)
         }
     }
 

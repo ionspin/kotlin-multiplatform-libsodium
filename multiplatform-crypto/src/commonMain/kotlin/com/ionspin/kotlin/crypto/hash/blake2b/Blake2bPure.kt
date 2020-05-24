@@ -19,9 +19,6 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
-import com.ionspin.kotlin.crypto.hash.StatelessHash
-import com.ionspin.kotlin.crypto.hash.UpdatableHash
-import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
@@ -31,9 +28,9 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  */
 
 @ExperimentalUnsignedTypes
-class Blake2b(val key: UByteArray? = null, val hashLength: Int = 64) : UpdatableHash {
+class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake2b {
 
-    companion object : StatelessHash {
+    companion object : Blake2bStatelessInterface {
         //Hack start
         //If this line is not included konanc 1.4-M1 fails to link because it cant find ByteArray which is
         //a backing class for UByteArray
@@ -255,7 +252,7 @@ class Blake2b(val key: UByteArray? = null, val hashLength: Int = 64) : Updatable
         requestedHashLenght
     )
 
-    override val MAX_HASH_BYTES: Int = Blake2b.MAX_HASH_BYTES
+    override val MAX_HASH_BYTES: Int = Blake2bPure.MAX_HASH_BYTES
 
     var h = iv.copyOf()
     var counter = BigInteger.ZERO

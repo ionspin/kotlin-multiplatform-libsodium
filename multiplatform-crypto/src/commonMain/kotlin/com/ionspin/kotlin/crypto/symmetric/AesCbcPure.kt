@@ -17,13 +17,12 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
-import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.util.xor
 
 /**
  * Advanced encryption standard with cipher block chaining and PKCS #5
  *
- * For bulk encryption/decryption use [AesCbc.encrypt] and [AesCbc.decrypt]
+ * For bulk encryption/decryption use [AesCbcPure.encrypt] and [AesCbcPure.decrypt]
  *
  * To get an instance of AesCbc and then feed it data sequentially with [addData] use [createEncryptor] and [createDecryptor]
  *
@@ -32,7 +31,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 21-Sep-2019
  */
 @ExperimentalUnsignedTypes
-class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: UByteArray? = null) {
+class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -40,22 +39,22 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
          * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
          * data call [encrypt]
          */
-        fun createEncryptor(aesKey: AesKey) : AesCbc {
-            return AesCbc(aesKey, Mode.ENCRYPT)
+        fun createEncryptor(aesKey: AesKey) : AesCbcPure {
+            return AesCbcPure(aesKey, Mode.ENCRYPT)
         }
         /**
          * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
          * data call [decrypt]
          */
-        fun createDecryptor(aesKey : AesKey) : AesCbc {
-            return AesCbc(aesKey, Mode.DECRYPT)
+        fun createDecryptor(aesKey : AesKey) : AesCbcPure {
+            return AesCbcPure(aesKey, Mode.DECRYPT)
         }
 
         /**
          * Bulk encryption, returns encrypted data and a random initialization vector
          */
         fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitializationVector {
-            val aesCbc = AesCbc(aesKey, Mode.ENCRYPT)
+            val aesCbc = AesCbcPure(aesKey, Mode.ENCRYPT)
             aesCbc.addData(data)
             return aesCbc.encrypt()
         }
@@ -64,7 +63,7 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
          * Bulk decryption, returns decrypted data
          */
         fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
-            val aesCbc = AesCbc(aesKey, Mode.DECRYPT, initialCounter)
+            val aesCbc = AesCbcPure(aesKey, Mode.DECRYPT, initialCounter)
             aesCbc.addData(data)
             return aesCbc.decrypt()
         }
@@ -199,17 +198,17 @@ class AesCbc internal constructor(val aesKey: AesKey, val mode: Mode, initializa
             Mode.ENCRYPT -> {
                 currentOutput = if (currentOutput.isEmpty()) {
                     println("IV: $initVector")
-                    Aes.encrypt(aesKey, data xor initVector)
+                    AesPure.encrypt(aesKey, data xor initVector)
                 } else {
-                    Aes.encrypt(aesKey, data xor currentOutput)
+                    AesPure.encrypt(aesKey, data xor currentOutput)
                 }
                 currentOutput
             }
             Mode.DECRYPT -> {
                 if (currentOutput.isEmpty()) {
-                    currentOutput = Aes.decrypt(aesKey, data) xor initVector
+                    currentOutput = AesPure.decrypt(aesKey, data) xor initVector
                 } else {
-                    currentOutput = Aes.decrypt(aesKey, data) xor previousEncrypted
+                    currentOutput = AesPure.decrypt(aesKey, data) xor previousEncrypted
                 }
                 previousEncrypted = data
                 currentOutput

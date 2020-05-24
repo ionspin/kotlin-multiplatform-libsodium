@@ -18,7 +18,7 @@
 
 package com.ionspin.kotlin.crypto.hash.argon
 
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import kotlin.test.Test
@@ -57,7 +57,7 @@ class Argon2KATTest {
         val secret: UByteArray = ubyteArrayOf(0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U)
         val associatedData: UByteArray = ubyteArrayOf(0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U)
 
-        val digest = Argon2Pure(
+        val digest = Argon2(
             password,
             salt,
             parallelism.toInt(),
@@ -98,7 +98,7 @@ class Argon2KATTest {
         val secret: UByteArray = ubyteArrayOf(0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U)
         val associatedData: UByteArray = ubyteArrayOf(0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U)
 
-        val digest = Argon2Pure(
+        val digest = Argon2(
             password,
             salt,
             parallelism.toInt(),
@@ -139,7 +139,7 @@ class Argon2KATTest {
         val secret: UByteArray = ubyteArrayOf(0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U, 0x03U)
         val associatedData: UByteArray = ubyteArrayOf(0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U, 0x04U)
 
-        val digest = Argon2Pure(
+        val digest = Argon2(
             password,
             salt,
             parallelism.toInt(),

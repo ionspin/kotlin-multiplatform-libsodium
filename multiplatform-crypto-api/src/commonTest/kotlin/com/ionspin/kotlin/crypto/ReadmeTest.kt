@@ -16,10 +16,10 @@
 
 package com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
-import com.ionspin.kotlin.crypto.hash.sha.Sha256Pure
-import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
+import com.ionspin.kotlin.crypto.hash.sha.Sha256
+import com.ionspin.kotlin.crypto.hash.sha.Sha512
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlin.test.Test
@@ -40,7 +40,7 @@ class ReadmeTest {
     @Test
     fun blake2bObjectExample() {
         val input = "abc"
-        val result = Blake2bPure.digest(input)
+        val result = Blake2b.digest(input)
         //@formatter:off
         val expectedResult = ubyteArrayOf(
             0xBAU,0x80U,0xA5U,0x3FU,0x98U,0x1CU,0x4DU,0x0DU,0x6AU,0x27U,0x97U,0xB6U,0x9FU,0x12U,0xF6U,0xE9U,
@@ -59,7 +59,7 @@ class ReadmeTest {
     fun blake2bInstanceExample() {
         val test = "abc"
         val key = "key"
-        val blake2b = Blake2bPure(key)
+        val blake2b = Blake2b(key)
         blake2b.update(test)
         val result = blake2b.digest()
 
@@ -79,7 +79,7 @@ class ReadmeTest {
     @Test
     fun sha256Example() {
         val input = "abc"
-        val result = Sha256Pure.digest(inputString = input)
+        val result = Sha256.digest(inputString = input)
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
@@ -92,7 +92,7 @@ class ReadmeTest {
     @Test
     fun sha512Example() {
         val input = "abc"
-        val result = Sha512Pure.digest(inputMessage = input.encodeToByteArray().map { it.toUByte() }.toUByteArray())
+        val result = Sha512.digest(inputMessage = input.encodeToByteArray().map { it.toUByte() }.toUByteArray())
         println(result.map { it.toString(16) })
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
                 "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
@@ -106,7 +106,7 @@ class ReadmeTest {
     @ExperimentalStdlibApi
     @Test
     fun sha256UpdatableExample() {
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         sha256.update("abc")
         val result = sha256.digest()
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
@@ -118,7 +118,7 @@ class ReadmeTest {
     @ExperimentalStdlibApi
     @Test
     fun sha512UpdatableExample() {
-        val sha512 = Sha512Pure()
+        val sha512 = Sha512()
         sha512.update("abc")
         val result = sha512.digest()
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
@@ -133,7 +133,7 @@ class ReadmeTest {
     @ExperimentalTime
     @Test
     fun argon2StringExample() = testBlocking {
-        val argon2Instance = Argon2Pure(
+        val argon2Instance = Argon2(
             password = "Password",
             salt = "RandomSalt",
             parallelism = 1,

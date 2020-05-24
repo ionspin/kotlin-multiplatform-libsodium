@@ -18,10 +18,8 @@
 
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.BLOCK_SIZE
-import com.ionspin.kotlin.crypto.util.arrayChunked
-import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
 import com.ionspin.kotlin.crypto.util.plus
 import com.ionspin.kotlin.crypto.util.rotateRight
 
@@ -101,17 +99,17 @@ object Argon2Utils {
 
     internal fun argonBlake2bArbitraryLenghtHash(input: UByteArray, length: UInt): UByteArray {
         if (length <= 64U) {
-            return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
+            return Blake2bPure.digest(inputMessage = length + input, hashLength = length.toInt())
         }
         //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
         val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
         val v = Array<UByteArray>(numberOf64ByteBlocks) { ubyteArrayOf() }
-        v[0] = Blake2b.digest(length + input)
+        v[0] = Blake2bPure.digest(length + input)
         for (i in 1 until numberOf64ByteBlocks) {
-            v[i] = Blake2b.digest(v[i - 1])
+            v[i] = Blake2bPure.digest(v[i - 1])
         }
         val remainingPartOfInput = length.toInt() - numberOf64ByteBlocks * 32
-        val vLast = Blake2b.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
+        val vLast = Blake2bPure.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
         val concat =
             (v.map { it.copyOfRange(0, 32) })
                 .plus(listOf(vLast))

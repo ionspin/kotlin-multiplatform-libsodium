@@ -16,7 +16,6 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.hash.StatelessHash
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.util.rotateRight
@@ -28,11 +27,11 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  */
 
 @ExperimentalUnsignedTypes
-class Sha512 : UpdatableHash {
+class Sha512Pure : Sha512 {
 
     override val MAX_HASH_BYTES: Int = 32
 
-    companion object : StatelessHash {
+    companion object : StatelessSha512 {
         const val BLOCK_SIZE = 1024
         const val BLOCK_SIZE_IN_BYTES = 128
         const val CHUNK_SIZE = 80

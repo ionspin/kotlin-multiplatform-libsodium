@@ -29,7 +29,7 @@ class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownValue() {
-        val sha512 = Sha512()
+        val sha512 = Sha512Pure()
         sha512.update("abc")
         val result = sha512.digest()
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
@@ -44,7 +44,7 @@ class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownDoubleBlock() {
-        val sha512 = Sha512()
+        val sha512 = Sha512Pure()
         sha512.update(data = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
         val resultDoubleBlock = sha512.digest()
         println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
@@ -58,7 +58,7 @@ class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLong() {
-        val sha512 = Sha512()
+        val sha512 = Sha512Pure()
         for (i in 0 until 10000) {
             sha512.update("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         }
@@ -73,7 +73,7 @@ class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLonger() {
-        val sha512 = Sha512()
+        val sha512 = Sha512Pure()
         for (i in 0 until 16_777_216) {
             if (i % 10000 == 0) {
                 println("$i/16777216")

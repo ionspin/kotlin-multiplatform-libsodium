@@ -17,7 +17,6 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.tasks.testing.logging.TestLogging
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
@@ -27,19 +26,8 @@ plugins {
     kotlin(PluginsDeps.multiplatform)
     id (PluginsDeps.mavenPublish)
     id (PluginsDeps.signing)
-    id (PluginsDeps.node) version Versions.nodePlugin
     id (PluginsDeps.dokka) version Versions.dokkaPlugin
 }
-
-val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
-
-val sonatypePassword : String? by project
-
-val sonatypeUsername : String? by project
-
-val sonatypePasswordEnv : String? = System.getenv()["SONATYPE_PASSWORD"]
-val sonatypeUsernameEnv : String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
@@ -186,7 +174,6 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
-                implementation(project(":multiplatform-crypto-api"))
             }
         }
         val commonTest by getting {
@@ -350,16 +337,6 @@ kotlin {
 
 }
 
-
-
-task<Copy>("copyPackageJson") {
-    dependsOn("compileKotlinJs")
-    println("Copying package.json from $projectDir/core/src/jsMain/npm")
-    from ("$projectDir/src/jsMain/npm")
-    println("Node modules dir ${node.nodeModulesDir}")
-    into ("${node.nodeModulesDir}")
-}
-
 tasks {
 
 
@@ -382,8 +359,6 @@ tasks {
         }
     }
     if (getHostOsName() == "linux") {
-
-        val npmInstall by getting
         val compileKotlinJs by getting(AbstractCompile::class)
         val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
 
@@ -438,59 +413,6 @@ tasks {
 
 
 
-signing {
-    isRequired = false
-    sign(publishing.publications)
-}
 
-publishing {
-    publications.withType(MavenPublication::class) {
-        artifact(tasks["javadocJar"])
-        pom {
-            name.set("Kotlin Multiplatform Crypto")
-            description.set("Kotlin Multiplatform Crypto library")
-            url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
-            licenses {
-                license {
-                    name.set("The Apache License, Version 2.0")
-                    url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                }
-            }
-            developers {
-                developer {
-                    id.set("ionspin")
-                    name.set("Ugljesa Jovanovic")
-                    email.set("opensource@ionspin.com")
-                }
-            }
-            scm {
-                url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
-                connection.set("scm:git:git://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
-                developerConnection.set("scm:git:ssh://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
-
-            }
-
-        }
-    }
-    repositories {
-        maven {
-
-            url = uri(sonatypeStaging)
-            credentials {
-                username = sonatypeUsername ?: sonatypeUsernameEnv ?: ""
-                password = sonatypePassword ?: sonatypePasswordEnv ?: ""
-            }
-        }
-
-        maven {
-            name = "snapshot"
-            url = uri(sonatypeSnapshots)
-            credentials {
-                username = sonatypeUsername ?: sonatypeUsernameEnv ?: ""
-                password = sonatypePassword ?: sonatypePasswordEnv ?: ""
-            }
-        }
-    }
-}
 
 

@@ -23,44 +23,33 @@ import kotlin.test.assertTrue
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 17-Jul-2019
+ * on 21-Jul-2019
  */
-@ExperimentalUnsignedTypes
-class Sha256UpdatableTest {
-
+class Sha512UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownValue() {
-        val sha256 = Sha256Pure()
-        sha256.update("abc")
-        val result = sha256.digest()
-        val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        val sha512 = Sha512()
+        sha512.update("abc")
+        val result = sha512.digest()
+        val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
+                "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
         }
+
+
     }
 
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownDoubleBlock() {
-        val sha256 = Sha256Pure()
-        sha256.update(data = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
-        val resultDoubleBlock = sha256.digest()
+        val sha512 = Sha512()
+        sha512.update(data = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
+        val resultDoubleBlock = sha512.digest()
         println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
-        val expectedResultForDoubleBlock = "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
-        assertTrue {
-            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
-        }
-    }
-
-    @ExperimentalStdlibApi
-    @Test
-    fun testWellKnown3() { //It's good that I'm consistent with names.
-        val sha256 = Sha256Pure()
-        sha256.update(data = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
-        val resultDoubleBlock = sha256.digest()
-        println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
-        val expectedResultForDoubleBlock = "cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1"
+        val expectedResultForDoubleBlock = "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018" +
+                "501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909"
         assertTrue {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
         }
@@ -69,30 +58,30 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLong() {
-        val sha256 = Sha256Pure()
+        val sha512 = Sha512()
         for (i in 0 until 10000) {
-            sha256.update("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            sha512.update("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         }
-        val resultDoubleBlock = sha256.digest()
-        val expectedResultForDoubleBlock = "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
+        val resultDoubleBlock = sha512.digest()
+        val expectedResultForDoubleBlock = "e718483d0ce769644e2e42c7bc15b4638e1f98b13b2044285632a803afa973ebde0ff244877ea60a4cb0432ce577c31beb009c5c2c49aa2e4eadb217ad8cc09b"
         assertTrue {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
         }
     }
 
-    @Ignore()
+    @Ignore() //Interestingly enough I'm not the only one having trouble with this test.
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLonger() {
-        val sha256 = Sha256Pure()
+        val sha512 = Sha512()
         for (i in 0 until 16_777_216) {
             if (i % 10000 == 0) {
                 println("$i/16777216")
             }
-            sha256.update("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno")
+            sha512.update("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno")
         }
-        val resultDoubleBlock = sha256.digest()
-        val expectedResultForDoubleBlock = "50e72a0e26442fe2552dc3938ac58658228c0cbfb1d2ca872ae435266fcd055e"
+        val resultDoubleBlock = sha512.digest()
+        val expectedResultForDoubleBlock = "b47c933421ea2db149ad6e10fce6c7f93d0752380180ffd7f4629a712134831d77be6091b819ed352c2967a2e2d4fa5050723c9630691f1a05a7281dbe6c1086"
         assertTrue {
             resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
         }

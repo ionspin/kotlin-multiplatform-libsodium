@@ -42,7 +42,7 @@ class Blake2bInstanceTest {
             //@formatter:on
         )
 
-        val blake2b = Blake2bPure()
+        val blake2b = Blake2b()
         for (i in 0 until updates) {
             blake2b.update(input)
         }
@@ -60,7 +60,7 @@ class Blake2bInstanceTest {
         val expectedResult = "2F49AEB613E34E924E175A6AF2FAAD7BC78235F9C5E461C68FD5B47E".toLowerCase() +
                 "E8E2FD2FB4C07D7E4A72404612D92899AF8A328F3B614ED77244B481151D40B11E32A4".toLowerCase()
 
-        val blake2b = Blake2bPure()
+        val blake2b = Blake2b()
         for (i in 0 until updates) {
             blake2b.update(input)
         }
@@ -74,7 +74,7 @@ class Blake2bInstanceTest {
     fun testDigestWithKey() {
         val test = "abc"
         val key = "key"
-        val blake2b = Blake2bPure(key)
+        val blake2b = Blake2b(key)
         blake2b.update(test)
         val result = blake2b.digest()
 

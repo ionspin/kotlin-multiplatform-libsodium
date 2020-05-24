@@ -12,29 +12,26 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
-pluginManagement {
-    repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+package com.ionspin.kotlin.crypto
 
-        mavenCentral()
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-        maven("https://plugins.gradle.org/m2/")
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
-        }
+/**
+ * Created by Ugljesa Jovanovic
+ * ugljesa.jovanovic@ionspin.com
+ * on 21-Sep-2019
+ */
+class SRNGTest {
+    @Test
+    fun testSrng() {
+        //Just a sanity test, need to add better srng tests.
+        val randomBytes1 = SRNG.getRandomBytes(10)
+        val randomBytes2 = SRNG.getRandomBytes(10)
+        randomBytes1.forEach { println("RB1: $it")}
+        randomBytes2.forEach { println("RB2: $it")}
+        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
     }
 }
-enableFeaturePreview("GRADLE_METADATA")
-rootProject.name = "KotlinMultiplatformCrypto"
-include("multiplatform-crypto")
-include("multiplatform-crypto-api")
-include("sample")
-

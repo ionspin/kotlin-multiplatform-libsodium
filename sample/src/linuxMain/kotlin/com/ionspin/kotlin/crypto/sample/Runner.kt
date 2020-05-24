@@ -1,4 +1,4 @@
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -7,7 +7,7 @@ import kotlin.time.measureTime
 @ExperimentalStdlibApi
 fun main() {
     println("Test")
-    val argon2Instance = Argon2(
+    val argon2Instance = Argon2Pure(
         password = "Password",
         salt = "RandomSalt",
         parallelism = 1,

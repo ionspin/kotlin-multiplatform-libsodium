@@ -1,0 +1,15 @@
+{
+  "name": "kotlin-multiplatform-crypto-js",
+  "version": "0.0.1",
+  "description": "Kotlin Multiplatform Crypto",
+  "main": "crypto.js",
+  "author": "Ugljesa Jovanovic",
+  "license": "Apache 2.0",
+  "homepage": "",
+  "dependencies": {
+    "kotlin": "1.3.40"
+  },
+  "devDependencies": {
+    "mocha": "5.2.0"
+  }
+}

@@ -31,7 +31,7 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownValue() {
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         sha256.update("abc")
         val result = sha256.digest()
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
@@ -43,7 +43,7 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownDoubleBlock() {
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         sha256.update(data = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
         val resultDoubleBlock = sha256.digest()
         println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
@@ -56,7 +56,7 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnown3() { //It's good that I'm consistent with names.
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         sha256.update(data = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu")
         val resultDoubleBlock = sha256.digest()
         println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
@@ -69,7 +69,7 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLong() {
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         for (i in 0 until 10000) {
             sha256.update("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         }
@@ -84,7 +84,7 @@ class Sha256UpdatableTest {
     @ExperimentalStdlibApi
     @Test
     fun testWellKnownLonger() {
-        val sha256 = Sha256Pure()
+        val sha256 = Sha256()
         for (i in 0 until 16_777_216) {
             if (i % 10000 == 0) {
                 println("$i/16777216")

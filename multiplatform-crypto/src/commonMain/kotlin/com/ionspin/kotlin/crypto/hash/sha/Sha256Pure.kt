@@ -16,7 +16,6 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.util.chunked
 import com.ionspin.kotlin.crypto.hash.StatelessHash
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.util.rotateRight
@@ -30,12 +29,12 @@ import com.ionspin.kotlin.crypto.util.rotateRight
 
 
 @ExperimentalUnsignedTypes
-class Sha256 : UpdatableHash {
+class Sha256Pure : Sha256 {
 
     override val MAX_HASH_BYTES: Int = 32
 
 
-    companion object : StatelessHash {
+    companion object : StatelessSha256 {
         const val BLOCK_SIZE = 512
         const val BLOCK_SIZE_IN_BYTES = 64
         const val UINT_MASK = 0xFFFFFFFFU
