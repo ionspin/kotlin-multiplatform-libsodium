@@ -49,13 +49,6 @@ fun getHostOsName(): String {
 
 kotlin {
     val hostOsName = getHostOsName()
-    if (ideaActive) {
-        when(hostOsName) {
-            "linux" -> linuxX64("native")
-            "macos" -> macosX64("native")
-            "windows" -> mingwX64("native")
-        }
-    }
     if (hostOsName == "linux") {
         jvm()
         js {
@@ -171,8 +164,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
-                implementation(Deps.Common.coroutines)
-                implementation(Deps.Common.kotlinBigNum)
             }
         }
         val commonTest by getting {
@@ -180,41 +171,6 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
             }
-        }
-
-        val nativeMain = if (ideaActive) {
-            val nativeMain by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeMain
-        } else {
-            val nativeMain by creating {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeMain
-        }
-        val nativeTest = if (ideaActive) {
-            val nativeTest by getting {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeTest
-        } else {
-            val nativeTest by creating {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeTest
         }
 
         if (hostOsName == "linux") {
@@ -246,87 +202,7 @@ kotlin {
                     implementation(kotlin(Deps.Js.test))
                 }
             }
-            val linuxMain by getting {
-                dependsOn(nativeMain)
-            }
-            val linuxTest by getting {
-                dependsOn(nativeTest)
-            }
-            //Not supported in coroutines at the moment
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(nativeTest)
-//            }
-
-//            val linuxArm64Main by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm64Test by getting {
-//                dependsOn(nativeTest)
-//            }
-
         }
-
-        if (hostOsName == "macos") {
-
-            val iosMain by getting {
-                dependsOn(nativeMain)
-            }
-            val iosTest by getting {
-                dependsOn(nativeTest)
-            }
-
-            val ios64ArmMain by getting {
-                dependsOn(nativeMain)
-            }
-            val ios64ArmTest by getting {
-                dependsOn(nativeTest)
-            }
-
-            val ios32ArmMain by getting {
-                dependsOn(nativeMain)
-            }
-            val ios32ArmTest by getting {
-                dependsOn(nativeTest)
-            }
-
-            val macosX64Main by getting {
-                dependsOn(nativeMain)
-            }
-            val macosX64Test by getting {
-                dependsOn(nativeTest)
-            }
-        }
-
-//      Coroutines don't support mingwx86 yet
-//        val mingwX86Main by getting {
-//            dependsOn(commonMain)
-//            dependencies {
-//                implementation(Deps.Native.coroutines)
-//            }
-//        }
-
-//        val mingwX86Test by getting {
-//            dependsOn(commonTest)
-//        }
-//
-        if (hostOsName == "windows") {
-            val mingwX64Main by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-
-            val mingwX64Test by getting {
-                dependsOn(commonTest)
-            }
-        }
-
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")

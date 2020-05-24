@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
-
+import interop.*
+import kotlinx.cinterop.*
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com

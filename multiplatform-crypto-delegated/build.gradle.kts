@@ -89,6 +89,11 @@ kotlin {
 
         }
         linuxX64("linux") {
+            compilations.getByName("main") {
+                val libsodiumCinterop by cinterops.creating {
+                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                }
+            }
             binaries {
                 staticLib {
                     optimized = true
@@ -383,14 +388,14 @@ tasks {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-                // showStandardStreams = true
+                showStandardStreams = true
             }
         }
 
         val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-                showStandardStreams = true
+//                showStandardStreams = true
             }
         }
 
@@ -478,5 +483,19 @@ publishing {
         }
     }
 }
+
+//configurations.forEach {
+//
+//    if (it.name == "linuxCompileKlibraries") {
+//        println("Configuration name: ${it.name}")
+//        it.attributes {
+//            this.keySet().forEach { key ->
+//                val attribute = getAttribute(key)
+//                println(" |-- Attribute $key ${attribute}")
+//                attribute(org.jetbrains.kotlin.gradle.plugin.ProjectLocalConfigurations.ATTRIBUTE, "publicZ")
+//            }
+//        }
+//    }
+//}
 
 
