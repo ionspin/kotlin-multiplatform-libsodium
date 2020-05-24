@@ -103,8 +103,11 @@ kotlin {
 
         }
         linuxX64("linux") {
+
             binaries {
-                staticLib {
+
+                executable {
+                    println("Optimized: $optimized")
                     optimized = true
                 }
             }
@@ -130,14 +133,14 @@ kotlin {
         iosX64("ios") {
             binaries {
                 framework {
-                    optimized = true
+
                 }
             }
         }
         iosArm64("ios64Arm") {
             binaries {
                 framework {
-                    optimized = true
+
                 }
             }
         }
@@ -145,14 +148,14 @@ kotlin {
         iosArm32("ios32Arm") {
             binaries {
                 framework {
-                    optimized = true
+
                 }
             }
         }
         macosX64() {
             binaries {
                 framework {
-                    optimized = true
+
                 }
             }
         }
@@ -162,7 +165,7 @@ kotlin {
         mingwX64() {
             binaries {
                 staticLib {
-                    optimized = true
+
                 }
             }
         }
@@ -186,6 +189,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
+                implementation(project(":multiplatform-crypto"))
             }
         }
         val commonTest by getting {
@@ -437,59 +441,8 @@ tasks {
 
 
 
-signing {
-    isRequired = false
-    sign(publishing.publications)
-}
 
-publishing {
-    publications.withType(MavenPublication::class) {
-        artifact(tasks["javadocJar"])
-        pom {
-            name.set("Kotlin Multiplatform Crypto")
-            description.set("Kotlin Multiplatform Crypto library")
-            url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
-            licenses {
-                license {
-                    name.set("The Apache License, Version 2.0")
-                    url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                }
-            }
-            developers {
-                developer {
-                    id.set("ionspin")
-                    name.set("Ugljesa Jovanovic")
-                    email.set("opensource@ionspin.com")
-                }
-            }
-            scm {
-                url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
-                connection.set("scm:git:git://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
-                developerConnection.set("scm:git:ssh://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
 
-            }
 
-        }
-    }
-    repositories {
-        maven {
-
-            url = uri(sonatypeStaging)
-            credentials {
-                username = sonatypeUsername ?: sonatypeUsernameEnv ?: ""
-                password = sonatypePassword ?: sonatypePasswordEnv ?: ""
-            }
-        }
-
-        maven {
-            name = "snapshot"
-            url = uri(sonatypeSnapshots)
-            credentials {
-                username = sonatypeUsername ?: sonatypeUsernameEnv ?: ""
-                password = sonatypePassword ?: sonatypePasswordEnv ?: ""
-            }
-        }
-    }
-}
 
 

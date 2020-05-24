@@ -138,7 +138,7 @@ class ReadmeTest {
             salt = "RandomSalt",
             parallelism = 1,
             tagLength = 64U,
-            requestedMemorySize = 4096U, //Travis build on mac fails with higher values
+            requestedMemorySize = 4096U,
             numberOfIterations = 100,
             key = "",
             associatedData = "",

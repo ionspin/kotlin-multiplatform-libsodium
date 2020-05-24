@@ -25,6 +25,9 @@ import com.ionspin.kotlin.crypto.util.xor
  * or a UByteArray block
  */
 interface ArgonBlockPointer {
+    companion object {
+        private val _emitLongArray : LongArray = longArrayOf(1L,2L)
+    }
     val blockStartPosition: Int
 
     fun pointerArithmetic(block : (Int, Int) -> Int) : ArgonBlockPointer
@@ -46,6 +49,8 @@ interface ArgonBlockPointer {
 
     fun getAsUByteArray() : UByteArray
 }
+
+fun ArgonBlockPointer._emitLongArray() : LongArray = longArrayOf(0,1)
 
 fun ArgonBlockPointer.getRowOfULongsForMixing(rowIndex: Int) : ULongArray {
     // Each row has 16 unsigned longs (16 ulongs * 8 bytes = 128 bytes) -- Argon2 considers this as 2 word unsigned
