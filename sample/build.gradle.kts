@@ -84,15 +84,14 @@ kotlin {
                     println("Destination dir ${it.compileKotlinTask.destinationDir}")
                 }
             }
-            //Until I figure out how to run headless chrome on travis
-//        browser {
-//
-//            testTask {
-//                useKarma {
-//                    useChrome()
-//                }
-//            }
-//        }
+            browser {
+                testTask {
+                    enabled = false //Until I sort out testing on travis
+                    useKarma {
+                        useChrome()
+                    }
+                }
+            }
             nodejs {
                 testTask {
                     useMocha() {

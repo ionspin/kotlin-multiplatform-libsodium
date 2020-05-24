@@ -34,7 +34,8 @@ pluginManagement {
 }
 enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "KotlinMultiplatformCrypto"
-include("multiplatform-crypto")
 include("multiplatform-crypto-api")
+include("multiplatform-crypto")
+include("multiplatform-crypto-delegated")
 include("sample")
 

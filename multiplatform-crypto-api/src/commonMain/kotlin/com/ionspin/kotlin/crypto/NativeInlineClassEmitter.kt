@@ -1,4 +1,4 @@
-package com.ionspin.kotlin.crypto
+package _multiplatform_crypto_api
 
 /**
  * Created by Ugljesa Jovanovic
