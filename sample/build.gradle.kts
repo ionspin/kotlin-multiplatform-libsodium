@@ -107,7 +107,6 @@ kotlin {
 
                 executable {
                     println("Optimized: $optimized")
-                    optimized = true
                 }
             }
         }
@@ -188,7 +187,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
-                implementation(project(":multiplatform-crypto"))
+                implementation(project(":multiplatform-crypto-delegated"))
             }
         }
         val commonTest by getting {

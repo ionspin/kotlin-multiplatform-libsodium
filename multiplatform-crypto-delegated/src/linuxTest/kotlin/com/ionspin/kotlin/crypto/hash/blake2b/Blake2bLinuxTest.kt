@@ -17,7 +17,7 @@ class Blake2bLinuxTest {
     @Test
     fun testCinterop() {
         val sodiumInitResult = sodium_init()
-//        println("Sodium init $sodiumInitResult")
+        println("Sodium init $sodiumInitResult")
         println("1")
     }
 }

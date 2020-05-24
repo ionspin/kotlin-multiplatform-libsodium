@@ -22,6 +22,7 @@ import org.gradle.api.tasks.testing.logging.TestLogging
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
+import org.jetbrains.kotlin.konan.library.konanCommonLibraryPath
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -92,11 +93,16 @@ kotlin {
             compilations.getByName("main") {
                 val libsodiumCinterop by cinterops.creating {
                     defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+//                    packageName("sodium")
+//                    includeDirs.apply {
+//                        allHeaders("/usr/include/sodium")
+//                        header("/usr/include/sodium.h")
+//                    }
+//                    linkerOpts("-lsodium")
                 }
             }
             binaries {
                 staticLib {
-                    optimized = true
                 }
             }
         }
@@ -177,7 +183,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
-                implementation(project(Deps.Common.apiProject))
+                api(project(Deps.Common.apiProject))
             }
         }
         val commonTest by getting {
