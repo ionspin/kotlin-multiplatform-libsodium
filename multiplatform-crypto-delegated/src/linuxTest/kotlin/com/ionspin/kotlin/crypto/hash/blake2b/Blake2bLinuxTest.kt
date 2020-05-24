@@ -20,4 +20,9 @@ class Blake2bLinuxTest {
         println("Sodium init $sodiumInitResult")
         println("1")
     }
+
+    @Test
+    fun testBlake2BSodiumInterop() {
+        Blake2bStateless.digest("test")
+    }
 }

@@ -22,6 +22,7 @@ import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
 import com.ionspin.kotlin.crypto.util.testBlocking
+import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -153,6 +154,12 @@ class ReadmeTest {
         }
         println("Time $time")
 
+    }
+
+    @Test
+    fun debugTest() {
+        val result = Blake2bStateless.digest("test")
+        println(result.toHexString())
     }
 
 
