@@ -186,7 +186,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
-                implementation(project(":multiplatform-crypto-api"))
+                implementation(project(Deps.Common.apiProject))
             }
         }
         val commonTest by getting {

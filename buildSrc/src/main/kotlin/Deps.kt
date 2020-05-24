@@ -39,6 +39,8 @@ object Deps {
 
 
         val kotlinBigNum = "com.ionspin.kotlin:bignum:${Versions.kotlinBigNumVersion}"
+
+        val apiProject = ":multiplatform-crypto-api"
     }
 
     object Js {
