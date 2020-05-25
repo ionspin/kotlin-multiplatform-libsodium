@@ -1,5 +1,10 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import crypto_generichash
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
+import kotlin.js.Promise
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -8,7 +13,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 
 @ExperimentalUnsignedTypes
 actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
-    override val MAX_HASH_BYTES: Int = 128
+    override val MAX_HASH_BYTES: Int = 64
 
 
     override fun update(data: UByteArray) {
@@ -28,17 +33,24 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     }
 }
 
+@ExperimentalStdlibApi
 @ExperimentalUnsignedTypes
 actual object Blake2bStateless : Blake2bStatelessInterface {
+    override val MAX_HASH_BYTES: Int = 64
+
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-        TODO("not implemented yet")
+//        val hashed = crypto_generichash(64, Uint8Array(inputString.encodeToByteArray().toTypedArray()), null)
+//        return UByteArray(MAX_HASH_BYTES) { hashed[it].toUByte() }
+
+        val hash = crypto_generichash(64, Uint8Array(arrayOf(0U.toByte())));
+        println("Hash $hash")
+        return ubyteArrayOf(0U)
     }
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
 
-    override val MAX_HASH_BYTES: Int
-        get() = TODO("not implemented yet")
+
 
 }

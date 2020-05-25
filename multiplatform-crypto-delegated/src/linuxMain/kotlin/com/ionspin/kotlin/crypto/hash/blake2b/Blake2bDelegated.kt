@@ -35,25 +35,36 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 actual object Blake2bStateless : Blake2bStatelessInterface {
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-        return memScoped {
-            val hashResult = UByteArray(MAX_HASH_BYTES)
-            val hashPointer = hashResult.toCValues().getPointer(this)
-            crypto_generichash(
-                hashPointer,
-                hashLength.toULong(),
-                inputString.cstr.getPointer(this).reinterpret(),
-                inputString.length.toULong(), key?.cstr?.getPointer(this)?.reinterpret(),
-                key?.length?.toULong() ?: 0UL
-            )
-            println("HashPointer: ${hashPointer.readBytes(MAX_HASH_BYTES).toUByteArray().toHexString()}")
-            println(hashResult.toHexString())
-            hashResult
-        }
-
+        val hashResult = UByteArray(MAX_HASH_BYTES)
+        val hashResultPinned = hashResult.pin()
+        crypto_generichash(
+            hashResultPinned.addressOf(0),
+            hashLength.toULong(),
+            inputString.encodeToByteArray().toUByteArray().toCValues(),
+            inputString.length.toULong(),
+            key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
+            key?.length?.toULong() ?: 0UL
+        )
+        println("HashPointer: ${hashResult.toHexString()}")
+        println(hashResult.toHexString())
+        return hashResult
     }
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
-        TODO("not implemented yet")
+        val hashResult = UByteArray(MAX_HASH_BYTES)
+
+        crypto_generichash(
+            StableRef.create(hashResult).asCPointer().reinterpret(),
+            hashLength.toULong(),
+            inputMessage.toCValues(),
+            inputMessage.size.toULong(),
+            key.toCValues(),
+            key.size.toULong() ?: 0UL
+        )
+        println("HashPointer: ${hashResult.toHexString()}")
+        println(hashResult.toHexString())
+        return hashResult
+
     }
 
     override val MAX_HASH_BYTES: Int = 64

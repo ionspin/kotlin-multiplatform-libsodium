@@ -49,6 +49,11 @@ object Deps {
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.kotlinSerialization}"
 
+        object Npm {
+            val libsodium = Pair("libsodium", "0.7.6")
+            val libsodiumWrappers = Pair("libsodium-wrappers", "0.7.6")
+        }
+
     }
 
     object Jvm {

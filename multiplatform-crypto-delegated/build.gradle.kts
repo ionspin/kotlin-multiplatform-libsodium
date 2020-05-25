@@ -249,12 +249,15 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
                     implementation(Deps.Js.coroutines)
+                    implementation(npm(Deps.Js.Npm.libsodium.first, Deps.Js.Npm.libsodium.second))
+                    implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
                 }
             }
             val jsTest by getting {
                 dependencies {
                     implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
+                    implementation(npm(Deps.Js.Npm.libsodium.first, Deps.Js.Npm.libsodium.second))
                 }
             }
             val linuxMain by getting {
