@@ -1,5 +1,8 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.Crypto
+import com.ionspin.kotlin.crypto.util.testBlocking
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 /**
@@ -11,8 +14,13 @@ import kotlin.test.Test
 @ExperimentalStdlibApi
 class Blake2bJsTest {
 
+    @BeforeTest
+    fun setup() = testBlocking {
+        Crypto.initialize()
+    }
+
     @Test
-    fun testBlake2BSodiumInterop() {
+    fun testBlake2BSodiumInterop() = testBlocking {
         Blake2bStateless.digest("test")
     }
 }

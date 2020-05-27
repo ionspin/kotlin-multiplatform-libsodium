@@ -34,7 +34,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 actual object Blake2bStateless : Blake2bStatelessInterface {
-    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+    suspend override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         val hashResult = UByteArray(MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
         crypto_generichash(

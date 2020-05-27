@@ -29,7 +29,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 }
 @ExperimentalUnsignedTypes
 actual object Blake2bStateless : Blake2bStatelessInterface {
-    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+    suspend override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
 

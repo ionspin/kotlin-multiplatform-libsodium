@@ -13,3 +13,15 @@ import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
 
 typealias Sha256Stateless = Sha256Pure.Companion
 typealias Sha512Stateless = Sha512Pure.Companion
+
+object Crypto : CryptoProvider {
+    override suspend fun initialize() {
+        Initializer.initialize()
+    }
+
+}
+
+expect object Initializer {
+    suspend fun initialize()
+}
+

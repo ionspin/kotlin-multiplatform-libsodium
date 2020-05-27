@@ -134,7 +134,7 @@ class Sha512Pure : Sha512 {
         )
 
         @ExperimentalStdlibApi
-        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+        override suspend fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
                 inputString.encodeToByteArray().toUByteArray(),
                 key?.run { encodeToByteArray().toUByteArray() } ?: ubyteArrayOf(),

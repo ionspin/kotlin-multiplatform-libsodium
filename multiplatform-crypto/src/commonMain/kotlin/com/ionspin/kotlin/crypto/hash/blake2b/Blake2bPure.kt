@@ -145,7 +145,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
         }
 
         @ExperimentalStdlibApi
-        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+        override suspend fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             val array = inputString.encodeToByteArray().toUByteArray()
             val keyBytes = key?.run {
                 encodeToByteArray().toUByteArray()

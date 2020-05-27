@@ -50,8 +50,8 @@ object Deps {
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.kotlinSerialization}"
 
         object Npm {
-            val libsodium = Pair("libsodium", "0.7.6")
-            val libsodiumWrappers = Pair("libsodium-wrappers", "0.7.6")
+            val libsodium = Pair("libsodium-sumo", "0.7.6")
+            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.6")
         }
 
     }
