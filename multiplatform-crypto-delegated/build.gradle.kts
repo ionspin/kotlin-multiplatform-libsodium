@@ -284,21 +284,21 @@ kotlin {
                 dependsOn(nativeMain)
             }
             val iosTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val ios64ArmMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val ios64ArmTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val ios32ArmMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val ios32ArmTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val macosX64Main by getting {
