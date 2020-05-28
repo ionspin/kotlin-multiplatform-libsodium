@@ -1,0 +1,27 @@
+#!/bin/bash
+## and then borrowed and slightly modified from https://github.com/datkt/sodium/configure
+## borrowed from https://github.com/sodium-friends/sodium-native/blob/master/configure
+PREFIX="${PREFIX:-$PWD}"
+KONAN="${KONAN:-$HOME/.konan}"
+ARCH=${ARCH:-$(uname -m)}
+
+cd libsodium
+
+./autogen.sh -s -f
+
+if [ -z "$SYSROOT" ]; then
+  case $(uname -a) in
+    **Linux*x86_64**)
+      GCC=${GCC:-gcc}
+      GCC=gcc
+      ;;
+
+    **Darwin*x86_64**)
+      GCC=${GCC:-clang}
+      ;;
+  esac
+
+  export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
+fi
+
+./configure --prefix=$PREFIX "$@"
