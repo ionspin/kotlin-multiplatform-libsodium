@@ -29,15 +29,15 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 }
 @ExperimentalUnsignedTypes
 actual object Blake2bStateless : Blake2bStatelessInterface {
-    suspend override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+
+
+
+    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
-
-    override val MAX_HASH_BYTES: Int
-        get() = TODO("not implemented yet")
 
 }

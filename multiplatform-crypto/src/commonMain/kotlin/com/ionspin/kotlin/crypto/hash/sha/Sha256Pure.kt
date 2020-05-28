@@ -66,7 +66,7 @@ class Sha256Pure : Sha256 {
         )
 
         @ExperimentalStdlibApi
-        suspend override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
                 inputString.encodeToByteArray().toUByteArray(),
                 key?.run { encodeToByteArray().toUByteArray()} ?: ubyteArrayOf(),

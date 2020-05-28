@@ -36,7 +36,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 actual object Blake2bStateless : Blake2bStatelessInterface {
     override val MAX_HASH_BYTES: Int = 64
 
-    override suspend fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         val hashed =  getSodium().crypto_generichash(64, inputString)
         val hash = UByteArray(MAX_HASH_BYTES)
         for (i in 0 until MAX_HASH_BYTES) {

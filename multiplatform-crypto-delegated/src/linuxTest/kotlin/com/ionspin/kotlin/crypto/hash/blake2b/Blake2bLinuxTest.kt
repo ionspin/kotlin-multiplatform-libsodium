@@ -6,6 +6,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
  * on 24-May-2020
  */
 
+import com.ionspin.kotlin.crypto.util.testBlocking
 import interop.*
 import kotlinx.cinterop.*
 import libsodium.*
@@ -22,7 +23,7 @@ class Blake2bLinuxTest {
     }
 
     @Test
-    fun testBlake2BSodiumInterop() {
+    fun testBlake2BSodiumInterop() = testBlocking {
         Blake2bStateless.digest("test")
     }
 }

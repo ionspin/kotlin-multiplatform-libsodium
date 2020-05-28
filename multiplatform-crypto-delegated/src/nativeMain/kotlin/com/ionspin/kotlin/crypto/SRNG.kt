@@ -18,6 +18,7 @@ package com.ionspin.kotlin.crypto
 
 import kotlinx.cinterop.*
 import platform.posix.*
+//import libsod
 
 /**
  * Created by Ugljesa Jovanovic
@@ -29,10 +30,7 @@ actual object SRNG {
     actual fun getRandomBytes(amount: Int): UByteArray {
         memScoped {
             val array = allocArray<UByteVar>(amount)
-            val urandomFile = fopen("/dev/urandom", "rb")
-            if (urandomFile != null) {
-                fread(array, 1, amount.convert(), urandomFile)
-            }
+//            randombytes_buf()
             return UByteArray(amount) {
                 array[it]
             }

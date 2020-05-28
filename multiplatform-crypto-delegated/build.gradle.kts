@@ -61,12 +61,21 @@ fun getHostOsName(): String {
 }
 
 kotlin {
+
+    val libsodiumCompilation : org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests.() -> Unit = {
+        compilations.getByName("main") {
+            val libsodiumCinterop by cinterops.creating {
+                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+            }
+        }
+    }
+
     val hostOsName = getHostOsName()
     if (ideaActive) {
         when(hostOsName) {
-            "linux" -> linuxX64("native")
-            "macos" -> macosX64("native")
-            "windows" -> mingwX64("native")
+            "linux" -> linuxX64("native", libsodiumCompilation)
+            "macos" -> macosX64("native", libsodiumCompilation)
+            "windows" -> mingwX64("native", libsodiumCompilation)
         }
     }
     if (hostOsName == "linux") {
@@ -90,17 +99,7 @@ kotlin {
 
         }
         linuxX64("linux") {
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-//                    packageName("sodium")
-//                    includeDirs.apply {
-//                        allHeaders("/usr/include/sodium")
-//                        header("/usr/include/sodium.h")
-//                    }
-//                    linkerOpts("-lsodium")
-                }
-            }
+            libsodiumCompilation(this)
             binaries {
                 staticLib {
                 }

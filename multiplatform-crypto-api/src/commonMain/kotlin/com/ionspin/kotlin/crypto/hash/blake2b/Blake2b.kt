@@ -9,5 +9,9 @@ import com.ionspin.kotlin.crypto.hash.UpdatableHash
  * on 24-May-2020
  */
 interface Blake2b : UpdatableHash
-interface Blake2bStatelessInterface : StatelessHash
+interface Blake2bStatelessInterface : StatelessHash {
+    @ExperimentalUnsignedTypes
+    override val MAX_HASH_BYTES: Int
+        get() = 64
+}
 

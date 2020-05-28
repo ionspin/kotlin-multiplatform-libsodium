@@ -39,7 +39,7 @@ interface UpdatableHash : Hash {
 
 @ExperimentalUnsignedTypes
 interface StatelessHash : Hash {
-    suspend fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): UByteArray
+    fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): UByteArray
 
     fun digest(
         inputMessage: UByteArray = ubyteArrayOf(),
