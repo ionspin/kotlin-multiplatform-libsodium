@@ -204,13 +204,15 @@ kotlin {
         targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
             compilations.getByName("main") {
                 println("Setting native sourceset dependancy for $name")
-                if (!name.contains("ios")) {
+                if (this@withType.name.contains("ios").not()) {
+                    println("Setting native sourceset dependancy for $this@withType.name")
                     defaultSourceSet.dependsOn(nativeMain)
                 }
             }
             compilations.getByName("test") {
                 println("Setting native sourceset dependancy for $name")
-                if (!name.contains("ios")) {
+                if (this@withType.name.contains("ios").not()) {
+                    println("Setting native sourceset dependancy for $this@withType.name")
                     defaultSourceSet.dependsOn(nativeTest)
                 }
             }
@@ -283,24 +285,24 @@ kotlin {
         if (hostOsName == "macos") {
 
             val iosMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val iosTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val ios64ArmMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val ios64ArmTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val ios32ArmMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val ios32ArmTest by getting {
-                dependsOn(nativeTest)
+//                dependsOn(nativeTest)
             }
 
             val macosX64Main by getting {

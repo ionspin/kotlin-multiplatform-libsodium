@@ -203,8 +203,10 @@ kotlin {
 
             }
             compilations.getByName("test") {
-                println("Setting cinterop for $name")
-                defaultSourceSet.dependsOn(nativeTest)
+                if (this@withType.name.contains("ios").not()) {
+                    println("Setting native test dep for $this@withType.name")
+                    defaultSourceSet.dependsOn(nativeTest)
+                }
 
             }
         }
