@@ -191,9 +191,10 @@ kotlin {
         targets.withType<KotlinNativeTarget> {
             println("Target $name")
             compilations.getByName("main") {
-                println("Setting cinterop for $name")
+
                 defaultSourceSet.dependsOn(nativeMain)
                 if (this@withType.name.contains("ios").not()) {
+                    println("Setting cinterop for $this@withType.name")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
                         compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
