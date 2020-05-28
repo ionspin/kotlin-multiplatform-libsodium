@@ -16,7 +16,7 @@
 
 package com.ionspin.kotlin.crypto
 
-import kotlin.browser.window
+import org.khronos.webgl.get
 
 /**
  * Created by Ugljesa Jovanovic
@@ -27,22 +27,7 @@ actual object SRNG {
     var counter = 0
     @ExperimentalUnsignedTypes
     actual fun getRandomBytes(amount: Int): UByteArray {
-        val runningOnNode = jsTypeOf(window) == "undefined"
-        val randomBytes = if (runningOnNode) {
-            println("Running on node")
-            js("require('crypto')").randomBytes(amount).toJSON().data
-        } else {
-            println("Running in browser")
-            js(
-            """
-                var randomArray = new Uint8Array(amount);
-                var crypto = (self.crypto || self.msCrypto);        
-                crypto.getRandomValues(randomArray);
-            """
-            )
-            var randomArrayResult = js("Array.prototype.slice.call(randomArray);")
-            randomArrayResult
-        }
+        val randomBytes = getSodium().randombytes_buf(amount)
         println("Random bytes: $randomBytes")
         print("Byte at ${randomBytes[0]}")
         val randomBytesUByteArray = UByteArray(amount) {

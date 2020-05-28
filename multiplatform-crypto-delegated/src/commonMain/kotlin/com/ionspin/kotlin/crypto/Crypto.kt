@@ -23,5 +23,7 @@ object Crypto : CryptoProvider {
 
 expect object Initializer {
     suspend fun initialize()
+
+    fun initializeWithCallback(done : () -> (Unit))
 }
 

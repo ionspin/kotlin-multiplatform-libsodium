@@ -16,6 +16,8 @@
 
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.util.testBlocking
+import ext.libsodium.com.ionspin.kotlin.crypto.JsSodiumLoader
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -28,14 +30,15 @@ import kotlin.test.assertTrue
 class SRNGJsTest {
 
     @Test
-    fun testJsSrng() {
+    fun testJsSrng() = testBlocking {
+        JsSodiumLoader.load()
         val bytes1 = SRNG.getRandomBytes(10)
         val bytes2 = SRNG.getRandomBytes(10)
-        println("BYTES1")
+        println("BYTES1\n")
         bytes1.forEach {
             print(it.toString(16).padStart(2, '0'))
         }
-        println("BYTES2")
+        println("BYTES2\n")
         bytes2.forEach {
             print(it.toString(16).padStart(2, '0'))
         }

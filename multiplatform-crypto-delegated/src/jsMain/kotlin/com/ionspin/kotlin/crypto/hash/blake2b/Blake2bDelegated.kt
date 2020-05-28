@@ -1,9 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.getSodium
 import com.ionspin.kotlin.crypto.util.toHexString
-import ext.libsodium.com.ionspin.kotlin.crypto.JsSodiumInterface
-import ext.libsodium.com.ionspin.kotlin.crypto.JsSodiumLoader
-import ext.libsodium.crypto_generichash
 
 /**
  * Created by Ugljesa Jovanovic
@@ -39,8 +37,7 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
     override val MAX_HASH_BYTES: Int = 64
 
     override suspend fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-        val sodium = JsSodiumLoader.load()
-        val hashed = sodium.crypto_generichash(64, inputString)
+        val hashed =  getSodium().crypto_generichash(64, inputString)
         val hash = UByteArray(MAX_HASH_BYTES)
         for (i in 0 until MAX_HASH_BYTES) {
             js(
@@ -50,7 +47,21 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
             )
         }
         println("Hash ${hash.toHexString()}")
-        return ubyteArrayOf(0U)
+        return hash
+    }
+
+    fun digestBlocking(inputString: String, key: String?, hashLength: Int): UByteArray {
+        val hashed = getSodium().crypto_generichash(hashLength, inputString)
+        val hash = UByteArray(MAX_HASH_BYTES)
+        for (i in 0 until MAX_HASH_BYTES) {
+            js(
+                """
+                    hash[i] = hashed[i]
+                """
+            )
+        }
+        println("Hash ${hash.toHexString()}")
+        return hash
     }
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {

@@ -6,7 +6,7 @@ import ext.libsodium.com.ionspin.kotlin.crypto.JsSodiumLoader
 lateinit var sodiumPointer : JsSodiumInterface
 var sodiumLoaded: Boolean = false
 
-fun getSodiumPointer() : JsSodiumInterface = sodiumPointer
+fun getSodium() : JsSodiumInterface = sodiumPointer
 
 fun setSodiumPointer(jsSodiumInterface: JsSodiumInterface) {
     js("sodiumPointer = jsSodiumInterface")
@@ -22,4 +22,10 @@ actual object Initializer {
     actual suspend fun initialize() {
         JsSodiumLoader.load()
     }
+
+    actual fun initializeWithCallback(done: () -> Unit) {
+
+    }
+
+
 }
