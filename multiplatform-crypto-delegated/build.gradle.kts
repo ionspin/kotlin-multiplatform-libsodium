@@ -193,18 +193,16 @@ kotlin {
             compilations.getByName("main") {
                 println("Setting cinterop for $name")
                 defaultSourceSet.dependsOn(nativeMain)
-                if (!name.contains("ios")) {
-                    val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
-                    }
+                val libsodiumCinterop by cinterops.creating {
+                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
                 }
+
             }
             compilations.getByName("test") {
                 println("Setting cinterop for $name")
-                if (!name.contains("ios")) {
-                    defaultSourceSet.dependsOn(nativeTest)
-                }
+                defaultSourceSet.dependsOn(nativeTest)
+
             }
         }
 
