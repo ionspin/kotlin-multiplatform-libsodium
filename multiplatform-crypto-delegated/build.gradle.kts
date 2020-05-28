@@ -281,7 +281,7 @@ kotlin {
         if (hostOsName == "macos") {
 
             val iosMain by getting {
-                dependsOn(nativeMain)
+//                dependsOn(nativeMain)
             }
             val iosTest by getting {
 //                dependsOn(nativeTest)
