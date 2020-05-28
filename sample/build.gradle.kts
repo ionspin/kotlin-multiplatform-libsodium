@@ -61,13 +61,6 @@ fun getHostOsName(): String {
 
 kotlin {
     val hostOsName = getHostOsName()
-    if (ideaActive) {
-        when(hostOsName) {
-            "linux" -> linuxX64("native")
-            "macos" -> macosX64("native")
-            "windows" -> mingwX64("native")
-        }
-    }
     if (hostOsName == "linux") {
         jvm()
         js {
@@ -197,39 +190,34 @@ kotlin {
             }
         }
 
-        val nativeMain = if (ideaActive) {
-            val nativeMain by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
+
+        val nativeMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(Deps.Native.coroutines)
             }
-            nativeMain
-        } else {
-            val nativeMain by creating {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeMain
         }
-        val nativeTest = if (ideaActive) {
-            val nativeTest by getting {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
+
+        val nativeTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(Deps.Native.coroutines)
+            }
+        }
+
+        targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+            compilations.getByName("main") {
+                println("Setting native sourceset dependancy for $name")
+                if (!name.contains("ios")) {
+                    defaultSourceSet.dependsOn(nativeMain)
                 }
             }
-            nativeTest
-        } else {
-            val nativeTest by creating {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
+            compilations.getByName("test") {
+                println("Setting native sourceset dependancy for $name")
+                if (!name.contains("ios")) {
+                    defaultSourceSet.dependsOn(nativeTest)
                 }
             }
-            nativeTest
         }
 
         if (hostOsName == "linux") {
@@ -263,9 +251,17 @@ kotlin {
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
             //Not supported in coroutines at the moment
 //            val linuxArm32HfpMain by getting {

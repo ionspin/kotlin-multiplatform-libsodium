@@ -17,30 +17,28 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import com.moowork.gradle.node.task.NodeTask
-import org.gradle.api.tasks.testing.logging.TestLogging
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
-import org.jetbrains.kotlin.konan.library.konanCommonLibraryPath
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
-    id (PluginsDeps.mavenPublish)
-    id (PluginsDeps.signing)
-    id (PluginsDeps.node) version Versions.nodePlugin
-    id (PluginsDeps.dokka) version Versions.dokkaPlugin
+    id(PluginsDeps.mavenPublish)
+    id(PluginsDeps.signing)
+    id(PluginsDeps.node) version Versions.nodePlugin
+    id(PluginsDeps.dokka) version Versions.dokkaPlugin
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 
-val sonatypePassword : String? by project
+val sonatypePassword: String? by project
 
-val sonatypeUsername : String? by project
+val sonatypeUsername: String? by project
 
-val sonatypePasswordEnv : String? = System.getenv()["SONATYPE_PASSWORD"]
-val sonatypeUsernameEnv : String? = System.getenv()["SONATYPE_USERNAME"]
+val sonatypePasswordEnv: String? = System.getenv()["SONATYPE_PASSWORD"]
+val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
@@ -61,34 +59,18 @@ fun getHostOsName(): String {
 }
 
 kotlin {
-
-    val libsodiumCompilation : org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests.() -> Unit = {
-        compilations.getByName("main") {
-            val libsodiumCinterop by cinterops.creating {
-                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-            }
-        }
-    }
-
     val hostOsName = getHostOsName()
-    if (ideaActive) {
-        when(hostOsName) {
-            "linux" -> linuxX64("native", libsodiumCompilation)
-            "macos" -> macosX64("native", libsodiumCompilation)
-            "windows" -> mingwX64("native", libsodiumCompilation)
-        }
-    }
     if (hostOsName == "linux") {
         jvm()
         js {
-        browser {
-            testTask {
-                enabled = true //Until I sort out testing on travis
-                useKarma {
-                    useChrome()
+            browser {
+                testTask {
+                    enabled = true //Until I sort out testing on travis
+                    useKarma {
+                        useChrome()
+                    }
                 }
             }
-        }
             nodejs {
                 testTask {
                     useMocha() {
@@ -99,7 +81,6 @@ kotlin {
 
         }
         linuxX64("linux") {
-            libsodiumCompilation(this)
             binaries {
                 staticLib {
                 }
@@ -192,40 +173,42 @@ kotlin {
             }
         }
 
-        val nativeMain = if (ideaActive) {
-            val nativeMain by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
+        val nativeMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(Deps.Native.coroutines)
             }
-            nativeMain
-        } else {
-            val nativeMain by creating {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeMain
         }
-        val nativeTest = if (ideaActive) {
-            val nativeTest by getting {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
+
+
+        val nativeTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(Deps.Native.coroutines)
             }
-            nativeTest
-        } else {
-            val nativeTest by creating {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeTest
         }
+
+        targets.withType<KotlinNativeTarget> {
+            println("Target $name")
+            compilations.getByName("main") {
+                println("Setting cinterop for $name")
+                defaultSourceSet.dependsOn(nativeMain)
+                if (!name.contains("ios")) {
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                    }
+                }
+            }
+            compilations.getByName("test") {
+                println("Setting cinterop for $name")
+                if (!name.contains("ios")) {
+                    defaultSourceSet.dependsOn(nativeTest)
+                }
+            }
+        }
+
+
+
 
         if (hostOsName == "linux") {
             val jvmMain by getting {
@@ -261,10 +244,22 @@ kotlin {
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
+
+
+
+
             //Not supported in coroutines at the moment
 //            val linuxArm32HfpMain by getting {
 //                dependsOn(nativeMain)
@@ -354,9 +349,9 @@ kotlin {
 task<Copy>("copyPackageJson") {
     dependsOn("compileKotlinJs")
     println("Copying package.json from $projectDir/core/src/jsMain/npm")
-    from ("$projectDir/src/jsMain/npm")
+    from("$projectDir/src/jsMain/npm")
     println("Node modules dir ${node.nodeModulesDir}")
-    into ("${node.nodeModulesDir}")
+    into("${node.nodeModulesDir}")
 }
 
 tasks {
@@ -369,14 +364,15 @@ tasks {
     }
 
     dokka {
-        println ("Dokka !")
+        println("Dokka !")
         impliedPlatforms = mutableListOf("Common")
         kotlinTasks {
             listOf()
         }
         sourceRoot {
-            println ("Common !")
-            path = "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
+            println("Common !")
+            path =
+                "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
             platforms = listOf("Common")
         }
     }

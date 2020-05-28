@@ -16,25 +16,24 @@
 
 package com.ionspin.kotlin.crypto
 
-import kotlinx.cinterop.*
-import libsodium.randombytes_buf
-import platform.posix.*
-//import libsod
+import com.ionspin.kotlin.crypto.util.testBlocking
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-actual object SRNG {
-    @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
-    actual fun getRandomBytes(amount: Int): UByteArray {
-        memScoped {
-            val array = allocArray<UByteVar>(amount)
-            randombytes_buf(array, amount.toULong())
-            return UByteArray(amount) {
-                array[it]
-            }
-        }
+class SRNGTest {
+    @Test
+    fun testSrng() = testBlocking {
+        Crypto.initialize()
+        //Just a sanity test, need to add better srng tests.
+        val randomBytes1 = SRNG.getRandomBytes(10)
+        val randomBytes2 = SRNG.getRandomBytes(10)
+        randomBytes1.forEach { println("RB1: $it")}
+        randomBytes2.forEach { println("RB2: $it")}
+        assertTrue { !randomBytes1.contentEquals(randomBytes2) }
     }
 }

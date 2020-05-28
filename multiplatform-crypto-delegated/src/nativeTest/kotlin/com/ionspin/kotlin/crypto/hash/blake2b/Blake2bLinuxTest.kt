@@ -6,6 +6,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
  * on 24-May-2020
  */
 
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bStateless
 import com.ionspin.kotlin.crypto.util.testBlocking
 import interop.*
 import kotlinx.cinterop.*

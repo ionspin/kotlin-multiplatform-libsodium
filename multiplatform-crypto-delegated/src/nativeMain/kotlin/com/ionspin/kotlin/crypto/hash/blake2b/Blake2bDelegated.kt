@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.util.toHexString
-import interop.*
 import kotlinx.cinterop.*
 import libsodium.*
 /**
