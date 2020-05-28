@@ -13,3 +13,5 @@ build/
 /package.json
 /multiplatform-crypto/src/jsMain/npm/node_modules
 /multiplatform-crypto/src/jsMain/npm/package-lock.json
+./sodiumWrapper/include
+./sodiumWrapper/lib
