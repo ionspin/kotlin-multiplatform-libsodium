@@ -1,6 +1,6 @@
 headers = sodium.h
 headerFilter = sodium.h sodium/**
 staticLibraries = libsodium.a
-libraryPaths = /home/ionspin/Projects/Future/sodiumWrapper/lib
-compilerOpts = -I/home/ionspin/Projects/Future/sodiumWrapper/include
+libraryPaths = sodiumWrapper/lib
+#compilerOpts = -I./sodiumWrapper/include
 linkerOpts =

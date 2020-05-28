@@ -196,6 +196,7 @@ kotlin {
                 if (!name.contains("ios")) {
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
                     }
                 }
             }
