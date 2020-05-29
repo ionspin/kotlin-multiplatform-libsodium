@@ -251,12 +251,16 @@ kotlin {
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
-                kotlin.srcDir("src/nativeMain/kotlin")
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
 //
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
-                kotlin.srcDir("src/nativeTest/kotlin")
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
 //
             }
 
@@ -307,12 +311,16 @@ kotlin {
 
             val macosX64Main by getting {
                 dependsOn(nativeMain)
-                kotlin.srcDir("src/nativeMain/kotlin")
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
 
             }
             val macosX64Test by getting {
                 dependsOn(nativeTest)
-                kotlin.srcDir("src/nativeTest/kotlin")
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
 
             }
         }
@@ -331,14 +339,17 @@ kotlin {
 //
         if (hostOsName == "windows") {
             val mingwX64Main by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
+                dependsOn(nativeMain)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
                 }
             }
 
             val mingwX64Test by getting {
-                dependsOn(commonTest)
+                dependsOn(nativeTest)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
         }
 
