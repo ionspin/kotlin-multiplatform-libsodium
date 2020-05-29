@@ -199,6 +199,9 @@ kotlin {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
                         compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
                     }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/lib/libsodium.a"
+                    )
                 }
 
             }
