@@ -205,7 +205,7 @@ kotlin {
             compilations.getByName("main") {
                 println("Setting native sourceset dependancy for $name")
                 if ((this@withType.name.contains("ios") ||
-                            this@withType.name.contains("ios")).not()
+                            this@withType.name.contains("mingw")).not()
                 ) {
                     println("Setting native sourceset dependancy for $this@withType.name")
                     defaultSourceSet.dependsOn(nativeMain)
