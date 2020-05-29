@@ -308,9 +308,17 @@ kotlin {
 
             val macosX64Main by getting {
                 dependsOn(nativeMain)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val macosX64Test by getting {
                 dependsOn(nativeTest)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
         }
 
