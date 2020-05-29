@@ -333,7 +333,7 @@ kotlin {
 //
         if (hostOsName == "windows") {
             val mingwX64Main by getting {
-                dependsOn(nativeMain)
+                dependsOn(commonMain)
                 if (ideaActive) {
                     kotlin.srcDir("src/nativeMain/kotlin")
                 }
