@@ -24,4 +24,4 @@ import kotlinx.coroutines.runBlocking
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-actual fun testBlocking(block: suspend (scope: CoroutineScope) -> Unit) = runBlocking { block(this) }
+actual fun testBlocking(block: suspend () -> Unit) = runBlocking { block() }
