@@ -204,7 +204,9 @@ kotlin {
         targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
             compilations.getByName("main") {
                 println("Setting native sourceset dependancy for $name")
-                if (this@withType.name.contains("ios").not()) {
+                if ((this@withType.name.contains("ios") ||
+                            this@withType.name.contains("ios")).not()
+                ) {
                     println("Setting native sourceset dependancy for $this@withType.name")
                     defaultSourceSet.dependsOn(nativeMain)
                 }
