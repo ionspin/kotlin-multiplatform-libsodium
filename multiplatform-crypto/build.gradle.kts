@@ -307,9 +307,15 @@ kotlin {
 
             val macosX64Main by getting {
                 dependsOn(nativeMain)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val macosX64Test by getting {
                 dependsOn(nativeTest)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
         }
 
@@ -327,9 +333,9 @@ kotlin {
 //
         if (hostOsName == "windows") {
             val mingwX64Main by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
+                dependsOn(nativeMain)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
                 }
             }
 
