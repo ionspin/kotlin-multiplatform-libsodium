@@ -104,28 +104,28 @@ kotlin {
     }
 
     if (hostOsName == "macos") {
-        iosX64("ios") {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        iosArm64("ios64Arm") {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        iosArm32("ios32Arm") {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
+//        iosX64("ios") {
+//            binaries {
+//                framework {
+//                    optimized = true
+//                }
+//            }
+//        }
+//        iosArm64("ios64Arm") {
+//            binaries {
+//                framework {
+//                    optimized = true
+//                }
+//            }
+//        }
+//
+//        iosArm32("ios32Arm") {
+//            binaries {
+//                framework {
+//                    optimized = true
+//                }
+//            }
+//        }
         macosX64() {
             binaries {
                 framework {
@@ -284,26 +284,26 @@ kotlin {
 
         if (hostOsName == "macos") {
 
-            val iosMain by getting {
-//                dependsOn(nativeMain)
-            }
-            val iosTest by getting {
-//                dependsOn(nativeTest)
-            }
-
-            val ios64ArmMain by getting {
-//                dependsOn(nativeMain)
-            }
-            val ios64ArmTest by getting {
-//                dependsOn(nativeTest)
-            }
-
-            val ios32ArmMain by getting {
-//                dependsOn(nativeMain)
-            }
-            val ios32ArmTest by getting {
-//                dependsOn(nativeTest)
-            }
+//            val iosMain by getting {
+////                dependsOn(nativeMain)
+//            }
+//            val iosTest by getting {
+////                dependsOn(nativeTest)
+//            }
+//
+//            val ios64ArmMain by getting {
+////                dependsOn(nativeMain)
+//            }
+//            val ios64ArmTest by getting {
+////                dependsOn(nativeTest)
+//            }
+//
+//            val ios32ArmMain by getting {
+////                dependsOn(nativeMain)
+//            }
+//            val ios32ArmTest by getting {
+////                dependsOn(nativeTest)
+//            }
 
             val macosX64Main by getting {
                 dependsOn(nativeMain)
