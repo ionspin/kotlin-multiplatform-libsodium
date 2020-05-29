@@ -17,9 +17,8 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import org.gradle.api.tasks.testing.logging.TestLogging
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
@@ -34,8 +33,8 @@ repositories {
     jcenter()
 
 }
-group = "com.ionspin.kotlin"
-version = "0.0.4-SNAPSHOT"
+group = Published.group
+version = Published.version
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
@@ -90,19 +89,19 @@ kotlin {
             }
         }
         //Not supported in coroutines at the moment
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
         //Not supported in coroutines at the moment
-//        linuxArm64() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
+        linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
 
     }
 
@@ -146,15 +145,17 @@ kotlin {
                 }
             }
         }
+
+        mingwX86() {
+            binaries {
+                staticLib {
+
+                }
+            }
+        }
     }
-// No coroutines support for mingwX86
-//    mingwX86() {
-//        binaries {
-//            staticLib {
-//
-//            }
-//        }
-//    }
+
+
 
 
     println(targets.names)
@@ -179,26 +180,22 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.stdLib))
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesCore)
                 }
             }
             val jvmTest by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesTest)
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(Deps.Js.coroutines)
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
                 }
             }
@@ -213,8 +210,6 @@ kotlin {
 }
 
 tasks {
-
-
     create<Jar>("javadocJar") {
         dependsOn(dokka)
         archiveClassifier.set("javadoc")

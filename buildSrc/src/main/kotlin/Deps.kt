@@ -27,6 +27,11 @@ object Versions {
 
 }
 
+object Published {
+    val group = "com.ionspin.kotlin"
+    val version = "0.0.5-SNAPSHOT"
+}
+
 object Deps {
 
     object Common {
