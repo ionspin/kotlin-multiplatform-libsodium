@@ -15,3 +15,5 @@ build/
 /multiplatform-crypto/src/jsMain/npm/package-lock.json
 /sodiumWrapper/include/
 /sodiumWrapper/lib/
+/sodiumWrapper/ios-include/
+/sodiumWrapper/ios-lib/
