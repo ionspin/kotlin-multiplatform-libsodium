@@ -245,7 +245,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    runningOnLinux {
+    if (getHostOsName() == "linux") {
 
         val jvmTest by getting(Test::class) {
             testLogging {
@@ -284,7 +284,7 @@ tasks {
 //        }
     }
 
-    runningOnWindows {
+    if (getHostOsName() == "windows") {
         val mingwX64Test by getting(KotlinNativeTest::class) {
 
             testLogging {
