@@ -45,22 +45,17 @@ repositories {
     jcenter()
 
 }
-group = Published.group
-version = Published.version
+group = ReleaseInfo.group
+version = ReleaseInfo.version
 
-val ideaActive = System.getProperty("idea.active") == "true"
+val ideaActive = isInIdea()
+println("Idea active: $ideaActive")
 
-fun getHostOsName(): String {
-    val target = System.getProperty("os.name")
-    if (target == "Linux") return "linux"
-    if (target.startsWith("Windows")) return "windows"
-    if (target.startsWith("Mac")) return "macos"
-    return "unknown"
-}
+
 
 kotlin {
     val hostOsName = getHostOsName()
-    if (hostOsName == "linux") {
+    runningOnLinux {
         jvm()
         js {
             browser {
@@ -103,29 +98,29 @@ kotlin {
 
     }
 
-    if (hostOsName == "macos") {
-//        iosX64("ios") {
-//            binaries {
-//                framework {
-//                    optimized = true
-//                }
-//            }
-//        }
-//        iosArm64("ios64Arm") {
-//            binaries {
-//                framework {
-//                    optimized = true
-//                }
-//            }
-//        }
-//
-//        iosArm32("ios32Arm") {
-//            binaries {
-//                framework {
-//                    optimized = true
-//                }
-//            }
-//        }
+    runningOnMacos {
+        iosX64("ios") {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+        iosArm64("ios64Arm") {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        iosArm32("ios32Arm") {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
         macosX64() {
             binaries {
                 framework {
@@ -133,8 +128,22 @@ kotlin {
                 }
             }
         }
+        tvos() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+        watchos() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
     }
-    if (hostOsName == "windows") {
+    runningOnWindows {
 
         mingwX64() {
             binaries {
@@ -173,13 +182,16 @@ kotlin {
             }
         }
 
+        val nativeDependencies = independentDependencyBlock {
+            implementation(Deps.Native.coroutines)
+        }
+
         val nativeMain by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation(Deps.Native.coroutines)
+                nativeDependencies(this)
             }
         }
-
 
         val nativeTest by creating {
             dependsOn(commonTest)
@@ -188,13 +200,13 @@ kotlin {
             }
         }
 
+
         targets.withType<KotlinNativeTarget> {
             println("Target $name")
             compilations.getByName("main") {
-
-                defaultSourceSet.dependsOn(nativeMain)
                 if (this@withType.name.contains("ios").not()) {
-                    println("Setting cinterop for $this@withType.name")
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
                         compilerOpts.add("-I${project.rootDir}/sodiumWrapper/include/")
@@ -203,13 +215,24 @@ kotlin {
                         "-include-binary", "${project.rootDir}/sodiumWrapper/lib/libsodium.a"
                     )
                 }
+                if (this@withType.name.contains("ios")) {
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting ios cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/libsodium-ios/include/")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/libsodium-ios/lib/libsodium.a"
+                    )
+                }
+
 
             }
             compilations.getByName("test") {
-                if (this@withType.name.contains("ios").not()) {
-                    println("Setting native test dep for $this@withType.name")
-                    defaultSourceSet.dependsOn(nativeTest)
-                }
+                println("Setting native test dep for $this@withType.name")
+                defaultSourceSet.dependsOn(nativeTest)
+
 
             }
         }
@@ -251,14 +274,14 @@ kotlin {
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
-                if (ideaActive) {
+                isRunningInIdea {
                     kotlin.srcDir("src/nativeMain/kotlin")
                 }
 //
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
-                if (ideaActive) {
+                isRunningInIdea {
                     kotlin.srcDir("src/nativeTest/kotlin")
                 }
 //
@@ -287,28 +310,6 @@ kotlin {
         }
 
         if (hostOsName == "macos") {
-
-//            val iosMain by getting {
-////                dependsOn(nativeMain)
-//            }
-//            val iosTest by getting {
-////                dependsOn(nativeTest)
-//            }
-//
-//            val ios64ArmMain by getting {
-////                dependsOn(nativeMain)
-//            }
-//            val ios64ArmTest by getting {
-////                dependsOn(nativeTest)
-//            }
-//
-//            val ios32ArmMain by getting {
-////                dependsOn(nativeMain)
-//            }
-//            val ios32ArmTest by getting {
-////                dependsOn(nativeTest)
-//            }
-
             val macosX64Main by getting {
                 dependsOn(nativeMain)
                 if (ideaActive) {

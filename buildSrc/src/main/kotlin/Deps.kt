@@ -27,7 +27,7 @@ object Versions {
 
 }
 
-object Published {
+object ReleaseInfo {
     val group = "com.ionspin.kotlin"
     val version = "0.0.5-SNAPSHOT"
 }

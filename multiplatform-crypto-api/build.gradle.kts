@@ -33,8 +33,8 @@ repositories {
     jcenter()
 
 }
-group = Published.group
-version = Published.version
+group = ReleaseInfo.group
+version = ReleaseInfo.version
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
