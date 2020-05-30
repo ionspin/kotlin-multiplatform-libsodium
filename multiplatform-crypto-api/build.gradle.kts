@@ -48,7 +48,7 @@ fun getHostOsName(): String {
 
 kotlin {
     val hostOsName = getHostOsName()
-    if (hostOsName == "linux") {
+    runningOnLinux {
         jvm()
         js {
             compilations {
@@ -105,15 +105,15 @@ kotlin {
 
     }
 
-    if (hostOsName == "macos") {
-        iosX64("ios") {
+    runningOnMacos {
+        iosX64() {
             binaries {
                 framework {
                     optimized = true
                 }
             }
         }
-        iosArm64("ios64Arm") {
+        iosArm64() {
             binaries {
                 framework {
                     optimized = true
@@ -121,7 +121,7 @@ kotlin {
             }
         }
 
-        iosArm32("ios32Arm") {
+        iosArm32() {
             binaries {
                 framework {
                     optimized = true
@@ -135,8 +135,25 @@ kotlin {
                 }
             }
         }
+
+        tvos() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchos() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
     }
-    if (hostOsName == "windows") {
+    runningOnWindows {
 
         mingwX64() {
             binaries {
@@ -228,9 +245,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux") {
-        val compileKotlinJs by getting(AbstractCompile::class)
-        val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
+    runningOnLinux {
 
         val jvmTest by getting(Test::class) {
             testLogging {
@@ -269,7 +284,7 @@ tasks {
 //        }
     }
 
-    if (getHostOsName() == "windows") {
+    runningOnWindows {
         val mingwX64Test by getting(KotlinNativeTest::class) {
 
             testLogging {
