@@ -37,13 +37,7 @@ version = ReleaseInfo.version
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
-fun getHostOsName(): String {
-    val target = System.getProperty("os.name")
-    if (target == "Linux") return "linux"
-    if (target.startsWith("Windows")) return "windows"
-    if (target.startsWith("Mac")) return "macos"
-    return "unknown"
-}
+
 
 kotlin {
     val hostOsName = getHostOsName()
@@ -248,7 +242,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux") {
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64g") {
 
         val jvmTest by getting(Test::class) {
             testLogging {
