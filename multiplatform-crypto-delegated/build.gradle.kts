@@ -81,32 +81,36 @@ kotlin {
                 }
             }
         }
-        //Not supported in coroutines at the moment
+
+
+    }
+
+    //Not supported in coroutines at the moment
 //        linuxArm32Hfp() {
 //            binaries {
 //                staticLib {
 //                }
 //            }
 //        }
-        //Not supported in coroutines at the moment
-//        linuxArm64() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
 
+    runningOnLinuxxArm64 {
+        linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
     }
 
     runningOnMacos {
-        iosX64("ios") {
+        iosX64() {
             binaries {
                 framework {
                     optimized = true
                 }
             }
         }
-        iosArm64("ios64Arm") {
+        iosArm64() {
             binaries {
                 framework {
                     optimized = true
@@ -114,7 +118,7 @@ kotlin {
             }
         }
 
-        iosArm32("ios32Arm") {
+        iosArm32() {
             binaries {
                 framework {
                     optimized = true
@@ -153,15 +157,6 @@ kotlin {
             }
         }
     }
-// No coroutines support for mingwX86
-//    mingwX86() {
-//        binaries {
-//            staticLib {
-//
-//            }
-//        }
-//    }
-
 
     println(targets.names)
 
@@ -240,7 +235,7 @@ kotlin {
 
 
 
-        if (hostOsName == "linux") {
+        runningOnLinuxx86_64 {
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
@@ -277,36 +272,13 @@ kotlin {
                 isRunningInIdea {
                     kotlin.srcDir("src/nativeMain/kotlin")
                 }
-//
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
                 isRunningInIdea {
                     kotlin.srcDir("src/nativeTest/kotlin")
                 }
-//
             }
-
-
-
-
-            //Not supported in coroutines at the moment
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(nativeTest)
-//            }
-
-//            val linuxArm64Main by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm64Test by getting {
-//                dependsOn(nativeTest)
-//            }
-
         }
 
         if (hostOsName == "macos") {
@@ -326,18 +298,7 @@ kotlin {
             }
         }
 
-//      Coroutines don't support mingwx86 yet
-//        val mingwX86Main by getting {
-//            dependsOn(commonMain)
-//            dependencies {
-//                implementation(Deps.Native.coroutines)
-//            }
-//        }
 
-//        val mingwX86Test by getting {
-//            dependsOn(commonTest)
-//        }
-//
         if (hostOsName == "windows") {
             val mingwX64Main by getting {
                 dependsOn(nativeMain)
@@ -395,12 +356,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux") {
-
-        val npmInstall by getting
-        val compileKotlinJs by getting(AbstractCompile::class)
-        val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
-
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
