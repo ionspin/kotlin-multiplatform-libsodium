@@ -242,7 +242,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64g") {
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 
         val jvmTest by getting(Test::class) {
             testLogging {
