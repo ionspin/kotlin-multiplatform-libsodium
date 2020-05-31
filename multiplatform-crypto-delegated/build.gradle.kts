@@ -55,7 +55,7 @@ println("Idea active: $ideaActive")
 
 kotlin {
     val hostOsName = getHostOsName()
-    runningOnLinux {
+    runningOnLinuxx86_64 {
         jvm()
         js {
             browser {

@@ -20,6 +20,14 @@ if [ -z "$SYSROOT" ]; then
       export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
       ;;
 
+    **Linux*aarch64**)
+      echo "Linux ARM env"
+      GCC=${GCC:-gcc}
+      GCC=gcc
+      export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
+      ;;
+
+
     **Darwin*x86_64**)
       echo "Darwin env"
       GCC=${GCC:-clang}

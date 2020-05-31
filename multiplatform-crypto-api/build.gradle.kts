@@ -19,7 +19,6 @@
 
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -48,7 +47,7 @@ fun getHostOsName(): String {
 
 kotlin {
     val hostOsName = getHostOsName()
-    runningOnLinux {
+    runningOnLinuxx86_64 {
         jvm()
         js {
             compilations {
@@ -88,6 +87,11 @@ kotlin {
                 }
             }
         }
+
+
+    }
+
+    runningOnLinuxxArm64 {
         //Not supported in coroutines at the moment
         linuxArm32Hfp() {
             binaries {
@@ -102,7 +106,6 @@ kotlin {
                 }
             }
         }
-
     }
 
     runningOnMacos {
