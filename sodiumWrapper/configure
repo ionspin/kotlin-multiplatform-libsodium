@@ -4,7 +4,9 @@
 PREFIX="${PREFIX:-$PWD}"
 KONAN="${KONAN:-$HOME/.konan}"
 ARCH=${ARCH:-$(uname -m)}
-
+echo $PREFIX
+echo $KONAN
+echo $ARCH
 cd libsodium
 
 ./autogen.sh -s -f
@@ -12,16 +14,29 @@ cd libsodium
 if [ -z "$SYSROOT" ]; then
   case $(uname -a) in
     **Linux*x86_64**)
+      echo "Linux env"
       GCC=${GCC:-gcc}
       GCC=gcc
+      export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
       ;;
 
     **Darwin*x86_64**)
+      echo "Darwin env"
       GCC=${GCC:-clang}
+      export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
       ;;
+
+    **MSYS*x86_64**)
+      echo "Msys env"
+      GCC=clang.exe
+      export CC=$(find $KONAN/dependencies -wholename *${ARCH}*/bin/*$GCC | head -n1)
+      ;;
+
   esac
 
-  export CC=$(find $KONAN/dependencies -wholename *${ARCH/_/-}/bin/*$GCC | head -n1)
+
+  echo "CC"
+  echo $CC
 fi
 
 ./configure --prefix=$PREFIX "$@"
