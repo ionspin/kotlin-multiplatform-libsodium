@@ -46,7 +46,7 @@ fun KotlinMultiplatformExtension.runningOnLinuxx86_64(block : KotlinMultiplatfor
 }
 
 fun KotlinMultiplatformExtension.runningOnLinuxxArm64(block : KotlinMultiplatformExtension.() -> Unit) {
-    if (getHostOsName() == "linux" && getHostArchitecture() == "arm-v8") {
+    if (getHostOsName() == "linux" && getHostArchitecture() == "aarch64") {
         block(this)
     }
 }
