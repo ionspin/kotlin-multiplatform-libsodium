@@ -194,7 +194,7 @@ kotlin {
             }
         }
 
-        if (hostOsName == "linux") {
+        runningOnLinuxx86_64 {
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
