@@ -115,7 +115,7 @@ kotlin {
 
     }
 
-    if (hostOsName == "macos") {
+    runningOnMacos {
         iosX64("ios") {
             binaries {
                 framework {
@@ -146,7 +146,7 @@ kotlin {
             }
         }
     }
-    if (hostOsName == "windows") {
+    runningOnWindows {
 
         mingwX64() {
             binaries {
@@ -224,7 +224,7 @@ kotlin {
 
 
 
-        if (hostOsName == "linux") {
+        runningOnLinuxx86_64 {
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
@@ -267,6 +267,10 @@ kotlin {
                     kotlin.srcDir("src/nativeTest/kotlin")
                 }
             }
+
+        }
+
+        runningOnLinuxxArm64 {
             //Not supported in coroutines at the moment
 //            val linuxArm32HfpMain by getting {
 //                dependsOn(nativeMain)
@@ -286,7 +290,7 @@ kotlin {
 
         }
 
-        if (hostOsName == "macos") {
+        runningOnMacos{
 
             val iosMain by getting {
                 dependsOn(nativeMain)
@@ -335,7 +339,7 @@ kotlin {
 //            dependsOn(commonTest)
 //        }
 //
-        if (hostOsName == "windows") {
+        runningOnWindows {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
                 dependencies {
@@ -389,7 +393,7 @@ tasks {
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux") {
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 
         val jvmTest by getting(Test::class) {
             testLogging {
