@@ -306,14 +306,23 @@ kotlin {
             "macosX64"
         )
         val ios64Bit = setOf(
-            "iosArm64", "iosX64", "tvosArm64", "tvosX64"
+            "iosArm64", "iosX64",
         )
         val ios32Bit = setOf(
-            "iosArm32", "watchosX86", "watchosArm32", "watchosArm64"
+            "iosArm32"
         )
         val mingw64Bit = setOf(
             "mingwX64"
         )
+
+        val tvos64Bit = setOf(
+            "tvosArm64", "tvosX64"
+        )
+
+        val watchos32Bit = setOf(
+            "watchosX86", "watchosArm32", "watchosArm64"
+        )
+
         targets.withType<KotlinNativeTarget> {
             println("Target $name")
 
@@ -351,6 +360,32 @@ kotlin {
                         "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
                     )
                 }
+
+                if (tvos64Bit.contains(this@withType.name)) {
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting ios cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-tvos/include")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-tvos/lib/libsodium.a"
+                    )
+                }
+
+                if (watchos32Bit.contains(this@withType.name)) {
+                    defaultSourceSet.dependsOn(createWorkaround32bitNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting ios cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-watchos/include")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
+                    )
+                }
+
+
 
             }
             compilations.getByName("test") {
