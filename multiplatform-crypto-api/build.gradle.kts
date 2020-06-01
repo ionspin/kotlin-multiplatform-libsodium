@@ -95,7 +95,7 @@ kotlin {
         }
     }
 
-    runningOnLimuxArm32 {
+    runningOnLinuxArm32 {
         //Not supported in OFFICAL coroutines at the moment
         linuxArm32Hfp() {
             binaries {
