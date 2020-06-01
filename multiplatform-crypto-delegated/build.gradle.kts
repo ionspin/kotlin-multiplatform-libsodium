@@ -95,7 +95,7 @@ kotlin {
         }
 
     }
-    
+
     runningOnLinuxArm32 {
         linuxArm32Hfp() {
             binaries {
@@ -135,14 +135,39 @@ kotlin {
                 }
             }
         }
-        tvos() {
+        tvosX64() {
             binaries {
                 framework {
                     optimized = true
                 }
             }
         }
-        watchos() {
+
+        tvosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm32() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosX86() {
             binaries {
                 framework {
                     optimized = true
@@ -202,7 +227,7 @@ kotlin {
         targets.withType<KotlinNativeTarget> {
             println("Target $name")
             compilations.getByName("main") {
-                if (this@withType.name.contains("ios").not()) {
+                if ((this@withType.name.contains("ios") || this@withType.name.contains("tvos") || this@withType.name.contains("watchos")).not()) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
@@ -213,7 +238,7 @@ kotlin {
                         "-include-binary", "${project.rootDir}/sodiumWrapper/lib/libsodium.a"
                     )
                 }
-                if (this@withType.name.contains("ios")) {
+                if (this@withType.name.contains("ios") || this@withType.name.contains("tvos") || this@withType.name.contains("watchos")) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
@@ -284,7 +309,7 @@ kotlin {
             }
         }
 
-        if (hostOsName == "macos") {
+        runningOnMacos {
             val macosX64Main by getting {
                 dependsOn(nativeMain)
                 if (ideaActive) {
@@ -299,6 +324,27 @@ kotlin {
                 }
 
             }
+
+            val tvosX64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val tvosArm64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosX86Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosArm64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosArm32Main by getting {
+                dependsOn(commonMain)
+            }
+
         }
 
 

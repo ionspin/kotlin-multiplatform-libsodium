@@ -120,7 +120,6 @@ kotlin {
                 }
             }
         }
-
         iosArm32() {
             binaries {
                 framework {
@@ -128,6 +127,7 @@ kotlin {
                 }
             }
         }
+
         macosX64() {
             binaries {
                 framework {
@@ -136,7 +136,7 @@ kotlin {
             }
         }
 
-        tvos() {
+        tvosX64() {
             binaries {
                 framework {
                     optimized = true
@@ -144,7 +144,31 @@ kotlin {
             }
         }
 
-        watchos() {
+        tvosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm32() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosX86() {
             binaries {
                 framework {
                     optimized = true
@@ -216,6 +240,30 @@ kotlin {
                     implementation(kotlin(Deps.Js.test))
                 }
             }
+        }
+
+        runningOnMacos {
+            val tvosX64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val tvosArm64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosX86Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosArm64Main by getting {
+                dependsOn(commonMain)
+            }
+
+            val watchosArm32Main by getting {
+                dependsOn(commonMain)
+            }
+
+
         }
 
         all {
