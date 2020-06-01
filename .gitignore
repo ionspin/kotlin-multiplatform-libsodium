@@ -20,3 +20,4 @@ build/
 /sodiumWrapper/static-arm64/
 /sodiumWrapper/static-arm32/
 /sodiumWrapper/static-ios/
+/sodiumWrapper/static-linux-x86-64/
