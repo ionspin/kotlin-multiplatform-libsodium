@@ -280,14 +280,6 @@ kotlin {
 
         runningOnLinuxArm64 {
             //Not supported in OFFICIAL coroutines at the moment, we're running a custom build
-            val linuxArm32HfpMain by getting {
-                dependsOn(nativeMain)
-            }
-
-            val linuxArm32HfpTest by getting {
-                dependsOn(nativeTest)
-            }
-
             val linuxArm64Main by getting {
                 dependsOn(nativeMain)
             }
@@ -299,7 +291,13 @@ kotlin {
         }
 
         runningOnLinuxArm32 {
+            val linuxArm32HfpMain by getting {
+                dependsOn(nativeMain)
+            }
 
+            val linuxArm32HfpTest by getting {
+                dependsOn(nativeTest)
+            }
         }
 
         runningOnMacos{
