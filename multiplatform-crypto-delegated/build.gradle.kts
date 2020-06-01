@@ -174,7 +174,7 @@ kotlin {
             compilations.getByName("main") {
                 val libsodiumCinterop by cinterops.creating {
                     defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include/")
+                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
                 }
                 kotlinOptions.freeCompilerArgs = listOf(
                     "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
@@ -232,7 +232,7 @@ kotlin {
             compilations.getByName("main") {
                 val libsodiumCinterop by cinterops.creating {
                     defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include/")
+                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
                 }
                 kotlinOptions.freeCompilerArgs = listOf(
                     "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
@@ -333,10 +333,10 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/")
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/libsodium.a"
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
                     )
                 }
 
@@ -345,10 +345,10 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/")
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/libsodium.a"
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
                     )
                 }
 
