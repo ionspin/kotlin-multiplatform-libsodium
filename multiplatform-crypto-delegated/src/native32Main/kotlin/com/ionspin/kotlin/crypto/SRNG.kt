@@ -31,7 +31,7 @@ actual object SRNG {
     actual fun getRandomBytes(amount: Int): UByteArray {
         memScoped {
             val array = allocArray<UByteVar>(amount)
-            randombytes_buf(array, amount.toULong())
+            randombytes_buf(array, amount.toUInt())
             return UByteArray(amount) {
                 array[it]
             }

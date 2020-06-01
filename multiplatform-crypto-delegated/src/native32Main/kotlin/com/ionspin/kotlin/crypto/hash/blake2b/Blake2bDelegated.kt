@@ -38,11 +38,11 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
         val hashResultPinned = hashResult.pin()
         crypto_generichash(
             hashResultPinned.addressOf(0),
-            hashLength.toULong(),
+            hashLength.toUInt(),
             inputString.encodeToByteArray().toUByteArray().toCValues(),
             inputString.length.toULong(),
             key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
-            key?.length?.toULong() ?: 0UL
+            key?.length?.toUInt() ?: 0U
         )
         println("HashPointer: ${hashResult.toHexString()}")
         println(hashResult.toHexString())
@@ -54,11 +54,11 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
 
         crypto_generichash(
             StableRef.create(hashResult).asCPointer().reinterpret(),
-            hashLength.toULong(),
+            hashLength.toUInt(),
             inputMessage.toCValues(),
             inputMessage.size.toULong(),
             key.toCValues(),
-            key.size.toULong() ?: 0UL
+            key.size.toUInt() ?: 0U
         )
         println("HashPointer: ${hashResult.toHexString()}")
         println(hashResult.toHexString())
