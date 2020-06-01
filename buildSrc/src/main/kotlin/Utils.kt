@@ -76,6 +76,7 @@ fun independentDependencyBlock(nativeDeps : KotlinDependencyHandler.() -> Unit) 
  * On mac when two targets that have the same parent source set have cinterops defined, gradle creates a "common"
  * target task for that source set metadata, even though it's a native source set, to work around that, we create
  * an intermediary source set with the same set of dependancies
+ *
  */
 fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSourceSet(name : String, nativeDeps : KotlinDependencyHandler.() -> Unit) : KotlinSourceSet {
     return create("${name}Workaround") {

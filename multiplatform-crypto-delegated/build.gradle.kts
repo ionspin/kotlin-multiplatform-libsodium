@@ -27,6 +27,7 @@ plugins {
     id(PluginsDeps.signing)
     id(PluginsDeps.node) version Versions.nodePlugin
     id(PluginsDeps.dokka) version Versions.dokkaPlugin
+    id("com.dorongold.task-tree") version "1.5"
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
