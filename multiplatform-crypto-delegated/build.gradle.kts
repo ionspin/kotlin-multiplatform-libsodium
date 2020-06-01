@@ -55,6 +55,7 @@ println("Idea active: $ideaActive")
 kotlin {
     val hostOsName = getHostOsName()
     runningOnLinuxx86_64 {
+        println("Configuring Linux X86-64 targets")
         jvm()
         js {
             browser {
@@ -87,6 +88,7 @@ kotlin {
 
     //Not supported in OFFICIAL coroutines at the moment (we're running a custom build)
     runningOnLinuxArm64 {
+        println("Configuring Linux Arm 64 targets")
         linuxArm64() {
             binaries {
                 staticLib {
@@ -97,6 +99,7 @@ kotlin {
     }
 
     runningOnLinuxArm32 {
+        println("Configuring Linux Arm 32 targets")
         linuxArm32Hfp() {
             binaries {
                 staticLib {
@@ -106,6 +109,7 @@ kotlin {
     }
 
     runningOnMacos {
+        println("Configuring macos targets")
         iosX64() {
             binaries {
                 framework {
@@ -176,7 +180,7 @@ kotlin {
         }
     }
     runningOnWindows {
-
+        println("Configuring Mingw targets")
         mingwX64() {
             binaries {
                 staticLib {
@@ -264,6 +268,7 @@ kotlin {
 
 
         runningOnLinuxx86_64 {
+            println("Configuring Linux 64 Bit source sets")
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
@@ -310,6 +315,7 @@ kotlin {
         }
 
         runningOnMacos {
+            println("Configuring Macos source sets")
             val macosX64Main by getting {
                 dependsOn(nativeMain)
                 if (ideaActive) {
