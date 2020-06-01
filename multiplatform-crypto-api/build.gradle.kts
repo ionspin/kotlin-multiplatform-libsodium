@@ -90,6 +90,14 @@ kotlin {
             }
         }
 
+        //Not supported in OFFICAL coroutines at the moment
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
 
     }
 
@@ -98,13 +106,7 @@ kotlin {
     }
 
     runningOnLinuxArm32 {
-        //Not supported in OFFICAL coroutines at the moment
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
+
     }
 
     runningOnMacos {

@@ -1,5 +1,5 @@
 #! /bin/sh
-export PREFIX="$(pwd)/libsodium-ios"
+export PREFIX="$(pwd)/static-arm64"
 export CC=/usr/bin/aarch64-linux-gnu-gcc
 export TARGET_ARCH=armv8-a
 export CFLAGS="-Os -march=${TARGET_ARCH}"
