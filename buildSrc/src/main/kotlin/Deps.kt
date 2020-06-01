@@ -21,6 +21,7 @@ object Versions {
     val atomicfu = "0.14.3-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "0.9.18"
+    val taskTreePlugin = "1.5"
 
     val kotlinBigNumVersion = "0.1.6-SNAPSHOT"
 
@@ -99,5 +100,6 @@ object PluginsDeps {
     val mavenPublish = "maven-publish"
     val signing = "signing"
     val dokka = "org.jetbrains.dokka"
+    val taskTree = "com.dorongold.task-tree"
 }
 

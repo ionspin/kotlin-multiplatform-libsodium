@@ -104,19 +104,19 @@ kotlin {
             }
         }
         //Not supported in coroutines at the moment
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
         //Not supported in coroutines at the moment
-//        linuxArm64() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
+        linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
 
     }
 

@@ -12,30 +12,16 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
-pluginManagement {
-    repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+package com.ionspin.kotlin.crypto.util
 
-        mavenCentral()
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 
-        maven("https://plugins.gradle.org/m2/")
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
-        }
-    }
-}
-enableFeaturePreview("GRADLE_METADATA")
-rootProject.name = "KotlinMultiplatformCrypto"
-include("multiplatform-crypto-api")
-include("multiplatform-crypto")
-include("multiplatform-crypto-delegated")
-include("sample")
-
+/**
+ * Created by Ugljesa Jovanovic
+ * ugljesa.jovanovic@ionspin.com
+ * on 20-Jul-2019
+ */
+actual fun testBlocking(block: suspend () -> Unit) = runBlocking { block() }

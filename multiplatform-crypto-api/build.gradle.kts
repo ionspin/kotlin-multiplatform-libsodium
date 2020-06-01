@@ -82,10 +82,6 @@ kotlin {
             }
         }
 
-
-    }
-
-    runningOnLinuxArm64 {
         //Not supported in OFFICIAL coroutines at the moment
         linuxArm64() {
             binaries {
@@ -93,6 +89,12 @@ kotlin {
                 }
             }
         }
+
+
+    }
+
+    runningOnLinuxArm64 {
+
     }
 
     runningOnLinuxArm32 {

@@ -17,3 +17,6 @@ build/
 /sodiumWrapper/lib/
 /sodiumWrapper/ios-include/
 /sodiumWrapper/ios-lib/
+/sodiumWrapper/static-arm64/
+/sodiumWrapper/static-arm32/
+/sodiumWrapper/static-ios/
