@@ -309,7 +309,7 @@ kotlin {
             "iosArm64", "iosX64", "tvosArm64", "tvosX64", "watchosArm64"
         )
         val ios32Bit = setOf(
-            "iosArm32", "watchosX86"
+            "iosArm32", "watchosX86", "watchosArm32"
         )
         val mingw64Bit = setOf(
             "mingwX64"
