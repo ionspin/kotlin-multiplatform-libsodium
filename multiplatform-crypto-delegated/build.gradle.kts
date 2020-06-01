@@ -20,7 +20,6 @@
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -85,16 +84,20 @@ kotlin {
 
     }
 
-    //Not supported in coroutines at the moment
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
 
-    runningOnLinuxxArm64 {
+    //Not supported in OFFICIAL coroutines at the moment (we're running a custom build)
+    runningOnLinuxArm64 {
         linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
+    }
+    
+    runningOnLinuxArm32 {
+        linuxArm32Hfp() {
             binaries {
                 staticLib {
                 }

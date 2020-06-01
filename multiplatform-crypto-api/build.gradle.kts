@@ -85,15 +85,15 @@ kotlin {
 
     }
 
-    runningOnLinuxxArm64 {
-        //Not supported in coroutines at the moment
+    runningOnLinuxArm64 {
+        //Not supported in OFFICAL coroutines at the moment
         linuxArm32Hfp() {
             binaries {
                 staticLib {
                 }
             }
         }
-        //Not supported in coroutines at the moment
+        //Not supported in OFFICIAL coroutines at the moment
         linuxArm64() {
             binaries {
                 staticLib {

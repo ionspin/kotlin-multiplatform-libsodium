@@ -45,13 +45,13 @@ fun KotlinMultiplatformExtension.runningOnLinuxx86_64(block : KotlinMultiplatfor
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnLinuxxArm64(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnLinuxArm64(block : KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "aarch64") {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnLinuxxArm32(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnLinuxArm32(block : KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "arm-v7") {
         block(this)
     }

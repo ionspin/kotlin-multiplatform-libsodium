@@ -98,21 +98,29 @@ kotlin {
                 }
             }
         }
-        //Not supported in coroutines at the moment
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
-        //Not supported in coroutines at the moment
-//        linuxArm64() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
 
+
+
+    }
+
+    runningOnLinuxArm32 {
+        //        Not supported in coroutines at the moment
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+    }
+
+    runningOnLinuxArm64 {
+        //        Not supported in coroutines at the moment
+        linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
     }
 
     runningOnMacos {
@@ -270,23 +278,27 @@ kotlin {
 
         }
 
-        runningOnLinuxxArm64 {
-            //Not supported in coroutines at the moment
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(nativeTest)
-//            }
+        runningOnLinuxArm64 {
+            //Not supported in OFFICIAL coroutines at the moment, we're running a custom build
+            val linuxArm32HfpMain by getting {
+                dependsOn(nativeMain)
+            }
 
-//            val linuxArm64Main by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm64Test by getting {
-//                dependsOn(nativeTest)
-//            }
+            val linuxArm32HfpTest by getting {
+                dependsOn(nativeTest)
+            }
+
+            val linuxArm64Main by getting {
+                dependsOn(nativeMain)
+            }
+
+            val linuxArm64Test by getting {
+                dependsOn(nativeTest)
+            }
+
+        }
+
+        runningOnLinuxArm32 {
 
         }
 
