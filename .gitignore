@@ -21,3 +21,5 @@ build/
 /sodiumWrapper/static-arm32/
 /sodiumWrapper/static-ios/
 /sodiumWrapper/static-linux-x86-64/
+/sodiumWrapper/static-macos-x86-64/
+/sodiumWrapper/static-mingw-x86-64/

@@ -1,7 +1,7 @@
 #!/bin/bash
 ## and then borrowed and slightly modified from https://github.com/datkt/sodium/configure
 ## borrowed from https://github.com/sodium-friends/sodium-native/blob/master/configure
-PREFIX="${PREFIX:-$PWD/static-linux-x86-64}"
+PREFIX="${PREFIX:-$PWD/static-mingw-x86-64}"
 KONAN="${KONAN:-$HOME/.konan}"
 ARCH=${ARCH:-$(uname -m)}
 echo $PREFIX
