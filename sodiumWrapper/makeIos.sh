@@ -1,5 +1,6 @@
 ./configure
 cd libsodium
 ./dist-build/ios.sh
-cp -R ./static-ios/lib ../ios-lib
-cp -R ./static-ios/include ../ios-include
+mkdir ../static-ios
+cp -R ./libsodium-ios/lib ../static-ios/lib
+cp -R ./libsodium-ios/include ../static-ios/include
