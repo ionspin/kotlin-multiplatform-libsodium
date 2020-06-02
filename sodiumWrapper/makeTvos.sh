@@ -1,4 +1,7 @@
-PREFIX=$PWD/static-tvos
 cd libsodium
-./dist-build/tvos.sh --prefix=$PREFIX
+./dist-build/tvos.sh
+mkdir ../static-tvos
+cp -R ./libsodium-tvos/lib ../static-tvos/lib
+cp -R ./libsodium-tvos/include ../static-tvos/include
+
 
