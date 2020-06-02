@@ -275,6 +275,9 @@ kotlin {
 
         val nativeMain by creating {
             dependsOn(commonMain)
+            isRunningInIdea {
+                kotlin.srcDirs()
+            }
             dependencies {
                 nativeDependencies(this)
             }
@@ -338,7 +341,7 @@ kotlin {
 
             compilations.getByName("main") {
                 if (linux64Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(nativeMain)
                 }
                 if (linux32Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaround32bitNativeMainSourceSet(this@withType.name, nativeDependencies))
@@ -449,9 +452,8 @@ kotlin {
                 }
             }
             val linuxX64Main by getting {
-                dependsOn(nativeMain)
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeMain")
+                    kotlin.srcDir("src/nativeMain/kotlin")
                 }
             }
             val linuxX64Test by getting {
