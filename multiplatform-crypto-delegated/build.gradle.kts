@@ -306,7 +306,7 @@ kotlin {
             "macosX64"
         )
         val ios64Bit = setOf(
-            "iosArm64", "iosX64",
+            "iosArm64", "iosX64"
         )
         val ios32Bit = setOf(
             "iosArm32"
