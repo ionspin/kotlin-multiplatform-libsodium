@@ -3,5 +3,6 @@ cd libsodium
 mkdir ../static-tvos
 cp -R ./libsodium-tvos/lib ../static-tvos/lib
 cp -R ./libsodium-tvos/include ../static-tvos/include
+rm -r ./libsodium-tvos/
 
 
