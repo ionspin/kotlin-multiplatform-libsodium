@@ -8,5 +8,5 @@ fun main() {
     println("Test")
 //    Blake
     val blake = Blake2bDelegated()
-    blake.digest()
+    println("Result ${blake.digest()}")
 }

@@ -17,11 +17,8 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import com.moowork.gradle.node.task.NodeTask
-import org.gradle.api.tasks.testing.logging.TestLogging
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -51,32 +48,11 @@ version = "0.0.4-SNAPSHOT"
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
-fun getHostOsName(): String {
-    val target = System.getProperty("os.name")
-    if (target == "Linux") return "linux"
-    if (target.startsWith("Windows")) return "windows"
-    if (target.startsWith("Mac")) return "macos"
-    return "unknown"
-}
-
 kotlin {
     val hostOsName = getHostOsName()
-    if (hostOsName == "linux") {
+    runningOnLinuxx86_64 {
         jvm()
         js {
-            compilations {
-                this.forEach {
-                    it.compileKotlinTask.kotlinOptions.sourceMap = true
-                    it.compileKotlinTask.kotlinOptions.moduleKind = "commonjs"
-                    it.compileKotlinTask.kotlinOptions.metaInfo = true
-
-                    if (it.name == "main") {
-                        it.compileKotlinTask.kotlinOptions.main = "call"
-                    }
-                    println("Compilation name ${it.name} set")
-                    println("Destination dir ${it.compileKotlinTask.destinationDir}")
-                }
-            }
             browser {
                 testTask {
                     enabled = false //Until I sort out testing on travis
@@ -99,28 +75,28 @@ kotlin {
             binaries {
 
                 executable {
-                    println("Optimized: $optimized")
                 }
             }
         }
-        //Not supported in coroutines at the moment
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
-        //Not supported in coroutines at the moment
+        // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
+        // so konanc can't build klib because getrandom missing will cause sodium_misuse()
+        // so 32bit will be only available from non-delegated flavor
+//        linuxArm32Hfp() {
+//            binaries {
+//                executable {
+//                }
+//            }
+//        }
         linuxArm64() {
             binaries {
-                staticLib {
+                executable {
                 }
             }
         }
 
     }
 
-    if (hostOsName == "macos") {
+    runningOnMacos {
         iosX64("ios") {
             binaries {
                 framework {
@@ -151,7 +127,7 @@ kotlin {
             }
         }
     }
-    if (hostOsName == "windows") {
+    runningOnWindows {
 
         mingwX64() {
             binaries {
@@ -161,15 +137,6 @@ kotlin {
             }
         }
     }
-// No coroutines support for mingwX86
-//    mingwX86() {
-//        binaries {
-//            staticLib {
-//
-//            }
-//        }
-//    }
-
 
     println(targets.names)
 
@@ -205,24 +172,7 @@ kotlin {
             }
         }
 
-        targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-            compilations.getByName("main") {
-                println("Setting native sourceset dependancy for $name")
-                if (this@withType.name.contains("ios").not()) {
-                    println("Setting native sourceset deps for $this@withType.name")
-                    defaultSourceSet.dependsOn(nativeMain)
-                }
-            }
-            compilations.getByName("test") {
-                println("Setting native sourceset dependancy for $name")
-                if (this@withType.name.contains("ios").not()) {
-                    println("Setting native test deps for $this@withType.name")
-                    defaultSourceSet.dependsOn(nativeTest)
-                }
-            }
-        }
-
-        if (hostOsName == "linux") {
+        runningOnLinuxx86_64 {
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
@@ -253,58 +203,45 @@ kotlin {
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
-                //Force idea to consider native sourceset
-                if (ideaActive) {
-                    kotlin.srcDir("src/nativeMain/kotlin")
-                }
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
-                //Force idea to consider native sourceset
-                if (ideaActive) {
-                    kotlin.srcDir("src/nativeTest/kotlin")
-                }
             }
-            //Not supported in coroutines at the moment
 //            val linuxArm32HfpMain by getting {
 //                dependsOn(nativeMain)
 //            }
-//
 //            val linuxArm32HfpTest by getting {
 //                dependsOn(nativeTest)
 //            }
-
-//            val linuxArm64Main by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm64Test by getting {
-//                dependsOn(nativeTest)
-//            }
-
+            val linuxArm64Main by getting {
+                dependsOn(nativeMain)
+            }
+            val linuxArm64Test by getting {
+                dependsOn(nativeTest)
+            }
         }
 
-        if (hostOsName == "macos") {
+        runningOnMacos {
 
             val iosMain by getting {
-//                dependsOn(nativeMain)
+                dependsOn(nativeMain)
             }
             val iosTest by getting {
-//                dependsOn(nativeTest)
+                dependsOn(nativeTest)
             }
 
             val ios64ArmMain by getting {
-//                dependsOn(nativeMain)
+                dependsOn(nativeMain)
             }
             val ios64ArmTest by getting {
-//                dependsOn(nativeTest)
+                dependsOn(nativeTest)
             }
 
             val ios32ArmMain by getting {
-//                dependsOn(nativeMain)
+                dependsOn(nativeMain)
             }
             val ios32ArmTest by getting {
-//                dependsOn(nativeTest)
+                dependsOn(nativeTest)
             }
 
             val macosX64Main by getting {
@@ -315,19 +252,8 @@ kotlin {
             }
         }
 
-//      Coroutines don't support mingwx86 yet
-//        val mingwX86Main by getting {
-//            dependsOn(commonMain)
-//            dependencies {
-//                implementation(Deps.Native.coroutines)
-//            }
-//        }
 
-//        val mingwX86Test by getting {
-//            dependsOn(commonTest)
-//        }
-//
-        if (hostOsName == "windows") {
+        runningOnWindows {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
                 dependencies {
@@ -349,16 +275,6 @@ kotlin {
 
 }
 
-
-
-task<Copy>("copyPackageJson") {
-    dependsOn("compileKotlinJs")
-    println("Copying package.json from $projectDir/core/src/jsMain/npm")
-    from ("$projectDir/src/jsMain/npm")
-    println("Node modules dir ${node.nodeModulesDir}")
-    into ("${node.nodeModulesDir}")
-}
-
 tasks {
 
 
@@ -368,23 +284,8 @@ tasks {
         from(dokka.get().outputDirectory)
     }
 
-    dokka {
-        println ("Dokka !")
-        impliedPlatforms = mutableListOf("Common")
-        kotlinTasks {
-            listOf()
-        }
-        sourceRoot {
-            println ("Common !")
-            path = "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
-            platforms = listOf("Common")
-        }
-    }
     if (getHostOsName() == "linux") {
 
-        val npmInstall by getting
-        val compileKotlinJs by getting(AbstractCompile::class)
-        val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
 
         val jvmTest by getting(Test::class) {
             testLogging {

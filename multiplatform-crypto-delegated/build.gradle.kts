@@ -61,7 +61,7 @@ kotlin {
         js {
             browser {
                 testTask {
-                    enabled = true //Until I sort out testing on travis
+                    enabled = false //Until I sort out testing on travis
                     useKarma {
                         useChrome()
                     }
@@ -109,22 +109,31 @@ kotlin {
                 )
             }
         }
+        // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
+        // so konanc can't build klib because getrandom missing will cause sodium_misuse()
+        //     ld.lld: error: undefined symbol: explicit_bzero
+        //     >>> referenced by utils.c
+        //     >>>               libsodium_la-utils.o:(sodium_memzero) in archive /tmp/included11051337748775083797/libsodium.a
+        //
+        //     ld.lld: error: undefined symbol: getrandom
+        //     >>> referenced by randombytes_sysrandom.c
+        //     >>>               libsodium_la-randombytes_sysrandom.o:(_randombytes_linux_getrandom) in archive /tmp/included11051337748775083797/libsodium.a
 
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm32/include/")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm32/lib/libsodium.a"
-                )
-            }
-        }
+//        linuxArm32Hfp() {
+//            binaries {
+//                staticLib {
+//                }
+//            }
+//            compilations.getByName("main") {
+//                val libsodiumCinterop by cinterops.creating {
+//                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+//                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm32/include/")
+//                }
+//                kotlinOptions.freeCompilerArgs = listOf(
+//                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm32/lib/libsodium.a"
+//                )
+//            }
+//        }
 
 
     }
@@ -299,8 +308,9 @@ kotlin {
             "linuxX64", "linuxArm64"
         )
         val linux32Bit = setOf(
-            "linuxArm32Hfp"
+            "" // "linuxArm32Hfp"
         )
+
         //iosArm32, iosArm64, iosX64, macosX64, metadata, tvosArm64, tvosX64, watchosArm32, watchosArm64, watchosX86
         val macos64Bit = setOf(
             "macosX64"
@@ -441,28 +451,28 @@ kotlin {
             val linuxX64Main by getting {
                 dependsOn(nativeMain)
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeMain/kotlin")
+                    kotlin.srcDir("src/nativeMain")
                 }
             }
             val linuxX64Test by getting {
                 dependsOn(nativeTest)
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeTest/kotlin")
+                    kotlin.srcDir("src/nativeTest")
                 }
             }
-
-            val linuxArm32HfpMain by getting {
-                dependsOn(native32Main)
-                isRunningInIdea {
-                    kotlin.srcDir("src/native32Main/kotlin")
-                }
-            }
-            val linuxArm32HfpTest by getting {
-                dependsOn(native32Test)
-                isRunningInIdea {
-                    kotlin.srcDir("src/native32Test/kotlin")
-                }
-            }
+            //can still be useful for cinterop and debugging
+//            val linuxArm32HfpMain by getting {
+//                dependsOn(native32Main)
+//                isRunningInIdea {
+//                    kotlin.srcDir("src/native32Main/kotlin")
+//                }
+//            }
+//            val linuxArm32HfpTest by getting {
+//                dependsOn(native32Test)
+//                isRunningInIdea {
+//                    kotlin.srcDir("src/native32Test/kotlin")
+//                }
+//            }
         }
 
         runningOnMacos {

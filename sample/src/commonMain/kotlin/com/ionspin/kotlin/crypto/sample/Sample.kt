@@ -1,5 +1,7 @@
 package com.ionspin.kotlin.crypto.sample
 
-class Sample {
+object Sample {
+    fun blakehash() {
 
+    }
 }

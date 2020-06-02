@@ -80,7 +80,7 @@ fun independentDependencyBlock(nativeDeps : KotlinDependencyHandler.() -> Unit) 
  */
 fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSourceSet(name : String, nativeDeps : KotlinDependencyHandler.() -> Unit) : KotlinSourceSet {
     return create("${name}Workaround") {
-        kotlin.srcDir("src/nativeMain/kotlin")
+        kotlin.srcDir("src/nativeMain")
         dependencies {
             nativeDeps.invoke(this)
         }
@@ -90,7 +90,7 @@ fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSource
 
 fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaround32bitNativeMainSourceSet(name : String, nativeDeps : KotlinDependencyHandler.() -> Unit) : KotlinSourceSet {
     return create("${name}Workaround") {
-        kotlin.srcDir("src/native32Main/kotlin")
+        kotlin.srcDir("src/native32Main")
         dependencies {
             nativeDeps.invoke(this)
         }
