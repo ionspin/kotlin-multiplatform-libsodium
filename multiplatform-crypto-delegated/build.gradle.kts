@@ -276,7 +276,7 @@ kotlin {
         val nativeMain by creating {
             dependsOn(commonMain)
             isRunningInIdea {
-                kotlin.srcDirs()
+                kotlin.setSrcDirs(emptySet<String>())
             }
             dependencies {
                 nativeDependencies(this)
@@ -285,6 +285,9 @@ kotlin {
 
         val nativeTest by creating {
             dependsOn(commonTest)
+            isRunningInIdea {
+                kotlin.setSrcDirs(emptySet<String>())
+            }
             dependencies {
                 implementation(Deps.Native.coroutines)
             }
@@ -453,7 +456,7 @@ kotlin {
             }
             val linuxX64Main by getting {
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeMain/kotlin")
+                    kotlin.srcDir("src/nativeMain")
                 }
             }
             val linuxX64Test by getting {
