@@ -539,6 +539,8 @@ kotlin {
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
         }
     }
 

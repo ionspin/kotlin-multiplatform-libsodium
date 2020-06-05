@@ -21,9 +21,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     }
 
     override fun digest(): UByteArray {
-        val result = sodium_init()
-        println("Sodium init")
-        println(result)
         val inputString = "test"
         val hashLength = 64
         val key : String? = null
