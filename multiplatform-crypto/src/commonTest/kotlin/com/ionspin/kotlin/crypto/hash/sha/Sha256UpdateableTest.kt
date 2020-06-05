@@ -25,10 +25,10 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 17-Jul-2019
  */
-@ExperimentalUnsignedTypes
+
 class Sha256UpdatableTest {
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownValue() {
         val sha256 = Sha256Pure()
@@ -40,7 +40,7 @@ class Sha256UpdatableTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownDoubleBlock() {
         val sha256 = Sha256Pure()
@@ -53,7 +53,7 @@ class Sha256UpdatableTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnown3() { //It's good that I'm consistent with names.
         val sha256 = Sha256Pure()
@@ -66,7 +66,7 @@ class Sha256UpdatableTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownLong() {
         val sha256 = Sha256Pure()
@@ -81,7 +81,7 @@ class Sha256UpdatableTest {
     }
 
     @Ignore()
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownLonger() {
         val sha256 = Sha256Pure()

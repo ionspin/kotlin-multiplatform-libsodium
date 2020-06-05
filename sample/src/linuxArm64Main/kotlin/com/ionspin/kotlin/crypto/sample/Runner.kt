@@ -6,7 +6,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @ExperimentalTime
-@ExperimentalStdlibApi
+
 fun main() = runBlocking {
     Sample.runSample()
 //    println("Test")

@@ -6,7 +6,7 @@ import kotlin.test.assertTrue
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 10/Sep/2019
  */
-@ExperimentalUnsignedTypes
+
 class AesTest {
 
     val irrelevantKey = "01234567890123345678901234567890"

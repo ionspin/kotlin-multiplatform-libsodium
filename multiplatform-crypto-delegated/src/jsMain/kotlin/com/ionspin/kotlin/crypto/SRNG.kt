@@ -25,7 +25,7 @@ import org.khronos.webgl.get
  */
 actual object SRNG {
     var counter = 0
-    @ExperimentalUnsignedTypes
+
     actual fun getRandomBytes(amount: Int): UByteArray {
         val randomBytes = getSodium().randombytes_buf(amount)
         println("Random bytes: $randomBytes")

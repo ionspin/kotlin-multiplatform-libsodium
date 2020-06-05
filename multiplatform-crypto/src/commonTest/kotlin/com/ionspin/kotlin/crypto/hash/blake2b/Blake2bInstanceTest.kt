@@ -24,8 +24,8 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
+
+
 class Blake2bInstanceTest {
 
     @Test

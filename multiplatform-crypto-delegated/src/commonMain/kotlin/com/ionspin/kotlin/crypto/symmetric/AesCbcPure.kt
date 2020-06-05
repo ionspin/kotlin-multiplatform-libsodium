@@ -30,7 +30,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-@ExperimentalUnsignedTypes
+
 class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: UByteArray? = null) {
 
     companion object {
@@ -219,7 +219,7 @@ class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
 
 }
 
-@ExperimentalUnsignedTypes
+
 data class EncryptedDataAndInitializationVector(val encryptedData : UByteArray, val initilizationVector : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

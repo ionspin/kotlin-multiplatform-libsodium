@@ -8,7 +8,7 @@ import libsodium.*
  * on 14-Jul-2019
  */
 
-@ExperimentalUnsignedTypes
+
 actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
     override val MAX_HASH_BYTES: Int = 64
 

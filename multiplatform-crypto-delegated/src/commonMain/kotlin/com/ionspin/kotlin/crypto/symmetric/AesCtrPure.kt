@@ -35,7 +35,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * ugljesa.jovanovic@ionspin.com
  * on 22-Sep-2019
  */
-@ExperimentalUnsignedTypes
+
 class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: UByteArray? = null) {
 
     companion object {
@@ -186,7 +186,7 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
 
 }
 
-@ExperimentalUnsignedTypes
+
 data class EncryptedDataAndInitialCounter(val encryptedData : UByteArray, val initialCounter : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -26,7 +26,7 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  * on 18-Jul-2019
  */
 
-@ExperimentalUnsignedTypes
+
 class Sha512Pure : Sha512 {
 
     override val MAX_HASH_BYTES: Int = 32
@@ -133,7 +133,7 @@ class Sha512Pure : Sha512 {
             0x5be0cd19137e2179UL
         )
 
-        @ExperimentalStdlibApi
+
         override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
                 inputString.encodeToByteArray().toUByteArray(),
@@ -318,7 +318,7 @@ class Sha512Pure : Sha512 {
     var bufferCounter = 0
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
 
-    @ExperimentalStdlibApi
+
     override fun update(data: String) {
         return update(data.encodeToByteArray().toUByteArray())
     }

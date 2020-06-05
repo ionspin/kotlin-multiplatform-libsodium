@@ -161,7 +161,7 @@ object Argon2Utils {
 
 // ------------ Arithmetic and other utils
 
-@ExperimentalUnsignedTypes
+
 fun UByteArray.xorWithBlock(other : ArgonMatrix, rowPosition: Int, columnPosition: Int) : UByteArray {
     return UByteArray(BLOCK_SIZE) { this[it] xor other[rowPosition, columnPosition, it] }
 }

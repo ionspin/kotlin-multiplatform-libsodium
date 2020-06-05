@@ -27,10 +27,10 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  * on 14-Jul-2019
  */
 
-@ExperimentalUnsignedTypes
+
 expect class Blake2bDelegated(key: UByteArray? = null, hashLength: Int = 64) : Blake2b
 
-@ExperimentalUnsignedTypes
+
 expect object Blake2bStateless : Blake2bStatelessInterface
 
 

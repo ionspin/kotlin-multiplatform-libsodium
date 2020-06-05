@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-@ExperimentalUnsignedTypes
+
 class AesCbcTest {
 
     @Test

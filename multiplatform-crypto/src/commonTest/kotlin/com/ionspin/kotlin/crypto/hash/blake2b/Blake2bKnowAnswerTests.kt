@@ -30,8 +30,8 @@ data class KnownAnswerTest(
     val hash: String
 )
 
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
+
+
 class Blake2bKnowAnswerTests {
     @Test
     fun knownAnswerTest() {

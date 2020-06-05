@@ -53,7 +53,7 @@ data class ArgonResult(
 
 
 
-@ExperimentalStdlibApi
+
 class Argon2Pure(
     private val password: UByteArray,
     private val salt: UByteArray = ubyteArrayOf(),

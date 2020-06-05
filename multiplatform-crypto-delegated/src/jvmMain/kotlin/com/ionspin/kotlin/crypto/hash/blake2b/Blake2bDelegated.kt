@@ -6,7 +6,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
  * on 14-Jul-2019
  */
 
-@ExperimentalUnsignedTypes
+
 actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
     override val MAX_HASH_BYTES: Int
         get() = TODO("not implemented yet")
@@ -27,7 +27,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         TODO("not implemented yet")
     }
 }
-@ExperimentalUnsignedTypes
+
 actual object Blake2bStateless : Blake2bStatelessInterface {
 
 

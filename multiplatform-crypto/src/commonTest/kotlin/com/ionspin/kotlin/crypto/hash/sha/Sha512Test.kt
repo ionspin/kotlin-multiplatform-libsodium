@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
  */
 class Sha512Test {
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownValue() {
 
@@ -41,8 +41,8 @@ class Sha512Test {
 
     }
 
-    @ExperimentalUnsignedTypes
-    @ExperimentalStdlibApi
+
+
     @Test
     fun testWellKnown3() {
         val sha512 = Sha512Pure()
@@ -55,7 +55,7 @@ class Sha512Test {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownLong() {
         val inputBuilder = StringBuilder()

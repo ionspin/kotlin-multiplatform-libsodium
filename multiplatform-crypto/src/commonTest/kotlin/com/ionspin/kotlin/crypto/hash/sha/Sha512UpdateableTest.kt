@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
  * on 21-Jul-2019
  */
 class Sha512UpdatableTest {
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownValue() {
         val sha512 = Sha512Pure()
@@ -41,7 +41,7 @@ class Sha512UpdatableTest {
 
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownDoubleBlock() {
         val sha512 = Sha512Pure()
@@ -55,7 +55,7 @@ class Sha512UpdatableTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownLong() {
         val sha512 = Sha512Pure()
@@ -70,7 +70,7 @@ class Sha512UpdatableTest {
     }
 
     @Ignore() //Interestingly enough I'm not the only one having trouble with this test.
-    @ExperimentalStdlibApi
+
     @Test
     fun testWellKnownLonger() {
         val sha512 = Sha512Pure()

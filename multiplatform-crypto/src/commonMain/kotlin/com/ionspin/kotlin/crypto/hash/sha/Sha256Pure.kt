@@ -28,7 +28,7 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  */
 
 
-@ExperimentalUnsignedTypes
+
 class Sha256Pure : Sha256 {
 
     override val MAX_HASH_BYTES: Int = 32
@@ -65,7 +65,7 @@ class Sha256Pure : Sha256 {
             0x748f82eeU, 0x78a5636fU, 0x84c87814U, 0x8cc70208U, 0x90befffaU, 0xa4506cebU, 0xbef9a3f7U, 0xc67178f2U
         )
 
-        @ExperimentalStdlibApi
+
         override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
                 inputString.encodeToByteArray().toUByteArray(),
@@ -243,7 +243,7 @@ class Sha256Pure : Sha256 {
     var bufferCounter = 0
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
 
-    @ExperimentalStdlibApi
+
     override fun update(data: String) {
         return update(data.encodeToByteArray().toUByteArray())
     }

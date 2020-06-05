@@ -34,8 +34,8 @@ import kotlin.time.measureTime
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
+
+
 class ReadmeTest {
 
     @Test
@@ -76,7 +76,7 @@ class ReadmeTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun sha256Example() {
         val input = "abc"
@@ -89,7 +89,7 @@ class ReadmeTest {
 
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun sha512Example() {
         val input = "abc"
@@ -104,7 +104,7 @@ class ReadmeTest {
 
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun sha256UpdatableExample() {
         val sha256 = Sha256Pure()
@@ -116,7 +116,7 @@ class ReadmeTest {
         }
     }
 
-    @ExperimentalStdlibApi
+
     @Test
     fun sha512UpdatableExample() {
         val sha512 = Sha512Pure()

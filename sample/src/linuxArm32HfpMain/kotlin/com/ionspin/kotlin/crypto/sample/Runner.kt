@@ -3,7 +3,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @ExperimentalTime
-@ExperimentalStdlibApi
+
 fun main() {
     println("Test")
 //    Blake

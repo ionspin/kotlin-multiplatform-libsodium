@@ -62,17 +62,17 @@ inline fun <reified T> Array<T>.chunked(sliceSize: Int): Array<Array<T>> {
 
 }
 
-@ExperimentalUnsignedTypes
+
 infix fun UInt.rotateRight(places: Int): UInt {
     return (this shr places) xor (this shl (32 - places))
 }
 
-@ExperimentalUnsignedTypes
+
 infix fun ULong.rotateRight(places: Int): ULong {
     return (this shr places) xor (this shl (64 - places))
 }
 
-@ExperimentalUnsignedTypes
+
 infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     if (this.size != other.size) {
         throw RuntimeException("Operands of different sizes are not supported yet")
@@ -80,7 +80,7 @@ infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     return Array(this.size) { this[it] xor other[it] }
 }
 
-@ExperimentalUnsignedTypes
+
 infix fun UByteArray.xor(other : UByteArray) : UByteArray {
     if (this.size != other.size) {
         throw RuntimeException("Operands of different sizes are not supported yet")
@@ -88,17 +88,17 @@ infix fun UByteArray.xor(other : UByteArray) : UByteArray {
     return UByteArray(this.size) { this[it] xor other[it] }
 }
 
-@ExperimentalUnsignedTypes
+
 fun String.hexStringToTypedUByteArray() : Array<UByte> {
     return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
 }
 
-@ExperimentalUnsignedTypes
+
 fun String.hexStringToUByteArray() : UByteArray {
     return this.chunked(2).map { it.toUByte(16) }.toUByteArray()
 }
 
-@ExperimentalUnsignedTypes
+
 fun Array<UByte>.toHexString() : String {
     return this.joinToString(separator = "") {
         if (it <= 0x0FU) {
@@ -109,7 +109,7 @@ fun Array<UByte>.toHexString() : String {
     }
 }
 
-@ExperimentalUnsignedTypes
+
 fun UByteArray.toHexString() : String {
     return this.joinToString(separator = "") {
         if (it <= 0x0FU) {
@@ -121,20 +121,20 @@ fun UByteArray.toHexString() : String {
 }
 
 // UInt / Array utils
-@ExperimentalUnsignedTypes
+
 fun UInt.toBigEndianUByteArray() : Array<UByte> {
     return Array<UByte> (4) {
         ((this shr (24 - (it * 8))) and 0xFFU).toUByte()
     }
 }
-@ExperimentalUnsignedTypes
+
 fun UInt.toLittleEndianTypedUByteArray() : Array<UByte> {
     return Array<UByte> (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
 }
 
-@ExperimentalUnsignedTypes
+
 fun UInt.toLittleEndianUByteArray() : UByteArray {
     return UByteArray (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
@@ -142,27 +142,27 @@ fun UInt.toLittleEndianUByteArray() : UByteArray {
 }
 
 // UInt / Array utils
-@ExperimentalUnsignedTypes
+
 fun ULong.toBigEndianUByteArray() : Array<UByte> {
     return Array<UByte> (8) {
         ((this shr (56 - (it * 8))) and 0xFFU).toUByte()
     }
 }
-@ExperimentalUnsignedTypes
+
 fun ULong.toLittleEndianTypedUByteArray() : Array<UByte> {
     return Array<UByte> (8) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
 }
 
-@ExperimentalUnsignedTypes
+
 fun ULong.toLittleEndianUByteArray() :UByteArray {
     return UByteArray (8) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
 }
 
-@ExperimentalUnsignedTypes
+
 fun Array<UByte>.fromLittleEndianArrayToULong() : ULong {
     if (this.size > 8) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -171,7 +171,7 @@ fun Array<UByte>.fromLittleEndianArrayToULong() : ULong {
     return ulong
 }
 
-@ExperimentalUnsignedTypes
+
 fun UByteArray.fromLittleEndianArrayToULong() : ULong {
     if (this.size > 8) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -199,7 +199,7 @@ fun UByteArray.arrayChunked(sliceSize: Int): List<UByteArray> {
 }
 
 
-@ExperimentalUnsignedTypes
+
 fun Array<UByte>.fromBigEndianArrayToULong() : ULong {
     if (this.size > 8) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -213,7 +213,7 @@ fun Array<UByte>.fromBigEndianArrayToULong() : ULong {
     return ulong
 }
 
-@ExperimentalUnsignedTypes
+
 fun Array<UByte>.fromLittleEndianArrayToUInt() : UInt {
     if (this.size > 4) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -222,7 +222,7 @@ fun Array<UByte>.fromLittleEndianArrayToUInt() : UInt {
     return uint
 }
 
-@ExperimentalUnsignedTypes
+
 fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
     if (this.size > 4) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -234,7 +234,7 @@ fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
 
 
 
-@ExperimentalUnsignedTypes
+
 fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
     if (this.size > 4) {
         throw RuntimeException("ore than 8 bytes in input, potential overflow")
@@ -243,7 +243,7 @@ fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
     return uint
 }
 
-@ExperimentalUnsignedTypes
+
 operator fun UInt.plus(other : UByteArray) : UByteArray {
     return this.toLittleEndianUByteArray() + other
 }

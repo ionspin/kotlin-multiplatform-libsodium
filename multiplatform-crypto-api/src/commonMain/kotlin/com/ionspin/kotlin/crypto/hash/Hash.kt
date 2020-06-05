@@ -26,7 +26,7 @@ interface Hash {
     val MAX_HASH_BYTES : Int
 }
 
-@ExperimentalUnsignedTypes
+
 interface UpdatableHash : Hash {
     fun update(data : UByteArray)
 
@@ -37,7 +37,7 @@ interface UpdatableHash : Hash {
     fun digestString() : String
 }
 
-@ExperimentalUnsignedTypes
+
 interface StatelessHash : Hash {
     fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): UByteArray
 

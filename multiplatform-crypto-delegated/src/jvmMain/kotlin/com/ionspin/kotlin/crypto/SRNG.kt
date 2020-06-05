@@ -23,7 +23,7 @@ import java.security.SecureRandom
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-@ExperimentalUnsignedTypes
+
 actual object SRNG {
     val secureRandom = SecureRandom()
     actual fun getRandomBytes(amount: Int): UByteArray {

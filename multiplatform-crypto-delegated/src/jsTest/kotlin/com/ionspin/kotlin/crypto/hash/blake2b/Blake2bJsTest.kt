@@ -12,8 +12,8 @@ import kotlin.test.assertEquals
  * ugljesa.jovanovic@ionspin.com
  * on 25-May-2020
  */
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
+
+
 class Blake2bJsTest {
 
     @Test

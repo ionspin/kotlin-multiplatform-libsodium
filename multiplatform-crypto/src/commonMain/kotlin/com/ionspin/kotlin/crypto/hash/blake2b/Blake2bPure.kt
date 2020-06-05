@@ -27,7 +27,7 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  * on 14-Jul-2019
  */
 
-@ExperimentalUnsignedTypes
+
 class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake2b {
 
     companion object : Blake2bStatelessInterface {
@@ -144,7 +144,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
             return h
         }
 
-        @ExperimentalStdlibApi
+
         override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             val array = inputString.encodeToByteArray().toUByteArray()
             val keyBytes = key?.run {
@@ -243,7 +243,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
 
         }
     }
-    @ExperimentalStdlibApi
+
     constructor(
         key: String?,
         requestedHashLenght: Int = 64
@@ -308,7 +308,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
         }
 
     }
-    @ExperimentalStdlibApi
+
     override fun update(data: String) {
         update(data.encodeToByteArray().toUByteArray())
     }

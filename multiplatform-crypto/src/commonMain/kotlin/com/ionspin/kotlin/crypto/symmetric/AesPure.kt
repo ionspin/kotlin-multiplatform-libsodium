@@ -5,7 +5,7 @@ import com.ionspin.kotlin.crypto.util.flattenToUByteArray
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
-@ExperimentalUnsignedTypes
+
 internal class AesPure internal constructor(val aesKey: AesKey, val input: UByteArray) {
     companion object {
         private val debug = false

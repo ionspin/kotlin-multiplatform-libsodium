@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 10-May-2020
  */
-@ExperimentalStdlibApi
+
 class Argon2KATTest {
 
     @Test
