@@ -9,6 +9,10 @@ fun main() {
     println("Test")
 //    Blake
     val blake = Blake2bDelegated()
-    println("Result ${blake.digest()}")
-    println("Result: ${Blake2bStateless.digest("test")}")
+    val res = blake.digest()
+    println("Result of res")
+//    println(res)
+    val staticRes = Blake2bStateless.digest("test")
+    println("Result:")
+    println(staticRes)
 }

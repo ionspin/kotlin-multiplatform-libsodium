@@ -22,8 +22,35 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
     override fun digest(): UByteArray {
         val result = sodium_init()
-        println("Sodium init $result")
+        println("Sodium init")
+        println(result)
+        val inputString = "test"
+        val hashLength = 64
+        val key : String? = null
+        val result2 = allocEverything(inputString, key, hashLength)
+        val result2String = result2.toHexString()
+        println(result2String)
         return ubyteArrayOf(0U)
+    }
+
+    fun allocEverything(inputString: String, key: String?, hashLength: Int) : UByteArray {
+        val res = memScoped {
+            val result = allocArray<UByteVar>(hashLength)
+            println("Alloced: $result")
+            crypto_generichash(
+                result,
+                hashLength.toULong(),
+                inputString.encodeToByteArray().toUByteArray().toCValues(),
+                inputString.length.toULong(),
+                key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
+                key?.length?.toULong() ?: 0UL
+            )
+            println("Result: $result")
+            UByteArray(hashLength) {
+                result[it]
+            }
+        }
+        return res
     }
 
     override fun digestString(): String {
@@ -34,6 +61,8 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 actual object Blake2bStateless : Blake2bStatelessInterface {
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+//        return allocEverything(inputString, key, hashLength)
+        println("Input $inputString, ${key ?: "null"}, $hashLength")
         val hashResult = UByteArray(MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
         crypto_generichash(
@@ -48,6 +77,9 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
         println(hashResult.toHexString())
         return hashResult
     }
+
+
+
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         val hashResult = UByteArray(MAX_HASH_BYTES)

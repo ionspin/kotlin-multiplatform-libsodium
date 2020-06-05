@@ -27,5 +27,5 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M1")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M2")
 }

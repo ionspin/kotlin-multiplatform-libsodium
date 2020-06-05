@@ -44,20 +44,7 @@ kotlin {
     runningOnLinuxx86_64 {
         jvm()
         js {
-            compilations {
-                this.forEach {
-                    it.compileKotlinTask.kotlinOptions.sourceMap = true
-                    it.compileKotlinTask.kotlinOptions.moduleKind = "commonjs"
-                    it.compileKotlinTask.kotlinOptions.metaInfo = true
-
-                    if (it.name == "main") {
-                        it.compileKotlinTask.kotlinOptions.main = "call"
-                    }
-                    println("Compilation name ${it.name} set")
-                    println("Destination dir ${it.compileKotlinTask.destinationDir}")
-                }
-            }
-            browser {
+           browser {
                 testTask {
                     enabled = false //Until I sort out testing on travis
                     useKarma {
