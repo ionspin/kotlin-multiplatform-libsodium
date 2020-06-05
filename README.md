@@ -5,25 +5,31 @@
 
 Kotlin Multiplatform Crypto is a library for various cryptographic applications. 
 
-This is an extremely early release, currently only consisting of Blake2b and SHA256 and 512.
-
-API is very opinionated, ment to be used on both encrypting and decrypting side. The idea is that API leaves less room for 
+API is very opinionated, meant to be used on both encrypting and decrypting side. The idea is that API leaves less room for 
 errors when using it.
+
+The library comes in two flavors `multiplatform-crypto` and `multiplatform-crypto-delegated`
+
+* `multiplatform-crypto` contains pure kotlin implementations, is not reviewed, should be considered unsafe and only 
+for prototyping or experimentation purposes.
+
+* `multiplatform-crypto-delegated` relies on platform specific implementations, like libsodium, but care should still be taken that the kotlin code is not reviewed or proven safe. 
+
 
 ## Notes & Roadmap
 
 **The API will move fast and break often until v1.0**
 
-Next step:
-reduce ammount of allocations and introduce parallelization in Argon2
+Next steps:
+- Expand API (AEAD, ECC ...)
 
 ## Should I use this in production?
 
-No.
+No, until it is reviewed.
 
-## Should I use this in code that is critical in any way, shape or form?
+## Should I use this in code that is *critical* in any way, shape or form?
 
-No.
+No, but even if after being warned you decide to, then use `multiplatform-crypto-delegated`.
 
 ## Why?
 
@@ -49,11 +55,29 @@ It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be 
 
 TODO()
 
+
+### Delegated flavor dependancy table
+The following table describes which library is used for particular cryptographic primitive
+
+| Primitive | JVM | JS | Native |
+| ----------|-----|----|--------|
+| Blake2b | JCE | libsodium.js | libsodium |
+| SHA256 | JCE | libsodium.js | libsodium
+| SHA512 | JCE | libsodium.js | libsodium
+| AES-CBC | JCE | libsodium.js | libsodium
+| AES-CTR | JCE | libsodium.js | libsodium
+
+
 ## Integration
 
 #### Gradle
+Kotlin 
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.2")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.5")
+
+or
+
+implementation("com.ionspin.kotlin:multiplatform-crypto-delegated:0.0.5")
 ```
 
 #### Snapshot builds
@@ -63,7 +87,7 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.3-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.6-SNAPSHOT")
 
 ```
 
