@@ -8,10 +8,21 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 object Sample {
-    suspend fun runSample() {
-        Crypto.initialize()
+    fun runSample() {
+        println("Initializing crypto library")
+        Crypto.initializeWithCallback {
+            blake2b()
+        }
+
+
+    }
+
+    fun blake2b() {
+        println("Blake2b updateable")
         val blake2bUpdateable = Crypto.Blake2b.updateable()
         blake2bUpdateable.update("test")
         println(blake2bUpdateable.digest().toHexString())
+        println("Blake2b stateless")
+        println("Blake2b stateless: ${Crypto.Blake2b.stateless("test")}")
     }
 }

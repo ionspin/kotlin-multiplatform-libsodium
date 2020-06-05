@@ -21,7 +21,11 @@ object Crypto : CryptoProvider {
     override suspend fun initialize() {
         Initializer.initialize()
     }
-    
+
+    fun initializeWithCallback(done: () -> Unit) {
+        Initializer.initializeWithCallback(done)
+    }
+
 
     object Blake2b {
         fun updateable(): com.ionspin.kotlin.crypto.hash.blake2b.Blake2b {
@@ -29,7 +33,6 @@ object Crypto : CryptoProvider {
         }
 
         fun stateless(message: String): UByteArray {
-            println("?")
             return Blake2bStateless.digest(message)
         }
     }

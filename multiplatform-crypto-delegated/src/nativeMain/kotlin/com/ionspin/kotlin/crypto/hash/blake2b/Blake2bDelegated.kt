@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.cinterop.*
+import kotlinx.cinterop.nativeHeap.alloc
 import libsodium.*
 /**
  * Created by Ugljesa Jovanovic
@@ -12,22 +13,39 @@ import libsodium.*
 actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
     override val MAX_HASH_BYTES: Int = 64
 
+    val requestedHashLength : Int
+    val state : crypto_generichash_state
+    init {
+        println("Initializing libsodium hash")
+        requestedHashLength = hashLength
+        state = nativeHeap.alloc()
+        println("allocated state")
+        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.toULong() ?: 0UL, hashLength.toULong())
+        println("Initialized libsodium hash")
+    }
+
     override fun update(data: UByteArray) {
-        TODO("not implemented yet")
+        crypto_generichash_update(state.ptr, data.toCValues(), data.size.toULong())
     }
 
     override fun update(data: String) {
-        TODO("not implemented yet")
+        val ubyteArray = data.encodeToByteArray().toUByteArray()
+        crypto_generichash_update(state.ptr, ubyteArray.toCValues(), ubyteArray.size.toULong())
     }
 
     override fun digest(): UByteArray {
-        val inputString = "test"
-        val hashLength = 64
-        val key : String? = null
-        val result2 = allocEverything(inputString, key, hashLength)
-        val result2String = result2.toHexString()
-        println(result2String)
-        return ubyteArrayOf(0U)
+        val hashResult = UByteArray(requestedHashLength)
+        val hashResultPinned = hashResult.pin()
+        val result = crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.toULong())
+        println("HashPointer: ${hashResult.toHexString()}")
+        return hashResult
+//        val inputString = "test"
+//        val hashLength = 64
+//        val key : String? = null
+//        val result2 = allocEverything(inputString, key, hashLength)
+//        val result2String = result2.toHexString()
+//        println(result2String)
+//        return ubyteArrayOf(0U)
     }
 
     fun allocEverything(inputString: String, key: String?, hashLength: Int) : UByteArray {
@@ -51,7 +69,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     }
 
     override fun digestString(): String {
-        TODO("not implemented yet")
+        return digest().toHexString()
     }
 }
 

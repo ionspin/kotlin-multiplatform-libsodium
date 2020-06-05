@@ -1,21 +1,21 @@
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegated
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bStateless
 import com.ionspin.kotlin.crypto.sample.Sample
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import platform.posix.pthread_self
+import platform.posix.sleep
+import kotlin.native.concurrent.TransferMode
+import kotlin.native.concurrent.Worker
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @ExperimentalTime
 
-fun main() = runBlocking {
+fun main() {
+
     Sample.runSample()
-//    println("Test")
-////    Blake
-//    val blake = Blake2bDelegated()
-//    val res = blake.digest()
-//    println("Result of res")
-////    println(res)
-//    val staticRes = Blake2bStateless.digest("test")
-//    println("Result:")
-//    println(staticRes)
+
 }
