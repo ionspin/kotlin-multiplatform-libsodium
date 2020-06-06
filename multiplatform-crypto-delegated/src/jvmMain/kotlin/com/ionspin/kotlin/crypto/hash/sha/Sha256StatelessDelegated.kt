@@ -1,14 +1,15 @@
-package com.ionspin.kotlin.crypto.hash.blake2b
+package com.ionspin.kotlin.crypto.hash.sha
+
+
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 14-Jul-2019
+ * on 17-Jul-2019
  */
 
 
-actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
-
+actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha256 {
     override fun update(data: UByteArray) {
         TODO("not implemented yet")
     }
@@ -26,10 +27,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     }
 }
 
-actual object Blake2bDelegatedStateless : Blake2bStateless {
-
-
-
+actual object Sha256StatelessDelegated : StatelessSha256 {
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
@@ -37,5 +35,4 @@ actual object Blake2bDelegatedStateless : Blake2bStateless {
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         TODO("not implemented yet")
     }
-
 }

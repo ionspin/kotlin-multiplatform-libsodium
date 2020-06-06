@@ -52,7 +52,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 }
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-actual object Blake2bStateless : Blake2bStatelessInterface {
+actual object Blake2bDelegatedStateless : Blake2bStateless {
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
         println("Input $inputString, ${key ?: "null"}, $hashLength")
         val hashResult = UByteArray(MAX_HASH_BYTES)

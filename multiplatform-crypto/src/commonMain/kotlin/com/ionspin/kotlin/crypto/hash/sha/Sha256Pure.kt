@@ -16,8 +16,6 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.hash.StatelessHash
-import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 

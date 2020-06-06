@@ -30,7 +30,7 @@ import com.ionspin.kotlin.crypto.util.rotateRight
 
 class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake2b {
 
-    companion object : Blake2bStatelessInterface {
+    companion object : Blake2bStateless {
         //Hack start
         //If this line is not included konanc 1.4-M1 fails to link because it cant find ByteArray which is
         //a backing class for UByteArray

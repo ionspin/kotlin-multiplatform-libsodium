@@ -9,11 +9,17 @@ import com.ionspin.kotlin.crypto.hash.UpdatableHash
  * on 24-May-2020
  */
 
-interface Blake2b : UpdatableHash
+object Blake2bProperties {
+    const val MAX_HASH_BYTES = 64
+}
 
-interface Blake2bStatelessInterface : StatelessHash {
-
+interface Blake2b : UpdatableHash {
     override val MAX_HASH_BYTES: Int
-        get() = 64
+        get() = Blake2bProperties.MAX_HASH_BYTES
+}
+
+interface Blake2bStateless : StatelessHash {
+    override val MAX_HASH_BYTES: Int
+        get() = Blake2bProperties.MAX_HASH_BYTES
 }
 

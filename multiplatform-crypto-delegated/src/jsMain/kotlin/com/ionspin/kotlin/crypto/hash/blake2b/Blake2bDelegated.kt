@@ -33,7 +33,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
 
 
-actual object Blake2bStateless : Blake2bStatelessInterface {
+actual object Blake2bDelegatedStateless : Blake2bStateless {
     override val MAX_HASH_BYTES: Int = 64
 
     override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {

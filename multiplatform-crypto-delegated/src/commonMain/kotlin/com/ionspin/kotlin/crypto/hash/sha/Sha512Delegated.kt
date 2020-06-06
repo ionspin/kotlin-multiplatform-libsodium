@@ -14,18 +14,16 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.hash.blake2b
+package com.ionspin.kotlin.crypto.hash.sha
+
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 14-Jul-2019
+ * on 17-Jul-2019
  */
 
 
-expect class Blake2bDelegated(key: UByteArray? = null, hashLength: Int = Blake2bProperties.MAX_HASH_BYTES) : Blake2b
+expect class Sha512Delegated(key: UByteArray? = null, hashLength: Int = Sha512Properties.MAX_HASH_BYTES) : Sha512
 
-
-expect object Blake2bDelegatedStateless : Blake2bStateless
-
-
+expect object Sha512StatelessDelegated : StatelessSha512

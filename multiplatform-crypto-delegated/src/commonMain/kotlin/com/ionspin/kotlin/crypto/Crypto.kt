@@ -1,21 +1,15 @@
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bProperties
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegated
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bStateless
-import com.ionspin.kotlin.crypto.hash.sha.Sha256Pure
-import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegatedStateless
+import com.ionspin.kotlin.crypto.hash.sha.*
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 24-May-2020
  */
-
-
-typealias Sha256Stateless = Sha256Pure.Companion
-
-typealias Sha512Stateless = Sha512Pure.Companion
-
 
 object Crypto : CryptoProvider {
     override suspend fun initialize() {
@@ -28,12 +22,32 @@ object Crypto : CryptoProvider {
 
 
     object Blake2b {
-        fun updateable(): com.ionspin.kotlin.crypto.hash.blake2b.Blake2b {
-            return Blake2bDelegated()
+        fun updateable(key: UByteArray? = null, hashLength: Int = Blake2bProperties.MAX_HASH_BYTES): com.ionspin.kotlin.crypto.hash.blake2b.Blake2b {
+            return Blake2bDelegated(key, hashLength)
         }
 
-        fun stateless(message: String): UByteArray {
-            return Blake2bStateless.digest(message)
+        fun stateless(message: UByteArray, key: UByteArray = ubyteArrayOf(), hashLength: Int = Blake2bProperties.MAX_HASH_BYTES): UByteArray {
+            return Blake2bDelegatedStateless.digest(message, key, hashLength)
+        }
+    }
+
+    object Sha256 {
+        fun updateable(): com.ionspin.kotlin.crypto.hash.sha.Sha256 {
+            return Sha256Delegated()
+        }
+
+        fun stateless(message: UByteArray, key: UByteArray? = null, hashLength: Int = Sha256Properties.MAX_HASH_BYTES) {
+
+        }
+    }
+
+    object Sha512 {
+        fun updateable(): com.ionspin.kotlin.crypto.hash.sha.Sha512 {
+            return Sha512Delegated()
+        }
+
+        fun stateless(message: UByteArray, key: UByteArray? = null, hashLength: Int = Sha512Properties.MAX_HASH_BYTES) {
+
         }
     }
 

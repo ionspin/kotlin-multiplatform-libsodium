@@ -7,13 +7,8 @@ package com.ionspin.kotlin.crypto.hash.blake2b
  */
 
 import com.ionspin.kotlin.crypto.Crypto
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bStateless
 import com.ionspin.kotlin.crypto.util.testBlocking
-import interop.*
-import kotlinx.cinterop.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
-import libsodium.*
 
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -25,9 +20,6 @@ class Blake2bLinuxTest {
         runBlocking {
             Crypto.initialize()
         }
-//        val sodiumInitResult = sodium_init()
-//        println("Sodium init $sodiumInitResult")
-//        println("1")
     }
 
     @Test
@@ -41,6 +33,6 @@ class Blake2bLinuxTest {
 
     @Test
     fun testBlake2BStateless() = testBlocking {
-        Blake2bStateless.digest("test")
+        Blake2bDelegatedStateless.digest("test")
     }
 }

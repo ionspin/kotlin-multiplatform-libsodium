@@ -8,5 +8,15 @@ import com.ionspin.kotlin.crypto.hash.UpdatableHash
  * ugljesa.jovanovic@ionspin.com
  * on 24-May-2020
  */
-interface Sha256 : UpdatableHash
-interface StatelessSha256 : StatelessHash
+object Sha256Properties {
+    const val MAX_HASH_BYTES = 32
+}
+
+interface Sha256 : UpdatableHash {
+    override val MAX_HASH_BYTES: Int
+        get() = Sha256Properties.MAX_HASH_BYTES
+}
+interface StatelessSha256 : StatelessHash {
+    override val MAX_HASH_BYTES: Int
+        get() = Sha256Properties.MAX_HASH_BYTES
+}
