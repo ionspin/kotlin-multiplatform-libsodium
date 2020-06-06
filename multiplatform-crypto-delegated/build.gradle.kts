@@ -279,9 +279,9 @@ kotlin {
         val linux64Bit = setOf(
             "linuxX64"
         )
-        val linuxArm64Bit = setOf {
+        val linuxArm64Bit = setOf(
             "linuxArm64"
-        }
+        )
         val linux32Bit = setOf(
             "" // "linuxArm32Hfp"
         )
@@ -325,6 +325,7 @@ kotlin {
                     }
                 }
                 if (linuxArm64Bit.contains(this@withType.name)) {
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     compilations.getByName("main") {
                         val libsodiumCinterop by cinterops.creating {
                             defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
