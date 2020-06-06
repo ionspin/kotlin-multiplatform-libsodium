@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -46,7 +47,7 @@ class Blake2BTest {
                 "1234567890" +
                 "1234567890"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2bPure.digest(test.encodeToUByteArray())
         //Generated with b2sum 8.31
         val expectedResult = ubyteArrayOf(
             //@formatter:off
@@ -77,7 +78,7 @@ class Blake2BTest {
                 "1234567890"
 
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2bPure.digest(test.encodeToUByteArray())
         val expectedResultString = "800bb78cd4da18995c8074713bb674" +
                 "3cd94b2b6490a693fe4000ed00833b88b7b474d94af9cfed246b1b" +
                 "4ce1935a76154d7ea7c410493557741d18ec3a08da75"
@@ -93,7 +94,7 @@ class Blake2BTest {
     fun testDigest() {
         val test = "111111111122222222223333333333333"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2bPure.digest(test.encodeToUByteArray())
         //Generated with b2sum 8.31
         val expectedResult = ubyteArrayOf(
             //@formatter:off
@@ -115,7 +116,7 @@ class Blake2BTest {
         val test = "abc"
         val key = "key"
 
-        val result = Blake2bPure.digest(test, key)
+        val result = Blake2bPure.digest(test.encodeToUByteArray(), key.encodeToUByteArray())
 
         assertTrue {
             result.isNotEmpty()
@@ -134,7 +135,7 @@ class Blake2BTest {
     fun testDigestFromRfc() {
         val test = "abc"
 
-        val result = Blake2bPure.digest(test)
+        val result = Blake2bPure.digest(test.encodeToUByteArray())
         //@formatter:off
         val expectedResult = ubyteArrayOf(
 
@@ -286,7 +287,7 @@ class Blake2BTest {
     fun testInvalidHashLength() {
         val test = "1234567890"
         assertFailsWith(RuntimeException::class) {
-            val result = Blake2bPure.digest(inputString = test, hashLength = 65)
+            val result = Blake2bPure.digest(test.encodeToUByteArray(), hashLength = 65)
         }
     }
 

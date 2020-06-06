@@ -58,8 +58,8 @@ class Blake2bInstanceTest {
     fun testDigestToString() {
         val updates = 14
         val input = "1234567890"
-        val expectedResult = "2F49AEB613E34E924E175A6AF2FAAD7BC78235F9C5E461C68FD5B47E".toLowerCase() +
-                "E8E2FD2FB4C07D7E4A72404612D92899AF8A328F3B614ED77244B481151D40B11E32A4".toLowerCase()
+        val expectedResult = "2F49AEB613E34E924E175A6AF2FAAD7BC78235F9C5E461C68FD5B407E".toLowerCase() +
+                "E8E2F0D2FB4C07D7E4A72404612D92899AF8A328F3B614ED77244B481151D40B11E32A4".toLowerCase()
 
         val blake2b = Blake2bPure()
         for (i in 0 until updates) {

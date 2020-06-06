@@ -46,3 +46,7 @@ interface StatelessHash : Hash {
     ): UByteArray
 }
 
+fun String.encodeToUByteArray() : UByteArray{
+    return encodeToByteArray().toUByteArray()
+}
+

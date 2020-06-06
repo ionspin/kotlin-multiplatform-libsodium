@@ -50,20 +50,20 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 actual object Blake2bDelegatedStateless : Blake2bStateless {
-    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-        println("Input $inputString, ${key ?: "null"}, $hashLength")
-        val hashResult = UByteArray(MAX_HASH_BYTES)
-        val hashResultPinned = hashResult.pin()
-        crypto_generichash(
-            hashResultPinned.addressOf(0),
-            hashLength.convert(),
-            inputString.encodeToByteArray().toUByteArray().toCValues(),
-            inputString.length.convert(),
-            key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
-            key?.length?.convert() ?: 0UL
-        )
-        return hashResult
-    }
+//    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+//        println("Input $inputString, ${key ?: "null"}, $hashLength")
+//        val hashResult = UByteArray(MAX_HASH_BYTES)
+//        val hashResultPinned = hashResult.pin()
+//        crypto_generichash(
+//            hashResultPinned.addressOf(0),
+//            hashLength.convert(),
+//            inputString.encodeToByteArray().toUByteArray().toCValues(),
+//            inputString.length.convert(),
+//            key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
+//            key?.length?.convert() ?: 0UL
+//        )
+//        return hashResult
+//    }
 
 
 
@@ -79,8 +79,6 @@ actual object Blake2bDelegatedStateless : Blake2bStateless {
             key.toCValues(),
             key.size.convert() ?: 0UL
         )
-        println("HashPointer: ${hashResult.toHexString()}")
-        println(hashResult.toHexString())
         return hashResult
 
     }

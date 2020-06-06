@@ -17,6 +17,7 @@
 package com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.hash.sha.Sha256Pure
 import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
@@ -41,7 +42,7 @@ class ReadmeTest {
     @Test
     fun blake2bObjectExample() {
         val input = "abc"
-        val result = Blake2bPure.digest(input)
+        val result = Blake2bPure.digest(input.encodeToUByteArray())
         //@formatter:off
         val expectedResult = ubyteArrayOf(
             0xBAU,0x80U,0xA5U,0x3FU,0x98U,0x1CU,0x4DU,0x0DU,0x6AU,0x27U,0x97U,0xB6U,0x9FU,0x12U,0xF6U,0xE9U,
@@ -80,7 +81,7 @@ class ReadmeTest {
     @Test
     fun sha256Example() {
         val input = "abc"
-        val result = Sha256Pure.digest(inputString = input)
+        val result = Sha256Pure.digest(input.encodeToUByteArray())
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
             result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
@@ -158,7 +159,7 @@ class ReadmeTest {
 
     @Test
     fun debugTest() {
-        val result = Blake2bStateless.digest("test")
+        val result = Blake2bStateless.digest("test".encodeToUByteArray())
         println(result.toHexString())
     }
 

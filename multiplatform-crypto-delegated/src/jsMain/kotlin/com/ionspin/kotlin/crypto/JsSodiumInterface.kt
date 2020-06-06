@@ -9,7 +9,7 @@ import org.khronos.webgl.Uint8Array
  */
 interface JsSodiumInterface {
 
-    fun crypto_generichash(hashLength: Int, inputMessage: String) : Uint8Array
+    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array) : Uint8Array
 
     fun randombytes_buf(numberOfBytes: Int) : Uint8Array
 

@@ -15,7 +15,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class Blake2bLinuxTest {
+class Sha512DelegatedLinuxTest {
 
     @Test
     fun testCinterop() {
