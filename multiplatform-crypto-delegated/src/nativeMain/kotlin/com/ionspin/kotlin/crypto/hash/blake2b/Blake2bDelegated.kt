@@ -22,7 +22,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         println("Align ${crypto_generichash_state.align}")
         state = nativeHeap.alloc()
         println("allocated state")
-        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.toULong() ?: 0UL, hashLength.convert())
+        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL, hashLength.convert())
         println("Initialized libsodium hash")
     }
 
@@ -32,13 +32,13 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
     override fun update(data: String) {
         val ubyteArray = data.encodeToByteArray().toUByteArray()
-        crypto_generichash_update(state.ptr, ubyteArray.toCValues(), ubyteArray.size.toULong())
+        crypto_generichash_update(state.ptr, ubyteArray.toCValues(), ubyteArray.size.convert())
     }
 
     override fun digest(): UByteArray {
         val hashResult = UByteArray(requestedHashLength)
         val hashResultPinned = hashResult.pin()
-        val result = crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.toULong())
+        val result = crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.convert())
         println("HashPointer: ${hashResult.toHexString()}")
 
         return hashResult
@@ -57,11 +57,11 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
             println("Alloced: $result")
             crypto_generichash(
                 result,
-                hashLength.toULong(),
+                hashLength.convert(),
                 inputString.encodeToByteArray().toUByteArray().toCValues(),
-                inputString.length.toULong(),
+                inputString.length.convert(),
                 key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
-                key?.length?.toULong() ?: 0UL
+                key?.length?.convert() ?: 0UL
             )
             println("Result: $result")
             UByteArray(hashLength) {
@@ -85,11 +85,11 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
         val hashResultPinned = hashResult.pin()
         crypto_generichash(
             hashResultPinned.addressOf(0),
-            hashLength.toULong(),
+            hashLength.convert(),
             inputString.encodeToByteArray().toUByteArray().toCValues(),
-            inputString.length.toULong(),
+            inputString.length.convert(),
             key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
-            key?.length?.toULong() ?: 0UL
+            key?.length?.convert() ?: 0UL
         )
         println("HashPointer: ${hashResult.toHexString()}")
         println(hashResult.toHexString())
@@ -104,11 +104,11 @@ actual object Blake2bStateless : Blake2bStatelessInterface {
 
         crypto_generichash(
             StableRef.create(hashResult).asCPointer().reinterpret(),
-            hashLength.toULong(),
+            hashLength.convert(),
             inputMessage.toCValues(),
-            inputMessage.size.toULong(),
+            inputMessage.size.convert(),
             key.toCValues(),
-            key.size.toULong() ?: 0UL
+            key.size.convert() ?: 0UL
         )
         println("HashPointer: ${hashResult.toHexString()}")
         println(hashResult.toHexString())
