@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.cinterop.*
-import kotlinx.cinterop.nativeHeap.alloc
 import libsodium.*
 /**
  * Created by Ugljesa Jovanovic
@@ -20,7 +19,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         requestedHashLength = hashLength
         println("Size ${crypto_generichash_state.size}")
         println("Align ${crypto_generichash_state.align}")
-        state = nativeHeap.alloc()
+        state = nativeHeap.alloc(crypto_generichash_state.size, 1).reinterpret()
         println("allocated state")
         crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL, hashLength.convert())
         println("Initialized libsodium hash")
