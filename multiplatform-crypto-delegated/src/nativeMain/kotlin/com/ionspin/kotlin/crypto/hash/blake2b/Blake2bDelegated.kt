@@ -24,7 +24,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         val allocated = sodium_malloc(crypto_generichash_state.size.convert())!!
         state = allocated.reinterpret<crypto_generichash_state>().pointed
         println("allocated state")
-        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL, hashLength.convert())
+        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL.convert(), hashLength.convert())
         println("Initialized libsodium hash")
     }
 
@@ -40,9 +40,8 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     override fun digest(): UByteArray {
         val hashResult = UByteArray(requestedHashLength)
         val hashResultPinned = hashResult.pin()
-        val result = crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.convert())
-        println("HashPointer: ${hashResult.toHexString()}")
-
+        crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.convert())
+        sodium_free(state.ptr)
         return hashResult
     }
 
@@ -50,23 +49,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 actual object Blake2bDelegatedStateless : Blake2bStateless {
-//    override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-//        println("Input $inputString, ${key ?: "null"}, $hashLength")
-//        val hashResult = UByteArray(MAX_HASH_BYTES)
-//        val hashResultPinned = hashResult.pin()
-//        crypto_generichash(
-//            hashResultPinned.addressOf(0),
-//            hashLength.convert(),
-//            inputString.encodeToByteArray().toUByteArray().toCValues(),
-//            inputString.length.convert(),
-//            key?.run { this.encodeToByteArray().toUByteArray().toCValues() },
-//            key?.length?.convert() ?: 0UL
-//        )
-//        return hashResult
-//    }
-
-
-
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         val hashResult = UByteArray(MAX_HASH_BYTES)
@@ -77,7 +59,7 @@ actual object Blake2bDelegatedStateless : Blake2bStateless {
             inputMessage.toCValues(),
             inputMessage.size.convert(),
             key.toCValues(),
-            key.size.convert() ?: 0UL
+            key.size.convert()
         )
         hashResultPinned.unpin()
         return hashResult
