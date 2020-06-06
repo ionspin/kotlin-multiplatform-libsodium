@@ -23,6 +23,7 @@ object Sample {
         blake2bUpdateable.update("test")
         println(blake2bUpdateable.digest().toHexString())
         println("Blake2b stateless")
-        println("Blake2b stateless: ${Crypto.Blake2b.stateless("test".encodeToByteArray().toUByteArray())}")
+        val statelessResult = Crypto.Blake2b.stateless("test".encodeToByteArray().toUByteArray())
+        println("Blake2b stateless: ${statelessResult.toHexString()}")
     }
 }

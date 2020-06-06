@@ -70,15 +70,16 @@ actual object Blake2bDelegatedStateless : Blake2bStateless {
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         val hashResult = UByteArray(MAX_HASH_BYTES)
-
+        val hashResultPinned = hashResult.pin()
         crypto_generichash(
-            StableRef.create(hashResult).asCPointer().reinterpret(),
+            hashResultPinned.addressOf(0),
             hashLength.convert(),
             inputMessage.toCValues(),
             inputMessage.size.convert(),
             key.toCValues(),
             key.size.convert() ?: 0UL
         )
+        hashResultPinned.unpin()
         return hashResult
 
     }

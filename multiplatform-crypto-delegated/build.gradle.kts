@@ -81,16 +81,6 @@ kotlin {
                 staticLib {
                 }
             }
-
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
-                )
-            }
         }
 
 
@@ -98,15 +88,6 @@ kotlin {
             binaries {
                 staticLib {
                 }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm64/include/")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm64/lib/libsodium.a"
-                )
             }
         }
         // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
@@ -296,8 +277,11 @@ kotlin {
         //Set up shared source sets
         //linux, linuxArm32Hfp, linuxArm64
         val linux64Bit = setOf(
-            "linuxX64", "linuxArm64"
+            "linuxX64"
         )
+        val linuxArm64Bit = setOf {
+            "linuxArm64"
+        }
         val linux32Bit = setOf(
             "" // "linuxArm32Hfp"
         )
@@ -330,9 +314,29 @@ kotlin {
             compilations.getByName("main") {
                 if (linux64Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(nativeMain)
+                    compilations.getByName("main") {
+                        val libsodiumCinterop by cinterops.creating {
+                            defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                            compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
+                        }
+                        kotlinOptions.freeCompilerArgs = listOf(
+                            "-include-binary", "${project.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
+                        )
+                    }
+                }
+                if (linuxArm64Bit.contains(this@withType.name)) {
+                    compilations.getByName("main") {
+                        val libsodiumCinterop by cinterops.creating {
+                            defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                            compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm64/include/")
+                        }
+                        kotlinOptions.freeCompilerArgs = listOf(
+                            "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm64/lib/libsodium.a"
+                        )
+                    }
                 }
                 if (linux32Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaround32bitNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                 }
                 if (macos64Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
@@ -351,7 +355,7 @@ kotlin {
                 }
 
                 if (ios32Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaround32bitNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -375,7 +379,7 @@ kotlin {
                 }
 
                 if (watchos32Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaround32bitNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
