@@ -18,14 +18,16 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     init {
         println("Initializing libsodium hash")
         requestedHashLength = hashLength
+        println("Size ${crypto_generichash_state.size}")
+        println("Align ${crypto_generichash_state.align}")
         state = nativeHeap.alloc()
         println("allocated state")
-        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.toULong() ?: 0UL, hashLength.toULong())
+        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.toULong() ?: 0UL, hashLength.convert())
         println("Initialized libsodium hash")
     }
 
     override fun update(data: UByteArray) {
-        crypto_generichash_update(state.ptr, data.toCValues(), data.size.toULong())
+        crypto_generichash_update(state.ptr, data.toCValues(), data.size.convert())
     }
 
     override fun update(data: String) {
@@ -38,6 +40,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         val hashResultPinned = hashResult.pin()
         val result = crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.toULong())
         println("HashPointer: ${hashResult.toHexString()}")
+
         return hashResult
 //        val inputString = "test"
 //        val hashLength = 64

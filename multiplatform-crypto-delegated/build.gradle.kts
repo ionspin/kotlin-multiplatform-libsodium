@@ -293,21 +293,6 @@ kotlin {
             }
         }
 
-        val native32Main by creating {
-            dependsOn(commonMain)
-            dependencies {
-                nativeDependencies(this)
-            }
-        }
-
-        val native32Test by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(Deps.Native.coroutines)
-            }
-        }
-
-
         //Set up shared source sets
         //linux, linuxArm32Hfp, linuxArm64
         val linux64Bit = setOf(
@@ -406,13 +391,7 @@ kotlin {
             }
             compilations.getByName("test") {
                 println("Setting native test dep for $this@withType.name")
-                if (linux64Bit.contains(this@withType.name) ||
-                    macos64Bit.contains(this@withType.name) ||
-                    mingw64Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(nativeTest)
-                } else {
-                    defaultSourceSet.dependsOn(native32Test)
-                }
+                defaultSourceSet.dependsOn(nativeTest)
 
 
             }
@@ -465,19 +444,7 @@ kotlin {
                     kotlin.srcDir("src/nativeTest")
                 }
             }
-            //can still be useful for cinterop and debugging
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(native32Main)
-//                isRunningInIdea {
-//                    kotlin.srcDir("src/native32Main/kotlin")
-//                }
-//            }
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(native32Test)
-//                isRunningInIdea {
-//                    kotlin.srcDir("src/native32Test/kotlin")
-//                }
-//            }
+
         }
 
         runningOnMacos {
