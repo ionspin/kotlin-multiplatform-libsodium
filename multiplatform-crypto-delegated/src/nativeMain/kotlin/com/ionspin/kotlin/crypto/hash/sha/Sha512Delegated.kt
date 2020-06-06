@@ -20,9 +20,6 @@ actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: In
         TODO("not implemented yet")
     }
 
-    override fun digestString(): String {
-        TODO("not implemented yet")
-    }
 }
 
 actual object Sha512StatelessDelegated : StatelessSha512 {

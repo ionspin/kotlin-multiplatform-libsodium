@@ -46,9 +46,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         return hashResult
     }
 
-    override fun digestString(): String {
-        return digest().toHexString()
-    }
 }
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")

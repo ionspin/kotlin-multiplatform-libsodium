@@ -145,7 +145,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
         }
 
 
-        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+        fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             val array = inputString.encodeToByteArray().toUByteArray()
             val keyBytes = key?.run {
                 encodeToByteArray().toUByteArray()
@@ -333,9 +333,6 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
 
     }
 
-    override fun digestString(): String {
-        return digest().map { it.toString(16) }.joinToString(separator = "")
-    }
 
     private fun reset() {
         h = iv.copyOf()

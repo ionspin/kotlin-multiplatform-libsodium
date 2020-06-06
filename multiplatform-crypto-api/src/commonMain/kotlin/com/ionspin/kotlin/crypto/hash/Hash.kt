@@ -34,12 +34,10 @@ interface UpdatableHash : Hash {
 
     fun digest() : UByteArray
 
-    fun digestString() : String
 }
 
 
 interface StatelessHash : Hash {
-    fun digest(inputString: String, key: String? = null, hashLength: Int = MAX_HASH_BYTES): UByteArray
 
     fun digest(
         inputMessage: UByteArray = ubyteArrayOf(),

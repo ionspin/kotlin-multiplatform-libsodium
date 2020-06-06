@@ -64,7 +64,7 @@ class Sha256Pure : Sha256 {
         )
 
 
-        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
+        fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
             return digest(
                 inputString.encodeToByteArray().toUByteArray(),
                 key?.run { encodeToByteArray().toUByteArray()} ?: ubyteArrayOf(),
@@ -310,10 +310,6 @@ class Sha256Pure : Sha256 {
                 h[6].toPaddedByteArray() +
                 h[7].toPaddedByteArray()
         return digest
-    }
-
-    override fun digestString(): String {
-        return digest().map { it.toString(16) }.joinToString(separator = "")
     }
 
     private fun appendToBuffer(array: UByteArray, start: Int) {

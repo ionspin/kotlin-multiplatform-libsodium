@@ -115,7 +115,7 @@ Result is returned as a `UByteArray`
 
 ##### Updatable instance version
 You can create an instance and feed the data by using `update(input : UByteArray)` call. Once all data is supplied,
-you should call `digest()` or `digestString()` convenience method that converts the `UByteArray` into hexadecimal string.
+you should call `digest()`.
 
 If you want to use Blake2b with a key, you should supply it when creating the `Blake2b` instance.
 

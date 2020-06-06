@@ -26,9 +26,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         TODO("not implemented yet")
     }
 
-    override fun digestString(): String {
-        TODO("not implemented yet")
-    }
 }
 
 

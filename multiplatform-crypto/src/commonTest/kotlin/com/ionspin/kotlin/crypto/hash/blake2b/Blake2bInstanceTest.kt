@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -64,7 +65,7 @@ class Blake2bInstanceTest {
         for (i in 0 until updates) {
             blake2b.update(input)
         }
-        val result = blake2b.digestString()
+        val result = blake2b.digest().toHexString()
         assertTrue {
             result == expectedResult
         }

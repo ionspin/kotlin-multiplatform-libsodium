@@ -8,6 +8,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 
 import com.ionspin.kotlin.crypto.Crypto
 import com.ionspin.kotlin.crypto.util.testBlocking
+import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.coroutines.runBlocking
 
 import kotlin.test.Test
@@ -26,7 +27,7 @@ class Blake2bLinuxTest {
     fun testBlake2bUpdateable() = testBlocking {
         val blake2b = Crypto.Blake2b.updateable()
         blake2b.update("test")
-        val result = blake2b.digestString()
+        val result = blake2b.digest().toHexString()
         println(result)
         assertTrue { result.length > 2 }
     }

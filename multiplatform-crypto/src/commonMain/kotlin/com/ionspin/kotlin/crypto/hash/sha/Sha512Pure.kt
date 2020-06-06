@@ -16,8 +16,6 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
-import com.ionspin.kotlin.crypto.hash.StatelessHash
-import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
@@ -133,14 +131,6 @@ class Sha512Pure : Sha512 {
             0x5be0cd19137e2179UL
         )
 
-
-        override fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-            return digest(
-                inputString.encodeToByteArray().toUByteArray(),
-                key?.run { encodeToByteArray().toUByteArray() } ?: ubyteArrayOf(),
-                hashLength = hashLength
-            )
-        }
 
         override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
 
@@ -387,10 +377,6 @@ class Sha512Pure : Sha512 {
                 h[6].toPaddedByteArray() +
                 h[7].toPaddedByteArray()
         return digest
-    }
-
-    override fun digestString(): String {
-        return digest().map { it.toString(16) }.joinToString(separator = "")
     }
 
     private fun appendToBuffer(array: UByteArray, start: Int) {

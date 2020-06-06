@@ -21,9 +21,6 @@ actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: In
         TODO("not implemented yet")
     }
 
-    override fun digestString(): String {
-        TODO("not implemented yet")
-    }
 
 
 
