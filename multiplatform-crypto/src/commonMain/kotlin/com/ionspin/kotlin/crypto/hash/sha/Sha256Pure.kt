@@ -64,14 +64,7 @@ class Sha256Pure : Sha256 {
         )
 
 
-        fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-            return digest(
-                inputString.encodeToByteArray().toUByteArray(),
-                key?.run { encodeToByteArray().toUByteArray()} ?: ubyteArrayOf(),
-                hashLength)
-        }
-
-        override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
+        override fun digest(inputMessage: UByteArray): UByteArray {
 
             var h = iv.copyOf()
 

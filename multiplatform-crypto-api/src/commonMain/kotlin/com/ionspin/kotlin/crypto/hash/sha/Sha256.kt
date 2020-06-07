@@ -19,4 +19,8 @@ interface Sha256 : UpdatableHash {
 interface StatelessSha256 : StatelessHash {
     override val MAX_HASH_BYTES: Int
         get() = Sha256Properties.MAX_HASH_BYTES
+
+    fun digest(
+        inputMessage: UByteArray = ubyteArrayOf()
+    ): UByteArray
 }

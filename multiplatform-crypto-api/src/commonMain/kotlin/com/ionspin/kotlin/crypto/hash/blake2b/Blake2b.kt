@@ -21,5 +21,11 @@ interface Blake2b : UpdatableHash {
 interface Blake2bStateless : StatelessHash {
     override val MAX_HASH_BYTES: Int
         get() = Blake2bProperties.MAX_HASH_BYTES
+
+    fun digest(
+        inputMessage: UByteArray = ubyteArrayOf(),
+        key: UByteArray = ubyteArrayOf(),
+        hashLength: Int = MAX_HASH_BYTES
+    ): UByteArray
 }
 

@@ -24,7 +24,7 @@ actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: In
 
 actual object Sha512StatelessDelegated : StatelessSha512 {
 
-    override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
+    override fun digest(inputMessage: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
 }

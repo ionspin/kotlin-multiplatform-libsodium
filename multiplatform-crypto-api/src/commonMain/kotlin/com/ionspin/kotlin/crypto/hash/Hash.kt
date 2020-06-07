@@ -39,11 +39,6 @@ interface UpdatableHash : Hash {
 
 interface StatelessHash : Hash {
 
-    fun digest(
-        inputMessage: UByteArray = ubyteArrayOf(),
-        key: UByteArray = ubyteArrayOf(),
-        hashLength: Int = MAX_HASH_BYTES
-    ): UByteArray
 }
 
 fun String.encodeToUByteArray() : UByteArray{

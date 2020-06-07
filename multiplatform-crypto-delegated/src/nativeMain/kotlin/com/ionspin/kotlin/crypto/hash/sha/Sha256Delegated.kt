@@ -1,5 +1,8 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegatedStateless
+import kotlinx.cinterop.pin
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -27,7 +30,9 @@ actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: In
 }
 actual object Sha256StatelessDelegated : StatelessSha256 {
 
-    override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
+    override fun digest(inputMessage: UByteArray): UByteArray {
+        val hashResult = UByteArray(Blake2bDelegatedStateless.MAX_HASH_BYTES)
+        val hashResultPinned = hashResult.pin()
         TODO("not implemented yet")
     }
 

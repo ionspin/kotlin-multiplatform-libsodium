@@ -132,7 +132,7 @@ class Sha512Pure : Sha512 {
         )
 
 
-        override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
+        override fun digest(inputMessage: UByteArray): UByteArray {
 
             var h = iv.copyOf()
 
