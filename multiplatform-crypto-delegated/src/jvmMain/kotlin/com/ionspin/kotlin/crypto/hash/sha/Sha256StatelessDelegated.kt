@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
+import java.security.MessageDigest
 
 
 /**
@@ -27,6 +28,8 @@ actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: In
 actual object Sha256StatelessDelegated : StatelessSha256 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        messageDigest.update(inputMessage.toByteArray())
+        return messageDigest.digest().toUByteArray()
     }
 }

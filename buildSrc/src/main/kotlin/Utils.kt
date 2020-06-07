@@ -43,6 +43,12 @@ fun KotlinMultiplatformExtension.isNotRunningInIdea(block: KotlinMultiplatformEx
     }
 }
 
+fun KotlinMultiplatformExtension.isRunningInTravis(block: KotlinMultiplatformExtension.() -> Unit) {
+    if (isInTravis()) {
+        block(this)
+    }
+}
+
 fun KotlinMultiplatformExtension.runningOnLinuxx86_64(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         block(this)

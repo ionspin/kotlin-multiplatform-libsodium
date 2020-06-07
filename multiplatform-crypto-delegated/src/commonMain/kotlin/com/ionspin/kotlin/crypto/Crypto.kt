@@ -36,8 +36,8 @@ object Crypto : CryptoProvider {
             return Sha256Delegated()
         }
 
-        fun stateless(message: UByteArray, key: UByteArray? = null, hashLength: Int = Sha256Properties.MAX_HASH_BYTES) {
-
+        fun stateless(message: UByteArray) : UByteArray{
+            return Sha256StatelessDelegated.digest(inputMessage =  message)
         }
     }
 
@@ -46,8 +46,8 @@ object Crypto : CryptoProvider {
             return Sha512Delegated()
         }
 
-        fun stateless(message: UByteArray, key: UByteArray? = null, hashLength: Int = Sha512Properties.MAX_HASH_BYTES) {
-
+        fun stateless(message: UByteArray) : UByteArray {
+            TODO()
         }
     }
 

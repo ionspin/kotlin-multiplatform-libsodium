@@ -61,7 +61,9 @@ kotlin {
         js {
             browser {
                 testTask {
-                    enabled = false //Until I sort out testing on travis
+                    isRunningInTravis {
+                        enabled = false //Until I sort out testing on travis
+                    }
                     useKarma {
                         useChrome()
                     }
