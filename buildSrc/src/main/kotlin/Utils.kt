@@ -1,11 +1,9 @@
-import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.gradle.nativeplatform.platform.internal.Architectures
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import java.lang.RuntimeException
 
 /**
  * Created by Ugljesa Jovanovic
@@ -25,7 +23,7 @@ fun getHostOsName(): String {
 }
 
 fun getHostArchitecture(): String {
-    val architecture =System.getProperty("os.arch")
+    val architecture = System.getProperty("os.arch")
     DefaultNativePlatform.getCurrentArchitecture()
     println("Arch: $architecture")
     val resolvedArch = Architectures.forInput(architecture).name
@@ -33,42 +31,49 @@ fun getHostArchitecture(): String {
     return resolvedArch
 }
 
-fun KotlinMultiplatformExtension.isRunningInIdea(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.isRunningInIdea(block: KotlinMultiplatformExtension.() -> Unit) {
     if (isInIdea()) {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnLinuxx86_64(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.isNotRunningInIdea(block: KotlinMultiplatformExtension.() -> Unit) {
+    if (!isInIdea()) {
+        block(this)
+    }
+}
+
+fun KotlinMultiplatformExtension.runningOnLinuxx86_64(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnLinuxArm64(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnLinuxArm64(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "aarch64") {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnLinuxArm32(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnLinuxArm32(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "linux" && getHostArchitecture() == "arm-v7") {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnMacos(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnMacos(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "macos") {
         block(this)
     }
 }
 
-fun KotlinMultiplatformExtension.runningOnWindows(block : KotlinMultiplatformExtension.() -> Unit) {
+fun KotlinMultiplatformExtension.runningOnWindows(block: KotlinMultiplatformExtension.() -> Unit) {
     if (getHostOsName() == "windows") {
         block(this)
     }
 }
-fun independentDependencyBlock(nativeDeps : KotlinDependencyHandler.() -> Unit) : KotlinDependencyHandler.() -> Unit {
+
+fun independentDependencyBlock(nativeDeps: KotlinDependencyHandler.() -> Unit): KotlinDependencyHandler.() -> Unit {
     return nativeDeps
 }
 
@@ -78,11 +83,17 @@ fun independentDependencyBlock(nativeDeps : KotlinDependencyHandler.() -> Unit) 
  * an intermediary source set with the same set of dependancies
  *
  */
-fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSourceSet(name : String, nativeDeps : KotlinDependencyHandler.() -> Unit) : KotlinSourceSet {
+fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSourceSet(
+    name: String,
+    nativeDeps: KotlinDependencyHandler.() -> Unit
+): KotlinSourceSet {
+
     return create("${name}Workaround") {
-        kotlin.srcDir("src/nativeMain")
-        dependencies {
-            nativeDeps.invoke(this)
+        if (!isInIdea()) {
+            kotlin.srcDir("src/nativeMain")
+            dependencies {
+                nativeDeps.invoke(this)
+            }
         }
     }
 

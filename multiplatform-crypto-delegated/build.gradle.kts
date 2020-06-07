@@ -17,9 +17,9 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -77,6 +77,15 @@ kotlin {
 
         }
         linuxX64() {
+            compilations.getByName("main") {
+                val libsodiumCinterop by cinterops.creating {
+                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
+                }
+                kotlinOptions.freeCompilerArgs = listOf(
+                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
+                )
+            }
             binaries {
                 staticLib {
                 }
@@ -314,18 +323,15 @@ kotlin {
             compilations.getByName("main") {
                 if (linux64Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(nativeMain)
-                    compilations.getByName("main") {
-                        val libsodiumCinterop by cinterops.creating {
-                            defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                            compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
-                        }
-                        kotlinOptions.freeCompilerArgs = listOf(
-                            "-include-binary", "${project.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
-                        )
-                    }
                 }
                 if (linuxArm64Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                        defaultSourceSet.dependsOn(
+                            createWorkaroundNativeMainSourceSet(
+                                this@withType.name,
+                                nativeDependencies
+                            )
+                        )
+
                     compilations.getByName("main") {
                         val libsodiumCinterop by cinterops.creating {
                             defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -440,13 +446,13 @@ kotlin {
             }
             val linuxX64Main by getting {
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeMain")
+                    kotlin.srcDir("src/nativeMain/kotlin")
                 }
             }
             val linuxX64Test by getting {
                 dependsOn(nativeTest)
                 isRunningInIdea {
-                    kotlin.srcDir("src/nativeTest")
+                    kotlin.srcDir("src/nativeTest/kotlin")
                 }
             }
 

@@ -178,6 +178,9 @@ kotlin {
             dependencies {
                 implementation(Deps.Native.coroutines)
             }
+            isRunningInIdea {
+                kotlin.setSrcDirs(emptySet<String>())
+            }
         }
 
 
@@ -249,7 +252,7 @@ kotlin {
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
-                //Force idea to consider native sourceset
+//                Force idea to consider native sourceset
                 if (ideaActive) {
                     kotlin.srcDir("src/nativeTest/kotlin")
                 }

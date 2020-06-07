@@ -33,6 +33,7 @@ actual object Sha256StatelessDelegated : StatelessSha256 {
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashResult = UByteArray(Blake2bDelegatedStateless.MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
+//        crypto_
         TODO("not implemented yet")
     }
 
