@@ -1,5 +1,8 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.goterl.lazycode.lazysodium.interfaces.Hash
+import com.ionspin.kotlin.crypto.Initializer
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -7,13 +10,22 @@ package com.ionspin.kotlin.crypto.hash.sha
  */
 
 
-actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha512 {
+actual class Sha512Delegated : Sha512 {
+
+    val state = Hash.State512()
+
+    init {
+        Initializer.sodium.crypto_hash_sha512_init(state)
+    }
+
     override fun update(data: UByteArray) {
-        TODO("not implemented yet")
+        Initializer.sodium.crypto_hash_sha512_update(state, data.toByteArray(), data.size.toLong())
     }
 
     override fun digest(): UByteArray {
-        TODO("not implemented yet")
+        val hashed = ByteArray(Sha512Properties.MAX_HASH_BYTES)
+        Initializer.sodium.crypto_hash_sha512_final(state, hashed)
+        return hashed.toUByteArray()
     }
 
 }
@@ -21,6 +33,8 @@ actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: In
 actual object Sha512StatelessDelegated : StatelessSha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val hashed = ByteArray(Sha512Properties.MAX_HASH_BYTES)
+        Initializer.sodium.crypto_hash_sha512(hashed, inputMessage.toByteArray(), inputMessage.size.toLong())
+        return hashed.toUByteArray()
     }
 }

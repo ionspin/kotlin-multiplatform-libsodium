@@ -1,9 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.getSodium
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegatedStateless
-
-import ext.libsodium.crypto_hash_sha256_init
 
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
@@ -15,7 +12,7 @@ import org.khronos.webgl.get
  */
 
 
-actual class Sha256Delegated actual constructor() : Sha256 {
+actual class Sha256Delegated : Sha256 {
 
     val state : dynamic
 

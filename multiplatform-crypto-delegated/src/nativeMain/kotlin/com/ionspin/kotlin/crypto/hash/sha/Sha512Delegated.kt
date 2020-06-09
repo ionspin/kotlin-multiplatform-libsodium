@@ -12,7 +12,7 @@ import platform.posix.malloc
  */
 
 
-actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha512 {
+actual class Sha512Delegated : Sha512 {
     val state : crypto_hash_sha512_state
 
     init {

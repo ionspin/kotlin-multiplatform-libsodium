@@ -13,7 +13,7 @@ import platform.posix.malloc
  */
 
 
-actual class Sha256Delegated actual constructor() : Sha256 {
+actual class Sha256Delegated : Sha256 {
 
     val state : crypto_hash_sha256_state
 

@@ -10,13 +10,22 @@ import org.khronos.webgl.Uint8Array
  */
 interface JsSodiumInterface {
 
-    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array): Uint8Array
-
     fun randombytes_buf(numberOfBytes: Int): Uint8Array
+
+    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array,): Uint8Array
 
     fun crypto_hash_sha256(message: Uint8Array): Uint8Array
 
     fun crypto_hash_sha512(message: Uint8Array): Uint8Array
+
+    //Updateable
+
+    fun crypto_generichash_init(key : Uint8Array, hashLength: Int) : dynamic
+
+    fun crypto_generichash_update(state: dynamic, inputMessage: Uint8Array)
+
+    fun crypto_generichash_final(state: dynamic, hashLength: Int) : Uint8Array
+
 
     fun crypto_hash_sha256_init() : dynamic
 

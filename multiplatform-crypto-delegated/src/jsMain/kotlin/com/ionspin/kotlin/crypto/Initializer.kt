@@ -21,12 +21,22 @@ fun setSodiumLoaded(loaded: Boolean) {
 }
 
 actual object Initializer {
+    private var isPlatformInitialized = false
+
     actual suspend fun initialize() {
         JsSodiumLoader.load()
+        isPlatformInitialized = true
     }
 
     actual fun initializeWithCallback(done: () -> Unit) {
+        JsSodiumLoader.loadWithCallback {
+            isPlatformInitialized = true
+            done()
+        }
+    }
 
+    actual fun isInitialized(): Boolean {
+        return isPlatformInitialized
     }
 
 
