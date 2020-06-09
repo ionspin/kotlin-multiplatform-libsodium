@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.cinterop.*
 import libsodium.*
+import platform.posix.free
 import platform.posix.malloc
 /**
  * Created by Ugljesa Jovanovic
@@ -16,16 +17,10 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     val requestedHashLength : Int
     val state : crypto_generichash_state
     init {
-        println("Initializing libsodium hash")
         requestedHashLength = hashLength
-        println("Size ${crypto_generichash_state.size}")
-        println("Align ${crypto_generichash_state.align}")
-        println("Using sodium malloc for state")
-        val allocated = sodium_malloc(crypto_generichash_state.size.convert())!!
+        val allocated = malloc(crypto_generichash_state.size.convert())!!
         state = allocated.reinterpret<crypto_generichash_state>().pointed
-        println("allocated state")
         crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL.convert(), hashLength.convert())
-        println("Initialized libsodium hash")
     }
 
     override fun update(data: UByteArray) {
@@ -36,7 +31,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         val hashResult = UByteArray(requestedHashLength)
         val hashResultPinned = hashResult.pin()
         crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.convert())
-        sodium_free(state.ptr)
+        free(state.ptr)
         return hashResult
     }
 

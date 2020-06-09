@@ -24,6 +24,6 @@ package com.ionspin.kotlin.crypto.hash.sha
  */
 
 
-expect class Sha256Delegated(key: UByteArray? = null, hashLength: Int = Sha256Properties.MAX_HASH_BYTES) : Sha256
+expect class Sha256Delegated() : Sha256
 
 expect object Sha256StatelessDelegated : StatelessSha256

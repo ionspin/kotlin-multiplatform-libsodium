@@ -35,6 +35,7 @@ class Sha512DelegatedLinuxTest {
 
     @Test
     fun testBlake2BStateless() = testBlocking {
-        Blake2bDelegatedStateless.digest("test".encodeToUByteArray())
+        val result = Blake2bDelegatedStateless.digest("test".encodeToUByteArray())
+        println(result.toHexString())
     }
 }

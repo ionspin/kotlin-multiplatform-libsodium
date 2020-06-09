@@ -421,6 +421,10 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
                     implementation(Deps.Jvm.coroutinesCore)
+
+                    //lazysodium
+                    implementation(Deps.Jvm.Delegated.lazysodium)
+                    implementation(Deps.Jvm.Delegated.jna)
                 }
             }
             val jvmTest by getting {

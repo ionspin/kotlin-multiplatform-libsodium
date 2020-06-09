@@ -1,11 +1,10 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegatedStateless
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.pin
-import kotlinx.cinterop.toCValues
-import libsodium.crypto_hash_sha256
+import kotlinx.cinterop.*
+import libsodium.*
+import platform.posix.free
+import platform.posix.malloc
 
 /**
  * Created by Ugljesa Jovanovic
@@ -14,16 +13,28 @@ import libsodium.crypto_hash_sha256
  */
 
 
-actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha256 {
+actual class Sha256Delegated actual constructor() : Sha256 {
+
+    val state : crypto_hash_sha256_state
+
+    init {
+        val allocated = malloc(crypto_hash_sha256_state.size.convert())!!
+        state = allocated.reinterpret<crypto_hash_sha256_state>().pointed
+        crypto_hash_sha256_init(state.ptr)
+    }
 
     override fun update(data: UByteArray) {
-        TODO("not implemented yet")
+        crypto_hash_sha256_update(state.ptr, data.toCValues(), data.size.convert())
     }
 
 
 
     override fun digest(): UByteArray {
-        TODO("not implemented yet")
+        val hashResult = UByteArray(Sha256Properties.MAX_HASH_BYTES)
+        val hashResultPinned = hashResult.pin()
+        crypto_hash_sha256_final(state.ptr, hashResultPinned.addressOf(0))
+        free(state.ptr)
+        return hashResult
     }
 
 

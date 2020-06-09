@@ -15,7 +15,7 @@ import org.khronos.webgl.get
  */
 
 
-actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha256 {
+actual class Sha256Delegated actual constructor() : Sha256 {
 
     val state : dynamic
 

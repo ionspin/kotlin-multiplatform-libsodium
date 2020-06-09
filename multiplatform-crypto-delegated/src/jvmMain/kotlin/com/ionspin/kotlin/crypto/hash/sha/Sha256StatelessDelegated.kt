@@ -11,6 +11,7 @@ import java.security.MessageDigest
 
 
 actual class Sha256Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha256 {
+
     override fun update(data: UByteArray) {
         TODO("not implemented yet")
     }
