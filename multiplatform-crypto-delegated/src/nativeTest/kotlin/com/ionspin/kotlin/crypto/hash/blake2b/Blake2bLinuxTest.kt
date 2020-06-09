@@ -27,7 +27,7 @@ class Blake2bLinuxTest {
     @Test
     fun testBlake2bUpdateable() = testBlocking {
         val blake2b = Crypto.Blake2b.updateable()
-        blake2b.update("test")
+        blake2b.update("test".encodeToUByteArray())
         val result = blake2b.digest().toHexString()
         println(result)
         assertTrue { result.length > 2 }

@@ -8,6 +8,8 @@ var sodiumLoaded: Boolean = false
 
 fun getSodium() : JsSodiumInterface = sodiumPointer
 
+//fun getSodiumAdvanced() : JsSodiumAdvancedInterface = js("sodiumPointer.libsodium")
+
 fun setSodiumPointer(jsSodiumInterface: JsSodiumInterface) {
     js("sodiumPointer = jsSodiumInterface")
 }

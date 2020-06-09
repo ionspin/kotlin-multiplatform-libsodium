@@ -11,11 +11,12 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 07-Jun-2020
  */
-class Sha256Test {
+class Sha512Test {
     @Test
     fun statelessSimpleTest() {
-        val expected = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-        val result = Crypto.Sha256.stateless("test".encodeToUByteArray()).toHexString()
+        val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
+                "b143732c304cc5fa9ad8e6f57f50028a8ff"
+        val result = Crypto.Sha512.stateless("test".encodeToUByteArray()).toHexString()
         println("Result: $result")
         assertTrue { result == expected }
     }
@@ -24,11 +25,12 @@ class Sha256Test {
     //but for now I'm testing that the platform library is being correctly called
     @Test
     fun updateableSimpleTest() {
-        val expected = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-        val sha256 = Crypto.Sha256.updateable()
-        sha256.update("t".encodeToUByteArray())
-        sha256.update(("est".encodeToUByteArray()))
-        val result = sha256.digest().toHexString()
+        val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
+                "b143732c304cc5fa9ad8e6f57f50028a8ff"
+        val sha512 = Crypto.Sha512.updateable()
+        sha512.update("t".encodeToUByteArray())
+        sha512.update(("est".encodeToUByteArray()))
+        val result = sha512.digest().toHexString()
         println("Result: $result")
         assertTrue { result == expected }
     }

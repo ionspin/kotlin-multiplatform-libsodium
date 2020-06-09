@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.getSodium
 import com.ionspin.kotlin.crypto.util.toHexString
 import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
 
 /**
  * Created by Ugljesa Jovanovic
@@ -19,9 +20,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         TODO("not implemented yet")
     }
 
-    override fun update(data: String) {
-        TODO("not implemented yet")
-    }
+
 
     override fun digest(): UByteArray {
         TODO("not implemented yet")
@@ -38,11 +37,7 @@ actual object Blake2bDelegatedStateless : Blake2bStateless {
         val hashed =  getSodium().crypto_generichash(64, Uint8Array(inputMessage.toByteArray().toTypedArray()))
         val hash = UByteArray(MAX_HASH_BYTES)
         for (i in 0 until MAX_HASH_BYTES) {
-            js(
-                """
-                    hash[i] = hashed[i]
-                """
-            )
+            hash[i] = hashed[i].toUByte()
         }
         return hash
     }

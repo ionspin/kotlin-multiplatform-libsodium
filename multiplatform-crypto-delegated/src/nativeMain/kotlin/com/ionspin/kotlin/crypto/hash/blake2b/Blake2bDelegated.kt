@@ -32,11 +32,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         crypto_generichash_update(state.ptr, data.toCValues(), data.size.convert())
     }
 
-    override fun update(data: String) {
-        val ubyteArray = data.encodeToByteArray().toUByteArray()
-        crypto_generichash_update(state.ptr, ubyteArray.toCValues(), ubyteArray.size.convert())
-    }
-
     override fun digest(): UByteArray {
         val hashResult = UByteArray(requestedHashLength)
         val hashResultPinned = hashResult.pin()

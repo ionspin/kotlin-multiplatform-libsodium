@@ -435,7 +435,6 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
                     implementation(Deps.Js.coroutines)
-                    implementation(npm(Deps.Js.Npm.libsodium.first, Deps.Js.Npm.libsodium.second))
                     implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
                 }
             }
@@ -443,7 +442,7 @@ kotlin {
                 dependencies {
                     implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
-                    implementation(npm(Deps.Js.Npm.libsodium.first, Deps.Js.Npm.libsodium.second))
+                    implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
                 }
             }
             val linuxX64Main by getting {
@@ -529,14 +528,6 @@ kotlin {
 
 
 
-task<Copy>("copyPackageJson") {
-    dependsOn("compileKotlinJs")
-    println("Copying package.json from $projectDir/core/src/jsMain/npm")
-    from("$projectDir/src/jsMain/npm")
-    println("Node modules dir ${node.nodeModulesDir}")
-    into("${node.nodeModulesDir}")
-}
-
 tasks {
 
 
@@ -547,17 +538,6 @@ tasks {
     }
 
     dokka {
-        println("Dokka !")
-        impliedPlatforms = mutableListOf("Common")
-        kotlinTasks {
-            listOf()
-        }
-        sourceRoot {
-            println("Common !")
-            path =
-                "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
-            platforms = listOf("Common")
-        }
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {

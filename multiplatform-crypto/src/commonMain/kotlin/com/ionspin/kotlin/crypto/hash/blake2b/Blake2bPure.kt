@@ -309,7 +309,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
 
     }
 
-    override fun update(data: String) {
+    fun update(data: String) {
         update(data.encodeToByteArray().toUByteArray())
     }
 

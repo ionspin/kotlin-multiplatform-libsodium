@@ -1,5 +1,11 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.ionspin.kotlin.crypto.getSodium
+import com.ionspin.kotlin.crypto.getSodium
+
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -8,16 +14,23 @@ package com.ionspin.kotlin.crypto.hash.sha
 
 
 actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: Int) : Sha512 {
-    override fun update(data: UByteArray) {
-        TODO("not implemented yet")
+    val state : dynamic
+
+    init {
+        state = getSodium().crypto_hash_sha512_init()
     }
 
-    override fun update(data: String) {
-        TODO("not implemented yet")
+    override fun update(data: UByteArray) {
+        getSodium().crypto_hash_sha512_update(state, Uint8Array(data.toByteArray().toTypedArray()))
     }
 
     override fun digest(): UByteArray {
-        TODO("not implemented yet")
+        val hashed = getSodium().crypto_hash_sha512_final(state)
+        val hash = UByteArray(Sha512StatelessDelegated.MAX_HASH_BYTES)
+        for (i in 0 until Sha512StatelessDelegated.MAX_HASH_BYTES) {
+            hash[i] = hashed[i].toUByte()
+        }
+        return hash
     }
 
 }
@@ -25,6 +38,11 @@ actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: In
 actual object Sha512StatelessDelegated : StatelessSha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val hashed = getSodium().crypto_hash_sha512(Uint8Array(inputMessage.toByteArray().toTypedArray()))
+        val hash = UByteArray(Sha512StatelessDelegated.MAX_HASH_BYTES)
+        for (i in 0 until Sha512StatelessDelegated.MAX_HASH_BYTES) {
+            hash[i] = hashed[i].toUByte()
+        }
+        return hash
     }
 }

@@ -32,8 +32,6 @@ class SRNGTest {
         //Just a sanity test, need to add better srng tests.
         val randomBytes1 = SRNG.getRandomBytes(10)
         val randomBytes2 = SRNG.getRandomBytes(10)
-        randomBytes1.forEach { println("RB1: $it")}
-        randomBytes2.forEach { println("RB2: $it")}
         assertTrue { !randomBytes1.contentEquals(randomBytes2) }
     }
 }

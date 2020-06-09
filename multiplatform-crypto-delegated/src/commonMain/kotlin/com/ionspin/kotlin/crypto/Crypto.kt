@@ -47,7 +47,7 @@ object Crypto : CryptoProvider {
         }
 
         fun stateless(message: UByteArray) : UByteArray {
-            TODO()
+            return Sha512StatelessDelegated.digest(inputMessage =  message)
         }
     }
 

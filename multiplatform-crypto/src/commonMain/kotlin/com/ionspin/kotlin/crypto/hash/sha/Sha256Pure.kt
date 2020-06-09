@@ -235,7 +235,7 @@ class Sha256Pure : Sha256 {
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
 
 
-    override fun update(data: String) {
+    fun update(data: String) {
         return update(data.encodeToByteArray().toUByteArray())
     }
 

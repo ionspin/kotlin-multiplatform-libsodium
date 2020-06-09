@@ -30,8 +30,6 @@ interface Hash {
 interface UpdatableHash : Hash {
     fun update(data : UByteArray)
 
-    fun update(data : String)
-
     fun digest() : UByteArray
 
 }

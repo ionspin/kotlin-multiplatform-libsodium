@@ -28,8 +28,6 @@ actual object SRNG {
 
     actual fun getRandomBytes(amount: Int): UByteArray {
         val randomBytes = getSodium().randombytes_buf(amount)
-        println("Random bytes: $randomBytes")
-        print("Byte at ${randomBytes[0]}")
         val randomBytesUByteArray = UByteArray(amount) {
             0U
         }

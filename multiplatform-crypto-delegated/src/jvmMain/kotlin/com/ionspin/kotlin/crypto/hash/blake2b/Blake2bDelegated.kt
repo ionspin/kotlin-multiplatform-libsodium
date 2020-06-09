@@ -13,10 +13,6 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         TODO("not implemented yet")
     }
 
-    override fun update(data: String) {
-        TODO("not implemented yet")
-    }
-
     override fun digest(): UByteArray {
         TODO("not implemented yet")
     }

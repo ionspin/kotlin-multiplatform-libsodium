@@ -12,9 +12,7 @@ actual class Sha512Delegated actual constructor(key: UByteArray?, hashLength: In
         TODO("not implemented yet")
     }
 
-    override fun update(data: String) {
-        TODO("not implemented yet")
-    }
+
 
     override fun digest(): UByteArray {
         TODO("not implemented yet")
