@@ -3,7 +3,7 @@
 ./gradlew multiplatform-crypto-api:build
 #now let's build linux deps
 cd sodiumWrapper
-./makeLinux64.sh
+./makeLinuxX86-64.sh
 ./makeLinuxArm64.sh
 #now we can do the delegated build
 cd ..

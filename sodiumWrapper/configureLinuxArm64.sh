@@ -8,5 +8,6 @@ export TOOLCHAIN=$HOME/.konan/dependencies/target-gcc-toolchain-3-linux-x86-64/x
 export CFLAGS="-O3 -target aarch64-unknown-linux-gnu --sysroot $SYSROOT -fuse-ld=$CLANG_BIN/ld.lld"
 export LDFLAGS="-fuse-ld=$CLANG_BIN/ld.lld"
 cd libsodium
+./autogen.sh -s -f
 ./configure --prefix=$PREFIX --with-sysroot=$SYSROOT --host=aarch64-unknown-linux-gnu "$@"
 
