@@ -12,11 +12,10 @@ actual object Initializer {
     private var isPlatformInitialized : AtomicInt = AtomicInt(0)
 
     actual suspend fun initialize() {
-        GlobalScope.launch() {
-            if (isPlatformInitialized.compareAndSet(0, 1)) {
-                sodium_init()
-            }
+        if (isPlatformInitialized.compareAndSet(0, 1)) {
+            sodium_init()
         }
+
 
     }
 
