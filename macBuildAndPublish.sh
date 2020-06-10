@@ -4,7 +4,7 @@ set -e
 ./gradlew multiplatform-crypto-api:build
 #now let's build linux deps
 cd sodiumWrapper
-./makeMacosX86-64
+./makeMacosX86-64.sh
 ./makeIos.sh
 ./makeTvos.sh
 ./makeWatchos.sh
