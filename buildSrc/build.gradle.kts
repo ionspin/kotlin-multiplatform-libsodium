@@ -29,3 +29,6 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M2")
 }
+
+System.setProperty("PROJECT_PATH", project.projectDir.parentFile.toString())
+println("Path ${project.projectDir.parentFile}")

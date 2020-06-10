@@ -4,6 +4,7 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import java.io.File
 
 /**
  * Created by Ugljesa Jovanovic
@@ -13,6 +14,11 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 fun isInIdea() = System.getProperty("idea.active") == "true"
 
 fun isInTravis() = System.getenv("TRAVIS") == "true"
+
+fun getProjectPath() : String {
+    val path = System.getProperty("PROJECT_PATH")
+    return path
+}
 
 fun getHostOsName(): String {
     val target = System.getProperty("os.name")
