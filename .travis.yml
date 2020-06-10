@@ -11,7 +11,9 @@ matrix:
         KBUILD=linux
         JAVA_OPTS=-Xmx2g
       #skip ./gradlew assemble that is normally invoked in installation step
-      install: sudo apt-get install automake
+      install:
+        - sudo apt-get update
+        - sudo apt-get -y install automake
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
