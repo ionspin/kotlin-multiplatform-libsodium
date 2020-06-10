@@ -6,6 +6,7 @@ cd sodiumWrapper
 ./makeLinux64.sh
 ./makeLinuxArm64.sh
 #now we can do the delegated build
+cd ..
 ./gradlew multiplatform-crypto-delegated:build
 #and finally pure build
 ./gradlew multiplatform-crypto:build
