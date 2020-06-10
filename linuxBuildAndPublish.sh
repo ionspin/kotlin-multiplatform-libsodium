@@ -1,3 +1,4 @@
+set -e
 #!/bin/sh
 #this will hopefully download all konan dependancies that we use in the build scripts
 ./gradlew multiplatform-crypto-api:build
@@ -18,3 +19,4 @@ cd ..
 #and finally pure build
 ./gradlew multiplatform-crypto:build
 ./gradlew publishJvmPublicationToSnapshotRepository publishJsPublicationToSnapshotRepository publishKotlinMultiplatformPublicationToSnapshotRepository publishLinuxX64PublicationToSnapshotRepository publishLinuxArm64PublicationToSnapshotRepository publishMetadataPublicationToSnapshotRepository
+set +e
