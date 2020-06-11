@@ -52,15 +52,18 @@ kotlin {
     runningOnLinuxx86_64 {
         jvm()
         js {
-            //Until I figure out how to run headless chrome on travis
-//        browser {
-//
-//            testTask {
-//                useKarma {
-//                    useChrome()
-//                }
-//            }
-//        }
+
+        browser {
+
+            testTask {
+                isRunningInTravis {
+                    enabled = false //Until I sort out testing on travis
+                }
+                useKarma {
+                    useChrome()
+                }
+            }
+        }
             nodejs {
                 testTask {
                     useMocha() {
@@ -78,28 +81,22 @@ kotlin {
             }
         }
 
-
-
-    }
-
-    runningOnLinuxArm32 {
-        //        Not supported in coroutines at the moment
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
-    }
-
-    runningOnLinuxArm64 {
-        //        Not supported in coroutines at the moment
         linuxArm64() {
             binaries {
                 staticLib {
                 }
             }
         }
+
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
+
+
     }
 
     runningOnMacos {
@@ -258,10 +255,6 @@ kotlin {
                 }
             }
 
-        }
-
-        runningOnLinuxArm64 {
-            //Not supported in OFFICIAL coroutines at the moment, we're running a custom build
             val linuxArm64Main by getting {
                 dependsOn(nativeMain)
             }
@@ -270,9 +263,6 @@ kotlin {
                 dependsOn(nativeTest)
             }
 
-        }
-
-        runningOnLinuxArm32 {
             val linuxArm32HfpMain by getting {
                 dependsOn(nativeMain)
             }
@@ -280,7 +270,9 @@ kotlin {
             val linuxArm32HfpTest by getting {
                 dependsOn(nativeTest)
             }
+
         }
+
 
         runningOnMacos{
 

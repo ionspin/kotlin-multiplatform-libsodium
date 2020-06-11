@@ -12,5 +12,7 @@ cd ..
 multiplatform-crypto-delegated:iosArm64MainKlibrary multiplatform-crypto-delegated:iosArm64TestKlibrary \
 multiplatform-crypto-delegated:iosX64MainKlibrary multiplatform-crypto-delegated:iosX64TestKlibrary \
 multiplatform-crypto-delegated:macosX64MainKlibrary multiplatform-crypto-delegated:macosX64TestKlibrary
+./gradlew multiplatform-crypto-delegated:iosX64Test
+./gradlew multiplatform-crypto-delegated:macosX64Test
 set +e
 

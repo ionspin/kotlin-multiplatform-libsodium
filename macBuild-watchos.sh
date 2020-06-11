@@ -10,4 +10,5 @@ cd ..
 ./gradlew multiplatform-crypto-delegated:watchosArm32MainKlibrary multiplatform-crypto-delegated:watchosArm32TestKlibrary \
 multiplatform-crypto-delegated:watchosArm64MainKlibrary multiplatform-crypto-delegated:watchosArm64TestKlibrary \
 multiplatform-crypto-delegated:watchosX86MainKlibrary multiplatform-crypto-delegated:watchosX86TestKlibrary
+./gradlew multiplatform-crypto-delegated:watchosX86Test
 set +e

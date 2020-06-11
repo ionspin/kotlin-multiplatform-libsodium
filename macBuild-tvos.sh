@@ -9,4 +9,5 @@ cd sodiumWrapper
 cd ..
 ./gradlew multiplatform-crypto-delegated:tvosArm64MainKlibrary multiplatform-crypto-delegated:tvosArm64TestKlibrary \
 multiplatform-crypto-delegated:tvosX64MainKlibrary multiplatform-crypto-delegated:tvosX64TestKlibrary
+./gradlew multiplatform-crypto-delegated:tvosX64Test
 set +e
