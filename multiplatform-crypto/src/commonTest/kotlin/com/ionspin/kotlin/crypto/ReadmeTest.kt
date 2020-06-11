@@ -159,7 +159,7 @@ class ReadmeTest {
 
     @Test
     fun debugTest() {
-        val result = Blake2bStateless.digest("test".encodeToUByteArray())
+        val result = Blake2bPureStateless.digest("test".encodeToUByteArray())
         println(result.toHexString())
     }
 

@@ -56,11 +56,12 @@ kotlin {
         browser {
 
             testTask {
-                isRunningInTravis {
-                    enabled = false //Until I sort out testing on travis
-                }
+//                isRunningInTravis {
+                    enabled = false //Until I sort out testing on travis, and figure out how to increase karma timeout
+//                }
                 useKarma {
                     useChrome()
+
                 }
             }
         }
