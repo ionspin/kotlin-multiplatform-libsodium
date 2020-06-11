@@ -16,6 +16,7 @@ matrix:
 #        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
     #   OSX macos/ios
     - os: osx
+      name: osx-mac-ios
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
@@ -28,6 +29,7 @@ matrix:
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
     #   OSX watchos
     - os: osx
+      name: osx-watchos
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
@@ -40,6 +42,7 @@ matrix:
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-watchos.sh; fi'
     #   OSX tvos
     - os: osx
+      name: osx-tvos
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
@@ -52,6 +55,7 @@ matrix:
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
     #   OSX pure
     - os: osx
+      name: osx-pure
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
