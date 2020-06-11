@@ -11,5 +11,5 @@ cd ..
 ./gradlew multiplatform-crypto-delegated:publishIosArm32PublicationToMavenRepository \
 multiplatform-crypto-delegated:publishIosArm64PublicationToMavenRepository \
 multiplatform-crypto-delegated:publishIosX64PublicationToMavenRepository \
-multiplatform-crypto-delegated:publishMacosX64PublicationToMavenRepository 
+multiplatform-crypto-delegated:publishMacosX64PublicationToMavenRepository
 set +e
