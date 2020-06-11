@@ -47,4 +47,4 @@ if [ -z "$SYSROOT" ]; then
   echo $CC
 fi
 
-./configure --prefix=$PREFIX "$@"
+./configure --disable-dependecy-tracking --prefix=$PREFIX "$@"

@@ -16,57 +16,57 @@ matrix:
 #        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
 #        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
     #   OSX macos/ios
-    - os: osx
-      name: osx-mac-ios
-      osx_image: xcode11.4
-      language: java
-      jdk: openjdk12
-      install: true
-      env:
-        KBUILD=linux
-        JAVA_OPTS=-Xmx2g
-      script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac-ios.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
-    #   OSX watchos
-    - os: osx
-      name: osx-watchos
-      osx_image: xcode11.4
-      language: java
-      jdk: openjdk12
-      install: true
-      env:
-        KBUILD=linux
-        JAVA_OPTS=-Xmx2g
-      script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-watchos.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-watchos.sh; fi'
-    #   OSX tvos
-    - os: osx
-      name: osx-tvos
-      osx_image: xcode11.4
-      language: java
-      jdk: openjdk12
-      install: true
-      env:
-        KBUILD=linux
-        JAVA_OPTS=-Xmx2g
-      script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-tvos.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
-    #   OSX pure
-    - os: osx
-      name: osx-pure
-      osx_image: xcode11.4
-      language: java
-      jdk: openjdk12
-      install: true
-      env:
-        KBUILD=linux
-        JAVA_OPTS=-Xmx2g
-      script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
+#    - os: osx
+#      name: osx-mac-ios
+#      osx_image: xcode11.4
+#      language: java
+#      jdk: openjdk12
+#      install: true
+#      env:
+#        KBUILD=linux
+#        JAVA_OPTS=-Xmx2g
+#      script:
+#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac-ios.sh; fi'
+#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
+#    #   OSX watchos
+#    - os: osx
+#      name: osx-watchos
+#      osx_image: xcode11.4
+#      language: java
+#      jdk: openjdk12
+#      install: true
+#      env:
+#        KBUILD=linux
+#        JAVA_OPTS=-Xmx2g
+#      script:
+#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-watchos.sh; fi'
+#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-watchos.sh; fi'
+#    #   OSX tvos
+#    - os: osx
+#      name: osx-tvos
+#      osx_image: xcode11.4
+#      language: java
+#      jdk: openjdk12
+#      install: true
+#      env:
+#        KBUILD=linux
+#        JAVA_OPTS=-Xmx2g
+#      script:
+#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-tvos.sh; fi'
+#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
+#    #   OSX pure
+#    - os: osx
+#      name: osx-pure
+#      osx_image: xcode11.4
+#      language: java
+#      jdk: openjdk12
+#      install: true
+#      env:
+#        KBUILD=linux
+#        JAVA_OPTS=-Xmx2g
+#      script:
+#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
+#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
     - os: windows
       name: windows
       language: shell
@@ -76,26 +76,49 @@ matrix:
         - JAVA_OPTS=-Xmx2g
         - JDK="adopt-openj9@1.11"
       before_install:
-        - [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
-        - choco uninstall -y mingw
-        - choco upgrade --no-progress -y msys2
-        - export msys2='cmd //C RefreshEnv.cmd '
-        - export msys2+='& set MSYS=winsymlinks:nativestrict '
-        - export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        - export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
-        - export msys2+=" -msys2 -c "\"\$@"\" --"
-        - $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-libtool automake-wrapper
-        - taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
-        - export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        - export MAKE=mingw32-make  # so that Autotools can find it
         - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
         - source ~/.install-jdk-travis.sh
+        - |-
+          case $TRAVIS_OS_NAME in
+            windows)
+              [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
+              choco uninstall -y mingw
+              choco upgrade --no-progress -y msys2 bazel
+              export msys2='cmd //C RefreshEnv.cmd '
+              export msys2+='& set MSYS=winsymlinks:nativestrict '
+              export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
+              export shell="$msys2 -mingw64 -full-path -here -c \$\* --"
+              export msys2+=" -msys2 -c \$\* --"
+              $msys2 pacman --sync --noconfirm --needed \
+                      autoconf \
+                      automake \
+                      mingw-w64-x86_64-libtool \
+                      mingw-w64-x86_64-toolchain \
+                      perl \
+                      unzip
+              taskkill //IM gpg-agent.exe //F
+              export CPPFLAGS=-D__USE_MINGW_ANSI_STDIO=1
+              export PATH=/C/tools/msys64/mingw64/bin:$PATH
+              export GNU_MAKE=mingw32-make
+              export MAKE=mingw32-make
+              export AR=gcc-ar
+              export RANLIB=gcc-ranlib
+              export COVERITY_SCAN_BRANCH_PATTERN=disable_coverity_scan
+              ;;
+          esac
+        - export GIT=git
+        - g++ --version
+        - $GNU_MAKE --version
+        - $GIT --version
+      install: true
       before_cache:
-        # https://unix.stackexchange.com/a/137322/107554
         - $msys2 pacman --sync --clean --noconfirm
       script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./windowsBuild.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then $shell ./windowsBuild.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./windowsBuildAndPublish.sh; fi'
+        - make -j4 -C libsodium clean
+        - make -j4 -C libsodium
+        - make -j4 -C libsodium install
 cache:
   directories:
     - $HOME/.m2/
@@ -103,6 +126,8 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.konan/cache
     - $HOME/.konan/dependencies
+    - $HOME/AppData/Local/Temp/chocolatey
+    - /C/tools/msys64
 branches:
   only:
     - master
