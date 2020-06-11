@@ -11,6 +11,4 @@ cd libsodium
 
 ./autogen.sh -s -f
 
-#TODO set up konan apple clang
-
 ./configure --prefix=$PREFIX "$@"

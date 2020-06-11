@@ -66,19 +66,19 @@ matrix:
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
-#    - os: windows
-#      language: shell
-#      jdk: openjdk12
-#      env:
-#        - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
-#        - JAVA_OPTS=-Xmx2g
-#        - JDK="adopt-openj9@1.11"
-#      before_install:
-#        - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
-#        - source ~/.install-jdk-travis.sh
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./gradlew build ; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./gradlew build publishMingwx64PublicationToSnapshotRepository; fi'
+    - os: windows
+      language: shell
+      jdk: openjdk12
+      env:
+        - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
+        - JAVA_OPTS=-Xmx2g
+        - JDK="adopt-openj9@1.11"
+      before_install:
+        - curl "${GRAVIS}.install-jdk-travis.sh" --output ~/.install-jdk-travis.sh
+        - source ~/.install-jdk-travis.sh
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./windowsBuild.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./windowsBuildAndPublish.sh; fi'
 cache:
   directories:
     - $HOME/.m2/
