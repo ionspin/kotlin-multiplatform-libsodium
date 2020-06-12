@@ -116,9 +116,6 @@ matrix:
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then $shell ./windowsBuild.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./windowsBuildAndPublish.sh; fi'
-        - make -j4 -C libsodium clean
-        - make -j4 -C libsodium
-        - make -j4 -C libsodium install
 cache:
   directories:
     - $HOME/.m2/
