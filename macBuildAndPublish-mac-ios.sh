@@ -8,8 +8,8 @@ cd sodiumWrapper
 ./makeIos.sh
 #now we can do the delegated build of ios and macos libraries
 cd ..
-./gradlew multiplatform-crypto-delegated:publishIosArm32PublicationToMavenRepository \
-multiplatform-crypto-delegated:publishIosArm64PublicationToMavenRepository \
-multiplatform-crypto-delegated:publishIosX64PublicationToMavenRepository \
-multiplatform-crypto-delegated:publishMacosX64PublicationToMavenRepository
+./gradlew multiplatform-crypto-delegated:publishIosArm32PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishIosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishIosX64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishMacosX64PublicationToSnapshotRepository
 set +e

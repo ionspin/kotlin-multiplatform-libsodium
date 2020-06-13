@@ -131,8 +131,7 @@ kotlin {
 
         mingwX64() {
             binaries {
-                staticLib {
-
+                executable {
                 }
             }
         }

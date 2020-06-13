@@ -1,16 +1,20 @@
 set -e
 #!/bin/sh
 #this will hopefully download all konan dependancies that we use in the build scripts
+
 ./gradlew multiplatform-crypto-api:build
-#now let's build linux deps
 cd sodiumWrapper
-./makeMingwX86-64.sh
+echo "Starting mingw libsodium  build"
+./configureMingw64.sh
+echo "Configure done"
+$GNU_MAKE -j4 -C libsodium clean
+$GNU_MAKE -j4 -C libsodium
+$GNU_MAKE -j4 -C libsodium install
+echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
 ./gradlew multiplatform-crypto-delegated:build
 #and finally pure build
 ./gradlew multiplatform-crypto:build
-./gradlew publishJvmPublicationToSnapshotRepository publishJsPublicationToSnapshotRepository \
-publishKotlinMultiplatformPublicationToSnapshotRepository publishLinuxX64PublicationToSnapshotRepository \
-publishLinuxArm64PublicationToSnapshotRepository publishMetadataPublicationToSnapshotRepository
+./gradlew publishMingwX64PublicationToSnapshotMavenRepository
 set +e

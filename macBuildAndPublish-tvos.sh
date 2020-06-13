@@ -7,6 +7,6 @@ cd sodiumWrapper
 ./makeTvos.sh
 #now we can do the delegated build of ios and macos libraries
 cd ..
-./gradlew multiplatform-crypto-delegated:publishTvosArm64PublicationToMavenRepository \
-multiplatform-crypto-delegated:publishTvosX64PublicationToMavenRepository
+./gradlew multiplatform-crypto-delegated:publishTvosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishTvosX64PublicationToSnapshotRepository
 set +e
