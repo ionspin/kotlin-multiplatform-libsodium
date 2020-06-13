@@ -14,5 +14,5 @@ echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
 ./gradlew multiplatform-crypto-delegated:build
-./gradlew multiplatform-crypto-delegated:publishMingwX64PublicationToSnapshotMavenRepository
+./gradlew multiplatform-crypto-delegated:publishMingwX64PublicationToSnapshotRepository
 set +e
