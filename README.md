@@ -32,7 +32,9 @@ APIs of both variants are identical.
 |minGW X86 64|          :heavy_check_mark: | :heavy_check_mark: |
 |minGW X86 32|          :x:                | :x: | 
 
- 
+## Sample project
+The library includes sample project that shows usage on different platforms
+- NOTE: Currently only linux, macOs and windows are included. 
 
 ## Notes & Roadmap
 
@@ -40,6 +42,8 @@ APIs of both variants are identical.
 
 Next steps:
 - Expand API (AEAD, ECC ...)
+- Include AES and Argon2 in new API approach
+- Add primitives missing in `delegated` variant that are supported in `pure` (at the moment AES and Argon2)
 
 ## Should I use this in production?
 
@@ -88,14 +92,17 @@ The following table describes which library is used for particular cryptographic
 
 ## Integration
 
+NOTE: Latest version of the library is built with Kotlin 1.4-M2 and therefore only SNAPSHOT variant is available. Next 
+stable version will be released when Kotlin 1.4. is released
+
 #### Gradle
 Kotlin 
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.5")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.1.0")
 
 or
 
-implementation("com.ionspin.kotlin:multiplatform-crypto-delegated:0.0.5")
+implementation("com.ionspin.kotlin:multiplatform-crypto-delegated:0.1.0")
 ```
 
 #### Snapshot builds
@@ -105,7 +112,7 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.6-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.1.0-SNAPSHOT")
 
 ```
 
