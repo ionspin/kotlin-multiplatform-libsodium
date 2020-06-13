@@ -15,7 +15,7 @@ matrix:
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
-       OSX macos/ios
+#       OSX macos/ios
     - os: osx
       name: osx-mac-ios
       osx_image: xcode11.4
