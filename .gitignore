@@ -13,6 +13,10 @@ build/
 /package.json
 /multiplatform-crypto/src/jsMain/npm/node_modules
 /multiplatform-crypto/src/jsMain/npm/package-lock.json
+/multiplatform-crypto-delegated/node_modules
+/multiplatform-crypto-delegated/package.json
+/multiplatform-crypto-delegated/package-lock.json
+
 /sodiumWrapper/include/
 /sodiumWrapper/lib/
 /sodiumWrapper/ios-include/
