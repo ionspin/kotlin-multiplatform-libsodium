@@ -121,7 +121,7 @@ kotlin {
         }
         macosX64() {
             binaries {
-                framework {
+                executable {
 
                 }
             }
