@@ -1,72 +1,72 @@
 matrix:
   include:
-#    - os: linux
-#      name: linux
-#      language: java
-#      jdk: openjdk12
-#
-#      env:
-#        KBUILD=linux
-#        JAVA_OPTS=-Xmx2g
-#      #skip ./gradlew assemble that is normally invoked in installation step
-#      install:
-#        - sudo apt-get update
-#        - sudo apt-get -y install automake
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
-    #   OSX macos/ios
-#    - os: osx
-#      name: osx-mac-ios
-#      osx_image: xcode11.4
-#      language: java
-#      jdk: openjdk12
-#      install: true
-#      env:
-#        KBUILD=linux
-#        JAVA_OPTS=-Xmx2g
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac-ios.sh; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
-#    #   OSX watchos
-#    - os: osx
-#      name: osx-watchos
-#      osx_image: xcode11.4
-#      language: java
-#      jdk: openjdk12
-#      install: true
-#      env:
-#        KBUILD=linux
-#        JAVA_OPTS=-Xmx2g
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-watchos.sh; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-watchos.sh; fi'
-#    #   OSX tvos
-#    - os: osx
-#      name: osx-tvos
-#      osx_image: xcode11.4
-#      language: java
-#      jdk: openjdk12
-#      install: true
-#      env:
-#        KBUILD=linux
-#        JAVA_OPTS=-Xmx2g
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-tvos.sh; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
-#    #   OSX pure
-#    - os: osx
-#      name: osx-pure
-#      osx_image: xcode11.4
-#      language: java
-#      jdk: openjdk12
-#      install: true
-#      env:
-#        KBUILD=linux
-#        JAVA_OPTS=-Xmx2g
-#      script:
-#        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
-#        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
+    - os: linux
+      name: linux
+      language: java
+      jdk: openjdk12
+
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      #skip ./gradlew assemble that is normally invoked in installation step
+      install:
+        - sudo apt-get update
+        - sudo apt-get -y install automake
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
+       OSX macos/ios
+    - os: osx
+      name: osx-mac-ios
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac-ios.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
+    #   OSX watchos
+    - os: osx
+      name: osx-watchos
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-watchos.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-watchos.sh; fi'
+    #   OSX tvos
+    - os: osx
+      name: osx-tvos
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-tvos.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
+    #   OSX pure
+    - os: osx
+      name: osx-pure
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
     - os: windows
       name: windows
       language: shell
