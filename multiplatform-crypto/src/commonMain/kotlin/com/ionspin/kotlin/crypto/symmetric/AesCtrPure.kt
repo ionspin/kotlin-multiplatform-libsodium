@@ -21,6 +21,8 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.symmetric.AesCtrPure.Companion.encrypt
+import com.ionspin.kotlin.crypto.symmetric.aes.AesKey
+import com.ionspin.kotlin.crypto.symmetric.aes.EncryptedDataAndInitialCounter
 import com.ionspin.kotlin.crypto.util.xor
 
 /**
@@ -187,22 +189,3 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
 }
 
 
-data class EncryptedDataAndInitialCounter(val encryptedData : UByteArray, val initialCounter : UByteArray) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as EncryptedDataAndInitializationVector
-
-        if (!encryptedData.contentEquals(other.encryptedData)) return false
-        if (!initialCounter.contentEquals(other.initilizationVector)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = encryptedData.contentHashCode()
-        result = 31 * result + initialCounter.contentHashCode()
-        return result
-    }
-}

@@ -17,6 +17,7 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
+import com.ionspin.kotlin.crypto.symmetric.aes.AesKey
 import com.ionspin.kotlin.crypto.util.xor
 
 /**

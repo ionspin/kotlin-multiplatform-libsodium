@@ -20,14 +20,15 @@ import com.ionspin.kotlin.bignum.Endianness
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
-import com.ionspin.kotlin.crypto.symmetric.AesCtrPure.Companion.encrypt
+import com.ionspin.kotlin.crypto.symmetric.AesCtrDelegated.Companion.encrypt
+import com.ionspin.kotlin.crypto.symmetric.aes.AesKey
 import com.ionspin.kotlin.crypto.util.xor
 
 /**
  *
  *  Advanced encryption standard with counter mode
  *
- * For bulk encryption/decryption use [AesCtrPure.encrypt] and [AesCtrPure.decrypt]
+ * For bulk encryption/decryption use [AesCtrDelegated.encrypt] and [AesCtrDelegated.decrypt]
  *
  * To get an instance of AesCtr and then feed it data sequentially with [addData] use [createEncryptor] and [createDecryptor]
  *
@@ -36,7 +37,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 22-Sep-2019
  */
 
-class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: UByteArray? = null) {
+class AesCtrDelegated internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -46,21 +47,21 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
          * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
          * data call [encrypt]
          */
-        fun createEncryptor(aesKey: AesKey) : AesCtrPure {
-            return AesCtrPure(aesKey, Mode.ENCRYPT)
+        fun createEncryptor(aesKey: AesKey) : AesCtrDelegated {
+            return AesCtrDelegated(aesKey, Mode.ENCRYPT)
         }
         /**
          * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
          * data call [decrypt]
          */
-        fun createDecryptor(aesKey : AesKey) : AesCtrPure {
-            return AesCtrPure(aesKey, Mode.DECRYPT)
+        fun createDecryptor(aesKey : AesKey) : AesCtrDelegated {
+            return AesCtrDelegated(aesKey, Mode.DECRYPT)
         }
         /**
          * Bulk encryption, returns encrypted data and a random initial counter 
          */
         fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitialCounter {
-            val aesCtr = AesCtrPure(aesKey, Mode.ENCRYPT)
+            val aesCtr = AesCtrDelegated(aesKey, Mode.ENCRYPT)
             aesCtr.addData(data)
             return aesCtr.encrypt()
         }
@@ -68,7 +69,7 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
          * Bulk decryption, returns decrypted data
          */
         fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
-            val aesCtr = AesCtrPure(aesKey, Mode.DECRYPT, initialCounter)
+            val aesCtr = AesCtrDelegated(aesKey, Mode.DECRYPT, initialCounter)
             aesCtr.addData(data)
             return aesCtr.decrypt()
         }
@@ -164,10 +165,10 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
         val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).toUByteArray().expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
-                AesPure.encrypt(aesKey, blockCountAsByteArray) xor data
+                AesDelegated.encrypt(aesKey, blockCountAsByteArray) xor data
             }
             Mode.DECRYPT -> {
-                AesPure.encrypt(aesKey, blockCountAsByteArray) xor data
+                AesDelegated.encrypt(aesKey, blockCountAsByteArray) xor data
             }
         }
 

@@ -1,12 +1,13 @@
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.crypto.symmetric.aes.AesKey
 import com.ionspin.kotlin.crypto.util.flattenToUByteArray
 
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 07/Sep/2019
  */
 
-internal class AesPure internal constructor(val aesKey: AesKey, val input: UByteArray) {
+internal class AesDelegated internal constructor(val aesKey: AesKey, val input: UByteArray) {
     companion object {
         private val debug = false
 
@@ -57,11 +58,11 @@ internal class AesPure internal constructor(val aesKey: AesKey, val input: UByte
         val rcon: UByteArray = ubyteArrayOf(0x8DU, 0x01U, 0x02U, 0x04U, 0x08U, 0x10U, 0x20U, 0x40U, 0x80U, 0x1BU, 0x36U)
 
         fun encrypt(aesKey: AesKey, input: UByteArray): UByteArray {
-            return AesPure(aesKey, input).encrypt()
+            return AesDelegated(aesKey, input).encrypt()
         }
 
         fun decrypt(aesKey: AesKey, input: UByteArray): UByteArray {
-            return AesPure(aesKey, input).decrypt()
+            return AesDelegated(aesKey, input).decrypt()
         }
 
     }
@@ -354,25 +355,6 @@ internal class AesPure internal constructor(val aesKey: AesKey, val input: UByte
     }
 
 
-}
-
-sealed class AesKey(val key: String, val keyLength: Int) {
-    val keyArray: UByteArray = key.chunked(2).map { it.toUByte(16) }.toUByteArray()
-    val numberOf32BitWords = keyLength / 32
-
-    class Aes128Key(key: String) : AesKey(key, 128)
-    class Aes192Key(key: String) : AesKey(key, 192)
-    class Aes256Key(key: String) : AesKey(key, 256)
-
-    init {
-        checkKeyLength(key, keyLength)
-    }
-
-    fun checkKeyLength(key: String, expectedLength: Int) {
-        if ((key.length / 2) != expectedLength / 8) {
-            throw RuntimeException("Invalid key length")
-        }
-    }
 }
 
 
