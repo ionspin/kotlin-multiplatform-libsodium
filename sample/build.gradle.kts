@@ -25,7 +25,6 @@ plugins {
     id (PluginsDeps.mavenPublish)
     id (PluginsDeps.signing)
     id (PluginsDeps.node) version Versions.nodePlugin
-    id (PluginsDeps.dokka) version Versions.dokkaPlugin
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -278,12 +277,6 @@ kotlin {
 
 tasks {
 
-
-    create<Jar>("javadocJar") {
-        dependsOn(dokka)
-        archiveClassifier.set("javadoc")
-        from(dokka.get().outputDirectory)
-    }
 
     if (getHostOsName() == "linux") {
 
