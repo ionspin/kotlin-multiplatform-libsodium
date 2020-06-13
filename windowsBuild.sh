@@ -5,12 +5,16 @@ set +daae
 ./gradlew multiplatform-crypto-api:build
 cd sodiumWrapper
 echo "Starting mingw libsodium  build"
-./makeMingwX86-64.sh
+./configureMingw64.sh
+echo "Configure done"
+$GNU_MAKE -j4 -C libsodium clean
+$GNU_MAKE -j4 -C libsodium
+$GNU_MAKE -j4 -C libsodium install
 echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
-#./gradlew multiplatform-crypto-delegated:build
+./gradlew multiplatform-crypto-delegated:build
 #and finally pure build
-#./gradlew multiplatform-crypto:build
+./gradlew multiplatform-crypto:build
 set +e
 
