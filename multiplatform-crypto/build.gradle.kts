@@ -24,7 +24,7 @@ plugins {
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     id(PluginsDeps.node) version Versions.nodePlugin
-    id(PluginsDeps.dokka) version Versions.dokkaPlugin
+    id(PluginsDeps.dokka)
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -369,16 +369,6 @@ tasks {
 
     dokka {
         println("Dokka !")
-        impliedPlatforms = mutableListOf("Common")
-        kotlinTasks {
-            listOf()
-        }
-        sourceRoot {
-            println("Common !")
-            path =
-                "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
-            platforms = listOf("Common")
-        }
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 

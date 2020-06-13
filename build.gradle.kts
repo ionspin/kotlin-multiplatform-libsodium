@@ -23,6 +23,7 @@ buildscript {
         google()
         maven  ("https://kotlin.bintray.com/kotlinx")
         maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven ("https://dl.bintray.com/kotlin/kotlin-dev")
         gradlePluginPortal()
         jcenter()
     }
@@ -30,6 +31,7 @@ buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath ("gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.0.0")
+        classpath ("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokkaPlugin}")
     }
 }
 
@@ -40,7 +42,7 @@ allprojects {
         google()
         maven ("https://kotlin.bintray.com/kotlinx")
         maven ("https://dl.bintray.com/kotlin/kotlin-eap")
-        maven ("https://kotlin.bintray.com/kotlin-dev")
+        maven ("https://dl.bintray.com/kotlin/kotlin-dev")
         jcenter()
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots")

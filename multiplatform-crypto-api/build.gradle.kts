@@ -24,7 +24,7 @@ plugins {
     kotlin(PluginsDeps.multiplatform)
     id (PluginsDeps.mavenPublish)
     id (PluginsDeps.signing)
-    id (PluginsDeps.dokka) version Versions.dokkaPlugin
+    id (PluginsDeps.dokka)
 }
 
 repositories {
@@ -275,16 +275,7 @@ tasks {
     }
 
     dokka {
-        println ("Dokka !")
-        impliedPlatforms = mutableListOf("Common")
-        kotlinTasks {
-            listOf()
-        }
-        sourceRoot {
-            println ("Common !")
-            path = "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
-            platforms = listOf("Common")
-        }
+        println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 

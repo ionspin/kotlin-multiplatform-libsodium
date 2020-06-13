@@ -26,7 +26,7 @@ plugins {
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     id(PluginsDeps.node) version Versions.nodePlugin
-    id(PluginsDeps.dokka) version Versions.dokkaPlugin
+    id(PluginsDeps.dokka)
     id(PluginsDeps.taskTree) version Versions.taskTreePlugin
 }
 
@@ -542,6 +542,7 @@ tasks {
     }
 
     dokka {
+        println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
