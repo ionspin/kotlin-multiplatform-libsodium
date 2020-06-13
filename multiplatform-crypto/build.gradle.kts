@@ -130,6 +130,45 @@ kotlin {
                 }
             }
         }
+        tvosX64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        tvosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm64() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosArm32() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
+
+        watchosX86() {
+            binaries {
+                framework {
+                    optimized = true
+                }
+            }
+        }
     }
     runningOnWindows {
 
