@@ -4,7 +4,7 @@ set -e
 ./gradlew multiplatform-crypto-api:build
 ./gradlew multiplatform-crypto:publishIos32ArmPublicationToSnapshotRepository \
 multiplatform-crypto:publishIos64ArmPublicationToSnapshotRepository \
-multiplatform-crypto:publishIosX64PublicationToSnapshotRepository \
+multiplatform-crypto:publishIosPublicationToSnapshotRepository \
 multiplatform-crypto:publishMacosX64PublicationToSnapshotRepository \
 multiplatform-crypto:publishTvosArm64PublicationToSnapshotRepository \
 multiplatform-crypto:publishTvosX64PublicationToSnapshotRepository \
