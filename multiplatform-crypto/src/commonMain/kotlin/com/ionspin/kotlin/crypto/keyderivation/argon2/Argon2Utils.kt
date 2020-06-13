@@ -18,8 +18,10 @@
 
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
-import com.ionspin.kotlin.crypto.util.*
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.BLOCK_SIZE
+import com.ionspin.kotlin.crypto.util.plus
+import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
  * Created by Ugljesa Jovanovic
@@ -27,28 +29,28 @@ import com.ionspin.kotlin.crypto.util.*
  * on 16-May-2020
  */
 object Argon2Utils {
+    const val BLOCK_SIZE = 1024
 
     const val R1 = 32
     const val R2 = 24
     const val R3 = 16
     const val R4 = 63
 
-    //based on Blake2b mixRound
-    private fun mixRound(input: Array<UByte>): Array<ULong> {
-        var v = input.chunked(8).map { it.fromLittleEndianArrayToULong() }.toTypedArray()
-        v = mix(v, 0, 4, 8, 12)
-        v = mix(v, 1, 5, 9, 13)
-        v = mix(v, 2, 6, 10, 14)
-        v = mix(v, 3, 7, 11, 15)
-        v = mix(v, 0, 5, 10, 15)
-        v = mix(v, 1, 6, 11, 12)
-        v = mix(v, 2, 7, 8, 13)
-        v = mix(v, 3, 4, 9, 14)
-        return v
+    //Based on Blake2b mix
+    internal fun inplaceMixRound(v : ULongArray) : ULongArray{
+        mix(v, 0, 4, 8, 12)
+        mix(v, 1, 5, 9, 13)
+        mix(v, 2, 6, 10, 14)
+        mix(v, 3, 7, 11, 15)
+        mix(v, 0, 5, 10, 15)
+        mix(v, 1, 6, 11, 12)
+        mix(v, 2, 7, 8, 13)
+        mix(v, 3, 4, 9, 14)
+        return v //Just for chaining, array is mixed in place
     }
 
     //Based on Blake2b mix
-    private fun mix(v: Array<ULong>, a: Int, b: Int, c: Int, d: Int): Array<ULong> {
+    private fun mix(v: ULongArray, a: Int, b: Int, c: Int, d: Int) {
         v[a] = (v[a] + v[b] + 2U * (v[a] and 0xFFFFFFFFUL) * (v[b] and 0xFFFFFFFFUL))
         v[d] = (v[d] xor v[a]) rotateRight R1
         v[c] = (v[c] + v[d] + 2U * (v[c] and 0xFFFFFFFFUL) * (v[d] and 0xFFFFFFFFUL))
@@ -57,11 +59,10 @@ object Argon2Utils {
         v[d] = (v[d] xor v[a]) rotateRight R3
         v[c] = (v[c] + v[d] + 2U * (v[c] and 0xFFFFFFFFUL) * (v[d] and 0xFFFFFFFFUL))
         v[b] = (v[b] xor v[c]) rotateRight R4
-        return v
     }
 
-    private fun extractColumnFromGBlock(gBlock: Array<UByte>, columnPosition: Int): Array<UByte> {
-        val result = Array<UByte>(128) { 0U }
+    internal fun extractColumnFromGBlock(gBlock: UByteArray, columnPosition: Int): UByteArray {
+        val result = UByteArray(128) { 0U }
         for (i in 0..7) {
             gBlock.copyOfRange(i * 128 + (columnPosition * 16), i * 128 + (columnPosition * 16) + 16)
                 .copyInto(result, i * 16)
@@ -69,69 +70,50 @@ object Argon2Utils {
         return result
     }
 
-    private fun copyIntoGBlockColumn(gBlock: Array<UByte>, columnPosition: Int, columnData: Array<UByte>) {
-        for (i in 0..7) {
-            val column = columnData.copyOfRange(i * 16, i * 16 + 16)
-            column.copyInto(gBlock, i * 128 + columnPosition * 16)
-        }
-    }
+
 
     internal fun compressionFunctionG(
-        previousBlock: Array<UByte>,
-        referenceBlock: Array<UByte>,
-        currentBlock: Array<UByte>,
+        previousBlock: ArgonBlockPointer,
+        referenceBlock: ArgonBlockPointer,
+        currentBlock: ArgonBlockPointer,
         xorWithCurrentBlock: Boolean
-    ): Array<UByte> {
-        val r = referenceBlock xor previousBlock
-        val q = Array<UByte>(1024) { 0U }
-        val z = Array<UByte>(1024) { 0U }
+    ): ArgonBlockPointer {
+        val r = (referenceBlock xorBlocksAndGetPointerToNewBlock previousBlock).getBlockPointer()
+        //Since we are doing inplace xors, we don't need the Q that exists in specification
+        val z = ArgonBlock().getBlockPointer()
         // Do the argon/blake2b mixing on rows
         for (i in 0..7) {
-            val startOfRow = (i * 8 * 16)
-            val endOfRow = startOfRow + (8 * 16)
-            val rowToMix = r.copyOfRange(startOfRow, endOfRow)
-            mixRound(rowToMix)
-                .map { it.toLittleEndianUByteArray() }
-                .flatMap { it.asIterable() }
-                .toTypedArray()
-                .copyInto(q, startOfRow)
+            z.setRowFromMixedULongs(i, inplaceMixRound(r.getRowOfULongsForMixing(i)))
         }
         // Do the argon/blake2b mixing on columns
         for (i in 0..7) {
-            copyIntoGBlockColumn(
-                z,
-                i,
-                mixRound(extractColumnFromGBlock(q, i))
-                    .map { it.toLittleEndianUByteArray() }
-                    .flatMap { it.asIterable() }
-                    .toTypedArray()
-            )
+            z.setColumnFromMixedULongs(i, inplaceMixRound(z.getColumnOfULongsForMixing(i)))
         }
         val final = if (xorWithCurrentBlock) {
-            (z xor r) xor currentBlock
+            (z xorInplaceWith r) xorInplaceWith  currentBlock
         } else {
-            z xor r
+            z xorInplaceWith r
         }
         return final
     }
 
-    internal fun argonBlake2bArbitraryLenghtHash(input: Array<UByte>, length: UInt): Array<UByte> {
+    internal fun argonBlake2bArbitraryLenghtHash(input: UByteArray, length: UInt): UByteArray {
         if (length <= 64U) {
-            return Blake2b.digest(inputMessage = length + input, hashLength = length.toInt())
+            return Blake2bPure.digest(inputMessage = length + input, hashLength = length.toInt())
         }
         //We can cast to int because UInt even if MAX_VALUE divided by 32 is guaranteed not to overflow
         val numberOf64ByteBlocks = (1U + ((length - 1U) / 32U) - 2U).toInt() // equivalent  to ceil(length/32) - 2
-        val v = Array<Array<UByte>>(numberOf64ByteBlocks) { emptyArray() }
-        v[0] = Blake2b.digest(length + input)
+        val v = Array<UByteArray>(numberOf64ByteBlocks) { ubyteArrayOf() }
+        v[0] = Blake2bPure.digest(length + input)
         for (i in 1 until numberOf64ByteBlocks) {
-            v[i] = Blake2b.digest(v[i - 1])
+            v[i] = Blake2bPure.digest(v[i - 1])
         }
         val remainingPartOfInput = length.toInt() - numberOf64ByteBlocks * 32
-        val vLast = Blake2b.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
+        val vLast = Blake2bPure.digest(v[numberOf64ByteBlocks - 1], hashLength = remainingPartOfInput)
         val concat =
             (v.map { it.copyOfRange(0, 32) })
                 .plus(listOf(vLast))
-                .foldRight(emptyArray<UByte>()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
+                .foldRight(ubyteArrayOf()) { arrayOfUBytes, acc -> arrayOfUBytes + acc }
 
         return concat
     }
@@ -143,14 +125,14 @@ object Argon2Utils {
      * tagLength, requested memory size and number of iterations, so no need to check for upper bound, just lower.
      */
     internal fun validateArgonParameters(
-        password: Array<UByte>,
-        salt: Array<UByte>,
+        password: UByteArray,
+        salt: UByteArray,
         parallelism: Int ,
         tagLength: UInt,
         requestedMemorySize: UInt ,
-        numberOfIterations: UInt ,
-        key: Array<UByte>,
-        associatedData: Array<UByte>,
+        numberOfIterations: Int ,
+        key: UByteArray,
+        associatedData: UByteArray,
         argonType: ArgonType
     ) {
 
@@ -170,9 +152,16 @@ object Argon2Utils {
             throw Argon2MemoryTooLitlle(requestedMemorySize)
         }
         //Number of iterations
-        if (numberOfIterations <= 0U) {
+        if (numberOfIterations <= 0) {
             throw Argon2TimeTooShort(numberOfIterations)
         }
 
     }
+}
+
+// ------------ Arithmetic and other utils
+
+
+fun UByteArray.xorWithBlock(other : ArgonMatrix, rowPosition: Int, columnPosition: Int) : UByteArray {
+    return UByteArray(BLOCK_SIZE) { this[it] xor other[rowPosition, columnPosition, it] }
 }

@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 21-Sep-2019
  */
-@ExperimentalUnsignedTypes
+
 class AesCbcTest {
 
     @Test
@@ -37,7 +37,7 @@ class AesCbcTest {
             val plaintext = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val expectedCipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val aesCbc =
-                AesCbc(AesKey.Aes128Key(key), mode = Mode.ENCRYPT, initializationVector = iv.hexStringToUByteArray())
+                AesCbcPure(AesKey.Aes128Key(key), mode = Mode.ENCRYPT, initializationVector = iv.hexStringToUByteArray())
             aesCbc.addData(plaintext.hexStringToUByteArray())
             val encrypted = aesCbc.encrypt()
             println("Encrypted: ${encrypted.encryptedData.toHexString()}")
@@ -58,8 +58,8 @@ class AesCbcTest {
 
             val plainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
 
-            val encryptedDataAndInitializationVector = AesCbc.encrypt(key, plainText.hexStringToUByteArray())
-            val decrypted = AesCbc.decrypt(
+            val encryptedDataAndInitializationVector = AesCbcPure.encrypt(key, plainText.hexStringToUByteArray())
+            val decrypted = AesCbcPure.decrypt(
                 key,
                 encryptedDataAndInitializationVector.encryptedData,
                 encryptedDataAndInitializationVector.initilizationVector
@@ -76,7 +76,7 @@ class AesCbcTest {
             val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val aesCbc =
-                AesCbc(AesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
+                AesCbcPure(AesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
             aesCbc.addData(cipherText.hexStringToUByteArray())
             val decrypted = aesCbc.decrypt()
             println("Decrypted: ${decrypted.toHexString()}")
@@ -95,7 +95,7 @@ class AesCbcTest {
             val iv = "57f02a5c5339daeb0a2908a06ac6393f"
             val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
-            val decrypted = AesCbc.decrypt(AesKey.Aes128Key(key), cipherText.hexStringToUByteArray(), iv.hexStringToUByteArray())
+            val decrypted = AesCbcPure.decrypt(AesKey.Aes128Key(key), cipherText.hexStringToUByteArray(), iv.hexStringToUByteArray())
             println("Decrypted: ${decrypted.toHexString()}")
 
             expectedPlainText == decrypted.toHexString()

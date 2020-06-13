@@ -5,58 +5,97 @@
 
 Kotlin Multiplatform Crypto is a library for various cryptographic applications. 
 
-This is an extremely early release, currently only consisting of Blake2b and SHA256 and 512.
+The library comes in two flavors `multiplatform-crypto` and `multiplatform-crypto-delegated`
 
-API is very opinionated, ment to be used on both encrypting and decrypting side. The idea is that API leaves less room for 
-errors when using it.
+* `multiplatform-crypto` contains pure kotlin implementations, is not reviewed, should be considered unsafe and only 
+for prototyping or experimentation purposes.
+
+* `multiplatform-crypto-delegated` relies on platform specific implementations, like libsodium, but care should still be taken that the kotlin code is not reviewed or proven safe.
+
+APIs of both variants are identical. 
+
+## Supported platforms by variant
+|Platform|Pure variant| Delegated variant|
+|--------|------------|------------------|
+|Linux X86 64|          :heavy_check_mark: | :heavy_check_mark: |
+|Linux Arm 64|          :heavy_check_mark: | :heavy_check_mark: |
+|Linux Arm 32|          :heavy_check_mark: | :x: |
+|macOS X86 64|          :heavy_check_mark: | :heavy_check_mark: |
+|iOS x86 64 |           :heavy_check_mark: | :heavy_check_mark: |
+|iOS Arm 64 |           :heavy_check_mark: | :heavy_check_mark: |
+|iOS Arm 32 |           :heavy_check_mark: | :heavy_check_mark: |
+|watchOS X86 32 |       :heavy_check_mark: | :heavy_check_mark: |
+|watchOS Arm 64(_32) |  :heavy_check_mark: | :heavy_check_mark: |
+|watchos Arm 32 |       :heavy_check_mark: | :heavy_check_mark: |
+|tvOS X86 64 |          :heavy_check_mark: | :heavy_check_mark: |
+|tvOS Arm 64 |          :heavy_check_mark: | :heavy_check_mark: |
+|minGW X86 64|          :heavy_check_mark: | :heavy_check_mark: |
+|minGW X86 32|          :x:                | :x: | 
+
+ 
 
 ## Notes & Roadmap
 
 **The API will move fast and break often until v1.0**
 
-Make SHA hashes "updatable" like Blake2b
-
-After that tenative plan is to add 25519 curve based signing and key exchange next.
+Next steps:
+- Expand API (AEAD, ECC ...)
 
 ## Should I use this in production?
 
-No.
+No, until it is reviewed.
 
-## Should I use this in code that is critical in any way, shape or form?
+## Should I use this in code that is *critical* in any way, shape or form?
 
-No.
+No, but even if after being warned you decide to, then use `multiplatform-crypto-delegated` as it relies on reputable libraries.
 
 ## Why?
 
 This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
 It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
 
-## Integration
+## Currently supported 
 
-
-
-## Hashing functions
+### Hashing functions
 * Blake2b
 * SHA512
 * SHA256
 
-## Symmetric cipher
+### Symmetric cipher
 * AES
   * Modes: CBC, CTR
   
-## Key Derivation 
+### Key Derivation 
 
 * Argon2
 
-## AEAD
+### AEAD
 
 TODO()
+
+
+### Delegated flavor dependancy table
+The following table describes which library is used for particular cryptographic primitive
+
+| Primitive | JVM | JS | Native |
+| ----------|-----|----|--------|
+| Blake2b | LazySodium | libsodium.js | libsodium |
+| SHA256 | LazySodium | libsodium.js | libsodium |
+| SHA512 | LazySodium | libsodium.js | libsodium |
+| AES-CBC | LazySodium | libsodium.js | libsodium |
+| AES-CTR | LazySodium | libsodium.js | libsodium |
+
 
 ## Integration
 
 #### Gradle
+Kotlin 
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.2")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.5")
+
+or
+
+implementation("com.ionspin.kotlin:multiplatform-crypto-delegated:0.0.5")
 ```
 
 #### Snapshot builds
@@ -66,11 +105,18 @@ repositories {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.3-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto:0.0.6-SNAPSHOT")
 
 ```
 
 ## Usage
+
+### Helper functions
+
+All API take `UByteArray` as message/key/nonce/etc parameter. For convenience when working with strings we provide
+`String.enocdeToUbyteArray()` extensions function, and `UByteArray.toHexString` extension function. 
+
+More convenience functions will be added.
 
 ### Hashes
 
@@ -87,23 +133,23 @@ You need to deliver the complete data that is to be hashed in one go
 
 ```kotlin
 val input = "abc"
-val result = Blake2b.digest(input)
+val result = Crypto.Blake2b.stateless(input.encodeToUByteArray())
 ```
 
-Result is returned as a `Array<Byte>`
+Result is returned as a `UByteArray`
 
 ##### Updatable instance version
-You can create an instance and feed the data by using `update(input : Array<Byte>)` call. Once all data is supplied,
-you should call `digest()` or `digestString()` convenience method that converts the `Array<Byte>` into hexadecimal string.
+You can create an instance and feed the data by using `update(input : UByteArray)` call. Once all data is supplied,
+you should call `digest()`.
 
 If you want to use Blake2b with a key, you should supply it when creating the `Blake2b` instance.
 
 ```kotlin
 val test = "abc"
 val key = "key"
-val blake2b = Blake2b(key)
-blake2b.update(test)
-val result = blake2b.digest()
+val blake2b = Crypto.Blake2b.updateable(key.encodeToUByteArray())
+blake2b.update(test.encodeToUByteArray())
+val result = blake2b.digest().toHexString()
 ```
 
 After digest is called, the instance is reset and can be reused (Keep in mind key stays the same for the particular instance).
@@ -111,39 +157,40 @@ After digest is called, the instance is reset and can be reused (Keep in mind ke
 
 ##### Stateless version
 
-You need to deliver the complete data that is to be hashed in one go. You can either provide the `Array<Byte>` as input
-or `String`. Result is always returned as `Array<Byte>` (At least in verision 0.0.1)
+You need to deliver the complete data that is to be hashed in one go. You can either provide the `UByteArray` as input
+or `String`. Result is always returned as `UByteArray` (At least in verision 0.0.1)
 
 ```kotlin
 val input = "abc"
-val result = Sha256.digest(input)
+val result = Crypto.Sha256.stateless(input.encodeToUByteArray())
 ```
 
 ```kotlin
 val input ="abc"
-val result = Sha512.digest(message = input.encodeToByteArray().map { it.toUByte() }.toTypedArray())
+val result = Crypto.Sha512.stateless(input.encodeToUByteArray())
 ```
 
-Result is returned as a `Array<Byte>`
+Result is returned as a `UByteArray`
 
 ##### Updateable version
 
 Or you can use the updatable instance version
 
 ```kotlin
-val sha256 = Sha256()
-sha256.update("abc")
+val sha256 = Crypto.Sha256.updateable()
+sha256.update("abc".encodeToUByteArray())
 val result = sha256.digest()
 ```
 
 ```kotlin
-val sha512 = Sha512()
-sha512.update("abc")
+val sha512 = Crypto.Sha512.updateable()
+sha512.update("abc".encodeToUByteArray())
 val result = sha512.digest()
 ```
-### Symmetric encryption
 
-#### AES
+### Symmetric encryption 
+
+#### AES 
 
 Aes is available with CBC and CTR mode through `AesCbc` and `AesCtr` classes/objects. 
 Similarly to hashes you can either use stateless or updateable version.

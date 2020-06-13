@@ -26,14 +26,14 @@ import platform.posix.*
  */
 actual object SRNG {
     @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
+    actual fun getRandomBytes(amount: Int): UByteArray {
         memScoped {
             val array = allocArray<UByteVar>(amount)
             val urandomFile = fopen("/dev/urandom", "rb")
             if (urandomFile != null) {
                 fread(array, 1, amount.convert(), urandomFile)
             }
-            return Array(amount) {
+            return UByteArray(amount) {
                 array[it]
             }
         }

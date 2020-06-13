@@ -16,6 +16,8 @@
 
 package com.ionspin.kotlin.crypto
 
+import kotlin.browser.window
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -23,20 +25,14 @@ package com.ionspin.kotlin.crypto
  */
 actual object SRNG {
     var counter = 0
-    @ExperimentalUnsignedTypes
-    actual fun getRandomBytes(amount: Int): Array<UByte> {
-        val runningOnNode = js(
-            "var isNode = false;\n" +
-                    "if (typeof window === 'undefined') {\n" +
-                    "             isNode = true;\n" +
-                    "    } else {\n" +
-                    "            isNode = false;\n" +
-                    "    }\n" +
-                    "return isNode;"
-        )
+
+    actual fun getRandomBytes(amount: Int): UByteArray {
+        val runningOnNode = jsTypeOf(window) == "undefined"
         val randomBytes = if (runningOnNode) {
+            println("Running on node")
             js("require('crypto')").randomBytes(amount).toJSON().data
         } else {
+            println("Running in browser")
             js(
             """
                 var randomArray = new Uint8Array(amount);
@@ -47,7 +43,18 @@ actual object SRNG {
             var randomArrayResult = js("Array.prototype.slice.call(randomArray);")
             randomArrayResult
         }
-
-        return randomBytes as Array<UByte>
+        println("Random bytes: $randomBytes")
+        print("Byte at ${randomBytes[0]}")
+        val randomBytesUByteArray = UByteArray(amount) {
+            0U
+        }
+        for (i in 0 until amount) {
+            js("""
+               randomBytesUByteArray[i] = randomBytes[i]  
+            """)
+        }
+        return randomBytesUByteArray
     }
+
+
 }

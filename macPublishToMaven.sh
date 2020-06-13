@@ -1,1 +1,0 @@
-./gradlew publishAllPublicationsToMavenRepository -x publishMetadataPublicationToMavenRepository -x publishKotlinMultiplatformPublicationToMavenRepository

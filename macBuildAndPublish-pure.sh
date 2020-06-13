@@ -1,0 +1,14 @@
+set -e
+#!/bin/sh
+#this will hopefully download all konan dependancies that we use in the build scripts
+./gradlew multiplatform-crypto-api:build
+./gradlew multiplatform-crypto:publishIosArm32PublicationToSnapshotRepository \
+multiplatform-crypto:publishIosArm64PublicationToSnapshotRepository \
+multiplatform-crypto:publishIosX64PublicationToSnapshotRepository \
+multiplatform-crypto:publishMacosX64PublicationToSnapshotRepository \
+multiplatform-crypto:publishTvosArm64PublicationToSnapshotRepository \
+multiplatform-crypto:publishTvosX64PublicationToSnapshotRepository \
+multiplatform-crypto:publishWatchosArm32PublicationToSnapshotRepository \
+multiplatform-crypto:publishWatchosArm64PublicationToSnapshotRepository \
+multiplatform-crypto:publishWatchosX86PublicationToSnapshotRepository
+set +e

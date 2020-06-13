@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -24,15 +25,15 @@ import kotlin.test.assertTrue
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
+
+
 class Blake2bInstanceTest {
 
     @Test
     fun testUpdatableBlake2b() {
         val updates = 14
         val input = "1234567890"
-        val expectedResult = arrayOf<UByte>(
+        val expectedResult = ubyteArrayOf(
             //@formatter:off
             0x2fU, 0x49U, 0xaeU, 0xb6U, 0x13U, 0xe3U, 0x4eU, 0x92U, 0x4eU, 0x17U, 0x5aU, 0x6aU, 0xf2U, 0xfaU, 0xadU,
             0x7bU, 0xc7U, 0x82U, 0x35U, 0xf9U, 0xc5U, 0xe4U, 0x61U, 0xc6U, 0x8fU, 0xd5U, 0xb4U, 0x07U, 0xeeU, 0x8eU,
@@ -42,7 +43,7 @@ class Blake2bInstanceTest {
             //@formatter:on
         )
 
-        val blake2b = Blake2b()
+        val blake2b = Blake2bPure()
         for (i in 0 until updates) {
             blake2b.update(input)
         }
@@ -57,14 +58,14 @@ class Blake2bInstanceTest {
     fun testDigestToString() {
         val updates = 14
         val input = "1234567890"
-        val expectedResult = "2F49AEB613E34E924E175A6AF2FAAD7BC78235F9C5E461C68FD5B47E".toLowerCase() +
-                "E8E2FD2FB4C07D7E4A72404612D92899AF8A328F3B614ED77244B481151D40B11E32A4".toLowerCase()
+        val expectedResult = "2F49AEB613E34E924E175A6AF2FAAD7BC78235F9C5E461C68FD5B407E".toLowerCase() +
+                "E8E2F0D2FB4C07D7E4A72404612D92899AF8A328F3B614ED77244B481151D40B11E32A4".toLowerCase()
 
-        val blake2b = Blake2b()
+        val blake2b = Blake2bPure()
         for (i in 0 until updates) {
             blake2b.update(input)
         }
-        val result = blake2b.digestString()
+        val result = blake2b.digest().toHexString()
         assertTrue {
             result == expectedResult
         }
@@ -74,7 +75,7 @@ class Blake2bInstanceTest {
     fun testDigestWithKey() {
         val test = "abc"
         val key = "key"
-        val blake2b = Blake2b(key)
+        val blake2b = Blake2bPure(key)
         blake2b.update(test)
         val result = blake2b.digest()
 
@@ -83,7 +84,7 @@ class Blake2bInstanceTest {
         }
         val expectedResult = ("5c6a9a4ae911c02fb7e71a991eb9aea371ae993d4842d206e" +
                 "6020d46f5e41358c6d5c277c110ef86c959ed63e6ecaaaceaaff38019a43264ae06acf73b9550b1")
-            .chunked(2).map { it.toUByte(16) }.toTypedArray()
+            .chunked(2).map { it.toUByte(16) }.toUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)

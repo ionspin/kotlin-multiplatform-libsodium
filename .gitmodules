@@ -1,0 +1,3 @@
+[submodule "sodiumWrapper/libsodium"]
+	path = sodiumWrapper/libsodium
+	url = https://github.com/ionspin/libsodium.git

@@ -16,83 +16,55 @@
  */
 
 @file:Suppress("UnstableApiUsage")
-
-import com.moowork.gradle.node.task.NodeTask
-import org.gradle.api.tasks.testing.logging.TestLogging
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
-    id (PluginsDeps.mavenPublish)
-    id (PluginsDeps.signing)
-    id (PluginsDeps.node) version Versions.nodePlugin
-    id (PluginsDeps.dokka) version Versions.dokkaPlugin
+    id(PluginsDeps.mavenPublish)
+    id(PluginsDeps.signing)
+    id(PluginsDeps.node) version Versions.nodePlugin
+    id(PluginsDeps.dokka) version Versions.dokkaPlugin
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 
-val sonatypePassword : String? by project
+val sonatypePassword: String? by project
 
-val sonatypeUsername : String? by project
+val sonatypeUsername: String? by project
 
-val sonatypePasswordEnv : String? = System.getenv()["SONATYPE_PASSWORD"]
-val sonatypeUsernameEnv : String? = System.getenv()["SONATYPE_USERNAME"]
+val sonatypePasswordEnv: String? = System.getenv()["SONATYPE_PASSWORD"]
+val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
     jcenter()
 
 }
-group = "com.ionspin.kotlin"
-version = "0.0.4-SNAPSHOT"
+group = ReleaseInfo.group
+version = ReleaseInfo.version
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
-fun getHostOsName(): String {
-    val target = System.getProperty("os.name")
-    if (target == "Linux") return "linux"
-    if (target.startsWith("Windows")) return "windows"
-    if (target.startsWith("Mac")) return "macos"
-    return "unknown"
-}
-
 kotlin {
     val hostOsName = getHostOsName()
-    if (ideaActive) {
-        when(hostOsName) {
-            "linux" -> linuxX64("native")
-            "macos" -> macosX64("native")
-            "windows" -> mingwX64("native")
-        }
-    }
-    if (hostOsName == "linux") {
+    runningOnLinuxx86_64 {
         jvm()
         js {
-            compilations {
-                this.forEach {
-                    it.compileKotlinTask.kotlinOptions.sourceMap = true
-                    it.compileKotlinTask.kotlinOptions.moduleKind = "commonjs"
-                    it.compileKotlinTask.kotlinOptions.metaInfo = true
 
-                    if (it.name == "main") {
-                        it.compileKotlinTask.kotlinOptions.main = "call"
-                    }
-                    println("Compilation name ${it.name} set")
-                    println("Destination dir ${it.compileKotlinTask.destinationDir}")
+        browser {
+
+            testTask {
+//                isRunningInTravis {
+                    enabled = false //Until I sort out testing on travis, and figure out how to increase karma timeout
+//                }
+                useKarma {
+                    useChrome()
+
                 }
             }
-            //Until I figure out how to run headless chrome on travis
-//        browser {
-//
-//            testTask {
-//                useKarma {
-//                    useChrome()
-//                }
-//            }
-//        }
+        }
             nodejs {
                 testTask {
                     useMocha() {
@@ -105,39 +77,41 @@ kotlin {
         linuxX64("linux") {
             binaries {
                 staticLib {
-
+                    optimized = true
                 }
             }
         }
-        //Not supported in coroutines at the moment
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
-        //Not supported in coroutines at the moment
-//        linuxArm64() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//        }
+
+        linuxArm64() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
+        linuxArm32Hfp() {
+            binaries {
+                staticLib {
+                }
+            }
+        }
+
+
 
     }
 
-    if (hostOsName == "macos") {
+    runningOnMacos {
         iosX64("ios") {
             binaries {
                 framework {
-
+                    optimized = true
                 }
             }
         }
         iosArm64("ios64Arm") {
             binaries {
                 framework {
-
+                    optimized = true
                 }
             }
         }
@@ -145,24 +119,24 @@ kotlin {
         iosArm32("ios32Arm") {
             binaries {
                 framework {
-
+                    optimized = true
                 }
             }
         }
         macosX64() {
             binaries {
                 framework {
-
+                    optimized = true
                 }
             }
         }
     }
-    if (hostOsName == "windows") {
+    runningOnWindows {
 
         mingwX64() {
             binaries {
                 staticLib {
-
+                    optimized = true
                 }
             }
         }
@@ -186,6 +160,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
+                implementation(project(Deps.Common.apiProject))
             }
         }
         val commonTest by getting {
@@ -195,42 +170,49 @@ kotlin {
             }
         }
 
-        val nativeMain = if (ideaActive) {
-            val nativeMain by getting {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
+
+        val nativeMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(Deps.Native.coroutines)
             }
-            nativeMain
-        } else {
-            val nativeMain by creating {
-                dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
+            isRunningInIdea {
+                kotlin.setSrcDirs(emptySet<String>())
             }
-            nativeMain
-        }
-        val nativeTest = if (ideaActive) {
-            val nativeTest by getting {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeTest
-        } else {
-            val nativeTest by creating {
-                dependsOn(commonTest)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
-            }
-            nativeTest
         }
 
-        if (hostOsName == "linux") {
+
+        val nativeTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(Deps.Native.coroutines)
+            }
+        }
+
+        targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+            compilations.getByName("main") {
+                println("Setting native sourceset dependancy for $name")
+                if ((this@withType.name.contains("ios") ||
+                            this@withType.name.contains("mingw")).not()
+                ) {
+                    println("Setting native sourceset dependancy for $this@withType.name")
+                    defaultSourceSet.dependsOn(nativeMain)
+                }
+            }
+            compilations.getByName("test") {
+                println("Setting native sourceset dependancy for $name")
+                if ((this@withType.name.contains("ios") ||
+                            this@withType.name.contains("mingw")).not()
+                ) {
+                    println("Setting native sourceset dependancy for $this@withType.name")
+                    defaultSourceSet.dependsOn(nativeTest)
+                }
+            }
+        }
+
+
+
+        runningOnLinuxx86_64 {
             val jvmMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
@@ -250,41 +232,50 @@ kotlin {
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(kotlin(Deps.Js.test))
                     implementation(Deps.Js.coroutines)
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(kotlin("test-js"))
+                    implementation(Deps.Js.coroutines)
+                    implementation(kotlin(Deps.Js.test))
                 }
             }
             val linuxMain by getting {
                 dependsOn(nativeMain)
+                //Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val linuxTest by getting {
                 dependsOn(nativeTest)
+//                Force idea to consider native sourceset
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
-            //Not supported in coroutines at the moment
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(nativeTest)
-//            }
 
-//            val linuxArm64Main by getting {
-//                dependsOn(nativeMain)
-//            }
-//
-//            val linuxArm64Test by getting {
-//                dependsOn(nativeTest)
-//            }
+            val linuxArm64Main by getting {
+                dependsOn(nativeMain)
+            }
+
+            val linuxArm64Test by getting {
+                dependsOn(nativeTest)
+            }
+
+            val linuxArm32HfpMain by getting {
+                dependsOn(nativeMain)
+            }
+
+            val linuxArm32HfpTest by getting {
+                dependsOn(nativeTest)
+            }
 
         }
 
-        if (hostOsName == "macos") {
+
+        runningOnMacos{
 
             val iosMain by getting {
                 dependsOn(nativeMain)
@@ -308,10 +299,16 @@ kotlin {
             }
 
             val macosX64Main by getting {
-                dependsOn(nativeMain)
+                dependsOn(commonMain)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeMain/kotlin")
+                }
             }
             val macosX64Test by getting {
-                dependsOn(nativeTest)
+                dependsOn(commonTest)
+                if (ideaActive) {
+                    kotlin.srcDir("src/nativeTest/kotlin")
+                }
             }
         }
 
@@ -327,7 +324,7 @@ kotlin {
 //            dependsOn(commonTest)
 //        }
 //
-        if (hostOsName == "windows") {
+        runningOnWindows {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
                 dependencies {
@@ -343,6 +340,8 @@ kotlin {
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
         }
     }
 
@@ -354,9 +353,9 @@ kotlin {
 task<Copy>("copyPackageJson") {
     dependsOn("compileKotlinJs")
     println("Copying package.json from $projectDir/core/src/jsMain/npm")
-    from ("$projectDir/src/jsMain/npm")
+    from("$projectDir/src/jsMain/npm")
     println("Node modules dir ${node.nodeModulesDir}")
-    into ("${node.nodeModulesDir}")
+    into("${node.nodeModulesDir}")
 }
 
 tasks {
@@ -369,22 +368,19 @@ tasks {
     }
 
     dokka {
-        println ("Dokka !")
+        println("Dokka !")
         impliedPlatforms = mutableListOf("Common")
         kotlinTasks {
             listOf()
         }
         sourceRoot {
-            println ("Common !")
-            path = "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
+            println("Common !")
+            path =
+                "/home/ionspin/Projects/Future/kotlin-multiplatform-crypto/crypto/src/commonMain" //TODO remove static path!
             platforms = listOf("Common")
         }
     }
-    if (getHostOsName() == "linux") {
-
-        val npmInstall by getting
-        val compileKotlinJs by getting(AbstractCompile::class)
-        val compileTestKotlinJs by getting(Kotlin2JsCompile::class)
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 
         val jvmTest by getting(Test::class) {
             testLogging {
@@ -396,25 +392,24 @@ tasks {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-                // showStandardStreams = true
+// showStandardStreams = true
             }
         }
 
-        val jsIrNodeTest by getting(KotlinJsTest::class) {
-
+        val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
                 showStandardStreams = true
             }
         }
 
-        val legacyjsNodeTest by getting(KotlinJsTest::class) {
-
-            testLogging {
-                events("PASSED", "FAILED", "SKIPPED")
-                showStandardStreams = true
-            }
-        }
+//        val legacyjsNodeTest by getting(KotlinJsTest::class) {
+//
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
 
 //        val jsIrBrowserTest by getting(KotlinJsTest::class) {
 //            testLogging {
