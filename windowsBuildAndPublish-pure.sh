@@ -4,5 +4,5 @@ set -e
 
 ./gradlew multiplatform-crypto-api:build
 ./gradlew multiplatform-crypto:build
-./gradlew multiplatform-crypto:publishMingwX64PublicationToSnapshotMavenRepository
+./gradlew multiplatform-crypto:publishMingwX64PublicationToSnapshotRepository
 set +e

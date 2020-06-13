@@ -130,7 +130,7 @@ matrix:
         - $msys2 pacman --sync --clean --noconfirm
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then $shell ./windowsBuild-delegated.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./windowsBuildAndPublish-delegated.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then $shell ./windowsBuildAndPublish-delegated.sh; fi'
 cache:
   directories:
     - $HOME/.m2/
