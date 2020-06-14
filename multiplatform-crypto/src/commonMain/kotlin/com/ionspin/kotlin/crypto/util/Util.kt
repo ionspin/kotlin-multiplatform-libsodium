@@ -18,6 +18,8 @@
 
 package com.ionspin.kotlin.crypto.util
 
+import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonBlockPointer
+
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
@@ -72,6 +74,14 @@ infix fun ULong.rotateRight(places: Int): ULong {
     return (this shr places) xor (this shl (64 - places))
 }
 
+infix fun UInt.rotateLeft(places: Int): UInt {
+    return (this shl places) xor (this shr (32 - places))
+}
+
+
+infix fun ULong.rotateLeft(places: Int): ULong {
+    return (this shl places) xor (this shr (64 - places))
+}
 
 infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     if (this.size != other.size) {
@@ -231,9 +241,33 @@ fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
     return uint
 }
 
+fun UByteArray.fromLittleEndianArrayToUintWithPosition(position: Int) : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint or (this[position + i].toUInt() shl (i * 8))
+    }
+    return uint
+}
 
+fun UByteArray.fromBigEndianArrayToUintWithPosition(position: Int) : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint shl 8 or (this[position + i].toUInt())
+    }
+    return uint
+}
 
+fun UByteArray.insertUIntAtPositionAsLittleEndian(position: Int, value: UInt) {
+    for (i in position until position + 4) {
+        this[i] = ((value shr (i * 8)) and 0xFFU).toUByte()
+    }
+}
 
+fun UByteArray.insertUIntAtPositionAsBigEndian(position: Int, value: UInt) {
+    for (i in position until position + 4) {
+        this[i] = ((value shr (24 - i * 8)) and 0xFFU).toUByte()
+    }
+}
 
 fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
     if (this.size > 4) {

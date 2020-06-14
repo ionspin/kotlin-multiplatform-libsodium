@@ -43,7 +43,7 @@ class AesCbcTest {
             println("Encrypted: ${encrypted.encryptedData.toHexString()}")
 
             expectedCipherText == encrypted.encryptedData.toHexString() &&
-                    iv == encrypted.initilizationVector.toHexString()
+                    iv == encrypted.initializationVector.toHexString()
         }
 
 
@@ -62,7 +62,7 @@ class AesCbcTest {
             val decrypted = AesCbcPure.decrypt(
                 key,
                 encryptedDataAndInitializationVector.encryptedData,
-                encryptedDataAndInitializationVector.initilizationVector
+                encryptedDataAndInitializationVector.initializationVector
             )
             plainText == decrypted.toHexString()
         }
