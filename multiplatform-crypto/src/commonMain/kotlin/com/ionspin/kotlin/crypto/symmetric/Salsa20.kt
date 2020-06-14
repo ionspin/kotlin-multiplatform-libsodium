@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.symmetric
 
-import com.ionspin.kotlin.crypto.util.rotateLeft
+import com.ionspin.kotlin.crypto.keyderivation.argon2.xorWithBlock
+import com.ionspin.kotlin.crypto.util.*
 
 /**
  * Created by Ugljesa Jovanovic
@@ -74,11 +75,8 @@ class Salsa20 {
             output[outputPosition + 3] = ((input shr 24) and 0xFFU).toUByte()
         }
 
-        fun hash(input: UByteArray): UByteArray {
-            val state = UIntArray(16) {
-                littleEndian(input, (it * 4) + 0, (it * 4) + 1, (it * 4) + 2, (it * 4) + 3)
-            }
-            val initialState = state.copyOf()
+        fun hash(initialState: UIntArray): UByteArray {
+            val state = initialState.copyOf()
             for (i in 0 until 10) {
                 doubleRound(state)
             }
@@ -94,17 +92,58 @@ class Salsa20 {
         val sigma2_32 = ubyteArrayOf(50U, 45U, 98U, 121U)
         val sigma3_32 = ubyteArrayOf(116U, 101U, 32U, 107U)
 
-        val sigma0_16 = ubyteArrayOf(101U, 120U, 112U, 97U)
-        val sigma1_16 = ubyteArrayOf(110U, 100U, 32U, 49U)
-        val sigma2_16 = ubyteArrayOf(54U, 45U, 98U, 121U)
-        val sigma3_16 = ubyteArrayOf(116U, 101U, 32U, 107U)
+        val tau0_16 = ubyteArrayOf(101U, 120U, 112U, 97U)
+        val tau1_16 = ubyteArrayOf(110U, 100U, 32U, 49U)
+        val tau2_16 = ubyteArrayOf(54U, 45U, 98U, 121U)
+        val tau3_16 = ubyteArrayOf(116U, 101U, 32U, 107U)
 
         fun expansion16(k: UByteArray, n: UByteArray) : UByteArray {
-            return hash(sigma0_16 + k + sigma1_16 + n + sigma2_16 + k + sigma3_16)
+            return hash((tau0_16 + k + tau1_16 + n + tau2_16 + k + tau3_16).fromLittleEndianToUInt())
         }
 
-        fun expansion32(k:UByteArray, n: UByteArray) : UByteArray {
-            return hash(sigma0_32 + k.slice(0 until 16) + sigma1_32 + n + sigma2_32 + k.slice(16 until 32) + sigma3_32)
+        fun expansion32(key :UByteArray, nonce : UByteArray) : UByteArray {
+            return hash((sigma0_32 + key.slice(0 until 16) + sigma1_32 + nonce + sigma2_32 + key.slice(16 until 32) + sigma3_32).fromLittleEndianToUInt())
+        }
+
+        fun encrypt(key : UByteArray, nonce: UByteArray, message: UByteArray) : UByteArray {
+            val ciphertext = UByteArray(message.size)
+            val state = UIntArray(16) {
+                when (it) {
+                    0 -> sigma0_32.fromLittleEndianArrayToUInt()
+                    1 -> key.fromLittleEndianArrayToUIntWithPosition(0)
+                    2 -> key.fromLittleEndianArrayToUIntWithPosition(4)
+                    3 -> key.fromLittleEndianArrayToUIntWithPosition(8)
+                    4 -> key.fromLittleEndianArrayToUIntWithPosition(12)
+                    5 -> sigma1_32.fromLittleEndianArrayToUInt()
+                    6 -> nonce.fromLittleEndianArrayToUIntWithPosition(0)
+                    7 -> nonce.fromLittleEndianArrayToUIntWithPosition(4)
+                    8 -> 0U
+                    9 -> 0U
+                    10 -> sigma2_32.fromLittleEndianArrayToUInt()
+                    11 -> key.fromLittleEndianArrayToUIntWithPosition(16)
+                    12 -> key.fromLittleEndianArrayToUIntWithPosition(20)
+                    13 -> key.fromLittleEndianArrayToUIntWithPosition(24)
+                    14 -> key.fromLittleEndianArrayToUIntWithPosition(28)
+                    15 -> sigma3_32.fromLittleEndianArrayToUInt()
+                    else -> 0U
+                }
+            }
+            val remainder = message.size % 64
+            for (i in 0 until message.size - 64 step 64) {
+                hash(state).xorWithPositionsAndInsertIntoArray(0, 64, message, i, ciphertext, i)
+                state[8] += 1U
+                if (state[8] == 0U) {
+                    state[9] += 1U
+                }
+            }
+            for ( i in message.size - (64 - remainder) until message.size step 64) {
+                hash(state).xorWithPositionsAndInsertIntoArray(0, (64 - remainder), message, i, ciphertext, i)
+                state[8] += 1U
+                if (state[8] == 0U) {
+                    state[9] += 1U
+                }
+            }
+            return ciphertext
         }
     }
 

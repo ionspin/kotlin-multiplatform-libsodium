@@ -18,7 +18,8 @@
 
 package com.ionspin.kotlin.crypto.util
 
-import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonBlockPointer
+import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils
+import com.ionspin.kotlin.crypto.keyderivation.argon2.xorWithBlock
 
 /**
  * Created by Ugljesa Jovanovic
@@ -98,6 +99,21 @@ infix fun UByteArray.xor(other : UByteArray) : UByteArray {
     return UByteArray(this.size) { this[it] xor other[it] }
 }
 
+fun UByteArray.xorWithPositions(start: Int, end: Int, other : UByteArray, otherStart: Int) : UByteArray {
+    return UByteArray(end - start) { this[start + it] xor other[otherStart + it] }
+}
+
+fun UByteArray.xorWithPositionsAndInsertIntoArray(
+    start: Int, end: Int,
+    other : UByteArray, otherStart: Int,
+    targetArray: UByteArray, targetStart : Int) {
+    for (i in start until end) {
+        if (targetStart + i == 131071) {
+            println("stop")
+        }
+        targetArray[targetStart + i] = this[start + i] xor other[otherStart + i]
+    }
+}
 
 fun String.hexStringToTypedUByteArray() : Array<UByte> {
     return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
@@ -241,7 +257,7 @@ fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
     return uint
 }
 
-fun UByteArray.fromLittleEndianArrayToUintWithPosition(position: Int) : UInt{
+fun UByteArray.fromLittleEndianArrayToUIntWithPosition(position: Int) : UInt{
     var uint = 0U
     for (i in 0 until 4) {
         uint = uint or (this[position + i].toUInt() shl (i * 8))
@@ -249,7 +265,15 @@ fun UByteArray.fromLittleEndianArrayToUintWithPosition(position: Int) : UInt{
     return uint
 }
 
-fun UByteArray.fromBigEndianArrayToUintWithPosition(position: Int) : UInt{
+fun UByteArray.fromBigEndianArrayToUInt() : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint shl 8 or (this[i].toUInt())
+    }
+    return uint
+}
+
+fun UByteArray.fromBigEndianArrayToUIntWithPosition(position: Int) : UInt{
     var uint = 0U
     for (i in 0 until 4) {
         uint = uint shl 8 or (this[position + i].toUInt())
@@ -266,6 +290,25 @@ fun UByteArray.insertUIntAtPositionAsLittleEndian(position: Int, value: UInt) {
 fun UByteArray.insertUIntAtPositionAsBigEndian(position: Int, value: UInt) {
     for (i in position until position + 4) {
         this[i] = ((value shr (24 - i * 8)) and 0xFFU).toUByte()
+    }
+}
+
+fun UByteArray.fromLittleEndianToUInt() : UIntArray {
+    if (size % 4 != 0) {
+        throw RuntimeException("Invalid size (not divisible by 4)")
+    }
+    return UIntArray(size / 4) {
+        fromLittleEndianArrayToUIntWithPosition(it * 4)
+    }
+}
+
+
+fun UByteArray.fromBigEndianToUInt() : UIntArray {
+    if (size % 4 != 0) {
+        throw RuntimeException("Invalid size (not divisible by 4)")
+    }
+    return UIntArray(size / 4) {
+        fromBigEndianArrayToUIntWithPosition(it * 4)
     }
 }
 
