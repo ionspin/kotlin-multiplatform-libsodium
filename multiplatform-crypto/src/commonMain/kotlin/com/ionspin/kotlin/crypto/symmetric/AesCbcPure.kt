@@ -17,7 +17,6 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.SRNG
-import com.ionspin.kotlin.crypto.symmetric.aes.AesKey
 import com.ionspin.kotlin.crypto.util.xor
 
 /**
@@ -32,7 +31,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 21-Sep-2019
  */
 
-class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initializationVector: UByteArray? = null) {
+internal class AesCbcPure internal constructor(val aesKey: InternalAesKey, val mode: Mode, initializationVector: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -40,21 +39,21 @@ class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
          * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
          * data call [encrypt]
          */
-        fun createEncryptor(aesKey: AesKey) : AesCbcPure {
+        fun createEncryptor(aesKey: InternalAesKey) : AesCbcPure {
             return AesCbcPure(aesKey, Mode.ENCRYPT)
         }
         /**
          * Creates and returns AesCbc instance that can be fed data using [addData]. Once you have submitted all
          * data call [decrypt]
          */
-        fun createDecryptor(aesKey : AesKey) : AesCbcPure {
+        fun createDecryptor(aesKey : InternalAesKey) : AesCbcPure {
             return AesCbcPure(aesKey, Mode.DECRYPT)
         }
 
         /**
          * Bulk encryption, returns encrypted data and a random initialization vector
          */
-        fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitializationVector {
+        fun encrypt(aesKey: InternalAesKey, data: UByteArray): EncryptedDataAndInitializationVector {
             val aesCbc = AesCbcPure(aesKey, Mode.ENCRYPT)
             aesCbc.addData(data)
             return aesCbc.encrypt()
@@ -63,7 +62,7 @@ class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
+        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
             val aesCbc = AesCbcPure(aesKey, Mode.DECRYPT, initialCounter)
             aesCbc.addData(data)
             return aesCbc.decrypt()
@@ -221,7 +220,7 @@ class AesCbcPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
 }
 
 
-data class EncryptedDataAndInitializationVector(val encryptedData : UByteArray, val initilizationVector : UByteArray) {
+data class EncryptedDataAndInitializationVector(val encryptedData : UByteArray, val initializationVector : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -229,14 +228,14 @@ data class EncryptedDataAndInitializationVector(val encryptedData : UByteArray, 
         other as EncryptedDataAndInitializationVector
 
         if (!encryptedData.contentEquals(other.encryptedData)) return false
-        if (!initilizationVector.contentEquals(other.initilizationVector)) return false
+        if (!initializationVector.contentEquals(other.initializationVector)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = encryptedData.contentHashCode()
-        result = 31 * result + initilizationVector.contentHashCode()
+        result = 31 * result + initializationVector.contentHashCode()
         return result
     }
 }

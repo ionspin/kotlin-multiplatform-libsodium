@@ -64,18 +64,14 @@ It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be 
 * Blake2b
 * SHA512
 * SHA256
-
-### Symmetric cipher
-* AES
-  * Modes: CBC, CTR
   
 ### Key Derivation 
 
 * Argon2
 
-### AEAD
+### Authenticated symmetric encryption (AEAD)
 
-TODO()
+* TODO
 
 
 ### Delegated flavor dependancy table
@@ -86,8 +82,7 @@ The following table describes which library is used for particular cryptographic
 | Blake2b | LazySodium | libsodium.js | libsodium |
 | SHA256 | LazySodium | libsodium.js | libsodium |
 | SHA512 | LazySodium | libsodium.js | libsodium |
-| AES-CBC | LazySodium | libsodium.js | libsodium |
-| AES-CTR | LazySodium | libsodium.js | libsodium |
+
 
 
 ## Integration

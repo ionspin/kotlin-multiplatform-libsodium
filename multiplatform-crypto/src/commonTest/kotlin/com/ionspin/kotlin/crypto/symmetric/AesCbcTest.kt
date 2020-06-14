@@ -37,7 +37,7 @@ class AesCbcTest {
             val plaintext = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val expectedCipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val aesCbc =
-                AesCbcPure(AesKey.Aes128Key(key), mode = Mode.ENCRYPT, initializationVector = iv.hexStringToUByteArray())
+                AesCbcPure(InternalAesKey.Aes128Key(key), mode = Mode.ENCRYPT, initializationVector = iv.hexStringToUByteArray())
             aesCbc.addData(plaintext.hexStringToUByteArray())
             val encrypted = aesCbc.encrypt()
             println("Encrypted: ${encrypted.encryptedData.toHexString()}")
@@ -54,7 +54,7 @@ class AesCbcTest {
     fun testEncryptionApi() {
         assertTrue {
             val keyString = "4278b840fb44aaa757c1bf04acbe1a3e"
-            val key = AesKey.Aes128Key(keyString)
+            val key = InternalAesKey.Aes128Key(keyString)
 
             val plainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
 
@@ -76,7 +76,7 @@ class AesCbcTest {
             val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val aesCbc =
-                AesCbcPure(AesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
+                AesCbcPure(InternalAesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
             aesCbc.addData(cipherText.hexStringToUByteArray())
             val decrypted = aesCbc.decrypt()
             println("Decrypted: ${decrypted.toHexString()}")
@@ -95,7 +95,7 @@ class AesCbcTest {
             val iv = "57f02a5c5339daeb0a2908a06ac6393f"
             val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
-            val decrypted = AesCbcPure.decrypt(AesKey.Aes128Key(key), cipherText.hexStringToUByteArray(), iv.hexStringToUByteArray())
+            val decrypted = AesCbcPure.decrypt(InternalAesKey.Aes128Key(key), cipherText.hexStringToUByteArray(), iv.hexStringToUByteArray())
             println("Decrypted: ${decrypted.toHexString()}")
 
             expectedPlainText == decrypted.toHexString()
