@@ -49,6 +49,11 @@ class Salsa20Pure {
             return result
         }
 
+        internal val sigma0_32_uint = 1634760805U //ubyteArrayOf(101U, 120U, 112U, 97U)
+        internal val sigma1_32_uint = 857760878U //ubyteArrayOf(110U, 100U, 32U, 51U)
+        internal val sigma2_32_uint = 2036477234U //ubyteArrayOf(50U, 45U, 98U, 121U)
+        internal val sigma3_32_uint = 1797285236U //ubyteArrayOf(116U, 101U, 32U, 107U)
+
         val sigma0_32 = ubyteArrayOf(101U, 120U, 112U, 97U)
         val sigma1_32 = ubyteArrayOf(110U, 100U, 32U, 51U)
         val sigma2_32 = ubyteArrayOf(50U, 45U, 98U, 121U)
@@ -71,22 +76,22 @@ class Salsa20Pure {
             val ciphertext = UByteArray(message.size)
             val state = UIntArray(16) {
                 when (it) {
-                    0 -> sigma0_32.fromLittleEndianArrayToUInt()
+                    0 -> sigma0_32_uint
                     1 -> key.fromLittleEndianArrayToUIntWithPosition(0)
                     2 -> key.fromLittleEndianArrayToUIntWithPosition(4)
                     3 -> key.fromLittleEndianArrayToUIntWithPosition(8)
                     4 -> key.fromLittleEndianArrayToUIntWithPosition(12)
-                    5 -> sigma1_32.fromLittleEndianArrayToUInt()
+                    5 -> sigma1_32_uint
                     6 -> nonce.fromLittleEndianArrayToUIntWithPosition(0)
                     7 -> nonce.fromLittleEndianArrayToUIntWithPosition(4)
                     8 -> 0U
                     9 -> 0U
-                    10 -> sigma2_32.fromLittleEndianArrayToUInt()
+                    10 -> sigma2_32_uint
                     11 -> key.fromLittleEndianArrayToUIntWithPosition(16)
                     12 -> key.fromLittleEndianArrayToUIntWithPosition(20)
                     13 -> key.fromLittleEndianArrayToUIntWithPosition(24)
                     14 -> key.fromLittleEndianArrayToUIntWithPosition(28)
-                    15 -> sigma3_32.fromLittleEndianArrayToUInt()
+                    15 -> sigma3_32_uint
                     else -> 0U
                 }
             }
@@ -102,12 +107,8 @@ class Salsa20Pure {
 
             hash(state).xorWithPositionsAndInsertIntoArray(
                 0, remainder,
-                message, (blocks - 1) * 64,
-                ciphertext, (blocks - 1) * 64)
-            state[8] += 1U
-            if (state[8] == 0U) {
-                state[9] += 1U
-            }
+                message, blocks * 64,
+                ciphertext, blocks * 64)
 
             return ciphertext
         }

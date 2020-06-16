@@ -41,6 +41,11 @@ fun UByteArray.hexColumsPrint(chunk : Int = 16) {
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
 }
 
+fun UIntArray.hexColumsPrint(chunk : Int = 4) {
+    val printout = this.map { it.toString(16).padStart(8, '0') }.chunked(chunk)
+    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+}
+
 fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
     val printout = this.map { it.toString(16) }.chunked(chunk)
     printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }

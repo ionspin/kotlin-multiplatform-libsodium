@@ -61,22 +61,22 @@ class XSalsa20Pure {
             val hSalsaKey = hSalsa(key, nonce)
             val state = UIntArray(16) {
                 when (it) {
-                    0 -> Salsa20Pure.sigma0_32.fromLittleEndianArrayToUInt()
+                    0 -> Salsa20Pure.sigma0_32_uint
                     1 -> hSalsaKey[0]
                     2 -> hSalsaKey[1]
                     3 -> hSalsaKey[2]
                     4 -> hSalsaKey[3]
-                    5 -> Salsa20Pure.sigma1_32.fromLittleEndianArrayToUInt()
+                    5 -> Salsa20Pure.sigma1_32_uint
                     6 -> nonce.fromLittleEndianArrayToUIntWithPosition(16) //Last 63 bit of 192 bit nonce
                     7 -> nonce.fromLittleEndianArrayToUIntWithPosition(20)
                     8 -> 0U
                     9 -> 0U
-                    10 -> Salsa20Pure.sigma2_32.fromLittleEndianArrayToUInt()
+                    10 -> Salsa20Pure.sigma2_32_uint
                     11 -> hSalsaKey[4]
                     12 -> hSalsaKey[5]
                     13 -> hSalsaKey[6]
                     14 -> hSalsaKey[7]
-                    15 -> Salsa20Pure.sigma3_32.fromLittleEndianArrayToUInt()
+                    15 -> Salsa20Pure.sigma3_32_uint
                     else -> 0U
                 }
             }
@@ -92,12 +92,9 @@ class XSalsa20Pure {
 
             Salsa20Pure.hash(state).xorWithPositionsAndInsertIntoArray(
                 0, remainder,
-                message, (blocks - 1).coerceAtLeast(0) * 64,
-                ciphertext, (blocks - 1).coerceAtLeast(0) * 64)
-            state[8] += 1U
-            if (state[8] == 0U) {
-                state[9] += 1U
-            }
+                message, blocks * 64,
+                ciphertext, blocks * 64)
+
             return ciphertext
         }
 
