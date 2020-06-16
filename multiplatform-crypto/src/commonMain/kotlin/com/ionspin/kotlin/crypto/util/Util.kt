@@ -108,9 +108,6 @@ fun UByteArray.xorWithPositionsAndInsertIntoArray(
     other : UByteArray, otherStart: Int,
     targetArray: UByteArray, targetStart : Int) {
     for (i in start until end) {
-        if (targetStart + i == 131071) {
-            println("stop")
-        }
         targetArray[targetStart + i] = this[start + i] xor other[otherStart + i]
     }
 }

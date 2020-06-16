@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.symmetric
 
-import com.ionspin.kotlin.crypto.keyderivation.argon2.xorWithBlock
 import com.ionspin.kotlin.crypto.util.*
 
 /**
@@ -8,7 +7,7 @@ import com.ionspin.kotlin.crypto.util.*
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-class Salsa20 {
+class Salsa20Pure {
     companion object {
         fun quarterRound(input: UIntArray, y0position: Int, y1position: Int, y2position: Int, y3position: Int) {
             input[y1position] = input[y1position] xor ((input[y0position] + input[y3position]) rotateLeft 7)
@@ -36,44 +35,7 @@ class Salsa20 {
             rowRound(input)
         }
 
-        fun littleEndian(
-            input: UByteArray,
-            byte0Position: Int,
-            byte1Position: Int,
-            byte2Position: Int,
-            byte3Position: Int
-        ): UInt {
-            var uint = 0U
-            uint = input[byte0Position].toUInt()
-            uint = uint or (input[byte1Position].toUInt() shl 8)
-            uint = uint or (input[byte2Position].toUInt() shl 16)
-            uint = uint or (input[byte3Position].toUInt() shl 24)
 
-            return uint
-        }
-
-        fun littleEndianInverted(
-            input: UIntArray,
-            startingPosition: Int,
-            output: UByteArray,
-            outputPosition: Int
-        ) {
-            output[outputPosition] = (input[startingPosition] and 0xFFU).toUByte()
-            output[outputPosition + 1] = ((input[startingPosition] shr 8) and 0xFFU).toUByte()
-            output[outputPosition + 2] = ((input[startingPosition] shr 16) and 0xFFU).toUByte()
-            output[outputPosition + 3] = ((input[startingPosition] shr 24) and 0xFFU).toUByte()
-        }
-
-        fun littleEndianInverted(
-            input: UInt,
-            output: UByteArray,
-            outputPosition: Int
-        ) {
-            output[outputPosition] = (input and 0xFFU).toUByte()
-            output[outputPosition + 1] = ((input shr 8) and 0xFFU).toUByte()
-            output[outputPosition + 2] = ((input shr 16) and 0xFFU).toUByte()
-            output[outputPosition + 3] = ((input shr 24) and 0xFFU).toUByte()
-        }
 
         fun hash(initialState: UIntArray): UByteArray {
             val state = initialState.copyOf()
@@ -128,22 +90,30 @@ class Salsa20 {
                     else -> 0U
                 }
             }
+            val blocks = message.size / 64
             val remainder = message.size % 64
-            for (i in 0 until message.size - 64 step 64) {
-                hash(state).xorWithPositionsAndInsertIntoArray(0, 64, message, i, ciphertext, i)
+            for (i in 0 until blocks) {
+                hash(state).xorWithPositionsAndInsertIntoArray(0, 64, message, i * 64, ciphertext, i * 64)
                 state[8] += 1U
                 if (state[8] == 0U) {
                     state[9] += 1U
                 }
             }
-            for ( i in message.size - (64 - remainder) until message.size step 64) {
-                hash(state).xorWithPositionsAndInsertIntoArray(0, (64 - remainder), message, i, ciphertext, i)
-                state[8] += 1U
-                if (state[8] == 0U) {
-                    state[9] += 1U
-                }
+
+            hash(state).xorWithPositionsAndInsertIntoArray(
+                0, remainder,
+                message, (blocks - 1) * 64,
+                ciphertext, (blocks - 1) * 64)
+            state[8] += 1U
+            if (state[8] == 0U) {
+                state[9] += 1U
             }
+
             return ciphertext
+        }
+
+        fun decrypt(key : UByteArray, nonce: UByteArray, ciphertext: UByteArray) : UByteArray {
+            return encrypt(key, nonce, ciphertext)
         }
     }
 

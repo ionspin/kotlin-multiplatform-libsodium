@@ -28,7 +28,7 @@ class Salsa20Test {
         assertTrue {
             val input = uintArrayOf(0U, 0U, 0U, 0U)
             val expected = uintArrayOf(0U, 0U, 0U, 0U)
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
 
             expected.contentEquals(input)
@@ -37,7 +37,7 @@ class Salsa20Test {
         assertTrue {
             val input = uintArrayOf(1U, 0U, 0U, 0U)
             val expected = uintArrayOf(0x08008145U, 0x00000080U, 0x00010200U, 0x20500000U)
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
 
             expected.contentEquals(input)
@@ -46,7 +46,7 @@ class Salsa20Test {
         assertTrue {
             val input = uintArrayOf(0U, 1U, 0U, 0U)
             val expected = uintArrayOf(0x88000100U, 0x00000001U, 0x00000200U, 0x00402000U)
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
 
             expected.contentEquals(input)
@@ -56,14 +56,14 @@ class Salsa20Test {
             val input = uintArrayOf(0U, 0U, 1U, 0U)
             val expected = uintArrayOf(0x80040000U, 0x00000000U, 0x00000001U, 0x00002000U)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             expected.contentEquals(input)
         }
 
         assertTrue {
             val input = uintArrayOf(0U, 0U, 0U, 1U)
             val expected = uintArrayOf(0x00048044U, 0x00000080U, 0x00010000U, 0x20100001U)
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
 
             expected.contentEquals(input)
@@ -73,7 +73,7 @@ class Salsa20Test {
         assertTrue {
             val input = uintArrayOf(0xd3917c5bU, 0x55f1c407U, 0x52a58a7aU, 0x8f887a3bU)
             val expected = uintArrayOf(0x3e2f308cU, 0xd90a8f36U, 0x6ab2a923U, 0x2883524cU)
-            Salsa20.quarterRound(input, 0, 1, 2, 3)
+            Salsa20Pure.quarterRound(input, 0, 1, 2, 3)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -95,7 +95,7 @@ class Salsa20Test {
                 0x00000001U, 0x00000200U, 0x00402000U, 0x88000100U
             )
 
-            Salsa20.rowRound(input)
+            Salsa20Pure.rowRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -113,7 +113,7 @@ class Salsa20Test {
                 0x3402e183U, 0x3c3af432U, 0x50669f96U, 0xd89ef0a8U,
                 0x0040ede5U, 0xb545fbceU, 0xd257ed4fU, 0x1818882dU
             )
-            Salsa20.rowRound(input)
+            Salsa20Pure.rowRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -135,7 +135,7 @@ class Salsa20Test {
                 0x40a04001U, 0x00000000U, 0x00000000U, 0x00000000U
             )
 
-            Salsa20.columnRound(input)
+            Salsa20Pure.columnRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -153,7 +153,7 @@ class Salsa20Test {
                 0x789b010cU, 0xd195a681U, 0xeb7d5504U, 0xa774135cU,
                 0x481c2027U, 0x53a8e4b5U, 0x4c1f89c5U, 0x3f78c9c8U
             )
-            Salsa20.columnRound(input)
+            Salsa20Pure.columnRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -175,7 +175,7 @@ class Salsa20Test {
                 0x20500000U, 0xa0000040U, 0x0008180aU, 0x612a8020U
             )
 
-            Salsa20.doubleRound(input)
+            Salsa20Pure.doubleRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -193,7 +193,7 @@ class Salsa20Test {
                 0xca531c29U, 0x8e7943dbU, 0xac1680cdU, 0xd503ca00U,
                 0xa74b2ad6U, 0xbc331c5cU, 0x1dda24c7U, 0xee928277U
             )
-            Salsa20.doubleRound(input)
+            Salsa20Pure.doubleRound(input)
             println("Result ${input.joinToString { it.toString(16).padStart(2, '0') }}")
             expected.contentEquals(input)
         }
@@ -204,14 +204,14 @@ class Salsa20Test {
         assertTrue {
             val input = ubyteArrayOf(86U, 75U, 30U, 9U)
             val expected = 0x091e4b56U
-            val result = Salsa20.littleEndian(input, 0, 1, 2, 3)
+            val result = littleEndian(input, 0, 1, 2, 3)
             result == expected
         }
 
         assertTrue {
             val input = ubyteArrayOf(255U, 255U, 255U, 250U)
             val expected = 0xFAFFFFFFU
-            val result = Salsa20.littleEndian(input, 0, 1, 2, 3)
+            val result = littleEndian(input, 0, 1, 2, 3)
             result == expected
         }
     }
@@ -222,7 +222,7 @@ class Salsa20Test {
             val expected = ubyteArrayOf(86U, 75U, 30U, 9U)
             val input = uintArrayOf(0x091e4b56U)
             val result = UByteArray(4)
-            Salsa20.littleEndianInverted(input, 0, result, 0)
+            littleEndianInverted(input, 0, result, 0)
             result.contentEquals(expected)
         }
 
@@ -230,7 +230,7 @@ class Salsa20Test {
             val expected = ubyteArrayOf(255U, 255U, 255U, 250U)
             val input = uintArrayOf(0xFAFFFFFFU)
             val result = UByteArray(4)
-            Salsa20.littleEndianInverted(input, 0, result, 0)
+            littleEndianInverted(input, 0, result, 0)
             result.contentEquals(expected)
         }
     }
@@ -241,7 +241,7 @@ class Salsa20Test {
             val expected = ubyteArrayOf(86U, 75U, 30U, 9U)
             val input = 0x091e4b56U
             val result = UByteArray(4)
-            Salsa20.littleEndianInverted(input, result, 0)
+            littleEndianInverted(input, result, 0)
             result.contentEquals(expected)
         }
 
@@ -249,7 +249,7 @@ class Salsa20Test {
             val expected = ubyteArrayOf(255U, 255U, 255U, 250U)
             val input = 0xFAFFFFFFU
             val result = UByteArray(4)
-            Salsa20.littleEndianInverted(input, result, 0)
+            littleEndianInverted(input, result, 0)
             result.contentEquals(expected)
         }
     }
@@ -269,7 +269,7 @@ class Salsa20Test {
                 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U,
                 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U
             )
-            val result = Salsa20.hash(input.fromLittleEndianToUInt())
+            val result = Salsa20Pure.hash(input.fromLittleEndianToUInt())
             input.contentEquals(expected)
         }
 
@@ -286,7 +286,7 @@ class Salsa20Test {
                 118U, 40U, 152U, 157U, 180U, 57U, 27U, 94U, 107U, 42U, 236U, 35U, 27U, 111U, 114U, 114U,
                 219U, 236U, 232U, 135U, 111U, 155U, 110U, 18U, 24U, 232U, 95U, 158U, 179U, 19U, 48U, 202U
             )
-            val result = Salsa20.hash(input.fromLittleEndianToUInt())
+            val result = Salsa20Pure.hash(input.fromLittleEndianToUInt())
             result.contentEquals(expected)
         }
 
@@ -304,7 +304,7 @@ class Salsa20Test {
                 122U, 127U, 195U, 185U, 185U, 204U, 188U, 90U, 245U, 9U, 183U, 248U, 226U, 85U, 245U, 104U
             )
             val result = (0 until 1_000_000).fold(input) { acc, _ ->
-                Salsa20.hash(acc.fromLittleEndianToUInt())
+                Salsa20Pure.hash(acc.fromLittleEndianToUInt())
             }
             result.contentEquals(expected)
         }
@@ -326,7 +326,7 @@ class Salsa20Test {
                 104U, 197U, 7U, 225U, 197U, 153U, 31U, 2U, 102U, 78U, 76U, 176U, 84U, 245U, 246U, 184U,
                 177U, 160U, 133U, 130U, 6U, 72U, 149U, 119U, 192U, 195U, 132U, 236U, 234U, 103U, 246U, 74U
             )
-            val result = Salsa20.expansion32(k0 + k1, n)
+            val result = Salsa20Pure.expansion32(k0 + k1, n)
             result.contentEquals(expected)
         }
 
@@ -337,7 +337,7 @@ class Salsa20Test {
                 134U, 85U, 110U, 246U, 161U, 163U, 43U, 235U, 231U, 94U, 171U, 51U, 145U, 214U, 112U, 29U,
                 14U, 232U, 5U, 16U, 151U, 140U, 183U, 141U, 171U, 9U, 122U, 181U, 104U, 182U, 177U, 193U
             )
-            val result = Salsa20.expansion16(k0, n)
+            val result = Salsa20Pure.expansion16(k0, n)
             result.contentEquals(expected)
         }
     }
@@ -359,7 +359,7 @@ class Salsa20Test {
                             "CC32B15B93784A36E56A76CC64BC8477"
                     ).toLowerCase()
 
-            val ciphertext = Salsa20.encrypt(key, nonce, UByteArray(512) { 0U })
+            val ciphertext = Salsa20Pure.encrypt(key, nonce, UByteArray(512) { 0U })
             ciphertext.toHexString().toLowerCase().startsWith(expectedStartsWith) &&
                     ciphertext.toHexString().toLowerCase().endsWith(endsWith)
         }
@@ -379,7 +379,7 @@ class Salsa20Test {
                             "529C4158B7FF41EE854B1235373988C8"
                     ).toLowerCase()
 
-            val ciphertext = Salsa20.encrypt(key, nonce, UByteArray(131072) { 0U })
+            val ciphertext = Salsa20Pure.encrypt(key, nonce, UByteArray(131072) { 0U })
             println(ciphertext.slice(0 until 64).toTypedArray().toHexString())
                     println(ciphertext.slice(131008 until 131072).toTypedArray().toHexString())
             ciphertext.slice(0 until 64).toTypedArray().toHexString().toLowerCase().startsWith(expectedStartsWith) &&
