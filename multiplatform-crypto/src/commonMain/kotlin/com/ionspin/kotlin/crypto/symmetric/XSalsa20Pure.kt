@@ -9,7 +9,7 @@ import com.ionspin.kotlin.crypto.util.xorWithPositionsAndInsertIntoArray
  * ugljesa.jovanovic@ionspin.com
  * on 16-Jun-2020
  */
-class XSalsa20Pure {
+internal class XSalsa20Pure {
     companion object {
         fun hSalsa(key: UByteArray, nonce: UByteArray): UIntArray {
             val state = UIntArray(16) {

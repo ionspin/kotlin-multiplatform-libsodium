@@ -7,7 +7,7 @@ import com.ionspin.kotlin.crypto.util.*
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-class Salsa20Pure {
+internal class Salsa20Pure {
     companion object {
         fun quarterRound(input: UIntArray, y0position: Int, y1position: Int, y2position: Int, y3position: Int) {
             input[y1position] = input[y1position] xor ((input[y0position] + input[y3position]) rotateLeft 7)

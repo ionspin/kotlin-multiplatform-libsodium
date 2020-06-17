@@ -7,7 +7,7 @@ import com.ionspin.kotlin.crypto.util.*
  * ugljesa.jovanovic@ionspin.com
  * on 16-Jun-2020
  */
-class ChaCha20Pure {
+internal class ChaCha20Pure {
     companion object {
         fun quarterRound(input: UIntArray, aPosition: Int, bPosition: Int, cPosition: Int, dPosition: Int) {
             input[aPosition] += input[bPosition]

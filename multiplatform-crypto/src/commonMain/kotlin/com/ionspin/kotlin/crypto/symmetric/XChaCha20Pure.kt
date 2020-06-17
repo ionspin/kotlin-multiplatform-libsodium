@@ -9,7 +9,7 @@ import com.ionspin.kotlin.crypto.util.xorWithPositionsAndInsertIntoArray
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-class XChaCha20Pure {
+internal class XChaCha20Pure {
     companion object {
         fun hChacha(key: UByteArray, nonce: UByteArray) : UIntArray {
             val state = UIntArray(16) {
