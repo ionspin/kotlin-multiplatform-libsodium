@@ -81,8 +81,6 @@ class ChaCha20Test {
             0x87U, 0x4dU,
         )
         val result = ChaCha20Pure.encrypt(key, nonce, message, 1U)
-        println(result.toHexString())
-        println(expected.toHexString())
         assertTrue {
             expected.contentEquals(result)
         }
