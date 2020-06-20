@@ -169,6 +169,19 @@ fun UInt.toLittleEndianUByteArray() : UByteArray {
     }
 }
 
+
+fun UIntArray.toLittleEndianUByteArray() : UByteArray {
+    val result = UByteArray(size * 4)
+    for (i in 0 until size) {
+        val converted = this[i].toLittleEndianUByteArray()
+        result[i * 4] = converted[0]
+        result[i * 4 + 1] = converted[1]
+        result[i * 4 + 2] = converted[2]
+        result[i * 4 + 3] = converted[3]
+    }
+    return result
+}
+
 // UInt / Array utils
 
 fun ULong.toBigEndianUByteArray() : Array<UByte> {
