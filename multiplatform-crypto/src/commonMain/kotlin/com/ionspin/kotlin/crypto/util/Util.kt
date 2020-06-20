@@ -18,9 +18,9 @@
 
 package com.ionspin.kotlin.crypto.util
 
-import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils
-import com.ionspin.kotlin.crypto.keyderivation.argon2.xorWithBlock
 
+
+val _emitIntArray: IntArray = intArrayOf(1)
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.crypto.symmetric.LatinDancesCommon.littleEndianInverted
 import com.ionspin.kotlin.crypto.util.*
 
 /**
@@ -49,10 +50,10 @@ internal class Salsa20Pure {
             return result
         }
 
-        internal val sigma0_32_uint = 1634760805U //ubyteArrayOf(101U, 120U, 112U, 97U)
-        internal val sigma1_32_uint = 857760878U //ubyteArrayOf(110U, 100U, 32U, 51U)
-        internal val sigma2_32_uint = 2036477234U //ubyteArrayOf(50U, 45U, 98U, 121U)
-        internal val sigma3_32_uint = 1797285236U //ubyteArrayOf(116U, 101U, 32U, 107U)
+        internal var sigma0_32_uint = 1634760805U //ubyteArrayOf(101U, 120U, 112U, 97U)
+        internal var sigma1_32_uint = 857760878U //ubyteArrayOf(110U, 100U, 32U, 51U)
+        internal var sigma2_32_uint = 2036477234U //ubyteArrayOf(50U, 45U, 98U, 121U)
+        internal var sigma3_32_uint = 1797285236U //ubyteArrayOf(116U, 101U, 32U, 107U)
 
         val sigma0_32 = ubyteArrayOf(101U, 120U, 112U, 97U)
         val sigma1_32 = ubyteArrayOf(110U, 100U, 32U, 51U)

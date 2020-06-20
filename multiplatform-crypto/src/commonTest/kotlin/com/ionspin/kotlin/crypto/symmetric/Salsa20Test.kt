@@ -1,5 +1,7 @@
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.crypto.symmetric.LatinDancesCommon.littleEndian
+import com.ionspin.kotlin.crypto.symmetric.LatinDancesCommon.littleEndianInverted
 import com.ionspin.kotlin.crypto.util.fromLittleEndianToUInt
 import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import com.ionspin.kotlin.crypto.util.rotateLeft

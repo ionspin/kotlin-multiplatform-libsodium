@@ -23,7 +23,9 @@ class XChaCha20Poly1305Pure {
                 ChaCha20Pure.encrypt(
                     oneTimeKey.toLittleEndianUByteArray(),
                     ubyteArrayOf(0U, 0U, 0U, 0U) + nonce.sliceArray(16 until 24),
-                    UByteArray(64) { 0U })
+                    UByteArray(64) { 0U },
+                    0U
+                )
             println("Poly sub-key:")
             oneTimeKey.hexColumsPrint()
             println("Poly key:")

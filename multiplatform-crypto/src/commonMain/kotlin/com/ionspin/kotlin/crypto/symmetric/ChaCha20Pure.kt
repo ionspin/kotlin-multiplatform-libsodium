@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.symmetric
 
+import com.ionspin.kotlin.crypto.symmetric.LatinDancesCommon.littleEndianInverted
 import com.ionspin.kotlin.crypto.util.*
 
 /**
@@ -59,8 +60,6 @@ internal class ChaCha20Pure {
         fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, initialCounter: UInt = 0U): UByteArray {
             val ciphertext = UByteArray(message.size)
             val state = UIntArray(16) {
-
-
                 when (it) {
                     0 -> sigma0_32
                     1 -> sigma1_32
