@@ -84,6 +84,9 @@ internal class XChaCha20Pure {
             for (i in 0 until blocks) {
                 ChaCha20Pure.hash(state).xorWithPositionsAndInsertIntoArray(0, 64, message, i * 64, ciphertext, i * 64)
                 state[12] += 1U
+                if (state[12] == 0U) {
+                    state[13] += 1U
+                }
             }
             ChaCha20Pure.hash(state).xorWithPositionsAndInsertIntoArray(
                 0, remainder,

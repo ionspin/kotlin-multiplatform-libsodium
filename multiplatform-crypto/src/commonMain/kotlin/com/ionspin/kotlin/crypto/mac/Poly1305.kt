@@ -7,9 +7,9 @@ import com.ionspin.kotlin.crypto.util.hexColumsPrint
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 17-Jun-2020
+ * on 18-Jun-2020
  */
-class XChaCha20Poly1305Pure {
+class Poly1305 {
     companion object {
         fun clampR(r: UByteArray) {
             r[3] = r[3] and 0b00001111U
@@ -26,12 +26,12 @@ class XChaCha20Poly1305Pure {
         val P = BigInteger.fromUByteArray(
             ubyteArrayOf(
                 0x03U, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xfbU
-            ).toTypedArray() //TODO remove to typed array after bignum update
+            )
         )
         val powersOfTwo = Array(129) {
             BigInteger.ONE shl it
         }
-        val resultMask = (BigInteger.ONE shl 129) - 1
+        val resultMask = (BigInteger.ONE shl 128) - 1
         //Doesn't have to be every power, just divisible by 8
         val twoToThe128 = BigInteger.ONE.shl(128)
 
@@ -40,9 +40,15 @@ class XChaCha20Poly1305Pure {
             val s= UByteArray(16) { key[it + 16]}
             clampR(r)
             println("P: ${P.toString(16)}")
+            println("R:")
+            r.hexColumsPrint()
+            println("S:")
+            s.hexColumsPrint()
             var accumulator = BigInteger.ZERO
             val rAsBigInt = BigInteger.fromUByteArray(r, Endianness.LITTLE)
+            println("R: ${rAsBigInt.toString(16)}")
             val sAsBigInt = BigInteger.fromUByteArray(s, Endianness.LITTLE)
+            println("S: ${sAsBigInt.toString(16)}")
             val blocks = message.size / 16
             val remainder = message.size % 16
 
@@ -58,20 +64,22 @@ class XChaCha20Poly1305Pure {
                 accumulator %= P
                 println("Accumlator: ${accumulator.toString(16)}")
             }
+            if (remainder != 0) {
+                val slice = message.sliceArray(blocks * 16 until blocks * 16 + remainder)
+                val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE) + powersOfTwo[remainder * 8]
+                println("blockAsInt: ${blockAsInt.toString(16)}")
+                accumulator += blockAsInt
+                println("Accumlator: ${accumulator.toString(16)}")
+                accumulator *= rAsBigInt
+                println("Accumlator: ${accumulator.toString(16)}")
+                accumulator %= P
+                println("Accumlator: ${accumulator.toString(16)}")
+            }
 
-            val slice = message.sliceArray(blocks * 16 until blocks * 16 + remainder)
-            val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE)  + powersOfTwo[remainder * 8]
-            println("blockAsInt: ${blockAsInt.toString(16)}")
-            accumulator += blockAsInt
-            println("Accumlator: ${accumulator.toString(16)}")
-            accumulator *= rAsBigInt
-            println("Accumlator: ${accumulator.toString(16)}")
-            accumulator %= P
-            println("Accumlator: ${accumulator.toString(16)}")
 
-
-            println("Result mask: ${resultMask.toString(2)}")
+            println("Result mask: ${resultMask.toString(16)}")
             accumulator += sAsBigInt
+            println("Before mask: ${accumulator.toString(16)}")
             accumulator = accumulator and resultMask
             println("Accumlator: ${accumulator.toString(16)}")
             val result = accumulator.toUByteArray(Endianness.BIG)
