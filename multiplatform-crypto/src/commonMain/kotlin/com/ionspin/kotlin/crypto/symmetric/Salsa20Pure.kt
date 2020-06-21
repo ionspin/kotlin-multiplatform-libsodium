@@ -110,7 +110,7 @@ internal class Salsa20Pure {
                 0, remainder,
                 message, blocks * 64,
                 ciphertext, blocks * 64)
-
+            state.overwriteWithZeroes()
             return ciphertext
         }
 

@@ -95,6 +95,7 @@ class XChaCha20Pure(key: UByteArray, nonce: UByteArray, initialCounter: UInt = 0
                 message, blocks * 64,
                 ciphertext, blocks * 64
             )
+            state.overwriteWithZeroes()
             return ciphertext
         }
 
@@ -172,6 +173,7 @@ class XChaCha20Pure(key: UByteArray, nonce: UByteArray, initialCounter: UInt = 0
         )
         keystreamRemainingCounter = 64 - remainingBytes
         processedBytesSoFar += data.size
+        state.overwriteWithZeroes()
         return ciphertext
     }
 

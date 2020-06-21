@@ -92,6 +92,7 @@ internal class ChaCha20Pure {
                 message, blocks * 64,
                 ciphertext, blocks * 64
             )
+            state.overwriteWithZeroes()
             return ciphertext
         }
     }

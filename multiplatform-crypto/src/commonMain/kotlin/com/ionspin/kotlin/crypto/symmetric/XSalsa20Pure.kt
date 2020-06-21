@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUInt
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUIntWithPosition
+import com.ionspin.kotlin.crypto.util.overwriteWithZeroes
 import com.ionspin.kotlin.crypto.util.xorWithPositionsAndInsertIntoArray
 
 /**
@@ -80,6 +81,7 @@ internal class XSalsa20Pure {
                     else -> 0U
                 }
             }
+            hSalsaKey.overwriteWithZeroes()
             val blocks = message.size / 64
             val remainder = message.size % 64
             for (i in 0 until blocks) {
@@ -94,7 +96,7 @@ internal class XSalsa20Pure {
                 0, remainder,
                 message, blocks * 64,
                 ciphertext, blocks * 64)
-
+            state.overwriteWithZeroes()
             return ciphertext
         }
 

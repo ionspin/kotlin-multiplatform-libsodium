@@ -9,17 +9,19 @@ import com.ionspin.kotlin.crypto.util.hexColumsPrint
  * ugljesa.jovanovic@ionspin.com
  * on 18-Jun-2020
  */
-class Poly1305 {
+class Poly1305(key: UByteArray) {
     companion object {
-        fun clampR(r: UByteArray) {
-            r[3] = r[3] and 0b00001111U
-            r[7] = r[7] and 0b00001111U
-            r[11] = r[11] and 0b00001111U
-            r[15] = r[15] and 0b00001111U
+        fun clampR(r: UByteArray) : UByteArray {
+            val clamped = UByteArray(16) { r[it] }
+            clamped[3] = r[3] and 0b00001111U
+            clamped[7] = r[7] and 0b00001111U
+            clamped[11] = r[11] and 0b00001111U
+            clamped[15] = r[15] and 0b00001111U
 
-            r[4] = r[4] and 0b11111100U
-            r[8] = r[8] and 0b11111100U
-            r[12] = r[12] and 0b11111100U
+            clamped[4] = r[4] and 0b11111100U
+            clamped[8] = r[8] and 0b11111100U
+            clamped[12] = r[12] and 0b11111100U
+            return clamped
 
         }
 
@@ -36,11 +38,11 @@ class Poly1305 {
         val twoToThe128 = BigInteger.ONE.shl(128)
 
         fun poly1305Authenticate(key: UByteArray, message: UByteArray) : UByteArray {
-            val r = UByteArray(16) { key[it] }
+            val r = clampR(UByteArray(16) { key[it] })
             val s= UByteArray(16) { key[it + 16]}
-            clampR(r)
+
             var accumulator = BigInteger.ZERO
-            val rAsBigInt = BigInteger.fromUByteArray(r, Endianness.LITTLE)
+            val rAsBigInt = BigInteger.fromUByteArray(r, Endianness.LITTLE) //TODO update BigInt to make this eraseable
             val sAsBigInt = BigInteger.fromUByteArray(s, Endianness.LITTLE)
             val blocks = message.size / 16
             val remainder = message.size % 16
@@ -69,5 +71,31 @@ class Poly1305 {
 
 
         }
+    }
+    var rAsBigInt = BigInteger.fromUByteArray(clampR(key.sliceArray(0 until 16)), Endianness.LITTLE)
+    var sAsBigInt = BigInteger.fromUByteArray(key.sliceArray(16 until 32), Endianness.LITTLE)
+    var accumulator = BigInteger.ZERO
+
+    fun updateMac(data : UByteArray) {
+        data.hexColumsPrint()
+        val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[128]
+        accumulator += blockAsInt
+        accumulator *= rAsBigInt
+        accumulator %= P
+    }
+
+    fun finalizeMac(data: UByteArray) : UByteArray{
+        if (data.size != 0) {
+            data.hexColumsPrint()
+            val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[data.size * 8]
+            accumulator += blockAsInt
+            accumulator *= rAsBigInt
+            accumulator %= P
+        }
+        accumulator += sAsBigInt
+        accumulator = accumulator and resultMask
+        val result = accumulator.toUByteArray(Endianness.BIG)
+        result.reverse()
+        return result
     }
 }

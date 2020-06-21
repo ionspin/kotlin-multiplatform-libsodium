@@ -344,6 +344,11 @@ fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
 operator fun UInt.plus(other : UByteArray) : UByteArray {
     return this.toLittleEndianUByteArray() + other
 }
+fun UByteArray.overwriteWithZeroes() {
+    for (i in 0 until size) {
+        this[i] = 0U
+    }
+}
 
 fun UIntArray.overwriteWithZeroes() {
     for (i in 0 until size) {
