@@ -84,7 +84,7 @@ class Poly1305(key: UByteArray) {
         accumulator %= P
     }
 
-    fun finalizeMac(data: UByteArray) : UByteArray{
+    fun finalizeMac(data: UByteArray = ubyteArrayOf()) : UByteArray{
         if (data.size != 0) {
             data.hexColumsPrint()
             val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[data.size * 8]

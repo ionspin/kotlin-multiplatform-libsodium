@@ -11,7 +11,7 @@ import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
  * ugljesa.jovanovic@ionspin.com
  * on 17-Jun-2020
  */
-internal class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val additionalData: UByteArray) {
+class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val additionalData: UByteArray) {
     companion object {
 
         fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
@@ -38,11 +38,13 @@ internal class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray,
         }
     }
 
-    val updateableEncryptionPrimitive = XChaCha20Pure(key, nonce, initialCounter = 0U)
-    val updateableMacPrimitive : Poly1305
+    private val updateableEncryptionPrimitive = XChaCha20Pure(key, nonce, initialCounter = 1U)
+    private val updateableMacPrimitive : Poly1305
 
-    val polyBuffer = UByteArray(16)
-    var polyBufferByteCounter = 0
+    private val polyBuffer = UByteArray(16)
+    private var polyBufferByteCounter = 0
+
+    private var processedBytes = 0
 
     init {
         val subKey = XChaCha20Pure.hChacha(key, nonce)
@@ -57,10 +59,20 @@ internal class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray,
                 //	at org.jetbrains.kotlin.ir.backend.js.lower.ConstTransformer.lowerConst(ConstLowering.kt:38)
             )
         updateableMacPrimitive = Poly1305(authKey)
+        val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
+        processPolyBytes(additionalData + additionalDataPad)
+
     }
 
 
     fun encryptPartialData(data: UByteArray) : UByteArray {
+        processedBytes += data.size
+        val encrypted = updateableEncryptionPrimitive.encryptPartialData(data)
+        processPolyBytes(encrypted)
+        return encrypted
+    }
+
+    private fun processPolyBytes(data: UByteArray) {
         if (polyBufferByteCounter == 0) {
             val polyBlocks = data.size / 16
             val polyRemainder = data.size % 16
@@ -71,16 +83,51 @@ internal class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray,
                 for (i in 0 until polyRemainder) {
                     polyBuffer[i] = data[data.size - polyRemainder + i]
                 }
+                polyBufferByteCounter = polyRemainder
             }
         } else {
-
+            if (polyBufferByteCounter + data.size < 16) {
+                for (i in 0 until data.size) {
+                    polyBuffer[polyBufferByteCounter + i] = data[i]
+                }
+                polyBufferByteCounter += data.size
+            } else {
+                val borrowed = 16 - polyBufferByteCounter
+                for (i in polyBufferByteCounter until 16) {
+                    polyBuffer[i] = data[i - polyBufferByteCounter]
+                }
+                updateableMacPrimitive.updateMac(polyBuffer)
+                polyBufferByteCounter = 0
+                val polyBlocks = (data.size - borrowed) / 16
+                val polyRemainder = (data.size - borrowed) % 16
+                for (i in 0 until polyBlocks) {
+                    updateableMacPrimitive.updateMac(data.sliceArray(borrowed + i * 16 until borrowed + i * 16 + 16))
+                }
+                if (polyRemainder != 0) {
+                    for (i in 0 until polyRemainder) {
+                        polyBuffer[i] = data[data.size + borrowed - polyRemainder + i]
+                    }
+                    polyBufferByteCounter = polyRemainder
+                }
+            }
         }
-        return updateableEncryptionPrimitive.encryptPartialData(data)
     }
 
-//    fun finish() : UByteArray {
-//
-//    }
+
+
+
+
+
+    fun finish() : UByteArray {
+
+        val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
+        val macData = cipherTextPad +
+                additionalData.size.toULong().toLittleEndianUByteArray() +
+                processedBytes.toULong().toLittleEndianUByteArray()
+        processPolyBytes(macData)
+        val tag = updateableMacPrimitive.finalizeMac()
+        return tag
+    }
 
 
 
