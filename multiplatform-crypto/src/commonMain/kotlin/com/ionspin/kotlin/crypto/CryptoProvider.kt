@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bProperties
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
@@ -16,7 +17,7 @@ typealias Blake2bPureStateless = Blake2bPure.Companion
 typealias Sha256PureStateless = Sha256Pure.Companion
 typealias Sha512PureStateless = Sha512Pure.Companion
 
-object Crypto : CryptoProvider {
+object Primitives : CryptoProvider {
     override suspend fun initialize() {
         //Nothing to do atm.
     }
@@ -24,7 +25,6 @@ object Crypto : CryptoProvider {
     fun initializeWithCallback(done: () -> Unit) {
         done()
     }
-
 
     object Blake2b {
         fun updateable(key: UByteArray? = null, hashLength: Int = Blake2bProperties.MAX_HASH_BYTES): com.ionspin.kotlin.crypto.hash.blake2b.Blake2b {
@@ -62,6 +62,7 @@ object Crypto : CryptoProvider {
         }
     }
 
+
     private fun checkInitialization() {
         // Nothing to do atm
     }
@@ -85,20 +86,23 @@ interface Encryptable {
     fun encryptableData() : UByteArray
 }
 
-object PublicApi {
-    data class HashedData(val hash: UByteArray) {
-        fun toHexString() : String {
-            return hash.toHexString()
-        }
+data class HashedData(val hash: UByteArray) {
+    fun toHexString() : String {
+        return hash.toHexString()
     }
+}
 
-    data class EncryptedData(val encrypted: UByteArray)
+data class EncryptedData(val encrypted: UByteArray)
 
-
+object PublicApi {
 
     object Hash {
-        fun hash() : HashedData {
-            TODO()
+        fun hash(data: UByteArray, key : UByteArray = ubyteArrayOf()) : HashedData {
+            return HashedData(Blake2bPureStateless.digest(data, key))
+        }
+
+        fun updateableHash(key: UByteArray? = null) : UpdatableHash {
+            return Blake2bPure(key)
         }
     }
     object Symmetric {

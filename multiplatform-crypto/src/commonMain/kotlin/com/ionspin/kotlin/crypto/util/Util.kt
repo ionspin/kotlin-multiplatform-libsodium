@@ -18,7 +18,7 @@
 
 package com.ionspin.kotlin.crypto.util
 
-
+//TODO Reorganize this, currently it's just a pile of useful helper functions
 
 val _emitIntArray: IntArray = intArrayOf(1)
 /**
@@ -108,11 +108,16 @@ fun UByteArray.xorWithPositions(start: Int, end: Int, other : UByteArray, otherS
     return UByteArray(end - start) { this[start + it] xor other[otherStart + it] }
 }
 
+/**
+ * Start index is included, end index is excluded
+ */
 fun UByteArray.xorWithPositionsAndInsertIntoArray(
     start: Int, end: Int,
     other : UByteArray, otherStart: Int,
-    targetArray: UByteArray, targetStart : Int) {
-    for (i in start until end) {
+    targetArray: UByteArray, targetStart : Int
+) {
+    val length = end - start
+    for (i in 0 until length) {
         targetArray[targetStart + i] = this[start + i] xor other[otherStart + i]
     }
 }
@@ -338,6 +343,12 @@ fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
 
 operator fun UInt.plus(other : UByteArray) : UByteArray {
     return this.toLittleEndianUByteArray() + other
+}
+
+fun UIntArray.overwriteWithZeroes() {
+    for (i in 0 until size) {
+        this[i] = 0U
+    }
 }
 
 //AES Flatten

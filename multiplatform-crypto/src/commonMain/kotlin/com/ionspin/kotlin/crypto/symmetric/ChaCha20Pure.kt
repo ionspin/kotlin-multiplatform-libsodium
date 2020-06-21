@@ -57,7 +57,7 @@ internal class ChaCha20Pure {
         val sigma2_32 = 2036477234U //ubyteArrayOf(50U, 45U, 98U, 121U)
         val sigma3_32 = 1797285236U //ubyteArrayOf(116U, 101U, 32U, 107U)
 
-        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, initialCounter: UInt = 0U): UByteArray {
+        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, initialCounter: UInt): UByteArray {
             val ciphertext = UByteArray(message.size)
             val state = UIntArray(16) {
                 when (it) {

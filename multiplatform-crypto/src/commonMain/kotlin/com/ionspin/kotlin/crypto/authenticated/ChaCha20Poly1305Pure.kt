@@ -12,7 +12,7 @@ import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
  * ugljesa.jovanovic@ionspin.com
  * on 17-Jun-2020
  */
-class ChaCha20Poly1305Pure {
+internal class ChaCha20Poly1305Pure {
     companion object {
 
         fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
@@ -38,8 +38,6 @@ class ChaCha20Poly1305Pure {
                 }
             }
             val oneTimeKey = ChaCha20Pure.hash(state).sliceArray(0 until 32)
-            println("Poly key:")
-            oneTimeKey.hexColumsPrint()
             val cipherText = ChaCha20Pure.encrypt(key, nonce, message, 1U)
             val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
             val cipherTextPad = UByteArray(16 - cipherText.size % 16) { 0U }
@@ -47,11 +45,7 @@ class ChaCha20Poly1305Pure {
                     cipherText + cipherTextPad +
                     additionalData.size.toULong().toLittleEndianUByteArray() +
                     cipherText.size.toULong().toLittleEndianUByteArray()
-            println("Mac data")
-            macData.hexColumsPrint()
             val tag = Poly1305.poly1305Authenticate(oneTimeKey, macData)
-            println("Tag:")
-            tag.hexColumsPrint()
             return  cipherText + tag
         }
     }

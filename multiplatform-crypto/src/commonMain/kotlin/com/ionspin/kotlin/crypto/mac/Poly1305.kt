@@ -39,16 +39,9 @@ class Poly1305 {
             val r = UByteArray(16) { key[it] }
             val s= UByteArray(16) { key[it + 16]}
             clampR(r)
-            println("P: ${P.toString(16)}")
-            println("R:")
-            r.hexColumsPrint()
-            println("S:")
-            s.hexColumsPrint()
             var accumulator = BigInteger.ZERO
             val rAsBigInt = BigInteger.fromUByteArray(r, Endianness.LITTLE)
-            println("R: ${rAsBigInt.toString(16)}")
             val sAsBigInt = BigInteger.fromUByteArray(s, Endianness.LITTLE)
-            println("S: ${sAsBigInt.toString(16)}")
             val blocks = message.size / 16
             val remainder = message.size % 16
 
@@ -56,32 +49,20 @@ class Poly1305 {
                 val slice = message.sliceArray(i * 16 until i * 16 + 16)
                 slice.hexColumsPrint()
                 val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE) + powersOfTwo[128]
-                println("blockAsInt: ${blockAsInt.toString(16)}")
                 accumulator += blockAsInt
-                println("Accumlator: ${accumulator.toString(16)}")
                 accumulator *= rAsBigInt
-                println("Accumlator: ${accumulator.toString(16)}")
                 accumulator %= P
-                println("Accumlator: ${accumulator.toString(16)}")
             }
             if (remainder != 0) {
                 val slice = message.sliceArray(blocks * 16 until blocks * 16 + remainder)
                 val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE) + powersOfTwo[remainder * 8]
-                println("blockAsInt: ${blockAsInt.toString(16)}")
                 accumulator += blockAsInt
-                println("Accumlator: ${accumulator.toString(16)}")
                 accumulator *= rAsBigInt
-                println("Accumlator: ${accumulator.toString(16)}")
                 accumulator %= P
-                println("Accumlator: ${accumulator.toString(16)}")
             }
 
-
-            println("Result mask: ${resultMask.toString(16)}")
             accumulator += sAsBigInt
-            println("Before mask: ${accumulator.toString(16)}")
             accumulator = accumulator and resultMask
-            println("Accumlator: ${accumulator.toString(16)}")
             val result = accumulator.toUByteArray(Endianness.BIG)
             result.reverse()
             return result
