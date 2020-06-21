@@ -70,12 +70,19 @@ object Primitives : CryptoProvider {
 
 }
 
-inline class EncryptableString(val content: String) : Encryptable {
-    override fun encryptableData(): UByteArray {
+inline class EncryptableString(val content: String) : Encryptable<EncryptableString> {
+    override fun toEncryptableForm(): UByteArray {
         return content.encodeToUByteArray()
     }
 
+    override fun fromEncryptableForm(): (UByteArray) -> EncryptableString {
+        return { uByteArray ->
+            EncryptableString(uByteArray.toByteArray().decodeToString())
+        }
+    }
+
     fun asString() : String = content
+
 
 }
 
@@ -83,8 +90,9 @@ fun String.asEncryptableString() : EncryptableString {
     return EncryptableString(this)
 }
 
-interface Encryptable {
-    fun encryptableData() : UByteArray
+interface Encryptable<T> {
+    fun toEncryptableForm() : UByteArray
+    fun fromEncryptableForm() : (UByteArray) -> T
 }
 
 data class HashedData(val hash: UByteArray) {
@@ -101,7 +109,9 @@ data class SymmetricKey(val value : UByteArray) {
     }
 }
 
-data class EncryptedData(val encrypted: UByteArray)
+data class EncryptedData internal constructor(val ciphertext: UByteArray, val nonce: UByteArray) {
+
+}
 
 object PublicApi {
 
@@ -115,16 +125,18 @@ object PublicApi {
         }
     }
     object Symmetric {
-        fun encrypt(key: SymmetricKey, data : Encryptable, additionalData : UByteArray = ubyteArrayOf()) : EncryptedData {
+        fun encrypt(key: SymmetricKey, data : Encryptable<*>, additionalData : UByteArray = ubyteArrayOf()) : EncryptedData {
             if (key.value.size != 32) {
                 throw RuntimeException("Invalid key size! Required 32, supplied ${key.value.size}")
             }
             val nonce = SRNG.getRandomBytes(24)
-            return EncryptedData(XChaCha20Poly1305Pure.encrypt(key.value, nonce, data.encryptableData(), additionalData) + nonce)
+            return EncryptedData(XChaCha20Poly1305Pure.encrypt(key.value, nonce, data.toEncryptableForm(), additionalData), nonce)
+
         }
 
-        fun <T: Encryptable> decrypt(encryptedData : EncryptedData) : T {
-            TODO()
+        fun <T: Encryptable<T>> decrypt(key: SymmetricKey, encryptedData : EncryptedData, additionalData: UByteArray, byteArrayDeserializer : (UByteArray) -> T) : T {
+            return byteArrayDeserializer(XChaCha20Poly1305Pure.decrypt(key.value, encryptedData.nonce, encryptedData.ciphertext, additionalData))
+
         }
     }
 }

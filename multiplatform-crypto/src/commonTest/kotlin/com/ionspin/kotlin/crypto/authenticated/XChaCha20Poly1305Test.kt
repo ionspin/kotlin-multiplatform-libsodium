@@ -90,7 +90,7 @@ class XChaCha20Poly1305Test {
 
 
     }
-    
+
     @Test
     fun updateableXChaCha20Poly1305() {
         assertTrue {
