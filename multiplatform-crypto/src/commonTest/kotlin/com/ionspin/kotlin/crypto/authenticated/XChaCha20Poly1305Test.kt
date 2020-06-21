@@ -53,8 +53,10 @@ class XChaCha20Poly1305Test {
                 0x98U, 0x79U, 0x47U, 0xdeU, 0xafU, 0xd8U, 0x78U, 0x0aU,
                 0xcfU, 0x49U
             )
-            val result = XChaCha20Poly1305Pure.encrypt(key, nonce, message, additionalData)
-            result.contentEquals(expected)
+            val encrypted = XChaCha20Poly1305Pure.encrypt(key, nonce, message, additionalData)
+            val decrypted = XChaCha20Poly1305Pure.decrypt(key, nonce, encrypted, additionalData)
+
+            encrypted.contentEquals(expected) && decrypted.contentEquals(message)
         }
 
         assertTrue {
@@ -80,13 +82,15 @@ class XChaCha20Poly1305Test {
                 0xbdU, 0x3bU, 0x8aU, 0xd7U, 0xa1U, 0x9dU, 0xe8U, 0xc4U, 0x55U,
                 0x84U, 0x6fU, 0xfcU, 0x75U, 0x31U, 0xbfU, 0x0cU, 0x2dU
             )
-            val result = XChaCha20Poly1305Pure.encrypt(key, nonce, message, additionalData)
-            result.contentEquals(expected)
+            val encrypted = XChaCha20Poly1305Pure.encrypt(key, nonce, message, additionalData)
+            val decrypted = XChaCha20Poly1305Pure.decrypt(key, nonce, encrypted, additionalData)
+
+            encrypted.contentEquals(expected) && decrypted.contentEquals(message)
         }
 
 
     }
-
+    
     @Test
     fun updateableXChaCha20Poly1305() {
         assertTrue {

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.authenticated.XChaCha20Poly1305Pure
 import com.ionspin.kotlin.crypto.hash.UpdatableHash
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bProperties
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
@@ -92,6 +93,14 @@ data class HashedData(val hash: UByteArray) {
     }
 }
 
+data class SymmetricKey(val value : UByteArray) {
+    companion object {
+        fun randomKey() : SymmetricKey {
+            return SymmetricKey(SRNG.getRandomBytes(32))
+        }
+    }
+}
+
 data class EncryptedData(val encrypted: UByteArray)
 
 object PublicApi {
@@ -106,8 +115,12 @@ object PublicApi {
         }
     }
     object Symmetric {
-        fun encrypt(data : Encryptable) : EncryptedData {
-            TODO()
+        fun encrypt(key: SymmetricKey, data : Encryptable, additionalData : UByteArray = ubyteArrayOf()) : EncryptedData {
+            if (key.value.size != 32) {
+                throw RuntimeException("Invalid key size! Required 32, supplied ${key.value.size}")
+            }
+            val nonce = SRNG.getRandomBytes(24)
+            return EncryptedData(XChaCha20Poly1305Pure.encrypt(key.value, nonce, data.encryptableData(), additionalData) + nonce)
         }
 
         fun <T: Encryptable> decrypt(encryptedData : EncryptedData) : T {

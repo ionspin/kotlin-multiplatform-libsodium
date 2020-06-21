@@ -37,6 +37,9 @@ class Poly1305(key: UByteArray) {
         //Doesn't have to be every power, just divisible by 8
         val twoToThe128 = BigInteger.ONE.shl(128)
 
+        /**
+         * Limit - stop poly calculating tag at desired index, ignored if 0
+         */
         fun poly1305Authenticate(key: UByteArray, message: UByteArray) : UByteArray {
             val r = clampR(UByteArray(16) { key[it] })
             val s= UByteArray(16) { key[it + 16]}

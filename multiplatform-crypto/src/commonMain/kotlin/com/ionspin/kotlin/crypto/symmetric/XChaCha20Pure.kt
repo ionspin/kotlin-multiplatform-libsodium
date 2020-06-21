@@ -55,7 +55,7 @@ class XChaCha20Pure(key: UByteArray, nonce: UByteArray, initialCounter: UInt = 0
 
         }
 
-        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, initialCounter: UInt = 0U): UByteArray {
+        fun xorWithKeystream(key: UByteArray, nonce: UByteArray, message: UByteArray, initialCounter: UInt = 0U): UByteArray {
 
             val ciphertext = UByteArray(message.size)
             val hChaChaKey = hChacha(key, nonce)

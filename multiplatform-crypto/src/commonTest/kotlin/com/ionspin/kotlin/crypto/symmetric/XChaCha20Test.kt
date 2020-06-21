@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -133,7 +132,7 @@ class XChaCha20Test {
 
             )
 
-        val result = XChaCha20Pure.encrypt(key, nonce, message, 1U)
+        val result = XChaCha20Pure.xorWithKeystream(key, nonce, message, 1U)
         assertTrue {
             result.contentEquals(expected)
         }
