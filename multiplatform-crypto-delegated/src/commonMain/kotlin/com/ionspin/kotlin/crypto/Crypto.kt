@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.authenticated.XChaCha20Poly1305Delegated
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bProperties
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegated
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegatedStateless
@@ -152,12 +153,12 @@ object Crypto {
                 throw RuntimeException("Invalid key size! Required 32, supplied ${key.value.size}")
             }
             val nonce = SRNG.getRandomBytes(24)
-            return EncryptedData(XChaCha20Poly1305Pure.encrypt(key.value, nonce, data.toEncryptableForm(), additionalData), nonce)
+            return EncryptedData(XChaCha20Poly1305Delegated.encrypt(key.value, nonce, data.toEncryptableForm(), additionalData), nonce)
 
         }
 
         override fun <T: Encryptable<T>> decrypt(key: SymmetricKey, encryptedData : EncryptedData, additionalData: UByteArray, byteArrayDeserializer : (UByteArray) -> T) : T {
-            return byteArrayDeserializer(XChaCha20Poly1305Pure.decrypt(key.value, encryptedData.nonce, encryptedData.ciphertext, additionalData))
+            return byteArrayDeserializer(XChaCha20Poly1305Delegated.decrypt(key.value, encryptedData.nonce, encryptedData.ciphertext, additionalData))
 
         }
 
@@ -172,7 +173,7 @@ object Crypto {
 }
 
 class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKey, additionalData: UByteArray) : MultipartAuthenticatedEncryption {
-    val primitive = XChaCha20Poly1305Pure(key.value, additionalData)
+    val primitive = XChaCha20Poly1305Delegated(key.value, additionalData)
     override fun encryptPartialData(data: UByteArray): EncryptedDataPart {
         return EncryptedDataPart(primitive.encryptPartialData(data))
     }
@@ -185,7 +186,7 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
 }
 
 class MultiplatformAuthenticatedVerificator internal constructor(key: SymmetricKey, multipartEncryptedDataDescriptor: MultipartEncryptedDataDescriptor, additionalData: UByteArray) : MultipartAuthenticatedVerification {
-    val primitive = XChaCha20Poly1305Pure(key.value, additionalData)
+    val primitive = XChaCha20Poly1305Delegated(key.value, additionalData)
     val tag = multipartEncryptedDataDescriptor.data.sliceArray(
         multipartEncryptedDataDescriptor.data.size - 16 until multipartEncryptedDataDescriptor.data.size
     )
@@ -200,7 +201,7 @@ class MultiplatformAuthenticatedVerificator internal constructor(key: SymmetricK
 
 }
 
-class MultipartAuthenticatedDecryptor internal constructor(val encryptor: XChaCha20Poly1305Pure) : MultipartAuthenticatedDecryption {
+class MultipartAuthenticatedDecryptor internal constructor(val encryptor: XChaCha20Poly1305Delegated) : MultipartAuthenticatedDecryption {
     override fun decryptPartialData(data: EncryptedDataPart): DecryptedDataPart {
         return DecryptedDataPart(encryptor.decrypt(data.data))
     }

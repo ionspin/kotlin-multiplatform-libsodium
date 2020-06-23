@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.authenticated.*
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2b
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bMultipart
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
 import com.ionspin.kotlin.crypto.hash.sha.Sha256Pure
@@ -134,7 +133,7 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
     }
 
     override fun finish(): MultipartEncryptedDataDescriptor {
-        val finished = primitive.finish()
+        val finished = primitive.finishEncryption()
         return MultipartEncryptedDataDescriptor(finished.first, finished.second)
     }
 

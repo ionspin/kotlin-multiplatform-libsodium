@@ -168,7 +168,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray)
         }
     }
 
-    fun finish() : Pair<UByteArray, UByteArray> {
+    fun finishEncryption() : Pair<UByteArray, UByteArray> {
 
         val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
         val macData = cipherTextPad +

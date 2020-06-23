@@ -134,7 +134,7 @@ class XChaCha20Poly1305Test {
             )
             val xChaChaPoly = XChaCha20Poly1305Pure(key, nonce, additionalData)
             val firstChunk = xChaChaPoly.encryptPartialData(message)
-            val finalChunk = xChaChaPoly.finish()
+            val finalChunk = xChaChaPoly.finishEncryption()
             val result = firstChunk + finalChunk
 
             result.contentEquals(expected)
@@ -165,7 +165,7 @@ class XChaCha20Poly1305Test {
             )
             val xChaChaPoly = XChaCha20Poly1305Pure(key, nonce, additionalData)
             val firstChunk = xChaChaPoly.encryptPartialData(message)
-            val finalChunk = xChaChaPoly.finish()
+            val finalChunk = xChaChaPoly.finishEncryption()
             val result = firstChunk + finalChunk
             result.contentEquals(expected)
         }
