@@ -23,25 +23,7 @@ package com.ionspin.kotlin.crypto.util
  * ugljesa.jovanovic@ionspin.com
  * on 15-Jul-2019
  */
-fun Array<Byte>.hexColumsPrint() {
-    val printout = this.map { it.toString(16) }.chunked(16)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
 
-fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun UByteArray.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
-    val printout = this.map { it.toString(16) }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
 
 inline fun <reified T> Array<T>.chunked(sliceSize: Int): Array<Array<T>> {
     val last = this.size % sliceSize
@@ -89,36 +71,8 @@ infix fun UByteArray.xor(other : UByteArray) : UByteArray {
 }
 
 
-fun String.hexStringToTypedUByteArray() : Array<UByte> {
-    return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
-}
 
 
-fun String.hexStringToUByteArray() : UByteArray {
-    return this.chunked(2).map { it.toUByte(16) }.toUByteArray()
-}
-
-
-fun Array<UByte>.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
-    }
-}
-
-
-fun UByteArray.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
-    }
-}
 
 // UInt / Array utils
 

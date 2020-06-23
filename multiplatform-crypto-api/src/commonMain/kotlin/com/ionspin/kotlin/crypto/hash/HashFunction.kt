@@ -22,12 +22,12 @@ package com.ionspin.kotlin.crypto.hash
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-interface Hash {
+interface HashFunction {
     val MAX_HASH_BYTES : Int
 }
 
 
-interface UpdatableHash : Hash {
+interface MultiPartHash : HashFunction {
     fun update(data : UByteArray)
 
     fun digest() : UByteArray
@@ -35,7 +35,7 @@ interface UpdatableHash : Hash {
 }
 
 
-interface StatelessHash : Hash {
+interface Hash : HashFunction {
 
 }
 

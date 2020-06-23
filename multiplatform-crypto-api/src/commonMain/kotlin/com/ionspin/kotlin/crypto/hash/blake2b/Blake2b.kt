@@ -1,7 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
-import com.ionspin.kotlin.crypto.hash.StatelessHash
-import com.ionspin.kotlin.crypto.hash.UpdatableHash
+import com.ionspin.kotlin.crypto.hash.Hash
+import com.ionspin.kotlin.crypto.hash.MultiPartHash
 
 /**
  * Created by Ugljesa Jovanovic
@@ -13,12 +13,12 @@ object Blake2bProperties {
     const val MAX_HASH_BYTES = 64
 }
 
-interface Blake2b : UpdatableHash {
+interface Blake2b : MultiPartHash {
     override val MAX_HASH_BYTES: Int
         get() = Blake2bProperties.MAX_HASH_BYTES
 }
 
-interface Blake2bStateless : StatelessHash {
+interface Blake2bStateless : Hash {
     override val MAX_HASH_BYTES: Int
         get() = Blake2bProperties.MAX_HASH_BYTES
 

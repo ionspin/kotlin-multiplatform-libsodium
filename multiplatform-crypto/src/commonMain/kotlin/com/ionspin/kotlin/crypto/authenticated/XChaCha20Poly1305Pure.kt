@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.authenticated
 
+import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.mac.Poly1305
 import com.ionspin.kotlin.crypto.symmetric.ChaCha20Pure
 import com.ionspin.kotlin.crypto.symmetric.XChaCha20Pure
@@ -10,10 +11,10 @@ import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
  * ugljesa.jovanovic@ionspin.com
  * on 17-Jun-2020
  */
-class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val additionalData: UByteArray) {
-    companion object {
+class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray) : {
+    companion object : AuthenticatedEncryption {
 
-        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
+        override fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
             val subKey = XChaCha20Pure.hChacha(key, nonce)
             val authKey =
                 ChaCha20Pure.encrypt(
@@ -36,7 +37,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val addi
             return cipherText + tag
         }
 
-        fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, additionalData: UByteArray) : UByteArray {
+        override fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, additionalData: UByteArray) : UByteArray {
             val subKey = XChaCha20Pure.hChacha(key, nonce)
             val authKey =
                 ChaCha20Pure.encrypt(
@@ -62,7 +63,10 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val addi
             //4. Decrypt data
             return XChaCha20Pure.xorWithKeystream(key, nonce, cipherTextWithoutTag, 1U)
         }
+
     }
+
+    val nonce = SRNG.getRandomBytes(24)
 
     private val updateableEncryptionPrimitive = XChaCha20Pure(key, nonce, initialCounter = 1U)
     private val updateableMacPrimitive : Poly1305
@@ -93,9 +97,32 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val addi
 
     fun encryptPartialData(data: UByteArray) : UByteArray {
         processedBytes += data.size
-        val encrypted = updateableEncryptionPrimitive.encryptPartialData(data)
+        val encrypted = updateableEncryptionPrimitive.xorWithKeystream(data)
         processPolyBytes(encrypted)
         return encrypted
+    }
+
+    fun verifyPartialData(data: UByteArray) {
+        processPolyBytes(data)
+    }
+
+    fun finalizeVerificationAndPrepareDecryptor(expectedTag: UByteArray): MultipartAuthenticatedDecryption {
+        val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
+        val macData = cipherTextPad +
+                additionalData.size.toULong().toLittleEndianUByteArray() +
+                processedBytes.toULong().toLittleEndianUByteArray()
+        processPolyBytes(macData)
+        val tag = updateableMacPrimitive.finalizeMac()
+        if (!tag.contentEquals(expectedTag)) {
+            throw RuntimeException("Invalid tag") //TODO Replace with proper exception
+        }
+    }
+
+    fun decrypt(data: UByteArray) : UByteArray {
+        processedBytes += data.size
+        val decrypted = updateableEncryptionPrimitive.xorWithKeystream(data)
+        processPolyBytes(decrypted)
+        return decrypted
     }
 
     private fun processPolyBytes(data: UByteArray) {
@@ -139,12 +166,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val addi
         }
     }
 
-
-
-
-
-
-    fun finish() : UByteArray {
+    fun finish() : Pair<UByteArray, UByteArray> {
 
         val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
         val macData = cipherTextPad +
@@ -152,9 +174,8 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray, val addi
                 processedBytes.toULong().toLittleEndianUByteArray()
         processPolyBytes(macData)
         val tag = updateableMacPrimitive.finalizeMac()
-        return tag
+        return Pair(tag, nonce)
     }
-
 
 
 }

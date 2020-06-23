@@ -132,7 +132,7 @@ class XChaCha20Pure(key: UByteArray, nonce: UByteArray, initialCounter: UInt = 0
         hChaChaKey.overwriteWithZeroes()
     }
 
-    fun encryptPartialData(data: UByteArray) : UByteArray {
+    fun xorWithKeystream(data: UByteArray) : UByteArray {
         val ciphertext = UByteArray(data.size) { 0U }
         //First use remaining keystream
         var processedBytes = 0

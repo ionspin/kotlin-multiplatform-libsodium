@@ -236,9 +236,9 @@ class XChaCha20Test {
             )
 
         val xChaCha = XChaCha20Pure(key, nonce, 1U)
-        val firstChunk = xChaCha.encryptPartialData(message.sliceArray(0 until 5))
-        val secondChunk = xChaCha.encryptPartialData(message.sliceArray(5 until 90))
-        val thirdChunk = xChaCha.encryptPartialData(message.sliceArray(90 until message.size))
+        val firstChunk = xChaCha.xorWithKeystream(message.sliceArray(0 until 5))
+        val secondChunk = xChaCha.xorWithKeystream(message.sliceArray(5 until 90))
+        val thirdChunk = xChaCha.xorWithKeystream(message.sliceArray(90 until message.size))
 
         assertTrue {
             (firstChunk + secondChunk + thirdChunk).contentEquals(expected)
@@ -325,9 +325,9 @@ class XChaCha20Test {
             )
 
         val xChaCha = XChaCha20Pure(key, nonce, 1U)
-        val firstChunk = xChaCha.encryptPartialData(message.sliceArray(0 until 50))
-        val secondChunk = xChaCha.encryptPartialData(message.sliceArray(50 until 200))
-        val thirdChunk = xChaCha.encryptPartialData(message.sliceArray(200 until message.size))
+        val firstChunk = xChaCha.xorWithKeystream(message.sliceArray(0 until 50))
+        val secondChunk = xChaCha.xorWithKeystream(message.sliceArray(50 until 200))
+        val thirdChunk = xChaCha.xorWithKeystream(message.sliceArray(200 until message.size))
         val result = (firstChunk + secondChunk + thirdChunk)
         assertTrue {
             result.contentEquals(expected)
