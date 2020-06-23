@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.getSodium
-import com.ionspin.kotlin.crypto.getSodium
 
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
@@ -35,7 +34,7 @@ actual class Sha512Delegated : Sha512 {
 
 }
 
-actual object Sha512StatelessDelegated : StatelessSha512 {
+actual object Sha512StatelessDelegated : MultipartSha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashed = getSodium().crypto_hash_sha512(Uint8Array(inputMessage.toByteArray().toTypedArray()))

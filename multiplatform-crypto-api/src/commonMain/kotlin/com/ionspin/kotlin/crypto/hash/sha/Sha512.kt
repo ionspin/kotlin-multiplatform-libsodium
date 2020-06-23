@@ -1,7 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.hash.Hash
-import com.ionspin.kotlin.crypto.hash.MultiPartHash
+import com.ionspin.kotlin.crypto.hash.MultipartHash
 
 /**
  * Created by Ugljesa Jovanovic
@@ -11,11 +11,11 @@ import com.ionspin.kotlin.crypto.hash.MultiPartHash
 object Sha512Properties {
     const val MAX_HASH_BYTES = 64
 }
-interface Sha512 : MultiPartHash {
+interface Sha512 : MultipartHash {
     override val MAX_HASH_BYTES: Int
         get() = Sha256Properties.MAX_HASH_BYTES
 }
-interface StatelessSha512 : Hash {
+interface MultipartSha512 : Hash {
     override val MAX_HASH_BYTES: Int
         get() = Sha512Properties.MAX_HASH_BYTES
 

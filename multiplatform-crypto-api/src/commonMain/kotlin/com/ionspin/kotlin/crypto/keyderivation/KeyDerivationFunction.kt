@@ -24,3 +24,12 @@ package com.ionspin.kotlin.crypto.keyderivation
 interface KeyDerivationFunction {
     fun derive() : UByteArray
 }
+
+data class ArgonResult(
+    val hashBytes: UByteArray,
+    val salt: UByteArray
+) {
+    val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
+    val saltString by lazy { salt.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
+
+}

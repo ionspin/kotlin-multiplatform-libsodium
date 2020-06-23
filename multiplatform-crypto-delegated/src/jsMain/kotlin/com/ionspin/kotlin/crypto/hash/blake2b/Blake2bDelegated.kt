@@ -1,8 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
 import com.ionspin.kotlin.crypto.getSodium
-import com.ionspin.kotlin.crypto.hash.sha.Sha256StatelessDelegated
-import com.ionspin.kotlin.crypto.util.toHexString
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 
@@ -13,7 +11,7 @@ import org.khronos.webgl.get
  */
 
 
-actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLength: Int) : Blake2b {
+actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLength: Int) : Blake2bMultipart {
     override val MAX_HASH_BYTES: Int = 64
 
 
@@ -43,7 +41,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLengt
 
 
 
-actual object Blake2bDelegatedStateless : Blake2bStateless {
+actual object Blake2bDelegatedStateless : Blake2b {
     override val MAX_HASH_BYTES: Int = 64
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {

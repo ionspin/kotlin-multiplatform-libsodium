@@ -8,7 +8,7 @@ import com.ionspin.kotlin.crypto.Initializer.sodium
  */
 
 
-actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLength: Int) : Blake2b {
+actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLength: Int) : Blake2bMultipart {
 
     val state = ByteArray(sodium.crypto_generichash_statebytes())
 
@@ -28,7 +28,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, val hashLengt
 
 }
 
-actual object Blake2bDelegatedStateless : Blake2bStateless {
+actual object Blake2bDelegatedStateless : Blake2b {
 
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {

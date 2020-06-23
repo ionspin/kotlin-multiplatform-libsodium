@@ -5,8 +5,10 @@ package com.ionspin.kotlin.crypto
  * ugljesa.jovanovic@ionspin.com
  * on 27-May-2020
  */
-interface CryptoProvider {
+interface CryptoInitializer {
     suspend fun initialize()
+
+    fun isInitialized() : Boolean
 
 
 }

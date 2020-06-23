@@ -23,9 +23,9 @@ package com.ionspin.kotlin.crypto.hash.blake2b
  */
 
 
-expect class Blake2bDelegated(key: UByteArray? = null, hashLength: Int = Blake2bProperties.MAX_HASH_BYTES) : Blake2b
+expect class Blake2bDelegated(key: UByteArray? = null, hashLength: Int = Blake2bProperties.MAX_HASH_BYTES) : Blake2bMultipart
 
 
-expect object Blake2bDelegatedStateless : Blake2bStateless
+expect object Blake2bDelegatedStateless : Blake2b
 
 

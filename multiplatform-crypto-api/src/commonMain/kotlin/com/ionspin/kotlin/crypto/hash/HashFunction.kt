@@ -27,7 +27,7 @@ interface HashFunction {
 }
 
 
-interface MultiPartHash : HashFunction {
+interface MultipartHash : HashFunction {
     fun update(data : UByteArray)
 
     fun digest() : UByteArray

@@ -30,7 +30,7 @@ actual class Sha512Delegated : Sha512 {
 
 }
 
-actual object Sha512StatelessDelegated : StatelessSha512 {
+actual object Sha512StatelessDelegated : MultipartSha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashed = ByteArray(Sha512Properties.MAX_HASH_BYTES)

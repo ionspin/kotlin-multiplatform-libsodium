@@ -21,6 +21,7 @@ package com.ionspin.kotlin.crypto.keyderivation.argon2
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.Blake2bPureStateless
 import com.ionspin.kotlin.crypto.SRNG
+import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
@@ -42,14 +43,7 @@ data class SegmentPosition(
     val slice: Int
 )
 
-data class ArgonResult(
-    val hashBytes: UByteArray,
-    val salt: UByteArray
-) {
-    val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
-    val saltString by lazy { salt.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
 
-}
 
 
 

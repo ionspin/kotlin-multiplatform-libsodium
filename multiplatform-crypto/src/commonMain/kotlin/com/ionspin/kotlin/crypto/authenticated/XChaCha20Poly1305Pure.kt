@@ -1,5 +1,7 @@
 package com.ionspin.kotlin.crypto.authenticated
 
+import com.ionspin.kotlin.crypto.InvalidTagException
+import com.ionspin.kotlin.crypto.MultipartAuthenticatedDecryption
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.mac.Poly1305
 import com.ionspin.kotlin.crypto.symmetric.ChaCha20Pure
@@ -58,7 +60,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray)
                     cipherTextWithoutTag.size.toULong().toLittleEndianUByteArray()
             val calculatedTag = Poly1305.poly1305Authenticate(authKey, macData)
             if (!calculatedTag.contentEquals(tag)) {
-                RuntimeException("Bad tag!") //TODO replace with specific exception
+                throw InvalidTagException()
             }
             //4. Decrypt data
             return XChaCha20Pure.xorWithKeystream(key, nonce, cipherTextWithoutTag, 1U)
@@ -106,7 +108,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray)
         processPolyBytes(data)
     }
 
-    fun finalizeVerificationAndPrepareDecryptor(expectedTag: UByteArray): MultipartAuthenticatedDecryption {
+    fun checkTag(expectedTag: UByteArray) {
         val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
         val macData = cipherTextPad +
                 additionalData.size.toULong().toLittleEndianUByteArray() +
@@ -114,7 +116,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray)
         processPolyBytes(macData)
         val tag = updateableMacPrimitive.finalizeMac()
         if (!tag.contentEquals(expectedTag)) {
-            throw RuntimeException("Invalid tag") //TODO Replace with proper exception
+            throw InvalidTagException()
         }
     }
 
