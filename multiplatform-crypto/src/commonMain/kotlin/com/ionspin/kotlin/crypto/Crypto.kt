@@ -52,7 +52,7 @@ object CryptoPrimitives : PrimitivesApi {
         return Sha256Pure.digest(inputMessage =  message)
     }
 
-    override fun hashSha512Multipart(): com.ionspin.kotlin.crypto.hash.sha.Sha512 {
+    override fun hashSha512Multipart(): com.ionspin.kotlin.crypto.hash.sha.Sha512Multipart {
         checkInitialization()
         return Sha512Pure()
     }

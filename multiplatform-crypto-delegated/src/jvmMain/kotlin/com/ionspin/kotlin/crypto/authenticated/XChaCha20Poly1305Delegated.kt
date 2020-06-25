@@ -8,7 +8,7 @@ import com.ionspin.kotlin.crypto.Initializer.sodium
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated {
+actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, additionalData: UByteArray) {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -16,7 +16,7 @@ actual class XChaCha20Poly1305Delegated {
             message: UByteArray,
             additionalData: UByteArray
         ): UByteArray {
-            val ciphertext = ByteArray(message.size + sodium.crypto_secretstream_xchacha20poly1305_abytes())
+            val ciphertext = ByteArray(message.size + 16)
             SodiumJava().crypto_aead_xchacha20poly1305_ietf_encrypt(
                 ciphertext,
                 longArrayOf(ciphertext.size.toLong()),
@@ -35,10 +35,24 @@ actual class XChaCha20Poly1305Delegated {
         actual fun decrypt(
             key: UByteArray,
             nonce: UByteArray,
-            cipherText: UByteArray,
+            ciphertext: UByteArray,
             additionalData: UByteArray
         ): UByteArray {
-            TODO("not implemented yet")
+            val message = ByteArray(ciphertext.size - sodium.crypto_secretstream_xchacha20poly1305_abytes())
+            SodiumJava().crypto_aead_xchacha20poly1305_ietf_encrypt(
+
+                message,
+                longArrayOf(ciphertext.size.toLong()),
+                ciphertext.toByteArray(),
+                ciphertext.size.toLong(),
+                additionalData.toByteArray(),
+                additionalData.size.toLong(),
+                null,
+                nonce.toByteArray(),
+                key.toByteArray()
+
+            )
+            return message.toUByteArray()
         }
     }
 

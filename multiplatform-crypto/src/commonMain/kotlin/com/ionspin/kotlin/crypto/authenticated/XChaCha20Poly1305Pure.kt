@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.authenticated
 
+import com.ionspin.kotlin.crypto.AuthenticatedEncryption
 import com.ionspin.kotlin.crypto.InvalidTagException
 import com.ionspin.kotlin.crypto.MultipartAuthenticatedDecryption
 import com.ionspin.kotlin.crypto.SRNG
@@ -13,7 +14,7 @@ import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
  * ugljesa.jovanovic@ionspin.com
  * on 17-Jun-2020
  */
-class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray) : {
+class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray) {
     companion object : AuthenticatedEncryption {
 
         override fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
@@ -68,7 +69,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val additionalData: UByteArray)
 
     }
 
-    val nonce = SRNG.getRandomBytes(24)
+    internal val nonce = SRNG.getRandomBytes(24)
 
     private val updateableEncryptionPrimitive = XChaCha20Pure(key, nonce, initialCounter = 1U)
     private val updateableMacPrimitive : Poly1305

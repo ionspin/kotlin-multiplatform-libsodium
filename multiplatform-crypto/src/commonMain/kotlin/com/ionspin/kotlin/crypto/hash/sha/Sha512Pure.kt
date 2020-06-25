@@ -25,11 +25,11 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  */
 
 
-class Sha512Pure : Sha512 {
+class Sha512Pure : Sha512Multipart {
 
     override val MAX_HASH_BYTES: Int = 32
 
-    companion object : MultipartSha512 {
+    companion object : Sha512 {
         const val BLOCK_SIZE = 1024
         const val BLOCK_SIZE_IN_BYTES = 128
         const val CHUNK_SIZE = 80

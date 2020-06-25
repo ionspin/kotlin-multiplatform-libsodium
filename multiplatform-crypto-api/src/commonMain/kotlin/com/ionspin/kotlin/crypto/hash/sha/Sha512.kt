@@ -11,11 +11,11 @@ import com.ionspin.kotlin.crypto.hash.MultipartHash
 object Sha512Properties {
     const val MAX_HASH_BYTES = 64
 }
-interface Sha512 : MultipartHash {
+interface Sha512Multipart : MultipartHash {
     override val MAX_HASH_BYTES: Int
         get() = Sha256Properties.MAX_HASH_BYTES
 }
-interface MultipartSha512 : Hash {
+interface Sha512 : Hash {
     override val MAX_HASH_BYTES: Int
         get() = Sha512Properties.MAX_HASH_BYTES
 

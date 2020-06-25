@@ -58,7 +58,7 @@ object CryptoPrimitives : PrimitivesApi {
     }
 
     object Sha512 {
-        fun updateable(): com.ionspin.kotlin.crypto.hash.sha.Sha512 {
+        fun updateable(): com.ionspin.kotlin.crypto.hash.sha.Sha512Multipart {
             checkInitialization()
             return Sha512Delegated()
         }
@@ -95,7 +95,7 @@ object CryptoPrimitives : PrimitivesApi {
         return Sha256StatelessDelegated.digest(inputMessage =  message)
     }
 
-    override fun hashSha512Multipart(): com.ionspin.kotlin.crypto.hash.sha.Sha512 {
+    override fun hashSha512Multipart(): com.ionspin.kotlin.crypto.hash.sha.Sha512Multipart {
         checkInitialization()
         return Sha512Delegated()
     }
@@ -179,7 +179,7 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
     }
 
     override fun finish(): MultipartEncryptedDataDescriptor {
-        val finished = primitive.finish()
+        val finished = primitive.finishEncryption()
         return MultipartEncryptedDataDescriptor(finished.first, finished.second)
     }
 

@@ -19,8 +19,9 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import com.ionspin.kotlin.crypto.Blake2bPureStateless
+
 import com.ionspin.kotlin.crypto.SRNG
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
 import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
@@ -290,7 +291,7 @@ class Argon2Pure(
                 salt.size.toUInt().toLittleEndianUByteArray() + salt +
                 key.size.toUInt().toLittleEndianUByteArray() + key +
                 associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
-        val h0 = Blake2bPureStateless.digest(
+        val h0 = Blake2bPure.digest(
             blakeInput
         )
 

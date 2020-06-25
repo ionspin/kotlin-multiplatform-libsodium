@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.Crypto
+import com.ionspin.kotlin.crypto.CryptoPrimitives
 import com.ionspin.kotlin.crypto.Initializer
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
@@ -24,7 +25,7 @@ class Sha512Test {
     fun statelessSimpleTest() {
         val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
                 "b143732c304cc5fa9ad8e6f57f50028a8ff"
-        val result = Crypto.Sha512.stateless("test".encodeToUByteArray()).toHexString()
+        val result = CryptoPrimitives.Sha512.stateless("test".encodeToUByteArray()).toHexString()
 //        println("Result: $result")
         assertTrue { result == expected }
     }
@@ -35,7 +36,7 @@ class Sha512Test {
     fun updateableSimpleTest() {
         val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
                 "b143732c304cc5fa9ad8e6f57f50028a8ff"
-        val sha512 = Crypto.Sha512.updateable()
+        val sha512 = CryptoPrimitives.Sha512.updateable()
         sha512.update("t".encodeToUByteArray())
         sha512.update(("est".encodeToUByteArray()))
         val result = sha512.digest().toHexString()

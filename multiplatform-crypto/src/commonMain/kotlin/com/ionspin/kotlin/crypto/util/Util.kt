@@ -26,30 +26,6 @@ val _emitIntArray: IntArray = intArrayOf(1)
  * ugljesa.jovanovic@ionspin.com
  * on 15-Jul-2019
  */
-fun Array<Byte>.hexColumsPrint() {
-    val printout = this.map { it.toString(16) }.chunked(16)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun UByteArray.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun UIntArray.hexColumsPrint(chunk : Int = 4) {
-    val printout = this.map { it.toString(16).padStart(8, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
-    val printout = this.map { it.toString(16) }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
 
 inline fun <reified T> Array<T>.chunked(sliceSize: Int): Array<Array<T>> {
     val last = this.size % sliceSize
@@ -119,37 +95,6 @@ fun UByteArray.xorWithPositionsAndInsertIntoArray(
     val length = end - start
     for (i in 0 until length) {
         targetArray[targetStart + i] = this[start + i] xor other[otherStart + i]
-    }
-}
-
-fun String.hexStringToTypedUByteArray() : Array<UByte> {
-    return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
-}
-
-
-fun String.hexStringToUByteArray() : UByteArray {
-    return this.chunked(2).map { it.toUByte(16) }.toUByteArray()
-}
-
-
-fun Array<UByte>.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
-    }
-}
-
-
-fun UByteArray.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
     }
 }
 

@@ -39,5 +39,8 @@ interface JsSodiumInterface {
 
     fun crypto_hash_sha512_final(state: dynamic): Uint8Array
 
+    //XChaCha20Poly1305
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, additionalData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+
 
 }

@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.Crypto
+import com.ionspin.kotlin.crypto.CryptoPrimitives
 import com.ionspin.kotlin.crypto.Initializer
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
@@ -23,7 +24,7 @@ class Sha256Test {
     @Test
     fun statelessSimpleTest() {
         val expected = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-        val result = Crypto.Sha256.stateless("test".encodeToUByteArray()).toHexString()
+        val result = CryptoPrimitives.Sha256.stateless("test".encodeToUByteArray()).toHexString()
 //        println("Result: $result")
         assertTrue { result == expected }
     }
@@ -33,7 +34,7 @@ class Sha256Test {
     @Test
     fun updateableSimpleTest() {
         val expected = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-        val sha256 = Crypto.Sha256.updateable()
+        val sha256 = CryptoPrimitives.Sha256.updateable()
         sha256.update("t".encodeToUByteArray())
         sha256.update(("est".encodeToUByteArray()))
         val result = sha256.digest().toHexString()

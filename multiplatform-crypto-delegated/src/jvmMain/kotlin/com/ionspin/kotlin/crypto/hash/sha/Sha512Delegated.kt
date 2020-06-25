@@ -10,7 +10,7 @@ import com.ionspin.kotlin.crypto.Initializer
  */
 
 
-actual class Sha512Delegated : Sha512 {
+actual class Sha512Delegated : Sha512Multipart {
 
     val state = Hash.State512()
 
@@ -30,7 +30,7 @@ actual class Sha512Delegated : Sha512 {
 
 }
 
-actual object Sha512StatelessDelegated : MultipartSha512 {
+actual object Sha512StatelessDelegated : Sha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashed = ByteArray(Sha512Properties.MAX_HASH_BYTES)

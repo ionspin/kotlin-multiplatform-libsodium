@@ -3,7 +3,7 @@ package com.ionspin.kotlin.crypto
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bMultipart
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bProperties
 import com.ionspin.kotlin.crypto.hash.sha.Sha256
-import com.ionspin.kotlin.crypto.hash.sha.Sha512
+import com.ionspin.kotlin.crypto.hash.sha.Sha512Multipart
 import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
 
 /**
@@ -18,7 +18,7 @@ interface PrimitivesApi {
     fun hashSha256Multipart(): Sha256
     fun hashSha256(message: UByteArray) : UByteArray
 
-    fun hashSha512Multipart(): Sha512
+    fun hashSha512Multipart(): Sha512Multipart
     fun hashSha512(message: UByteArray) : UByteArray
 
     fun deriveKey(

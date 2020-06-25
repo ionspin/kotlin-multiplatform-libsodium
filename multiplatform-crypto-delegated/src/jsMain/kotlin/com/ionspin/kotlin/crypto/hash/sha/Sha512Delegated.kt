@@ -12,7 +12,7 @@ import org.khronos.webgl.get
  */
 
 
-actual class Sha512Delegated : Sha512 {
+actual class Sha512Delegated : Sha512Multipart {
     val state : dynamic
 
     init {
@@ -34,7 +34,7 @@ actual class Sha512Delegated : Sha512 {
 
 }
 
-actual object Sha512StatelessDelegated : MultipartSha512 {
+actual object Sha512StatelessDelegated : Sha512 {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashed = getSodium().crypto_hash_sha512(Uint8Array(inputMessage.toByteArray().toTypedArray()))
