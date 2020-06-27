@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.authenticated
 import com.ionspin.kotlin.crypto.getSodium
 import ext.libsodium.com.ionspin.kotlin.crypto.toUByteArray
 import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
+import org.khronos.webgl.Uint8Array
 
 /**
  * Created by Ugljesa Jovanovic
@@ -26,8 +27,9 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
             val encrypted = getSodium().crypto_aead_xchacha20poly1305_ietf_encrypt(
                 message.toUInt8Array(),
                 additionalData.toUInt8Array(),
-                key.toUInt8Array(),
-                nonce.toUInt8Array()
+                Uint8Array(0),
+                nonce.toUInt8Array(),
+                key.toUInt8Array()
             )
             return encrypted.toUByteArray()
         }
@@ -38,7 +40,14 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
             ciphertext: UByteArray,
             additionalData: UByteArray
         ): UByteArray {
-            TODO("not implemented yet")
+            val decrypted = getSodium().crypto_aead_xchacha20poly1305_ietf_decrypt(
+                Uint8Array(0),
+                ciphertext.toUInt8Array(),
+                additionalData.toUInt8Array(),
+                nonce.toUInt8Array(),
+                key.toUInt8Array()
+            )
+            return decrypted.toUByteArray()
         }
     }
 

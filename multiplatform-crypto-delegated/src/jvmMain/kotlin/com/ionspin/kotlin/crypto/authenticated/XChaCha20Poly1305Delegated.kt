@@ -38,16 +38,15 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
             ciphertext: UByteArray,
             additionalData: UByteArray
         ): UByteArray {
-            val message = ByteArray(ciphertext.size - sodium.crypto_secretstream_xchacha20poly1305_abytes())
-            SodiumJava().crypto_aead_xchacha20poly1305_ietf_encrypt(
-
+            val message = ByteArray(ciphertext.size - 16)
+            SodiumJava().crypto_aead_xchacha20poly1305_ietf_decrypt(
                 message,
                 longArrayOf(ciphertext.size.toLong()),
+                null,
                 ciphertext.toByteArray(),
                 ciphertext.size.toLong(),
                 additionalData.toByteArray(),
                 additionalData.size.toLong(),
-                null,
                 nonce.toByteArray(),
                 key.toByteArray()
 

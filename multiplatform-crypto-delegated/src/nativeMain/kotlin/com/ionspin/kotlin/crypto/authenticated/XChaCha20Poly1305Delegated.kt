@@ -5,6 +5,7 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
 import kotlinx.cinterop.toCValues
 import libsodium.crypto_aead_xchacha20poly1305_IETF_ABYTES
+import libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt
 import libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt
 
 /**
@@ -25,7 +26,7 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
             val ciphertextPinned = ciphertext.pin()
             crypto_aead_xchacha20poly1305_ietf_encrypt(
                 ciphertextPinned.addressOf(0),
-                ciphertextLength.convert(),
+                ulongArrayOf(ciphertextLength.convert()).toCValues(),
                 message.toCValues(),
                 message.size.convert(),
                 additionalData.toCValues(),
@@ -44,7 +45,22 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
             ciphertext: UByteArray,
             additionalData: UByteArray
         ): UByteArray {
-            TODO("not implemented yet")
+            val messageLength = ciphertext.size - crypto_aead_xchacha20poly1305_IETF_ABYTES.toInt()
+            val message = UByteArray(messageLength)
+            val messagePinned = message.pin()
+            crypto_aead_xchacha20poly1305_ietf_decrypt(
+                messagePinned.addressOf(0),
+                ulongArrayOf(messageLength.convert()).toCValues(),
+                null,
+                ciphertext.toCValues(),
+                ciphertext.size.convert(),
+                additionalData.toCValues(),
+                additionalData.size.convert(),
+                nonce.toCValues(),
+                key.toCValues()
+            )
+            messagePinned.unpin()
+            return message
         }
     }
 

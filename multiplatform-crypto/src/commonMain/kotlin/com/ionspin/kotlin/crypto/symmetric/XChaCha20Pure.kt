@@ -173,7 +173,6 @@ class XChaCha20Pure(key: UByteArray, nonce: UByteArray, initialCounter: UInt = 0
         )
         keystreamRemainingCounter = 64 - remainingBytes
         processedBytesSoFar += data.size
-        state.overwriteWithZeroes()
         return ciphertext
     }
 

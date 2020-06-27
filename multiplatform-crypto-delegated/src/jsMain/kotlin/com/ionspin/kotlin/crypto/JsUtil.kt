@@ -8,10 +8,12 @@ import org.khronos.webgl.set
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 25-Jun-2020
+ *
+ * TODO investigate using unsafe cast
  */
 fun UByteArray.toUInt8Array() : Uint8Array {
     val uint8Result = Uint8Array(toByteArray().toTypedArray())
-    console.log("Uint8: $uint8Result")
+//    console.log("Uint8: $uint8Result")
     return uint8Result
 }
 
@@ -21,7 +23,7 @@ fun Uint8Array.toUByteArray() : UByteArray {
     for (i in 0 until length) {
         result[i] = get(i).toUByte()
     }
-    console.log("UbyteArray: ${result.joinToString()}")
+//    console.log("UbyteArray: ${result.joinToString()}")
 
     return result
 }

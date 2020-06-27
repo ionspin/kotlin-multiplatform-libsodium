@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.crypto.CryptoInitializerDelegated
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,10 +19,9 @@ class XChaCha20Poly1305Test {
 
 
     @Test
-    fun xChaCha20Poly1305() {
-        testBlocking {
-            CryptoInitializerDelegated.initialize()
-        }
+    fun xChaCha20Poly1305() = testBlocking {
+        CryptoInitializerDelegated.initialize()
+
         assertTrue {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -62,9 +62,12 @@ class XChaCha20Poly1305Test {
                 0xcfU, 0x49U
             )
             val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, additionalData)
-//            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
-
-            encrypted.contentEquals(expected) // && decrypted.contentEquals(message)
+            encrypted.hexColumsPrint()
+            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
+            println("Decrypted")
+            decrypted.hexColumsPrint()
+            println("----------")
+            encrypted.contentEquals(expected) && decrypted.contentEquals(message)
         }
 
         assertTrue {
@@ -91,9 +94,9 @@ class XChaCha20Poly1305Test {
                 0x84U, 0x6fU, 0xfcU, 0x75U, 0x31U, 0xbfU, 0x0cU, 0x2dU
             )
             val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, additionalData)
-//            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
+            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
 
-            encrypted.contentEquals(expected) // && decrypted.contentEquals(message)
+            encrypted.contentEquals(expected)  && decrypted.contentEquals(message)
         }
 
 

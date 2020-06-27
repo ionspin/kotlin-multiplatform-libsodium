@@ -1,9 +1,7 @@
+@file:Suppress("VARIABLE_IN_SINGLETON_WITHOUT_THREAD_LOCAL")
+
 package com.ionspin.kotlin.crypto
 
-import kotlinx.atomicfu.AtomicBoolean
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import libsodium.sodium_init
 import kotlin.native.concurrent.AtomicInt
 

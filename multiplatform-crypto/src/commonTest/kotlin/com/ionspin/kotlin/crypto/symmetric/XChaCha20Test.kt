@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -239,9 +240,9 @@ class XChaCha20Test {
         val firstChunk = xChaCha.xorWithKeystream(message.sliceArray(0 until 5))
         val secondChunk = xChaCha.xorWithKeystream(message.sliceArray(5 until 90))
         val thirdChunk = xChaCha.xorWithKeystream(message.sliceArray(90 until message.size))
-
+        val result = firstChunk + secondChunk + thirdChunk
         assertTrue {
-            (firstChunk + secondChunk + thirdChunk).contentEquals(expected)
+            (result).contentEquals(expected)
         }
 
     }

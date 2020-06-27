@@ -15,19 +15,16 @@ import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
  */
 
 object CryptoInitializerDelegated : CryptoInitializer {
-    private var initialized = false
     override suspend fun initialize() {
         Initializer.initialize()
-        initialized = true
     }
 
     fun initializeWithCallback(done: () -> Unit) {
-        initialized = true
         Initializer.initializeWithCallback(done)
     }
 
     override fun isInitialized(): Boolean {
-        return initialized
+        return Initializer.isInitialized()
     }
 }
 
