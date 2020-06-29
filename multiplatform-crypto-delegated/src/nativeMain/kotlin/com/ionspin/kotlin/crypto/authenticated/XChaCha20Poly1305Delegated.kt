@@ -1,19 +1,16 @@
 package com.ionspin.kotlin.crypto.authenticated
 
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.pin
-import kotlinx.cinterop.toCValues
-import libsodium.crypto_aead_xchacha20poly1305_IETF_ABYTES
-import libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt
-import libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt
+import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
+import kotlinx.cinterop.*
+import libsodium.*
+import platform.posix.malloc
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, additionalData: UByteArray) {
+actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray,val additionalData: UByteArray) {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -64,8 +61,58 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
         }
     }
 
+
+    actual internal constructor(key: UByteArray, additionalData: UByteArray, testState : UByteArray, testHeader: UByteArray) : this(key, additionalData) {
+        val pointer = state.ptr.reinterpret<UByteVar>()
+        for (i in 0 until crypto_secretstream_xchacha20poly1305_state.size.toInt()) {
+            pointer[i] = testState[i]
+        }
+        println("state after setting-----------")
+        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).toUByteArray().hexColumsPrint()
+        println("state after setting-----------")
+        println("header after setting-----------")
+        testHeader.copyInto(header)
+        header.hexColumsPrint()
+        println("header after setting-----------")
+   }
+
+    var state =
+        malloc(crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+            .reinterpret<crypto_secretstream_xchacha20poly1305_state>()
+            .pointed
+
+    val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
+
+    init {
+        val pinnedHeader = header.pin()
+        crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
+        println("state-----------")
+        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).toUByteArray().hexColumsPrint()
+        println("state-----------")
+        println("--------header-----------")
+        header.hexColumsPrint()
+        println("--------header-----------")
+
+    }
+
     actual fun encryptPartialData(data: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val ciphertextWithTag = UByteArray(data.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
+        val ciphertextWithTagPinned = ciphertextWithTag.pin()
+        crypto_secretstream_xchacha20poly1305_push(
+            state.ptr,
+            ciphertextWithTagPinned.addressOf(0),
+            null,
+            data.toCValues(),
+            data.size.convert(),
+            null,
+            0U,
+            0U,
+        )
+        println("Encrypt partial")
+        ciphertextWithTag.hexColumsPrint()
+        println("Encrypt partial end")
+        ciphertextWithTagPinned.unpin()
+        return ciphertextWithTag
     }
 
     actual fun verifyPartialData(data: UByteArray) {

@@ -2,9 +2,7 @@ package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.crypto.mac.Poly1305
 import com.ionspin.kotlin.crypto.symmetric.ChaCha20Pure
-import com.ionspin.kotlin.crypto.symmetric.XChaCha20Pure
 import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToUIntWithPosition
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 
 /**
@@ -38,7 +36,7 @@ internal class ChaCha20Poly1305Pure {
                 }
             }
             val oneTimeKey = ChaCha20Pure.hash(state).sliceArray(0 until 32)
-            val cipherText = ChaCha20Pure.encrypt(key, nonce, message, 1U)
+            val cipherText = ChaCha20Pure.xorWithKeystream(key, nonce, message, 1U)
             val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
             val cipherTextPad = UByteArray(16 - cipherText.size % 16) { 0U }
             val macData = additionalData + additionalDataPad +

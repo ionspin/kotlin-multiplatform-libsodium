@@ -1,8 +1,6 @@
 package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
-import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -80,7 +78,7 @@ class ChaCha20Test {
             0x5aU, 0xf9U, 0x0bU, 0xbfU, 0x74U, 0xa3U, 0x5bU, 0xe6U, 0xb4U, 0x0bU, 0x8eU, 0xedU, 0xf2U, 0x78U, 0x5eU, 0x42U,
             0x87U, 0x4dU,
         )
-        val result = ChaCha20Pure.encrypt(key, nonce, message, 1U)
+        val result = ChaCha20Pure.xorWithKeystream(key, nonce, message, 1U)
         assertTrue {
             expected.contentEquals(result)
         }

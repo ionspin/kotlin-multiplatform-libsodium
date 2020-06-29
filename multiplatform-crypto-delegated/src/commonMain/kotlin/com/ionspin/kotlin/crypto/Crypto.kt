@@ -55,7 +55,7 @@ object CryptoPrimitives : PrimitivesApi {
     }
 
     object Sha512 {
-        fun updateable(): com.ionspin.kotlin.crypto.hash.sha.Sha512Multipart {
+        fun updateable(): Sha512Multipart {
             checkInitialization()
             return Sha512Delegated()
         }

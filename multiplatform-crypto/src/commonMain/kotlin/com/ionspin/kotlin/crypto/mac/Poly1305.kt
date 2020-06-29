@@ -80,7 +80,6 @@ class Poly1305(key: UByteArray) {
     var accumulator = BigInteger.ZERO
 
     fun updateMac(data : UByteArray) {
-        data.hexColumsPrint()
         val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[128]
         accumulator += blockAsInt
         accumulator *= rAsBigInt
@@ -89,7 +88,6 @@ class Poly1305(key: UByteArray) {
 
     fun finalizeMac(data: UByteArray = ubyteArrayOf()) : UByteArray{
         if (data.size != 0) {
-            data.hexColumsPrint()
             val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[data.size * 8]
             accumulator += blockAsInt
             accumulator *= rAsBigInt
