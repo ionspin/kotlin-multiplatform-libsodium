@@ -80,6 +80,9 @@ class Poly1305(key: UByteArray) {
     var accumulator = BigInteger.ZERO
 
     fun updateMac(data : UByteArray) {
+        if (data.size != 16) {
+            throw RuntimeException("Invalide block size, required 16, got ${data.size}")
+        }
         val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[128]
         accumulator += blockAsInt
         accumulator *= rAsBigInt

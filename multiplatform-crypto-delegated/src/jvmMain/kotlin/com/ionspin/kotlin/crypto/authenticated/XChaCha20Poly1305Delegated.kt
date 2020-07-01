@@ -55,7 +55,7 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
         }
     }
 
-    internal actual constructor(key: UByteArray, additionalData: UByteArray, testState : UByteArray, testHeader: UByteArray) {
+    internal actual constructor(key: UByteArray, additionalData: UByteArray, testState : UByteArray, testHeader: UByteArray) : this(key, ubyteArrayOf()) {
 
     }
 

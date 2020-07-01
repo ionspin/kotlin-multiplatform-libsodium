@@ -135,25 +135,71 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val result = UByteArray(1 + data.size + 16) //Tag marker, ciphertext, mac
         //get encryption state
         val block = UByteArray(64) { 0U }
+        println("--block")
+        block.hexColumsPrint()
+        println("--block")
+        println("--key")
+        calcKey.hexColumsPrint()
+        println("--key")
+        println("--nonce")
+        calcNonce.hexColumsPrint()
+        println("--nonce")
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
+        /*
+        5C 9A C3 7B CA 8F 2B 12 9A D8 41 3B 0C E9 55 EF
+        25 27 9A 4B 5B 7F 87 75 0C 47 E9 C9 DE 82 44 BA
+        6C 51 48 F4 9C 0A 24 6B F2 7C 51 5E 62 1A 16 E1
+        28 23 C6 B5 12 2E AD 58 AD 51 AA 34 78 33 08 C9
+         */
+        println("--block")
+        block.hexColumsPrint()
+        println("--block")
         val poly1305 = Poly1305(block)
         block.overwriteWithZeroes()
-        val additionalDataPadded  =  additionalData + UByteArray(16 - additionalData.size % 16) { 0U }
-        poly1305.updateMac(additionalDataPadded)
+        if (additionalData.isNotEmpty()) {
+            val additionalDataPadded = additionalData + UByteArray(16 - additionalData.size % 16) { 0U }
+            processPolyBytes(poly1305, additionalDataPadded)
+        }
+
         block[0] = tag
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block) // This just xors block[0] with keystream
-        poly1305.updateMac(block) // but updates the mac with the full block!
+        processPolyBytes(poly1305, block) // but updates the mac with the full block!
+//        println("--poly 1")
+        // 13 10 8E D1 3C B9 77 C1 9B 95 66 C8 1B 8A 5D D3
+//        poly1305.finalizeMac().hexColumsPrint()
+//        println("--poly 1")
         // In libsodium c code, it now sets the first byte to be a tag, we'll just save it for now
         val encryptedTag = block[0]
         //And then encrypt the rest of the message
         val ciphertext = ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, data, 2U) // With appropriate counter
         println("ciphertext-----")
-        ciphertext.hexColumsPrint()
+        /*
+        paddedCipherText--
+            D3 2D 59 B8 C4 66 2E 47 29 C6 F9 93 4B 09 27 24
+            DD F3 05 48 94 67 10 00 21 85 22 96 3C CE 8E B7
+            53 9D 46 F5 3C 5E 48 9B 8C 13 B7 28 6B B3 6C 3A
+            04 B7 25 B9 50 45 08 0B 89 A2 0F 70 CC 60 1B C3
+            17 35 9F AE 82 51 43 1B 9D 53 9E E2 AF 20 1F FD
+            03 59 11 51 9E AC 83 CD 78 D1 D0 E5 D7 0E 41 DE
+            FB 5C 7F 1C 00 00 00 00 00 00 00 00 00 00 00 00
+            paddedCipherText--
+         */
+        (ciphertext + UByteArray(((16 - 64 + data.size) % 16)) { 0U }).hexColumsPrint()
+        println("pad: ${16 - ((data.size) % 16)}")
+        println("pad: ${((16U + data.size.toUInt() - block.size.toUInt()) % 16U).toInt()}")
         println("ciphertext-----")
-        poly1305.updateMac(ciphertext + UByteArray(16 - data.size % 16) { 0U } ) //TODO this is inefficient as it creates a new array and copies data
-        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + ciphertext.size.toULong().toLittleEndianUByteArray()
-        val mac = poly1305.finalizeMac(finalMac)
-
+        processPolyBytes(poly1305, ciphertext + UByteArray(((16U + data.size.toUInt() - block.size.toUInt()) % 16U).toInt()) { 0U } ) //TODO this is inefficient as it creates a new array and copies data
+//        println("--poly cipher")
+        // 93 D9 13 DC AB 1D 07 D7 51 03 17 85 8A 5C F0 84
+//        poly1305.finalizeMac().hexColumsPrint()
+//        println("--poly cipher")
+        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
+        processPolyBytes(poly1305, finalMac)
+        val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
+        //19 F3 39 CC DE 82 35 08 C1 82 DB 3D F1 EF 89 45
+        println("poly final --")
+        mac.hexColumsPrint()
+        println("poly final --")
         return ubyteArrayOf(encryptedTag) + ciphertext + mac
     }
 
@@ -162,20 +208,20 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
     fun encryptPartialData(data: UByteArray) : UByteArray {
         processedBytes += data.size
         val encrypted = updateableEncryptionPrimitive.xorWithKeystream(data)
-        processPolyBytes(encrypted)
+//        processPolyBytes(encrypted)
 
         val cipherTextPad = UByteArray(16 - processedBytes % 16) { 0U }
         val macData = cipherTextPad +
 //                additionalData.size.toULong().toLittleEndianUByteArray() +
                 processedBytes.toULong().toLittleEndianUByteArray()
-        processPolyBytes(macData)
+//        processPolyBytes(macData)
         val tag = updateableMacPrimitive.finalizeMac()
 
         return encrypted + tag
     }
 
     fun verifyPartialData(data: UByteArray) {
-        processPolyBytes(data)
+//        processPolyBytes(data)
     }
 
     fun checkTag(expectedTag: UByteArray) {
@@ -183,7 +229,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val macData = cipherTextPad +
 //                additionalData.size.toULong().toLittleEndianUByteArray() +
                 processedBytes.toULong().toLittleEndianUByteArray()
-        processPolyBytes(macData)
+//        processPolyBytes(macData)
         val tag = updateableMacPrimitive.finalizeMac()
         if (!tag.contentEquals(expectedTag)) {
             throw InvalidTagException()
@@ -193,11 +239,11 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
     fun decrypt(data: UByteArray) : UByteArray {
         processedBytes += data.size
         val decrypted = updateableEncryptionPrimitive.xorWithKeystream(data)
-        processPolyBytes(decrypted)
+//        processPolyBytes(decrypted)
         return decrypted
     }
 
-    private fun processPolyBytes(data: UByteArray) {
+    private fun processPolyBytes(updateableMacPrimitive: Poly1305, data: UByteArray) {
         if (polyBufferByteCounter == 0) {
             val polyBlocks = data.size / 16
             val polyRemainder = data.size % 16
@@ -230,7 +276,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
                 }
                 if (polyRemainder != 0) {
                     for (i in 0 until polyRemainder) {
-                        polyBuffer[i] = data[data.size + borrowed - polyRemainder + i]
+                        polyBuffer[i] = data[borrowed + i]
                     }
                     polyBufferByteCounter = polyRemainder
                 }
@@ -244,7 +290,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val macData = cipherTextPad +
 //                additionalData.size.toULong().toLittleEndianUByteArray() +
                 processedBytes.toULong().toLittleEndianUByteArray()
-        processPolyBytes(macData)
+//        processPolyBytes(macData)
         val tag = updateableMacPrimitive.finalizeMac()
         return Pair(tag, nonce)
     }

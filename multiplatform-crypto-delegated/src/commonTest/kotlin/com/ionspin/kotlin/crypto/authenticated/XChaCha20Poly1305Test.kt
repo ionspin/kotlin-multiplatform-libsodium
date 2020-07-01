@@ -210,6 +210,6 @@ class XChaCha20Poly1305Test {
         )
         val xcha = XChaCha20Poly1305Delegated(key, ubyteArrayOf(), state, header)
         val data = UByteArray(100) { 0U }
-        xcha.encryptPartialData(data)
+        xcha.verifyPartialData(data)
     }
 }

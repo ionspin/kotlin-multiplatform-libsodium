@@ -1,9 +1,11 @@
 package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
+import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.malloc
+import platform.posix.memset
 
 /**
  * Created by Ugljesa Jovanovic
@@ -116,6 +118,72 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray,v
     }
 
     actual fun verifyPartialData(data: UByteArray) {
+        val ciphertextWithTag = UByteArray(data.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
+        val ciphertextWithTagPinned = ciphertextWithTag.pin()
+        val blockUB = UByteArray(64) { 0U }
+        val slenUB = UByteArray(8) { 0U }
+        val block = blockUB.pin().addressOf(0)
+        val slen = slenUB.pin().addressOf(0)
+
+        var poly1305_state =
+            malloc(crypto_onetimeauth_state.size.convert())!!
+                .reinterpret<crypto_onetimeauth_state>()
+                .pointed
+        val key = state.ptr.readBytes(32).toUByteArray()
+        val nonce = state.ptr.readBytes(44).sliceArray(32 until 44).toUByteArray()
+        println("--block")
+        blockUB.hexColumsPrint()
+        println("--block")
+        println("--key")
+        key.hexColumsPrint()
+        println("--key")
+        println("--nonce")
+        nonce.hexColumsPrint()
+        println("--nonce")
+        println("--state before")
+        state.ptr.readBytes(52).toUByteArray().hexColumsPrint()
+        println("--state before")
+        crypto_stream_chacha20_ietf(block, 64, state.ptr.readBytes(44).sliceArray(32 until 44).toUByteArray().toCValues(), state.ptr.readBytes(32).toUByteArray().toCValues());
+        println("--state after")
+        state.ptr.readBytes(52).toUByteArray().hexColumsPrint()
+        println("--state after")
+        println("--block")
+        blockUB.hexColumsPrint()
+        println("--block")
+
+
+        crypto_onetimeauth_poly1305_init(poly1305_state.ptr, block);
+        memset(block, 0, 64);
+        block[0] = 0U
+
+
+        crypto_stream_chacha20_ietf_xor_ic(block, block, 64,
+            state.ptr.readBytes(44).sliceArray(32 until 44).toUByteArray().toCValues(), 1U, state.ptr.readBytes(32).toUByteArray().toCValues());
+        crypto_onetimeauth_poly1305_update(poly1305_state.ptr, block, 64);
+
+        //Poly result
+        val polyResult = UByteArray(16)
+        val polyResultPin = polyResult.pin()
+        val cipherText = UByteArray(data.size)
+        val ciphertextPinned = cipherText.pin()
+
+        crypto_stream_chacha20_ietf_xor_ic(ciphertextPinned.addressOf(0), data.toCValues(), data.size.convert(),
+            state.ptr.readBytes(44).sliceArray(32 until 44).toUByteArray().toCValues(), 2U, state.ptr.readBytes(32).toUByteArray().toCValues());
+        val paddedCipherText = cipherText + UByteArray(16 - ((data.size) % 16)) { 0U }
+        val paddedCipherTextPinned = paddedCipherText.pin()
+        println("paddedCipherText--")
+        paddedCipherText.hexColumsPrint()
+        println("paddedCipherText--")
+        crypto_onetimeauth_poly1305_update(poly1305_state.ptr, paddedCipherTextPinned.addressOf(0), (data.size + (16 - ((data.size) % 16))).convert());
+
+
+
+        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (data.size + 64).toULong().toLittleEndianUByteArray()
+        crypto_onetimeauth_poly1305_update(poly1305_state.ptr, finalMac.pin().addressOf(0), 16);
+        crypto_onetimeauth_poly1305_final(poly1305_state.ptr, polyResultPin.addressOf(0));
+        println("-- poly 1")
+        polyResult.hexColumsPrint()
+        println("-- poly 1")
     }
 
     actual fun checkTag(expectedTag: UByteArray) {
