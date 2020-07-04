@@ -171,32 +171,14 @@ object Crypto {
 
 class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKey, additionalData: UByteArray) : MultipartAuthenticatedEncryption {
     val primitive = XChaCha20Poly1305Delegated(key.value, additionalData)
+
+
     override fun encryptPartialData(data: UByteArray): EncryptedDataPart {
-        return EncryptedDataPart(primitive.encryptPartialData(data))
-    }
-
-    override fun finish(): MultipartEncryptedDataDescriptor {
-        val finished = primitive.finishEncryption()
-        return MultipartEncryptedDataDescriptor(finished.first, finished.second)
+        return EncryptedDataPart(primitive.encrypt(data))
     }
 
 }
 
-class MultiplatformAuthenticatedVerificator internal constructor(key: SymmetricKey, multipartEncryptedDataDescriptor: MultipartEncryptedDataDescriptor, additionalData: UByteArray) : MultipartAuthenticatedVerification {
-    val primitive = XChaCha20Poly1305Delegated(key.value, additionalData)
-    val tag = multipartEncryptedDataDescriptor.data.sliceArray(
-        multipartEncryptedDataDescriptor.data.size - 16 until multipartEncryptedDataDescriptor.data.size
-    )
-    override fun verifyPartialData(data: EncryptedDataPart) {
-        primitive.verifyPartialData(data.data)
-    }
-
-    override fun finalizeVerificationAndPrepareDecryptor(): MultipartAuthenticatedDecryption {
-        primitive.checkTag(tag)
-        return MultipartAuthenticatedDecryptor(primitive)
-    }
-
-}
 
 class MultipartAuthenticatedDecryptor internal constructor(val encryptor: XChaCha20Poly1305Delegated) : MultipartAuthenticatedDecryption {
     override fun decryptPartialData(data: EncryptedDataPart): DecryptedDataPart {

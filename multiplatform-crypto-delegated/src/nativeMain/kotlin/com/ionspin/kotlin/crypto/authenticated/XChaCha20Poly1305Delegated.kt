@@ -97,7 +97,7 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray,v
 
     }
 
-    actual fun encryptPartialData(data: UByteArray): UByteArray {
+    actual fun encrypt(data: UByteArray): UByteArray {
         val ciphertextWithTag = UByteArray(data.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
         val ciphertextWithTagPinned = ciphertextWithTag.pin()
         crypto_secretstream_xchacha20poly1305_push(

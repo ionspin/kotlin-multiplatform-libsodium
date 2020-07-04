@@ -13,11 +13,9 @@ expect class XChaCha20Poly1305Delegated constructor(key: UByteArray, additionalD
         fun decrypt(key: UByteArray, nonce: UByteArray, ciphertext: UByteArray, additionalData: UByteArray) : UByteArray
     }
 
-    fun encryptPartialData(data: UByteArray) : UByteArray
-    fun verifyPartialData(data: UByteArray)
-    fun checkTag(expectedTag: UByteArray)
+    fun encrypt(data: UByteArray) : UByteArray
     fun decrypt(data: UByteArray) : UByteArray
-    fun finishEncryption() : Pair<UByteArray, UByteArray>
+
 
 }
 

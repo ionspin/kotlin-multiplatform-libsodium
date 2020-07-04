@@ -59,7 +59,7 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
 
     }
 
-    actual fun encryptPartialData(data: UByteArray): UByteArray {
+    actual fun encrypt(data: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
 

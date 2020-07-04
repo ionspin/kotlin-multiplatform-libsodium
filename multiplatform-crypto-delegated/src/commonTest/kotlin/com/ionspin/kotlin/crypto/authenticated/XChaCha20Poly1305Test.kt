@@ -4,8 +4,6 @@ import com.ionspin.kotlin.crypto.CryptoInitializerDelegated
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.testBlocking
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -145,7 +143,7 @@ class XChaCha20Poly1305Test {
                 0xcfU, 0x49U
             )
             val xChaChaPoly = XChaCha20Poly1305Delegated(key, additionalData)
-            val firstChunk = xChaChaPoly.encryptPartialData(message)
+            val firstChunk = xChaChaPoly.encrypt(message)
             val finalChunk = xChaChaPoly.finishEncryption().first
             val result = firstChunk + finalChunk
 
@@ -176,7 +174,7 @@ class XChaCha20Poly1305Test {
                 0x84U, 0x6fU, 0xfcU, 0x75U, 0x31U, 0xbfU, 0x0cU, 0x2dU
             )
             val xChaChaPoly = XChaCha20Poly1305Delegated(key, additionalData)
-            val firstChunk = xChaChaPoly.encryptPartialData(message)
+            val firstChunk = xChaChaPoly.encrypt(message)
             val finalChunk = xChaChaPoly.finishEncryption().first
             val result = firstChunk + finalChunk
             result.contentEquals(expected)

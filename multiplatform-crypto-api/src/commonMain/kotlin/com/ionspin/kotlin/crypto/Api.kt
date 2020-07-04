@@ -72,14 +72,9 @@ interface AuthenticatedEncryption {
 data class EncryptedDataPart(val data : UByteArray)
 data class DecryptedDataPart(val data : UByteArray)
 
-data class MultipartEncryptedDataDescriptor(val data: UByteArray, val nonce: UByteArray)
+data class MultipartEncryptionHeader(val nonce: UByteArray)
 
 class InvalidTagException : RuntimeException("Tag mismatch! Encrypted data is corrupted or tampered with.")
-
-interface MultipartAuthenticatedVerification {
-    fun verifyPartialData(data: EncryptedDataPart)
-    fun finalizeVerificationAndPrepareDecryptor() : MultipartAuthenticatedDecryption
-}
 
 interface MultipartAuthenticatedDecryption {
     fun decryptPartialData(data: EncryptedDataPart) : DecryptedDataPart

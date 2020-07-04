@@ -207,6 +207,6 @@ class XChaCha20Poly1305Test {
             xcha.calcNonce.contentEquals(state.sliceArray(32 until 44))
         }
         val data = UByteArray(100) { 0U }
-        xcha.encryptPartial(data).hexColumsPrint()
+        xcha.streamEncrypt(data).hexColumsPrint()
     }
 }
