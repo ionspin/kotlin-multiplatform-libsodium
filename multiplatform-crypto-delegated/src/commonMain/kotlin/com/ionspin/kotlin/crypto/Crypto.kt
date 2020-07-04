@@ -159,30 +159,38 @@ object Crypto {
 
         }
 
-        override fun multipartEncrypt(key: SymmetricKey, additionalData: UByteArray) : MultipartAuthenticatedEncryption {
-            return MultipartAuthenticatedEncryptor(key, additionalData)
+        override fun createMultipartEncryptor(key: SymmetricKey): MultipartAuthenticatedEncryption {
+            return MultipartAuthenticatedEncryptor(key)
         }
 
-        override fun multipartDecryptProcessStart(key: SymmetricKey, dataDescriptor: MultipartEncryptedDataDescriptor, additionalData: UByteArray) : MultipartAuthenticatedVerification {
-            return MultiplatformAuthenticatedVerificator(key, dataDescriptor, additionalData)
+        override fun createMultipartDecryptor(key: SymmetricKey, header: MultipartEncryptionHeader) : MultipartAuthenticatedDecryption {
+            val decryptor = XChaCha20Poly1305Delegated(key.value, header.nonce)
+            return MultipartAuthenticatedDecryptor(decryptor)
         }
+
+
     }
 }
 
-class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKey, additionalData: UByteArray) : MultipartAuthenticatedEncryption {
-    val primitive = XChaCha20Poly1305Delegated(key.value, additionalData)
+class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKey) : MultipartAuthenticatedEncryption {
 
+    val header = MultipartEncryptionHeader(SRNG.getRandomBytes(24))
+    val primitive = XChaCha20Poly1305Delegated(key.value, header.nonce)
 
-    override fun encryptPartialData(data: UByteArray): EncryptedDataPart {
-        return EncryptedDataPart(primitive.encrypt(data))
+    override fun startEncryption(): MultipartEncryptionHeader {
+        return header
+    }
+
+    override fun encryptPartialData(data: UByteArray, additionalData: UByteArray): EncryptedDataPart {
+        return EncryptedDataPart(primitive.encrypt(data, additionalData))
     }
 
 }
 
 
-class MultipartAuthenticatedDecryptor internal constructor(val encryptor: XChaCha20Poly1305Delegated) : MultipartAuthenticatedDecryption {
-    override fun decryptPartialData(data: EncryptedDataPart): DecryptedDataPart {
-        return DecryptedDataPart(encryptor.decrypt(data.data))
+class MultipartAuthenticatedDecryptor internal constructor(val decryptor: XChaCha20Poly1305Delegated) : MultipartAuthenticatedDecryption {
+    override fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray): DecryptedDataPart {
+        return DecryptedDataPart(decryptor.decrypt(data.data, additionalData))
     }
 
 }

@@ -1,14 +1,13 @@
 package com.ionspin.kotlin.crypto.authenticated
 
 import com.goterl.lazycode.lazysodium.SodiumJava
-import com.ionspin.kotlin.crypto.Initializer.sodium
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, additionalData: UByteArray) {
+actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonce: UByteArray) {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -55,26 +54,22 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
         }
     }
 
-    internal actual constructor(key: UByteArray, additionalData: UByteArray, testState : UByteArray, testHeader: UByteArray) : this(key, ubyteArrayOf()) {
+    internal actual constructor(
+        key: UByteArray,
+        nonce: UByteArray,
+        testState: UByteArray,
+        testHeader: UByteArray
+    ) : this(key, ubyteArrayOf()) {
 
     }
 
-    actual fun encrypt(data: UByteArray): UByteArray {
+    actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
 
-    actual fun verifyPartialData(data: UByteArray) {
-    }
-
-    actual fun checkTag(expectedTag: UByteArray) {
-    }
-
-    actual fun decrypt(data: UByteArray): UByteArray {
+    actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
 
-    actual fun finishEncryption(): Pair<UByteArray, UByteArray> {
-        TODO("not implemented yet")
-    }
 
 }

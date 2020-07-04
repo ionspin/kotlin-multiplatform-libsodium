@@ -94,7 +94,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         println("Calcnonce---------")
     }
 
-    fun streamEncrypt(data: UByteArray, additionalData: UByteArray = ubyteArrayOf(), tag : UByte = 0U) : UByteArray {
+    fun streamEncrypt(data: UByteArray, additionalData: UByteArray, tag : UByte) : UByteArray {
         val result = UByteArray(1 + data.size + 16) //Tag marker, ciphertext, mac
         //get encryption state
         val block = UByteArray(64) { 0U }
@@ -124,7 +124,9 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         return ubyteArrayOf(encryptedTag) + ciphertext + mac
     }
 
-    fun streamDecrypt(data: UByteArray, additionalData: UByteArray = ubyteArrayOf(), tag: UBy)
+    fun streamDecrypt(data: UByteArray, additionalData: UByteArray, tag: UByte) : UByteArray {
+        TODO()
+    }
 
 
 

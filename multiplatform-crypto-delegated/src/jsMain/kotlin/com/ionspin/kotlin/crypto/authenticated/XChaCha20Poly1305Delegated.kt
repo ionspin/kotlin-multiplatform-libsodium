@@ -16,7 +16,7 @@ import org.khronos.webgl.Uint8Array
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, additionalData: UByteArray) {
+actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonce: UByteArray) {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -51,25 +51,25 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, addi
         }
     }
 
-    internal actual constructor(key: UByteArray, additionalData: UByteArray, testState : UByteArray, testHeader: UByteArray) {
+    init {
+//        val state =
+    }
+
+    internal actual constructor(
+        key: UByteArray,
+        nonce: UByteArray,
+        testState: UByteArray,
+        testHeader: UByteArray
+    ) : this(key, nonce) {
 
     }
 
-    actual fun encrypt(data: UByteArray): UByteArray {
-        TODO("not implemented yet")
+    actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+//        val encrypted
+        TODO()
     }
 
-    actual fun verifyPartialData(data: UByteArray) {
-    }
-
-    actual fun checkTag(expectedTag: UByteArray) {
-    }
-
-    actual fun decrypt(data: UByteArray): UByteArray {
-        TODO("not implemented yet")
-    }
-
-    actual fun finishEncryption(): Pair<UByteArray, UByteArray> {
+    actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
 

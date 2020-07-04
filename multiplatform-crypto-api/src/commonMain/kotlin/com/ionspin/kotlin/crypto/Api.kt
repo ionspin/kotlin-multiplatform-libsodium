@@ -46,9 +46,7 @@ data class SymmetricKey(val value : UByteArray) {
     }
 }
 
-data class EncryptedData constructor(val ciphertext: UByteArray, val nonce: UByteArray) {
-
-}
+data class EncryptedData constructor(val ciphertext: UByteArray, val nonce: UByteArray)
 
 interface HashApi {
     fun hash(data: UByteArray, key : UByteArray = ubyteArrayOf()) : HashedData
@@ -56,10 +54,10 @@ interface HashApi {
 }
 
 interface EncryptionApi {
-    fun encrypt(key: SymmetricKey, data : Encryptable<*>, additionalData : UByteArray = ubyteArrayOf()) : EncryptedData
+    fun encrypt(key: SymmetricKey, data : Encryptable<*>, additionalData : UByteArray) : EncryptedData
     fun <T: Encryptable<T>> decrypt(key: SymmetricKey, encryptedData : EncryptedData, additionalData: UByteArray, byteArrayDeserializer : (UByteArray) -> T) : T
-    fun multipartEncrypt(key: SymmetricKey, additionalData: UByteArray) : MultipartAuthenticatedEncryption
-    fun multipartDecryptProcessStart(key: SymmetricKey, dataDescriptor: MultipartEncryptedDataDescriptor, additionalData: UByteArray) : MultipartAuthenticatedVerification
+    fun createMultipartEncryptor(key: SymmetricKey) : MultipartAuthenticatedEncryption
+    fun createMultipartDecryptor(key: SymmetricKey, header: MultipartEncryptionHeader) : MultipartAuthenticatedDecryption
 
 }
 
@@ -77,11 +75,11 @@ data class MultipartEncryptionHeader(val nonce: UByteArray)
 class InvalidTagException : RuntimeException("Tag mismatch! Encrypted data is corrupted or tampered with.")
 
 interface MultipartAuthenticatedDecryption {
-    fun decryptPartialData(data: EncryptedDataPart) : DecryptedDataPart
+    fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray) : DecryptedDataPart
 }
 
 interface MultipartAuthenticatedEncryption {
-    fun encryptPartialData(data: UByteArray) : EncryptedDataPart
-    fun finish() : MultipartEncryptedDataDescriptor
+    fun encryptPartialData(data: UByteArray, additionalData: UByteArray) : EncryptedDataPart
+    fun startEncryption() : MultipartEncryptionHeader
 
 }

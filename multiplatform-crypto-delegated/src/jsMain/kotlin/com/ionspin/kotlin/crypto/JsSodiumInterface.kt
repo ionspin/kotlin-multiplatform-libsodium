@@ -43,5 +43,8 @@ interface JsSodiumInterface {
     fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, additionalData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
     fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, additionalData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
 
+    //XChaCha20Poly1305
+
+
 
 }
