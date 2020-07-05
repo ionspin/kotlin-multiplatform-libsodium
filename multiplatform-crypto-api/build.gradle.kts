@@ -69,7 +69,6 @@ kotlin {
             }
         }
 
-        //Not supported in OFFICIAL coroutines at the moment
         linuxArm64() {
             binaries {
                 staticLib {
@@ -77,7 +76,6 @@ kotlin {
             }
         }
 
-        //Not supported in OFFICAL coroutines at the moment
         linuxArm32Hfp() {
             binaries {
                 staticLib {

@@ -22,7 +22,8 @@ class Sha512Test {
     }
 
     @Test
-    fun statelessSimpleTest() {
+    fun statelessSimpleTest() = testBlocking {
+        Initializer.initialize()
         val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
                 "b143732c304cc5fa9ad8e6f57f50028a8ff"
         val result = CryptoPrimitives.Sha512.stateless("test".encodeToUByteArray()).toHexString()
@@ -33,7 +34,8 @@ class Sha512Test {
     //This is a bad test since it's not larger than one block
     //but for now I'm testing that the platform library is being correctly called
     @Test
-    fun updateableSimpleTest() {
+    fun updateableSimpleTest() = testBlocking {
+        Initializer.initialize()
         val expected = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67" +
                 "b143732c304cc5fa9ad8e6f57f50028a8ff"
         val sha512 = CryptoPrimitives.Sha512.updateable()

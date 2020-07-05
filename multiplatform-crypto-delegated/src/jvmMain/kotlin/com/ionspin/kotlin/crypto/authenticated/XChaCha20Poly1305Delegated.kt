@@ -7,7 +7,7 @@ import com.goterl.lazycode.lazysodium.SodiumJava
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonce: UByteArray) {
+actual class XChaCha20Poly1305Delegated internal actual constructor() {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -56,11 +56,17 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonc
 
     internal actual constructor(
         key: UByteArray,
-        nonce: UByteArray,
         testState: UByteArray,
         testHeader: UByteArray
-    ) : this(key, ubyteArrayOf()) {
+    ) : this() {
 
+    }
+
+    actual fun initializeForEncryption(key: UByteArray) : UByteArray {
+        TODO()
+    }
+
+    actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
     }
 
     actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
@@ -70,6 +76,8 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonc
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
+
+
 
 
 }

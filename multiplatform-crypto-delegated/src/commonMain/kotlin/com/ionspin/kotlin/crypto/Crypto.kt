@@ -164,7 +164,8 @@ object Crypto {
         }
 
         override fun createMultipartDecryptor(key: SymmetricKey, header: MultipartEncryptionHeader) : MultipartAuthenticatedDecryption {
-            val decryptor = XChaCha20Poly1305Delegated(key.value, header.nonce)
+            val decryptor = XChaCha20Poly1305Delegated()
+            decryptor.initializeForDecryption(key.value, header.nonce)
             return MultipartAuthenticatedDecryptor(decryptor)
         }
 
@@ -174,8 +175,11 @@ object Crypto {
 
 class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKey) : MultipartAuthenticatedEncryption {
 
-    val header = MultipartEncryptionHeader(SRNG.getRandomBytes(24))
-    val primitive = XChaCha20Poly1305Delegated(key.value, header.nonce)
+    val header : MultipartEncryptionHeader
+    val primitive = XChaCha20Poly1305Delegated()
+    init {
+        header = MultipartEncryptionHeader(primitive.initializeForEncryption(key.value))
+    }
 
     override fun startEncryption(): MultipartEncryptionHeader {
         return header

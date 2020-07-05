@@ -209,7 +209,7 @@ class XChaCha20Poly1305Test {
             0xDEU, 0xFBU, 0x5CU, 0x7FU, 0x1CU, 0x26U, 0x32U, 0x2CU, 0x51U, 0xF6U, 0xEFU, 0xC6U, 0x34U, 0xC4U, 0xACU, 0x6CU,
             0xE8U, 0xF9U, 0x4BU, 0xABU, 0xA3U,
         )
-        val xcha = XChaCha20Poly1305Delegated(key, ubyteArrayOf(), state, header)
+        val xcha = XChaCha20Poly1305Delegated(key, state, header)
         val data = UByteArray(100) { 0U }
         val result = xcha.encrypt(data)
 //        assertTrue {

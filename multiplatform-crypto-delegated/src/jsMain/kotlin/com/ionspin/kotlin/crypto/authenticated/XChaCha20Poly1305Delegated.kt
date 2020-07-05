@@ -16,7 +16,7 @@ import org.khronos.webgl.Uint8Array
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonce: UByteArray) {
+actual class XChaCha20Poly1305Delegated internal actual constructor() {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -51,16 +51,25 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonc
         }
     }
 
-    init {
-//        val state =
+    var state : dynamic = null
+
+    actual fun initializeForEncryption(key: UByteArray) : UByteArray {
+        val stateAndHeader = getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
+        val state = stateAndHeader.state
+        val header = stateAndHeader.header
+        console.log(state)
+        console.log(header)
+        return header
+    }
+
+    actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
     }
 
     internal actual constructor(
         key: UByteArray,
-        nonce: UByteArray,
         testState: UByteArray,
         testHeader: UByteArray
-    ) : this(key, nonce) {
+    ) : this() {
 
     }
 
@@ -72,5 +81,7 @@ actual class XChaCha20Poly1305Delegated actual constructor(key: UByteArray, nonc
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
+
+
 
 }

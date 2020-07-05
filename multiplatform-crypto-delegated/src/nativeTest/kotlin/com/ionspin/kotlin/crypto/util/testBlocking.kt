@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.util
-
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
-
-/**
- * Created by Ugljesa Jovanovic
- * ugljesa.jovanovic@ionspin.com
- * on 20-Jul-2019
- */
-actual fun testBlocking(block: suspend () -> Unit) = runBlocking { block() }
+//package com.ionspin.kotlin.crypto.util
+//
+//import kotlinx.coroutines.CoroutineScope
+//import kotlinx.coroutines.runBlocking
+//
+///**
+// * Created by Ugljesa Jovanovic
+// * ugljesa.jovanovic@ionspin.com
+// * on 20-Jul-2019
+// */
+//actual fun testBlocking(block: suspend () -> Unit) = runBlocking { block() }

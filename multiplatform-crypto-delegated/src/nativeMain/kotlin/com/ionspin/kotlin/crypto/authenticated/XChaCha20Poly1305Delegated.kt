@@ -10,7 +10,7 @@ import platform.posix.malloc
  * ugljesa.jovanovic@ionspin.com
  * on 14-Jun-2020
  */
-actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray, val nonce: UByteArray) {
+actual class XChaCha20Poly1305Delegated internal actual constructor() {
     actual companion object {
         actual fun encrypt(
             key: UByteArray,
@@ -61,13 +61,18 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray, 
         }
     }
 
+    var state =
+        malloc(crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+            .reinterpret<crypto_secretstream_xchacha20poly1305_state>()
+            .pointed
+
+    val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
 
     actual internal constructor(
         key: UByteArray,
-        nonce: UByteArray,
         testState: UByteArray,
         testHeader: UByteArray
-    ) : this(key, nonce) {
+    ) : this() {
         val pointer = state.ptr.reinterpret<UByteVar>()
         for (i in 0 until crypto_secretstream_xchacha20poly1305_state.size.toInt()) {
             pointer[i] = testState[i]
@@ -81,14 +86,9 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray, 
         println("header after setting-----------")
     }
 
-    var state =
-        malloc(crypto_secretstream_xchacha20poly1305_state.size.convert())!!
-            .reinterpret<crypto_secretstream_xchacha20poly1305_state>()
-            .pointed
 
-    val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
 
-    init {
+    actual fun initializeForEncryption(key: UByteArray) : UByteArray {
         val pinnedHeader = header.pin()
         crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
         println("state-----------")
@@ -97,8 +97,14 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray, 
         println("--------header-----------")
         header.hexColumsPrint()
         println("--------header-----------")
+        pinnedHeader.unpin()
+        return header
+    }
+
+    actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
 
     }
+
 
     actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         val ciphertextWithTag = UByteArray(data.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
@@ -123,6 +129,8 @@ actual class XChaCha20Poly1305Delegated actual constructor(val key: UByteArray, 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         TODO("not implemented yet")
     }
+
+
 
 
 }

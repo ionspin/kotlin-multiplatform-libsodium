@@ -16,11 +16,19 @@
 
 package com.ionspin.kotlin.crypto.util
 
-import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 20-Jul-2019
  */
-expect fun testBlocking(block : suspend () -> Unit)
+fun testBlocking(block : suspend () -> Unit) {
+    val continuation = Continuation<Unit>(EmptyCoroutineContext) {
+        //Do nothing
+        println("Done")
+    }
+    block.startCoroutine(continuation)
+}

@@ -197,7 +197,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
-                implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
                 implementation(project(Deps.Common.apiProject))
             }
@@ -213,7 +212,6 @@ kotlin {
         val nativeMain by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation(Deps.Native.coroutines)
             }
             isRunningInIdea {
                 kotlin.setSrcDirs(emptySet<String>())
@@ -224,7 +222,6 @@ kotlin {
         val nativeTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation(Deps.Native.coroutines)
             }
         }
 
@@ -257,26 +254,22 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.stdLib))
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesCore)
                 }
             }
             val jvmTest by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesTest)
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(Deps.Js.coroutines)
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
                 }
             }
@@ -355,7 +348,6 @@ kotlin {
 //        val mingwX86Main by getting {
 //            dependsOn(commonMain)
 //            dependencies {
-//                implementation(Deps.Native.coroutines)
 //            }
 //        }
 
@@ -367,7 +359,6 @@ kotlin {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
                 dependencies {
-                    implementation(Deps.Native.coroutines)
                 }
             }
 
