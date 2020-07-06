@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.crypto.CryptoInitializerDelegated
+import com.ionspin.kotlin.crypto.Initializer
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.testBlocking
@@ -184,10 +185,10 @@ class XChaCha20Poly1305Test {
 
 
     }
-    //Missing jvm and js impl
-    @Ignore
+
     @Test
-    fun testStreamingImpl() {
+    fun testStreamingImpl() = testBlocking {
+        Initializer.initialize()
         val key = UByteArray(32) { 0U}
         val state = ubyteArrayOf(
             0x2DU, 0xDBU, 0xC7U, 0xB2U, 0x03U, 0xBCU, 0xC3U, 0x22U, 0xBDU, 0x0CU, 0xBAU, 0x82U, 0xADU, 0x77U, 0x79U, 0x44U,
@@ -212,6 +213,7 @@ class XChaCha20Poly1305Test {
         val xcha = XChaCha20Poly1305Delegated(key, state, header)
         val data = UByteArray(100) { 0U }
         val result = xcha.encrypt(data)
+
 //        assertTrue {
 //            expected.contentEquals(result)
 //        }

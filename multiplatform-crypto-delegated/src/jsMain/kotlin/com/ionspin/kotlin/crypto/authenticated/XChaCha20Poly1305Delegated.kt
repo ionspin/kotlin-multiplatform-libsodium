@@ -54,15 +54,18 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     var state : dynamic = null
 
     actual fun initializeForEncryption(key: UByteArray) : UByteArray {
+        println("Initializaing for encryption")
         val stateAndHeader = getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
         val state = stateAndHeader.state
         val header = stateAndHeader.header
         console.log(state)
         console.log(header)
+        println("Done initializaing for encryption")
         return header
     }
 
     actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
+
     }
 
     internal actual constructor(
@@ -70,12 +73,14 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         testState: UByteArray,
         testHeader: UByteArray
     ) : this() {
-
+        state = getSodium().crypto_secretstream_xchacha20poly1305_init_pull(testHeader.toUInt8Array(), key.toUInt8Array())
+        console.log(state)
+        println("Done initializaing test state")
     }
 
     actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
-//        val encrypted
-        TODO()
+        val encrypted = getSodium().crypto_secretstream_xchacha20poly1305_push(state, data.toUInt8Array(), additionalData.toUInt8Array(), 0U)
+        return encrypted.toUByteArray()
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {

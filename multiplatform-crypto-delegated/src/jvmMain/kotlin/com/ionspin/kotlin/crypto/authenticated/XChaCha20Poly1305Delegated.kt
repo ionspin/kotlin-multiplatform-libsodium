@@ -1,6 +1,8 @@
 package com.ionspin.kotlin.crypto.authenticated
 
 import com.goterl.lazycode.lazysodium.SodiumJava
+import com.goterl.lazycode.lazysodium.interfaces.SecretStream
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 
 /**
  * Created by Ugljesa Jovanovic
@@ -54,12 +56,16 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         }
     }
 
+    val state : SecretStream.State = SecretStream.State()
+    val sodium = SodiumJava()
+
     internal actual constructor(
         key: UByteArray,
         testState: UByteArray,
         testHeader: UByteArray
     ) : this() {
-
+        state.k = testState.sliceArray(0 until 32).toByteArray()
+        state.nonce = testState.sliceArray(32 until 44).toByteArray()
     }
 
     actual fun initializeForEncryption(key: UByteArray) : UByteArray {
@@ -70,11 +76,21 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val ciphertext = ByteArray(1 + data.size + 16)
+        sodium.crypto_secretstream_xchacha20poly1305_push(
+            state, ciphertext, null,
+            data.toByteArray(), data.size.toLong(),
+            additionalData.toByteArray(), additionalData.size.toLong(),
+            0
+        )
+        return ciphertext.toUByteArray()
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val plaintext = ByteArray(data.size - 17)
+
+        TODO()
+
     }
 
 

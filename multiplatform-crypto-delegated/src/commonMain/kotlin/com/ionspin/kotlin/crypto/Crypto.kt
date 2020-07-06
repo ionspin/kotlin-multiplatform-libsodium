@@ -117,7 +117,7 @@ object CryptoPrimitives : PrimitivesApi {
 //            salt,
 //            key,
 //            associatedData,
-//            parallelism,
+//            parallelism
 //            tagLength,
 //            memory,
 //            numberOfIterations

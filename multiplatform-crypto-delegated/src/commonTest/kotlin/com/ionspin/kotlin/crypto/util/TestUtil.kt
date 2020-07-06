@@ -29,7 +29,9 @@ import kotlin.coroutines.startCoroutine
 fun testBlocking(block : suspend () -> Unit) {
     val continuation = Continuation<Unit>(EmptyCoroutineContext) {
         //Do nothing
-        println("Done")
+        if (it.isFailure) {
+            throw it.exceptionOrNull()!!
+        }
     }
     block.startCoroutine(continuation)
 }

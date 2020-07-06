@@ -46,7 +46,7 @@ interface JsSodiumInterface {
     //XChaCha20Poly1305
     //encrypt
     fun crypto_secretstream_xchacha20poly1305_init_push(header: Uint8Array) : dynamic
-    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, additionalData: Uint8Array, tag: Char) : Uint8Array
+    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, additionalData: Uint8Array, tag: UByte) : Uint8Array
 
     //decrypt
     fun crypto_secretstream_xchacha20poly1305_init_pull(header: Uint8Array, key: Uint8Array) : dynamic
