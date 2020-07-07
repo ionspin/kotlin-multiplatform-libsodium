@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.authenticated
 
 import com.goterl.lazycode.lazysodium.SodiumJava
 import com.goterl.lazycode.lazysodium.interfaces.SecretStream
+import com.ionspin.kotlin.crypto.InvalidTagException
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 
 /**
@@ -89,14 +90,18 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         val plaintext = ByteArray(data.size - 17)
 
-        sodium.crypto_secretstream_xchacha20poly1305_pull(
+        val validTag = sodium.crypto_secretstream_xchacha20poly1305_pull(
             state, plaintext, null,
-            data.sliceArray(0 until 1).asByteArray(),
-            data.sliceArray(1 until data.size).asByteArray(),
-            (data.size - 17).toLong(),
+            null,
+            data.asByteArray(),
+            (data.size).toLong(),
             additionalData.asByteArray(),
             additionalData.size.toLong()
         )
+        if (validTag != 0) {
+            println("Tag validation failed")
+            throw InvalidTagException()
+        }
         return plaintext.asUByteArray()
 
     }

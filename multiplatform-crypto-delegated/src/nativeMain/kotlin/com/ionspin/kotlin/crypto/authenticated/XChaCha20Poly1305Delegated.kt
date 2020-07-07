@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
+import com.ionspin.kotlin.crypto.InvalidTagException
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.malloc
@@ -127,7 +128,24 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val plaintext = UByteArray(data.size - crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
+        val plaintextPinned = plaintext.pin()
+        val validTag = crypto_secretstream_xchacha20poly1305_pull(
+            state.ptr,
+            plaintextPinned.addressOf(0),
+            null,
+            null,
+            data.toCValues(),
+            data.size.convert(),
+            additionalData.toCValues(),
+            additionalData.size.convert()
+        )
+        plaintextPinned.unpin()
+        if (validTag != 0) {
+            println("Tag validation failed")
+            throw InvalidTagException()
+        }
+        return plaintext
     }
 
 

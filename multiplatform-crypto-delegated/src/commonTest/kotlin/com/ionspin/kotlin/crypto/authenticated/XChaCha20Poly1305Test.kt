@@ -7,6 +7,7 @@ import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlin.test.Ignore
 import kotlin.test.Test
+import kotlin.test.assertFails
 import kotlin.test.assertTrue
 
 /**
@@ -189,7 +190,7 @@ class XChaCha20Poly1305Test {
     @Test
     fun testStreamingImpl() = testBlocking {
         Initializer.initialize()
-        val key = UByteArray(32) { 0U}
+        val key = UByteArray(32) { 0U }
         val state = ubyteArrayOf(
             0x2DU, 0xDBU, 0xC7U, 0xB2U, 0x03U, 0xBCU, 0xC3U, 0x22U, 0xBDU, 0x0CU, 0xBAU, 0x82U, 0xADU, 0x77U, 0x79U, 0x44U,
             0xE6U, 0x8FU, 0xA9U, 0x94U, 0x89U, 0xB1U, 0xDFU, 0xBEU, 0x00U, 0x9FU, 0x69U, 0xECU, 0x21U, 0x88U, 0x47U, 0x55U,
@@ -210,12 +211,28 @@ class XChaCha20Poly1305Test {
             0xDEU, 0xFBU, 0x5CU, 0x7FU, 0x1CU, 0x26U, 0x32U, 0x2CU, 0x51U, 0xF6U, 0xEFU, 0xC6U, 0x34U, 0xC4U, 0xACU, 0x6CU,
             0xE8U, 0xF9U, 0x4BU, 0xABU, 0xA3U,
         )
-        val xcha = XChaCha20Poly1305Delegated(key, state, header)
+        val encryptor = XChaCha20Poly1305Delegated(key, state, header)
+        val decryptor = XChaCha20Poly1305Delegated(key, state, header)
         val data = UByteArray(100) { 0U }
-        val result = xcha.encrypt(data)
-
+        val result = encryptor.encrypt(data)
+        val decrypted = decryptor.decrypt(result)
+        println("Encrypted -----------")
+        result.hexColumsPrint()
+        println("Encrypted end -----------")
+        println("Decrypted -----------")
+        decrypted.hexColumsPrint()
+        println("Decrypted end -----------")
         assertTrue {
-            expected.contentEquals(result)
+            expected.contentEquals(result) && decrypted.contentEquals(data)
+        }
+        val messedUpTag = result.copyOf()
+        messedUpTag[messedUpTag.size - 2] = 0U
+        assertFails {
+            val decryptorForWrongTag = XChaCha20Poly1305Delegated(key, state, header)
+            val plaintext = decryptorForWrongTag.decrypt(messedUpTag)
+            println("Decrypted with wrong tag -----------")
+            plaintext.hexColumsPrint()
+            println("Decrypted with wrong tag end -----------")
         }
     }
 }

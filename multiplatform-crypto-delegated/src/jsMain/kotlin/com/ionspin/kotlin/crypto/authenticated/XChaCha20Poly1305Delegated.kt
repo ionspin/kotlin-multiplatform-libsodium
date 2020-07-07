@@ -1,6 +1,8 @@
 package com.ionspin.kotlin.crypto.authenticated
 
+import com.ionspin.kotlin.crypto.InvalidTagException
 import com.ionspin.kotlin.crypto.getSodium
+import com.ionspin.kotlin.crypto.util.hexColumsPrint
 import ext.libsodium.com.ionspin.kotlin.crypto.toUByteArray
 import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 import org.khronos.webgl.Uint8Array
@@ -84,7 +86,15 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
-        TODO("not implemented yet")
+        val decryptedWithTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(state, data.toUInt8Array(), additionalData.toUInt8Array())
+        val decrypted = decryptedWithTag.message as Uint8Array
+        val validTag = decryptedWithTag.tag as UInt
+
+        if (validTag != 0U) {
+            println("Tag validation failed")
+            throw InvalidTagException()
+        }
+        return decrypted.toUByteArray()
     }
 
 
