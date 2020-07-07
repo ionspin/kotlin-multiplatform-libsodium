@@ -19,6 +19,7 @@ package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.crypto.*
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
@@ -146,9 +147,9 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
 
 
         fun digest(inputString: String, key: String?, hashLength: Int): UByteArray {
-            val array = inputString.encodeToByteArray().toUByteArray()
+            val array = inputString.encodeToUByteArray()
             val keyBytes = key?.run {
-                encodeToByteArray().toUByteArray()
+                encodeToUByteArray()
             } ?: ubyteArrayOf()
             return digest(inputMessage = array, key = keyBytes, hashLength = hashLength)
 
@@ -248,7 +249,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
         key: String?,
         requestedHashLenght: Int = 64
     ) : this(
-        (key?.encodeToByteArray()?.toUByteArray() ?: ubyteArrayOf()),
+        (key?.encodeToUByteArray() ?: ubyteArrayOf()),
         requestedHashLenght
     )
 
@@ -310,7 +311,7 @@ class Blake2bPure(val key: UByteArray? = null, val hashLength: Int = 64) : Blake
     }
 
     fun update(data: String) {
-        update(data.encodeToByteArray().toUByteArray())
+        update(data.encodeToUByteArray())
     }
 
     private fun appendToBuffer(array: UByteArray, start: Int) {

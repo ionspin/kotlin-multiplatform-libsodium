@@ -40,6 +40,6 @@ interface Hash : HashFunction {
 }
 
 fun String.encodeToUByteArray() : UByteArray{
-    return encodeToByteArray().toUByteArray()
+    return encodeToByteArray().asUByteArray()
 }
 

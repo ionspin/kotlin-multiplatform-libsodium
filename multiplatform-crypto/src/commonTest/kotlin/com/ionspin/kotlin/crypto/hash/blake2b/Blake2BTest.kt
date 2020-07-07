@@ -17,6 +17,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -82,7 +83,7 @@ class Blake2BTest {
         val expectedResultString = "800bb78cd4da18995c8074713bb674" +
                 "3cd94b2b6490a693fe4000ed00833b88b7b474d94af9cfed246b1b" +
                 "4ce1935a76154d7ea7c410493557741d18ec3a08da75"
-        val expectedResult = expectedResultString.chunked(2).map { it.toUByte(16) }.toUByteArray()
+        val expectedResult = expectedResultString.hexStringToUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -123,7 +124,7 @@ class Blake2BTest {
         }
         val expectedResult = ("5c6a9a4ae911c02fb7e71a991eb9aea371ae993d4842d206e" +
                 "6020d46f5e41358c6d5c277c110ef86c959ed63e6ecaaaceaaff38019a43264ae06acf73b9550b1")
-            .chunked(2).map { it.toUByte(16) }.toUByteArray()
+            .hexStringToUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)

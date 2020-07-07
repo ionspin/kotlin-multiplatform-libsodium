@@ -57,7 +57,7 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
             return AesCtrPure(aesKey, Mode.DECRYPT)
         }
         /**
-         * Bulk encryption, returns encrypted data and a random initial counter 
+         * Bulk encryption, returns encrypted data and a random initial counter
          */
         fun encrypt(aesKey: InternalAesKey, data: UByteArray): EncryptedDataAndInitialCounter {
             val aesCtr = AesCtrPure(aesKey, Mode.ENCRYPT)
@@ -161,7 +161,7 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
     }
 
     private fun consumeBlock(data: UByteArray, blockCount: ModularBigInteger): UByteArray {
-        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).toUByteArray().expandCounterTo16Bytes()
+        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
                 AesPure.encrypt(aesKey, blockCountAsByteArray) xor data

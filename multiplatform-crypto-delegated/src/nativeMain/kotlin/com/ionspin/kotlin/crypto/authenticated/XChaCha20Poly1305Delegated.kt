@@ -78,7 +78,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             pointer[i] = testState[i]
         }
         println("state after setting-----------")
-        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).toUByteArray().hexColumsPrint()
+        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).asUByteArray().hexColumsPrint()
         println("state after setting-----------")
         println("header after setting-----------")
         testHeader.copyInto(header)
@@ -92,7 +92,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         val pinnedHeader = header.pin()
         crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
         println("state-----------")
-        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).toUByteArray().hexColumsPrint()
+        state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).asUByteArray().hexColumsPrint()
         println("state-----------")
         println("--------header-----------")
         header.hexColumsPrint()

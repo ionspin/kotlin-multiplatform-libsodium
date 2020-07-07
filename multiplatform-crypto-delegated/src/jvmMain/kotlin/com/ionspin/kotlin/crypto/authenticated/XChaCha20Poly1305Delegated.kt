@@ -30,7 +30,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
                 key.toByteArray()
 
             )
-            return ciphertext.toUByteArray()
+            return ciphertext.asUByteArray()
         }
 
         actual fun decrypt(
@@ -52,7 +52,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
                 key.toByteArray()
 
             )
-            return message.toUByteArray()
+            return message.asUByteArray()
         }
     }
 

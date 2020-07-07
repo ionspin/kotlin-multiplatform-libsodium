@@ -22,6 +22,7 @@ import com.ionspin.kotlin.bignum.integer.toBigInteger
 
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
@@ -74,14 +75,14 @@ class Argon2Pure(
         ): ArgonResult {
             val salt = SRNG.getRandomBytes(64)
             val argon = Argon2Pure(
-                password.encodeToByteArray().toUByteArray(),
+                password.encodeToUByteArray(),
                 salt,
                 parallelism,
                 tagLength.toUInt(),
                 memory.toUInt(),
                 numberOfIterations,
-                key.encodeToByteArray().toUByteArray(),
-                associatedData.encodeToByteArray().toUByteArray(),
+                key.encodeToUByteArray(),
+                associatedData.encodeToUByteArray(),
                 ArgonType.Argon2id
             )
             val resultArray = argon.derive()
@@ -100,14 +101,14 @@ class Argon2Pure(
         associatedData: String = "",
         argonType: ArgonType = ArgonType.Argon2id
     ) : this(
-        password.encodeToByteArray().toUByteArray(),
-        salt.encodeToByteArray().toUByteArray(),
+        password.encodeToUByteArray(),
+        salt.encodeToUByteArray(),
         parallelism,
         tagLength,
         requestedMemorySize,
         numberOfIterations,
-        key.encodeToByteArray().toUByteArray(),
-        associatedData.encodeToByteArray().toUByteArray(),
+        key.encodeToUByteArray(),
+        associatedData.encodeToUByteArray(),
         argonType
     )
 

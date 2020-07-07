@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
@@ -310,7 +311,7 @@ class Sha512Pure : Sha512Multipart {
 
 
     fun update(data: String) {
-        return update(data.encodeToByteArray().toUByteArray())
+        return update(data.encodeToUByteArray())
     }
 
     override fun update(data: UByteArray) {
