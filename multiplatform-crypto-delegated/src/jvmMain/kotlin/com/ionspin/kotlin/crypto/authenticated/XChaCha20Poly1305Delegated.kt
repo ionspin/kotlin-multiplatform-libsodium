@@ -79,17 +79,25 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         val ciphertext = ByteArray(1 + data.size + 16)
         sodium.crypto_secretstream_xchacha20poly1305_push(
             state, ciphertext, null,
-            data.toByteArray(), data.size.toLong(),
-            additionalData.toByteArray(), additionalData.size.toLong(),
+            data.asByteArray(), data.size.toLong(),
+            additionalData.asByteArray(), additionalData.size.toLong(),
             0
         )
-        return ciphertext.toUByteArray()
+        return ciphertext.asUByteArray()
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
         val plaintext = ByteArray(data.size - 17)
 
-        TODO()
+        sodium.crypto_secretstream_xchacha20poly1305_pull(
+            state, plaintext, null,
+            data.sliceArray(0 until 1).asByteArray(),
+            data.sliceArray(1 until data.size).asByteArray(),
+            (data.size - 17).toLong(),
+            additionalData.asByteArray(),
+            additionalData.size.toLong()
+        )
+        return plaintext.asUByteArray()
 
     }
 

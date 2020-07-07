@@ -214,8 +214,8 @@ class XChaCha20Poly1305Test {
         val data = UByteArray(100) { 0U }
         val result = xcha.encrypt(data)
 
-//        assertTrue {
-//            expected.contentEquals(result)
-//        }
+        assertTrue {
+            expected.contentEquals(result)
+        }
     }
 }
