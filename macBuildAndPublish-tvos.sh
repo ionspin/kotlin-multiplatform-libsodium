@@ -9,4 +9,7 @@ cd sodiumWrapper
 cd ..
 ./gradlew multiplatform-crypto-delegated:publishTvosArm64PublicationToSnapshotRepository \
 multiplatform-crypto-delegated:publishTvosX64PublicationToSnapshotRepository
+
+./gradlew multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-libsodium-bindings:publishTvosX64PublicationToSnapshotRepository
 set +e

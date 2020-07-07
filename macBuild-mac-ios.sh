@@ -14,5 +14,12 @@ multiplatform-crypto-delegated:iosX64MainKlibrary multiplatform-crypto-delegated
 multiplatform-crypto-delegated:macosX64MainKlibrary multiplatform-crypto-delegated:macosX64TestKlibrary
 ./gradlew multiplatform-crypto-delegated:iosX64Test
 ./gradlew multiplatform-crypto-delegated:macosX64Test
+
+./gradlew multiplatform-crypto-libsodium-bindings:iosArm32MainKlibrary multiplatform-crypto-libsodium-bindings:iosArm32TestKlibrary \
+multiplatform-crypto-libsodium-bindings:iosArm64MainKlibrary multiplatform-crypto-libsodium-bindings:iosArm64TestKlibrary \
+multiplatform-crypto-libsodium-bindings:iosX64MainKlibrary multiplatform-crypto-libsodium-bindings:iosX64TestKlibrary \
+multiplatform-crypto-libsodium-bindings:macosX64MainKlibrary multiplatform-crypto-libsodium-bindings:macosX64TestKlibrary
+./gradlew multiplatform-crypto-libsodium-bindings:iosX64Test
+./gradlew multiplatform-crypto-libsodium-bindings:macosX64Test
 set +e
 

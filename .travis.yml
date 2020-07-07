@@ -68,7 +68,7 @@ matrix:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
     - os: windows
-      name: windwos-pure
+      name: windows-pure
       language: shell
       jdk: openjdk12
       env:

@@ -3,16 +3,25 @@
 
 # Kotlin Multiplatform Crypto Library
 
+#Note:
+### Next stable release will be published after public release of Kotlin 1.4, until then API will change significantly
+
 Kotlin Multiplatform Crypto is a library for various cryptographic applications. 
 
-The library comes in two flavors `multiplatform-crypto` and `multiplatform-crypto-delegated`
+The library comes in two flavors `multiplatform-crypto` and `multiplatform-crypto-delegated`. This project also provides 
+direct libsodium bindings under `multiplatform-crypto-libsodium-bindings`.
 
 * `multiplatform-crypto` contains pure kotlin implementations, is not reviewed, should be considered unsafe and only 
 for prototyping or experimentation purposes.
 
-* `multiplatform-crypto-delegated` relies on platform specific implementations, like libsodium, but care should still be taken that the kotlin code is not reviewed or proven safe.
+* `multiplatform-crypto-delegated` relies on platform specific implementations, mostly libsodium, but care should still be taken that the kotlin code is not reviewed or proven safe.
 
 APIs of both variants are identical. 
+
+### Table of contents
+1. [Supported platforms](#supported-platforms-by-variant)
+2. [API](#api)
+3. TODO
 
 ## Supported platforms by variant
 |Platform|Pure variant| Delegated variant|
@@ -41,9 +50,7 @@ The library includes sample project that shows usage on different platforms
 **The API will move fast and break often until v1.0**
 
 Next steps:
-- Expand API (AEAD, ECC ...)
-- Include AES and Argon2 in new API approach
-- Add primitives missing in `delegated` variant that are supported in `pure` (at the moment AES and Argon2)
+- Expand API (ECC, Signing ...)
 
 ## Should I use this in production?
 
@@ -58,7 +65,7 @@ No, but even if after being warned you decide to, then use `multiplatform-crypto
 This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
 It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
 
-## Currently supported 
+## API
 
 ### Hashing functions
 * Blake2b
@@ -264,6 +271,8 @@ plainText == decrypted.toHexString()
 
 ```
 
+## Libsodium bindings
+TODO
 
 
 
@@ -281,4 +290,3 @@ plainText == decrypted.toHexString()
 
 
 
- 

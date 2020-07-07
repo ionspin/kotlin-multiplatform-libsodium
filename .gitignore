@@ -16,7 +16,9 @@ build/
 /multiplatform-crypto-delegated/node_modules
 /multiplatform-crypto-delegated/package.json
 /multiplatform-crypto-delegated/package-lock.json
-
+/multiplatform-crypto-libsodium-bindings/node_modules
+/multiplatform-crypto-libsodium-bindings/package.json
+/multiplatform-crypto-libsodium-bindings/package-lock.json
 /sodiumWrapper/include/
 /sodiumWrapper/lib/
 /sodiumWrapper/ios-include/
