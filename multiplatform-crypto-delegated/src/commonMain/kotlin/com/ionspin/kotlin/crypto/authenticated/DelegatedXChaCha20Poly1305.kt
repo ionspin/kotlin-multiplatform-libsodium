@@ -7,7 +7,7 @@ package com.ionspin.kotlin.crypto.authenticated
  * on 14-Jun-2020
  */
 expect class XChaCha20Poly1305Delegated internal constructor() {
-    internal constructor(key: UByteArray, testState : UByteArray, testHeader: UByteArray)
+    internal constructor(key: UByteArray, testState : UByteArray, testHeader: UByteArray, isDecryptor: Boolean)
     companion object {
         fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray
         fun decrypt(key: UByteArray, nonce: UByteArray, ciphertext: UByteArray, additionalData: UByteArray) : UByteArray

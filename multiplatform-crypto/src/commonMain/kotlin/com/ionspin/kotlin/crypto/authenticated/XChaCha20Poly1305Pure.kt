@@ -95,7 +95,6 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
     }
 
     fun streamEncrypt(data: UByteArray, additionalData: UByteArray, tag : UByte) : UByteArray {
-        val result = UByteArray(1 + data.size + 16) //Tag marker, ciphertext, mac
         //get encryption state
         val block = UByteArray(64) { 0U }
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
@@ -107,6 +106,9 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         }
         block[0] = tag
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block) // This just xors block[0] with keystream
+        println("encrypt block going into poly ----")
+        block.hexColumsPrint()
+        println("encrypt block going into poly end ----")
         processPolyBytes(poly1305, block) // but updates the mac with the full block!
         // In libsodium c code, it now sets the first byte to be a tag, we'll just save it for now
         val encryptedTag = block[0]
@@ -121,11 +123,57 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
+        //TODO process state
+        println("Ciphertext ---------")
+        (ubyteArrayOf(encryptedTag) + ciphertext + mac).hexColumsPrint()
+        println("Ciphertext end ---------")
         return ubyteArrayOf(encryptedTag) + ciphertext + mac
     }
 
     fun streamDecrypt(data: UByteArray, additionalData: UByteArray, tag: UByte) : UByteArray {
-        TODO()
+        val block = UByteArray(64) { 0U }
+        ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
+        val poly1305 = Poly1305(block)
+        block.overwriteWithZeroes()
+        if (additionalData.isNotEmpty()) {
+            val additionalDataPadded = additionalData + UByteArray(16 - additionalData.size % 16) { 0U }
+            processPolyBytes(poly1305, additionalDataPadded)
+        }
+        block[0] = data[0]
+         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block)// get the keystream xored with zeroes, but also decrypteg tag marker
+        val tag = block[0] //get the decrypted tag
+        block[0] = data[0] // this brings it back to state that is delivered to poly in encryption function
+        println("Decrypted tag $tag")
+        println("decrypt block going into poly ----")
+        block.hexColumsPrint()
+        println("decrypt block going into poly end ----")
+        processPolyBytes(poly1305, block)
+        // Next we update the poly1305 with ciphertext and padding, BUT the padding in libsodium is not correctly calculated, so it doesn't
+        // pad correctly. https://github.com/jedisct1/libsodium/issues/976
+        // We want to use libsodium in delegated flavour, so we will use the same incorrect padding here.
+        // From security standpoint there are no obvious drawbacks, as padding was initially added to decrease implementation complexity.
+        val ciphertext = data.sliceArray(1 until data.size - 16)
+        processPolyBytes(poly1305, ciphertext + UByteArray(((16U + ciphertext.size.toUInt() - block.size.toUInt()) % 16U).toInt()) { 0U } )
+        val plaintext = ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, ciphertext, 2U)
+        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
+        processPolyBytes(poly1305, finalMac)
+        val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
+        println("--- mac")
+        mac.hexColumsPrint()
+        println("--- mac end")
+        val expectedMac = data.sliceArray(data.size - 16 until data.size)
+        println("--- expectedMac")
+        expectedMac.hexColumsPrint()
+        println("--- expectedMac end")
+
+        //TODO process state
+        println("Plaintext ---------")
+        plaintext.hexColumsPrint()
+        println("Plaintext end ---------")
+        if (expectedMac.contentEquals(mac).not()){
+            throw InvalidTagException()
+        }
+        return plaintext
     }
 
 

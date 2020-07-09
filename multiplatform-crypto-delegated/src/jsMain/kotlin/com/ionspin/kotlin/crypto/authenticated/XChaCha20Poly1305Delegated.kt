@@ -54,41 +54,65 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     var state : dynamic = null
+    var isInitialized = false
+    var isEncryptor = false
 
     actual fun initializeForEncryption(key: UByteArray) : UByteArray {
         println("Initializaing for encryption")
         val stateAndHeader = getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
-        val state = stateAndHeader.state
-        val header = stateAndHeader.header
+        state = stateAndHeader.state
+        val header = stateAndHeader.header as Uint8Array
         console.log(state)
         console.log(header)
         println("Done initializaing for encryption")
-        return header
+        isInitialized = true
+        isEncryptor = true
+        return header.toUByteArray()
     }
 
     actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
-
+        println("Initializing for decryption")
+        header.hexColumsPrint()
+        state = getSodium().crypto_secretstream_xchacha20poly1305_init_pull(header.toUInt8Array(), key.toUInt8Array())
+        console.log(state)
+        isInitialized = true
+        isEncryptor = false
     }
 
     internal actual constructor(
         key: UByteArray,
         testState: UByteArray,
-        testHeader: UByteArray
+        testHeader: UByteArray,
+        isDecryptor: Boolean
     ) : this() {
         state = getSodium().crypto_secretstream_xchacha20poly1305_init_pull(testHeader.toUInt8Array(), key.toUInt8Array())
         console.log(state)
         println("Done initializaing test state")
+        isInitialized = true
+        isEncryptor = !isDecryptor
     }
 
     actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+        if (!isInitialized) {
+            throw RuntimeException("Not initalized!")
+        }
+        if (!isEncryptor) {
+            throw RuntimeException("Initialized as decryptor, attempted to use as encryptor")
+        }
         val encrypted = getSodium().crypto_secretstream_xchacha20poly1305_push(state, data.toUInt8Array(), additionalData.toUInt8Array(), 0U)
         return encrypted.toUByteArray()
     }
 
     actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+        if (!isInitialized) {
+            throw RuntimeException("Not initalized!")
+        }
+        if (isEncryptor) {
+            throw RuntimeException("Initialized as encryptor, attempted to use as decryptor")
+        }
         val decryptedWithTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(state, data.toUInt8Array(), additionalData.toUInt8Array())
         val decrypted = decryptedWithTag.message as Uint8Array
-        val validTag = decryptedWithTag.tag as UInt
+        val validTag = decryptedWithTag.tag
 
         if (validTag != 0U) {
             println("Tag validation failed")

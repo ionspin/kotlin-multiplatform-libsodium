@@ -43,3 +43,7 @@ fun String.encodeToUByteArray() : UByteArray{
     return encodeToByteArray().asUByteArray()
 }
 
+fun UByteArray.decodeToString() : String {
+    return this.asByteArray().contentToString()
+}
+

@@ -62,8 +62,8 @@ interface EncryptionApi {
 }
 
 interface AuthenticatedEncryption {
-    fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray
-    fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, additionalData: UByteArray) : UByteArray
+    fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : UByteArray
+    fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : UByteArray
 
 }
 
@@ -75,11 +75,11 @@ data class MultipartEncryptionHeader(val nonce: UByteArray)
 class InvalidTagException : RuntimeException("Tag mismatch! Encrypted data is corrupted or tampered with.")
 
 interface MultipartAuthenticatedDecryption {
-    fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray) : DecryptedDataPart
+    fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray = ubyteArrayOf()) : DecryptedDataPart
 }
 
 interface MultipartAuthenticatedEncryption {
-    fun encryptPartialData(data: UByteArray, additionalData: UByteArray) : EncryptedDataPart
+    fun encryptPartialData(data: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : EncryptedDataPart
     fun startEncryption() : MultipartEncryptionHeader
 
 }

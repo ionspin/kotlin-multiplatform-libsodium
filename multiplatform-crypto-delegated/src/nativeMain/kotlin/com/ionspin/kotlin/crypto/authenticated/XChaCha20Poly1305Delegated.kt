@@ -69,10 +69,14 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
 
     val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
 
+    var isInitialized = false
+    var isEncryptor = false
+
     actual internal constructor(
         key: UByteArray,
         testState: UByteArray,
-        testHeader: UByteArray
+        testHeader: UByteArray,
+        isDecryptor: Boolean
     ) : this() {
         val pointer = state.ptr.reinterpret<UByteVar>()
         for (i in 0 until crypto_secretstream_xchacha20poly1305_state.size.toInt()) {
@@ -85,6 +89,8 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         testHeader.copyInto(header)
         header.hexColumsPrint()
         println("header after setting-----------")
+        isInitialized = true
+        isEncryptor = !isDecryptor
     }
 
 
@@ -103,7 +109,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     actual fun initializeForDecryption(key: UByteArray, header: UByteArray) {
-
+        crypto_secretstream_xchacha20poly1305_init_pull(state.ptr, header.toCValues(), key.toCValues())
     }
 
 
@@ -116,8 +122,8 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             null,
             data.toCValues(),
             data.size.convert(),
-            null,
-            0U,
+            additionalData.toCValues(),
+            additionalData.size.convert(),
             0U,
         )
         println("Encrypt partial")
@@ -141,6 +147,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             additionalData.size.convert()
         )
         plaintextPinned.unpin()
+        println("tag: $validTag")
         if (validTag != 0) {
             println("Tag validation failed")
             throw InvalidTagException()
