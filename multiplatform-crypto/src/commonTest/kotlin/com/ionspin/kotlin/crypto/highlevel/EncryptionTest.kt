@@ -16,11 +16,9 @@ import kotlin.test.assertTrue
 class EncryptionTest {
     @Test
     fun testMultipartEncryption() {
-        val plaintext = ("Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                "Vestibulum maximus tincidunt urna. " +
-                "Nullam sit amet erat id arcu porttitor varius ut at metus. " +
-                "Nunc sit amet felis vel velit ornare gravida. " +
-                "Curabitur tellus lacus, pulvinar a diam at tincidunt.").encodeToUByteArray()
+        val plaintext = ("pUoR4JVXJUeMKNkt6ZGGzEdTo33ajNGXwXpivBKA0XKs8toGRYI9Eul4bELRDkaQDNhd4vZseEFU" +
+                "ojsAn3c9zIifIrMnydSivHVZ2pBtpAQwYoJhYmEsfE0tROGnOwFWyB9K6LRSv1gB3YqKR9VyM8mpRoUM3UCRRjyiX7bnKdCE1" +
+                "EiX0myiwcY1nUKTgB3keERWtMU07hX7bCtao5nRvDofSj3o3IInHRQh6opltr5asQwn4m1qn029QF").encodeToUByteArray()
         plaintext.hexColumsPrint()
         val additionalData = "Additional data 1".encodeToUByteArray()
 //        val additionalData = ubyteArrayOf()
@@ -33,15 +31,12 @@ class EncryptionTest {
         val ciphertext3 = encryptor.encryptPartialData(plaintext.sliceArray(200 until 250))
         //decrypt
         val decryptor = Crypto.Encryption.createMultipartDecryptor(key, header)
-        println("Initialized")
         val plaintext1 = decryptor.decryptPartialData(ciphertext1, additionalData)
         val plaintext2 = decryptor.decryptPartialData(ciphertext2)
         val plaintext3 = decryptor.decryptPartialData(ciphertext3)
 
         val combinedPlaintext = plaintext1.data + plaintext2.data + plaintext3.data
-        println("---- Plaintext -----")
-        plaintext.hexColumsPrint()
-        println("---- Plaintext result -----")
+
         combinedPlaintext.hexColumsPrint()
         assertTrue {
             plaintext.contentEquals(combinedPlaintext)

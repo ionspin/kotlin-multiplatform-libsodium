@@ -5,9 +5,7 @@ import com.ionspin.kotlin.crypto.InvalidTagException
 import com.ionspin.kotlin.crypto.mac.Poly1305
 import com.ionspin.kotlin.crypto.symmetric.ChaCha20Pure
 import com.ionspin.kotlin.crypto.symmetric.XChaCha20Pure
-import com.ionspin.kotlin.crypto.util.hexColumsPrint
-import com.ionspin.kotlin.crypto.util.overwriteWithZeroes
-import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
+import com.ionspin.kotlin.crypto.util.*
 
 /**
  * Created by Ugljesa Jovanovic
@@ -123,7 +121,10 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
-        //TODO process state
+        calcNonce.xorWithPositionsAndInsertIntoArray(0, 12, mac, 0, calcNonce, 0)
+        println("Calcnonce---------")
+        calcNonce.hexColumsPrint()
+        println("Calcnonce---------")
         println("Ciphertext ---------")
         (ubyteArrayOf(encryptedTag) + ciphertext + mac).hexColumsPrint()
         println("Ciphertext end ---------")
@@ -131,6 +132,9 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
     }
 
     fun streamDecrypt(data: UByteArray, additionalData: UByteArray, tag: UByte) : UByteArray {
+        println("Calcnonce start decrypt ---------")
+        calcNonce.hexColumsPrint()
+        println("Calcnonce start decrypt end---------")
         val block = UByteArray(64) { 0U }
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
         val poly1305 = Poly1305(block)
@@ -166,13 +170,17 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         expectedMac.hexColumsPrint()
         println("--- expectedMac end")
 
-        //TODO process state
+
         println("Plaintext ---------")
         plaintext.hexColumsPrint()
         println("Plaintext end ---------")
         if (expectedMac.contentEquals(mac).not()){
             throw InvalidTagException()
         }
+        calcNonce.xorWithPositionsAndInsertIntoArray(0, 12, mac, 0, calcNonce, 0)
+        println("Calcnonce end decrypt ---------")
+        calcNonce.hexColumsPrint()
+        println("Calcnonce end decrypt end---------")
         return plaintext
     }
 
