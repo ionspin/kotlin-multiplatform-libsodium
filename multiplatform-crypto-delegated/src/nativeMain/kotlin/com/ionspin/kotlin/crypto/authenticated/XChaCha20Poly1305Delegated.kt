@@ -4,7 +4,6 @@ import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.InvalidTagException
 import kotlinx.cinterop.*
 import libsodium.*
-import platform.posix.malloc
 
 /**
  * Created by Ugljesa Jovanovic
@@ -63,10 +62,9 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
     }
 
     var state =
-        malloc(crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+        sodium_malloc(crypto_secretstream_xchacha20poly1305_state.size.convert())!!
             .reinterpret<crypto_secretstream_xchacha20poly1305_state>()
             .pointed
-
     val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
 
     var isInitialized = false
@@ -153,6 +151,10 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             throw InvalidTagException()
         }
         return plaintext
+    }
+
+    actual fun cleanup() {
+        sodium_free(state.ptr)
     }
 
 

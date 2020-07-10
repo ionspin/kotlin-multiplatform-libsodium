@@ -40,6 +40,9 @@ class EncryptionTest {
         assertTrue {
             plaintext.contentEquals(combinedPlaintext)
         }
+        encryptor.cleanup()
+        decryptor.cleanup()
+
 
 
 

@@ -131,6 +131,11 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
 
     }
 
+    actual fun cleanup() {
+        sodium.sodium_memzero(state.k, 32)
+        sodium.sodium_memzero(state.nonce, 12)
+    }
+
 
 
 

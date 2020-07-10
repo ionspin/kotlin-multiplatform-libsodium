@@ -137,11 +137,19 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
     override fun startEncryption(): MultipartEncryptionHeader {
         return header
     }
+
+    override fun cleanup() {
+        primitive.cleanup()
+    }
 }
 
 class MultipartAuthenticatedDecryptor internal constructor(val decryptor: XChaCha20Poly1305Pure) : MultipartAuthenticatedDecryption {
     override fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray): DecryptedDataPart {
         return DecryptedDataPart(decryptor.streamDecrypt(data.data, additionalData, 0U))
+    }
+
+    override fun cleanup() {
+        decryptor.cleanup()
     }
 
 }

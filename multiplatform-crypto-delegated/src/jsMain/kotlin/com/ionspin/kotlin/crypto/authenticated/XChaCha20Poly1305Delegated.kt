@@ -121,6 +121,10 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         return decrypted.toUByteArray()
     }
 
+    actual fun cleanup() {
+        //TODO JS cleanup
+    }
+
 
 
 }

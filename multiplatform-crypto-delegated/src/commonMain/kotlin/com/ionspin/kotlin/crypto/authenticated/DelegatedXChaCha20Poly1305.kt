@@ -16,6 +16,7 @@ expect class XChaCha20Poly1305Delegated internal constructor() {
     fun initializeForDecryption(key: UByteArray, header: UByteArray)
     fun encrypt(data: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : UByteArray
     fun decrypt(data: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : UByteArray
+    fun cleanup()
 
 
 }

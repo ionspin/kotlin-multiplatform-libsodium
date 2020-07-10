@@ -76,10 +76,12 @@ class InvalidTagException : RuntimeException("Tag mismatch! Encrypted data is co
 
 interface MultipartAuthenticatedDecryption {
     fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray = ubyteArrayOf()) : DecryptedDataPart
+    fun cleanup()
 }
 
 interface MultipartAuthenticatedEncryption {
     fun encryptPartialData(data: UByteArray, additionalData: UByteArray = ubyteArrayOf()) : EncryptedDataPart
     fun startEncryption() : MultipartEncryptionHeader
+    fun cleanup()
 
 }
