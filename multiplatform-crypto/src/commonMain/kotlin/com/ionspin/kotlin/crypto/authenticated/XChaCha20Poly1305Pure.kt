@@ -84,8 +84,6 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         calcNonce[1] = 0U
         calcNonce[2] = 0U
         calcNonce[3] = 0U
-        key.overwriteWithZeroes()
-        nonce.overwriteWithZeroes()
         println("Calckey-------=")
         calcKey.hexColumsPrint()
         println("Calckey-------=")

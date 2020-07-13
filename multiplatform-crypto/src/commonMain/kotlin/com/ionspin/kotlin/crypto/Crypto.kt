@@ -135,7 +135,7 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
     }
 
     override fun startEncryption(): MultipartEncryptionHeader {
-        return header
+        return header.copy()
     }
 
     override fun cleanup() {

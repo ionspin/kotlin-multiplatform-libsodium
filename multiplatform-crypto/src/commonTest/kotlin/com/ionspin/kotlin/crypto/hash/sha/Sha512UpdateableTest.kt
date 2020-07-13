@@ -70,21 +70,18 @@ class Sha512UpdatableTest {
         }
     }
 
-    @Ignore() //Interestingly enough I'm not the only one having trouble with this test.
 
+    @Ignore // Takes too long on native and js, but it now finishes correctly (and surprisingly quickly) on JVM
     @Test
     fun testWellKnownLonger() {
         val sha512 = Sha512Pure()
         for (i in 0 until 16_777_216) {
-            if (i % 10000 == 0) {
-                println("$i/16777216")
-            }
             sha512.update("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno")
         }
-        val resultDoubleBlock = sha512.digest()
-        val expectedResultForDoubleBlock = "b47c933421ea2db149ad6e10fce6c7f93d0752380180ffd7f4629a712134831d77be6091b819ed352c2967a2e2d4fa5050723c9630691f1a05a7281dbe6c1086"
+        val result = sha512.digest()
+        val expectedResult = "b47c933421ea2db149ad6e10fce6c7f93d0752380180ffd7f4629a712134831d77be6091b819ed352c2967a2e2d4fa5050723c9630691f1a05a7281dbe6c1086"
         assertTrue {
-            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.hexStringToUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
     }
 }

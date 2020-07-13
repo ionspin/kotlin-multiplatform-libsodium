@@ -137,7 +137,7 @@ class Sha512Pure : Sha512Multipart {
 
             var h = iv.copyOf()
 
-            val expansionArray = createExpansionArray(inputMessage.size)
+            val expansionArray = createExpansionArray(inputMessage.size.toLong())
 
             val chunks =
                 (inputMessage + expansionArray + (inputMessage.size * 8).toULong().toPadded128BitByteArray()).chunked(
@@ -249,13 +249,13 @@ class Sha512Pure : Sha512Multipart {
             return h
         }
 
-        fun createExpansionArray(originalSizeInBytes: Int): UByteArray {
+        fun createExpansionArray(originalSizeInBytes: Long): UByteArray {
             val originalMessageSizeInBits = originalSizeInBytes * 8
 
             val expandedRemainderOf1024 = (originalMessageSizeInBits + 129) % BLOCK_SIZE
             val zeroAddAmount = when (expandedRemainderOf1024) {
-                0 -> 0
-                else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
+                0L -> 0
+                else -> ((BLOCK_SIZE - expandedRemainderOf1024) / 8).toInt()
             }
             val expansionArray = UByteArray(zeroAddAmount + 1) {
                 when (it) {
@@ -305,9 +305,10 @@ class Sha512Pure : Sha512Multipart {
     }
 
     var h = iv.copyOf()
-    var counter = 0
+    var counter = 0L
     var bufferCounter = 0
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
+    var digested = false
 
 
     fun update(data: String) {
@@ -317,6 +318,9 @@ class Sha512Pure : Sha512Multipart {
     override fun update(data: UByteArray) {
         if (data.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
+        }
+        if (digested) {
+            throw RuntimeException("This instance of updateable SHA256 was already finished once. You should use new instance")
         }
 
         when {
@@ -377,6 +381,7 @@ class Sha512Pure : Sha512Multipart {
                 h[5].toPaddedByteArray() +
                 h[6].toPaddedByteArray() +
                 h[7].toPaddedByteArray()
+        digested = true
         return digest
     }
 

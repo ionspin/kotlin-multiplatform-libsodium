@@ -69,7 +69,7 @@ class Sha256Pure : Sha256 {
 
             var h = iv.copyOf()
 
-            val expansionArray = createExpansionArray(inputMessage.size)
+            val expansionArray = createExpansionArray(inputMessage.size.toLong())
 
             val chunks = (
                     inputMessage +
@@ -179,15 +179,15 @@ class Sha256Pure : Sha256 {
         }
 
 
-        fun createExpansionArray(originalSizeInBytes: Int): UByteArray {
+        fun createExpansionArray(originalSizeInBytes: Long): UByteArray {
             val originalMessageSizeInBits = originalSizeInBytes * 8
 
 
             //K such that L + 1 + K + 64 is a multiple of 512
             val expandedRemainderOf512 = (originalMessageSizeInBits + BLOCK_SIZE_IN_BYTES + 1) % BLOCK_SIZE
             val zeroAddAmount = when (expandedRemainderOf512) {
-                0 -> 0
-                else -> (BLOCK_SIZE - expandedRemainderOf512) / 8
+                0L -> 0
+                else -> ((BLOCK_SIZE - expandedRemainderOf512) / 8).toInt()
             }
             val expansionArray = UByteArray(zeroAddAmount + 1) {
                 when (it) {
@@ -231,12 +231,16 @@ class Sha256Pure : Sha256 {
     }
 
     var h = iv.copyOf()
-    var counter = 0
+    var counter = 0L
     var bufferCounter = 0
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
+    var digested = false
 
 
     fun update(data: String) {
+        if (digested) {
+            throw RuntimeException("This instance of updateable SHA256 was already finished once. You should use new instance")
+        }
         return update(data.encodeToUByteArray())
     }
 
@@ -247,6 +251,14 @@ class Sha256Pure : Sha256 {
 
         when {
             bufferCounter + data.size < BLOCK_SIZE_IN_BYTES -> appendToBuffer(data, bufferCounter)
+            bufferCounter + data.size == BLOCK_SIZE_IN_BYTES -> {
+                counter += BLOCK_SIZE_IN_BYTES
+                consumeBlock(data)
+            }
+                bufferCounter + data.size == BLOCK_SIZE_IN_BYTES -> {
+                counter += BLOCK_SIZE_IN_BYTES
+                consumeBlock(data)
+            }
             bufferCounter + data.size >= BLOCK_SIZE_IN_BYTES -> {
                 val chunked = data.chunked(BLOCK_SIZE_IN_BYTES)
                 chunked.forEach { chunk ->
@@ -303,6 +315,7 @@ class Sha256Pure : Sha256 {
                 h[5].toPaddedByteArray() +
                 h[6].toPaddedByteArray() +
                 h[7].toPaddedByteArray()
+        digested = true
         return digest
     }
 
