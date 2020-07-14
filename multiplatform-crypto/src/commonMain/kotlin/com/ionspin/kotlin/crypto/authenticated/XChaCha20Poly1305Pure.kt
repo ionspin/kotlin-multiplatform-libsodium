@@ -84,12 +84,6 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         calcNonce[1] = 0U
         calcNonce[2] = 0U
         calcNonce[3] = 0U
-        println("Calckey-------=")
-        calcKey.hexColumsPrint()
-        println("Calckey-------=")
-        println("Calcnonce---------")
-        calcNonce.hexColumsPrint()
-        println("Calcnonce---------")
     }
 
     fun streamEncrypt(data: UByteArray, additionalData: UByteArray, tag : UByte) : UByteArray {
@@ -104,9 +98,6 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         }
         block[0] = tag
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block) // This just xors block[0] with keystream
-        println("encrypt block going into poly ----")
-        block.hexColumsPrint()
-        println("encrypt block going into poly end ----")
         processPolyBytes(poly1305, block) // but updates the mac with the full block!
         // In libsodium c code, it now sets the first byte to be a tag, we'll just save it for now
         val encryptedTag = block[0]
@@ -122,19 +113,10 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
         calcNonce.xorWithPositionsAndInsertIntoArray(0, 12, mac, 0, calcNonce, 0)
-        println("Calcnonce---------")
-        calcNonce.hexColumsPrint()
-        println("Calcnonce---------")
-        println("Ciphertext ---------")
-        (ubyteArrayOf(encryptedTag) + ciphertext + mac).hexColumsPrint()
-        println("Ciphertext end ---------")
         return ubyteArrayOf(encryptedTag) + ciphertext + mac
     }
 
     fun streamDecrypt(data: UByteArray, additionalData: UByteArray, tag: UByte) : UByteArray {
-        println("Calcnonce start decrypt ---------")
-        calcNonce.hexColumsPrint()
-        println("Calcnonce start decrypt end---------")
         val block = UByteArray(64) { 0U }
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
         val poly1305 = Poly1305(block)
@@ -147,10 +129,6 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
          ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block)// get the keystream xored with zeroes, but also decrypteg tag marker
         val tag = block[0] //get the decrypted tag
         block[0] = data[0] // this brings it back to state that is delivered to poly in encryption function
-        println("Decrypted tag $tag")
-        println("decrypt block going into poly ----")
-        block.hexColumsPrint()
-        println("decrypt block going into poly end ----")
         processPolyBytes(poly1305, block)
         // Next we update the poly1305 with ciphertext and padding, BUT the padding in libsodium is not correctly calculated, so it doesn't
         // pad correctly. https://github.com/jedisct1/libsodium/issues/976
@@ -162,25 +140,12 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
-        println("--- mac")
-        mac.hexColumsPrint()
-        println("--- mac end")
         val expectedMac = data.sliceArray(data.size - 16 until data.size)
-        println("--- expectedMac")
-        expectedMac.hexColumsPrint()
-        println("--- expectedMac end")
 
-
-        println("Plaintext ---------")
-        plaintext.hexColumsPrint()
-        println("Plaintext end ---------")
         if (expectedMac.contentEquals(mac).not()){
             throw InvalidTagException()
         }
         calcNonce.xorWithPositionsAndInsertIntoArray(0, 12, mac, 0, calcNonce, 0)
-        println("Calcnonce end decrypt ---------")
-        calcNonce.hexColumsPrint()
-        println("Calcnonce end decrypt end---------")
         return plaintext
     }
 
