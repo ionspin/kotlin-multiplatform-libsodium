@@ -31,3 +31,4 @@ build/
 /sodiumWrapper/static-mingw-x86-64/
 /sodiumWrapper/static-tvos/
 /sodiumWrapper/static-watchos/
+/kotlin-multiplatform-libsodium-generator/out/

@@ -1,0 +1,261 @@
+// IntelliJ API Decompiler stub source generated from a class file
+// Implementation of methods is not available
+
+package libsodium
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, `in`: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, inlen: kotlin.ULong, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_bytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_final(state: kotlinx.cinterop.CValuesRef<libsodium.crypto_onetimeauth_state /* = libsodium.crypto_onetimeauth_poly1305_state */>?, out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_init(state: kotlinx.cinterop.CValuesRef<libsodium.crypto_onetimeauth_state /* = libsodium.crypto_onetimeauth_poly1305_state */>?, key: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_keybytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_poly1305_final(state: kotlinx.cinterop.CValuesRef<libsodium.crypto_onetimeauth_poly1305_state>?, out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_poly1305_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_poly1305_update(state: kotlinx.cinterop.CValuesRef<libsodium.crypto_onetimeauth_poly1305_state>?, `in`: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, inlen: kotlin.ULong): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_primitive(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_statebytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_update(state: kotlinx.cinterop.CValuesRef<libsodium.crypto_onetimeauth_state /* = libsodium.crypto_onetimeauth_poly1305_state */>?, `in`: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, inlen: kotlin.ULong): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_onetimeauth_verify(h: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, `in`: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, inlen: kotlin.ULong, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, outlen: kotlin.ULong, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, salt: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */, alg: kotlin.Int): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_alg_argon2i13(): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_alg_argon2id13(): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_alg_default(): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, outlen: kotlin.ULong, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, salt: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */, alg: kotlin.Int): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_alg_argon2i13(): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_bytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_bytes_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_memlimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_memlimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_memlimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_memlimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_memlimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_opslimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_opslimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_opslimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_opslimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_opslimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_passwd_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_passwd_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_saltbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_str(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_str_needs_rehash(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_str_verify(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_strbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2i_strprefix(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, outlen: kotlin.ULong, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, salt: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */, alg: kotlin.Int): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_alg_argon2id13(): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_bytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_bytes_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_memlimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_memlimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_memlimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_memlimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_memlimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_opslimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_opslimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_opslimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_opslimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_opslimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_passwd_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_passwd_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_saltbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_str(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_str_needs_rehash(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_str_verify(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_strbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_argon2id_strprefix(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_bytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_bytes_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_memlimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_memlimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_memlimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_memlimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_memlimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_opslimit_interactive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_opslimit_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_opslimit_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_opslimit_moderate(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_opslimit_sensitive(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_passwd_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_passwd_min(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_primitive(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_saltbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_str(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_str_alg(out: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */, alg: kotlin.Int): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_str_needs_rehash(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, opslimit: kotlin.ULong, memlimit: platform.posix.size_t /* = kotlin.ULong */): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_str_verify(str: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?, @kotlinx.cinterop.internal.CCall.CString passwd: kotlin.String?, passwdlen: kotlin.ULong): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_strbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_pwhash_strprefix(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult(q: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, p: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_base(q: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_bytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_curve25519(q: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, p: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_curve25519_base(q: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_curve25519_bytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_curve25519_scalarbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_primitive(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_scalarmult_scalarbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_boxzerobytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_detached(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mac: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_easy(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_keybytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_macbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_messagebytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_noncebytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_open(m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_open_detached(m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mac: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_open_easy(m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_primitive(): kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>? { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_boxzerobytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_keybytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_macbytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_messagebytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_noncebytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_open(m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_xsalsa20poly1305_zerobytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_secretbox_zerobytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf_keybytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf_messagebytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf_noncebytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf_xor(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_ietf_xor_ic(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, ic: platform.posix.uint32_t /* = kotlin.UInt */, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_keybytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_messagebytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_noncebytes(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_xor(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_chacha20_xor_ic(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, ic: platform.posix.uint64_t /* = kotlin.ULong */, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+

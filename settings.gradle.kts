@@ -40,4 +40,5 @@ include("multiplatform-crypto")
 include("multiplatform-crypto-delegated")
 include("multiplatform-crypto-libsodium-bindings")
 include("sample")
+include("kotlin-multiplatform-libsodium-generator")
 
