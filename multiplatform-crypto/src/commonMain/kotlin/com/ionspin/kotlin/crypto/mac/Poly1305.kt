@@ -2,6 +2,8 @@ package com.ionspin.kotlin.crypto.mac
 
 import com.ionspin.kotlin.bignum.Endianness
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.Sign
+import com.ionspin.kotlin.crypto.util.fromLittleEndianUByteArrayToBigEndianUByteArray
 import com.ionspin.kotlin.crypto.util.hexColumsPrint
 
 /**
@@ -28,7 +30,8 @@ class Poly1305(key: UByteArray) {
         val P = BigInteger.fromUByteArray(
             ubyteArrayOf(
                 0x03U, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xffU, 0xfbU
-            )
+            ),
+            Sign.POSITIVE
         )
         val powersOfTwo = Array(129) {
             BigInteger.ONE shl it
@@ -45,22 +48,22 @@ class Poly1305(key: UByteArray) {
             val s= UByteArray(16) { key[it + 16]}
 
             var accumulator = BigInteger.ZERO
-            val rAsBigInt = BigInteger.fromUByteArray(r, Endianness.LITTLE) //TODO update BigInt to make this eraseable
-            val sAsBigInt = BigInteger.fromUByteArray(s, Endianness.LITTLE)
+            val rAsBigInt = BigInteger.fromUByteArray(r.fromLittleEndianUByteArrayToBigEndianUByteArray(), Sign.POSITIVE) //TODO convert from little endian ubyte array to what BigInteger expects
+            val sAsBigInt = BigInteger.fromUByteArray(s.fromLittleEndianUByteArrayToBigEndianUByteArray(), Sign.POSITIVE)
             val blocks = message.size / 16
             val remainder = message.size % 16
 
             for (i in 0 until blocks) {
                 val slice = message.sliceArray(i * 16 until i * 16 + 16)
                 slice.hexColumsPrint()
-                val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE) + powersOfTwo[128]
+                val blockAsInt = BigInteger.fromUByteArray(slice.fromLittleEndianUByteArrayToBigEndianUByteArray(), Sign.POSITIVE) + powersOfTwo[128]
                 accumulator += blockAsInt
                 accumulator *= rAsBigInt
                 accumulator %= P
             }
             if (remainder != 0) {
                 val slice = message.sliceArray(blocks * 16 until blocks * 16 + remainder)
-                val blockAsInt = BigInteger.fromUByteArray(slice, Endianness.LITTLE) + powersOfTwo[remainder * 8]
+                val blockAsInt = BigInteger.fromUByteArray(slice.fromLittleEndianUByteArrayToBigEndianUByteArray(), Sign.POSITIVE) + powersOfTwo[remainder * 8]
                 accumulator += blockAsInt
                 accumulator *= rAsBigInt
                 accumulator %= P
@@ -68,22 +71,29 @@ class Poly1305(key: UByteArray) {
 
             accumulator += sAsBigInt
             accumulator = accumulator and resultMask
-            val result = accumulator.toUByteArray(Endianness.BIG)
+            val result = accumulator.toUByteArray()
             result.reverse()
             return result
 
 
         }
     }
-    var rAsBigInt = BigInteger.fromUByteArray(clampR(key.sliceArray(0 until 16)), Endianness.LITTLE)
-    var sAsBigInt = BigInteger.fromUByteArray(key.sliceArray(16 until 32), Endianness.LITTLE)
+    var rAsBigInt = BigInteger.fromUByteArray(
+        clampR(key.sliceArray(0 until 16)).fromLittleEndianUByteArrayToBigEndianUByteArray(),
+        Sign.POSITIVE
+    )
+    var sAsBigInt = BigInteger.fromUByteArray(
+        key.sliceArray(16 until 32).fromLittleEndianUByteArrayToBigEndianUByteArray(),
+        Sign.POSITIVE)
     var accumulator = BigInteger.ZERO
 
     fun updateMac(data : UByteArray) {
         if (data.size != 16) {
             throw RuntimeException("Invalide block size, required 16, got ${data.size}")
         }
-        val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[128]
+        val blockAsInt = BigInteger.fromUByteArray(
+            data.fromLittleEndianUByteArrayToBigEndianUByteArray(), Sign.POSITIVE
+        ) + powersOfTwo[128]
         accumulator += blockAsInt
         accumulator *= rAsBigInt
         accumulator %= P
@@ -91,14 +101,17 @@ class Poly1305(key: UByteArray) {
 
     fun finalizeMac(data: UByteArray = ubyteArrayOf()) : UByteArray{
         if (data.size != 0) {
-            val blockAsInt = BigInteger.fromUByteArray(data, Endianness.LITTLE) + powersOfTwo[data.size * 8]
+            val blockAsInt = BigInteger.fromUByteArray(
+                data.fromLittleEndianUByteArrayToBigEndianUByteArray(),
+                Sign.POSITIVE
+            ) + powersOfTwo[data.size * 8]
             accumulator += blockAsInt
             accumulator *= rAsBigInt
             accumulator %= P
         }
         accumulator += sAsBigInt
         accumulator = accumulator and resultMask
-        val result = accumulator.toUByteArray(Endianness.BIG)
+        val result = accumulator.toUByteArray()
         result.reverse()
         return result
     }

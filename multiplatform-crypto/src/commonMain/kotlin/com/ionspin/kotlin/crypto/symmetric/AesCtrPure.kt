@@ -18,6 +18,7 @@ package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.bignum.Endianness
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.Sign
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.symmetric.AesCtrPure.Companion.encrypt
@@ -82,7 +83,7 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
     } else {
         initialCounter
     }
-    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart.toTypedArray(), Endianness.BIG))
+    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart, Sign.POSITIVE))
 
     val output = MutableList<UByteArray>(0) { ubyteArrayOf() }
 
@@ -161,7 +162,7 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
     }
 
     private fun consumeBlock(data: UByteArray, blockCount: ModularBigInteger): UByteArray {
-        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).expandCounterTo16Bytes()
+        val blockCountAsByteArray = blockCount.toUByteArray().expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
                 AesPure.encrypt(aesKey, blockCountAsByteArray) xor data
