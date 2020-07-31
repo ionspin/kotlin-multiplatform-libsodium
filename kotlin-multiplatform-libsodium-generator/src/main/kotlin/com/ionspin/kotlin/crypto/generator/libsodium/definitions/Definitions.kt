@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.definitions
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 
@@ -46,7 +47,7 @@ class FunctionDefinition(
     val jsName: String,
     val nativeName: String,
     val parameterList: MutableList<ParameterDefinition> = mutableListOf(),
-    val returnType: TypeDefinition
+    val returnType: GeneralTypeDefinition
 ) {
     operator fun ParameterDefinition.unaryPlus() {
         parameterList.add(this)
@@ -55,11 +56,19 @@ class FunctionDefinition(
 
 class ParameterDefinition(
     val parameterName: String,
-    val parameterType: TypeDefinition
+    val parameterType: GeneralTypeDefinition,
+    val modifiesReturn: Boolean = false
 )
 
-enum class TypeDefinition(val typeName: TypeName) {
+interface GeneralTypeDefinition {
+    val typeName : TypeName
+}
+
+data class CustomTypeDefinition(override val typeName: TypeName) : GeneralTypeDefinition
+
+enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefinition {
     ARRAY_OF_UBYTES(UByteArray::class.asTypeName()),
+    ARRAY_OF_UBYTES_NO_SIZE(UByteArray::class.asTypeName()),
     LONG(Long::class.asTypeName()),
     INT(Int::class.asTypeName()),
     STRING(String::class.asTypeName())
@@ -100,7 +109,8 @@ fun funcDef(
     javaName: String,
     jsName: String,
     nativeName: String,
-    returnType: TypeDefinition, body: FunctionDefinition.() -> Unit
+    returnType: GeneralTypeDefinition,
+    body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
     val function = FunctionDefinition(name, javaName, jsName, nativeName, returnType = returnType)
     function.body()
@@ -109,20 +119,37 @@ fun funcDef(
 
 
 object LibSodiumDefinitions {
-    val testKotlinFile = fileDef("Test.kt") {
+    val testKotlinFile = fileDef("DebugTest") {
         +classDef("Hashing") {
             +innerClassDef(
                 "Sha256State",
-                "Hash.State256",
+                "com.goterl.lazycode.lazysodium.interfaces.Hash.State256",
                 "Sha256State",
                 "crypto_hash_sha256_state"
             )
             +funcDef(
-                "test", "test", "test", "test", TypeDefinition.ARRAY_OF_UBYTES
+                "init",
+                "crypto_hash_sha256_init",
+                "crypto_hash_sha256_init",
+                "crypto_hash_sha256_init",
+                TypeDefinition.INT
             ) {
-                +ParameterDefinition("first", TypeDefinition.ARRAY_OF_UBYTES)
-                +ParameterDefinition("second", TypeDefinition.LONG)
-                +ParameterDefinition("third", TypeDefinition.STRING)
+                +ParameterDefinition("state", CustomTypeDefinition(ClassName.bestGuess("Sha256State")))
+            }
+        }
+
+        +classDef("GenericHash") {
+
+            +funcDef(
+                "init",
+                "crypto_generichash_init",
+                "crypto_generichash_init",
+                "crypto_generichash_init",
+                TypeDefinition.INT
+            ) {
+                +ParameterDefinition("state", TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE)
+                +ParameterDefinition("key", TypeDefinition.ARRAY_OF_UBYTES)
+                +ParameterDefinition("outlen", TypeDefinition.INT, modifiesReturn = true)
             }
         }
     }
