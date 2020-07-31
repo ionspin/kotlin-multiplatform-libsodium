@@ -28,6 +28,8 @@ object Versions {
     val lazySodium = "4.2.6"
     val jna = "5.5.0"
 
+    val kotlinPoet = "1.6.0"
+
 
 }
 
@@ -74,6 +76,8 @@ object Deps {
         val coroutinesjdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.kotlinSerialization}"
         val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}"
+
+        val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoet}"
 
         object Delegated {
             val lazysodium = "com.goterl.lazycode:lazysodium-java:${Versions.lazySodium}"
