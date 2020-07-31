@@ -10,6 +10,10 @@ import com.squareup.kotlinpoet.asTypeName
  * on 28-Jul-2020
  */
 
+val packageName = "debug.test"
+
+fun withPackageName(name: String) = ClassName(packageName, name)
+
 class KotlinFileDefinition(
     val name: String,
     val commonClassList: MutableList<ClassDefinition> = mutableListOf()
@@ -117,6 +121,16 @@ fun funcDef(
     return function
 }
 
+fun funcDef(
+    name: String,
+    returnType: GeneralTypeDefinition,
+    body: FunctionDefinition.() -> Unit
+): FunctionDefinition {
+    val function = FunctionDefinition(name, name, name, name, returnType = returnType)
+    function.body()
+    return function
+}
+
 
 object LibSodiumDefinitions {
     val testKotlinFile = fileDef("DebugTest") {
@@ -128,22 +142,16 @@ object LibSodiumDefinitions {
                 "crypto_hash_sha256_state"
             )
             +funcDef(
-                "init",
-                "crypto_hash_sha256_init",
-                "crypto_hash_sha256_init",
                 "crypto_hash_sha256_init",
                 TypeDefinition.INT
             ) {
-                +ParameterDefinition("state", CustomTypeDefinition(ClassName.bestGuess("Sha256State")))
+                +ParameterDefinition("state", CustomTypeDefinition((withPackageName("Sha256State"))))
             }
         }
 
         +classDef("GenericHash") {
 
             +funcDef(
-                "init",
-                "crypto_generichash_init",
-                "crypto_generichash_init",
                 "crypto_generichash_init",
                 TypeDefinition.INT
             ) {
