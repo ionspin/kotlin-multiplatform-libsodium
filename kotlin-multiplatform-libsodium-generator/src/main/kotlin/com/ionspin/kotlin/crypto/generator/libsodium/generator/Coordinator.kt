@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.generator
 
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.LibSodiumDefinitions
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.packageName
 import java.io.File
 
 /**
@@ -10,12 +11,16 @@ import java.io.File
  */
 object Coordinator {
 
-    fun run(packageName: String) {
+    fun run() {
+
         val commonFileSpec = CommonLibsodiumGenerator.createCommonFile(packageName, LibSodiumDefinitions.testKotlinFile)
         val jvmFileSpec = JvmLibsodiumGenerator.createJvmFile(packageName, LibSodiumDefinitions.testKotlinFile)
+        val nativeFileSpec = NativeLibsodiumGenerator.createNativeFile(packageName, LibSodiumDefinitions.testKotlinFile)
         val commonFile = File("multiplatform-crypto-libsodium-bindings/src/commonMain/kotlin/")
         commonFileSpec.writeTo(commonFile)
         val jvmFile = File("multiplatform-crypto-libsodium-bindings/src/jvmMain/kotlin/")
         jvmFileSpec.writeTo(jvmFile)
+        val nativeFile = File("multiplatform-crypto-libsodium-bindings/src/nativeMain/kotlin/")
+        nativeFileSpec.writeTo(nativeFile)
     }
 }

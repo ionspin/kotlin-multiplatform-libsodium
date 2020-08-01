@@ -8,14 +8,17 @@ import com.squareup.kotlinpoet.*
  * ugljesa.jovanovic@ionspin.com
  * on 31-Jul-2020
  */
-object JvmLibsodiumGenerator {
+object NativeLibsodiumGenerator {
 
 
-    fun createJvmFile(packageName: String, fileDefinition: KotlinFileDefinition): FileSpec {
+    fun createNativeFile(packageName: String, fileDefinition: KotlinFileDefinition): FileSpec {
         val fileBuilder = FileSpec.builder(packageName, fileDefinition.name)
-        val sodiumProperty = PropertySpec.builder("sodium", ClassName.bestGuess("com.goterl.lazycode.lazysodium.SodiumJava"))
-        sodiumProperty.initializer(CodeBlock.of("SodiumJava()"))
-        fileBuilder.addProperty(sodiumProperty.build())
+        fileBuilder.addImport("kotlinx.cinterop", "toCValues")
+        fileBuilder.addImport("kotlinx.cinterop", "convert")
+        fileBuilder.addImport("kotlinx.cinterop", "ptr")
+//        val sodiumProperty = PropertySpec.builder("sodium", ClassName.bestGuess("com.goterl.lazycode.lazysodium.SodiumJava"))
+//        sodiumProperty.initializer(CodeBlock.of("SodiumJava()"))
+//        fileBuilder.addProperty(sodiumProperty.build())
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
@@ -25,7 +28,7 @@ object JvmLibsodiumGenerator {
             val commonClassSpec = createClass(
                 commonClassDefinition,
                 MultiplatformModifier.ACTUAL,
-                ::createJvmFunctionImplementation
+                ::createNativeFunctionImplementation
             )
             fileBuilder.addType(commonClassSpec)
         }
@@ -38,13 +41,14 @@ object JvmLibsodiumGenerator {
         innerClassDefinition: InnerClassDefinition,
         multiplatformModifier: MultiplatformModifier
     ): TypeAliasSpec {
-        val innerClassBuilder = TypeAliasSpec.builder(innerClassDefinition.name, ClassName.bestGuess(innerClassDefinition.javaName))
+        val innerClassBuilder =
+            TypeAliasSpec.builder(innerClassDefinition.name, ClassName("libsodium", innerClassDefinition.nativeName))
         innerClassBuilder.modifiers += multiplatformModifier.modifierList
 
         return innerClassBuilder.build()
     }
 
-    fun createJvmFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
+    fun createNativeFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
@@ -65,7 +69,7 @@ object JvmLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.ARRAY_OF_UBYTES) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return libsodium.${methodDefinition.nativeName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -74,7 +78,7 @@ object JvmLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.INT) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return libsodium.${methodDefinition.nativeName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -83,7 +87,7 @@ object JvmLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.UNIT) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("libsodium.${methodDefinition.nativeName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -92,7 +96,7 @@ object JvmLibsodiumGenerator {
         if (methodDefinition.returnType is CustomTypeDefinition) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return libsodium.${methodDefinition.nativeName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -102,7 +106,7 @@ object JvmLibsodiumGenerator {
         return methodBuilder.build()
     }
 
-    fun paramsToString(methodDefinition: FunctionDefinition) : String {
+    fun paramsToString(methodDefinition: FunctionDefinition): String {
         val paramsBuilder = StringBuilder()
         paramsBuilder.append("(")
         methodDefinition.parameterList.forEachIndexed { index, paramDefinition ->
@@ -112,24 +116,24 @@ object JvmLibsodiumGenerator {
                 ", "
             }
             if (paramDefinition.parameterType is CustomTypeDefinition) {
-                paramsBuilder.append(paramDefinition.parameterName + separator)
+                paramsBuilder.append(paramDefinition.parameterName + ".ptr" + separator)
             }
             if (paramDefinition.parameterType is TypeDefinition) {
-                when(paramDefinition.parameterType) {
+                when (paramDefinition.parameterType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray(), " + paramDefinition.parameterName + ".size" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues(), " + paramDefinition.parameterName + ".size.convert()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray(), " + paramDefinition.parameterName + ".size.toLong()" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues(), " + paramDefinition.parameterName + ".size.convert()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray()" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues()" + separator)
                     }
                     TypeDefinition.LONG -> {
-                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".convert()" + separator)
                     }
                     TypeDefinition.INT -> {
-                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".convert()" + separator)
                     }
                     TypeDefinition.STRING -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
@@ -141,7 +145,6 @@ object JvmLibsodiumGenerator {
         paramsBuilder.append(')')
         return paramsBuilder.toString()
     }
-
 
 
 }

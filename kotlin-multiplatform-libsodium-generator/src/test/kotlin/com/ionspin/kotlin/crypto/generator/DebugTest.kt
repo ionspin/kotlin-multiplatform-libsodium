@@ -11,9 +11,8 @@ import org.junit.Test
  * on 31-Jul-2020
  */
 class DebugTest {
-    val packageName = "debug.test"
     @Test
     fun debugTest() {
-        Coordinator.run(packageName)
+        Coordinator.run()
     }
 }

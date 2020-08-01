@@ -72,10 +72,12 @@ data class CustomTypeDefinition(override val typeName: TypeName) : GeneralTypeDe
 
 enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefinition {
     ARRAY_OF_UBYTES(UByteArray::class.asTypeName()),
+    ARRAY_OF_UBYTES_LONG_SIZE(UByteArray::class.asTypeName()),
     ARRAY_OF_UBYTES_NO_SIZE(UByteArray::class.asTypeName()),
     LONG(Long::class.asTypeName()),
     INT(Int::class.asTypeName()),
-    STRING(String::class.asTypeName())
+    STRING(String::class.asTypeName()),
+    UNIT(Unit::class.asTypeName())
 }
 
 fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit) : KotlinFileDefinition {
@@ -132,33 +134,4 @@ fun funcDef(
 }
 
 
-object LibSodiumDefinitions {
-    val testKotlinFile = fileDef("DebugTest") {
-        +classDef("Hashing") {
-            +innerClassDef(
-                "Sha256State",
-                "com.goterl.lazycode.lazysodium.interfaces.Hash.State256",
-                "Sha256State",
-                "crypto_hash_sha256_state"
-            )
-            +funcDef(
-                "crypto_hash_sha256_init",
-                TypeDefinition.INT
-            ) {
-                +ParameterDefinition("state", CustomTypeDefinition((withPackageName("Sha256State"))))
-            }
-        }
 
-        +classDef("GenericHash") {
-
-            +funcDef(
-                "crypto_generichash_init",
-                TypeDefinition.INT
-            ) {
-                +ParameterDefinition("state", TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE)
-                +ParameterDefinition("key", TypeDefinition.ARRAY_OF_UBYTES)
-                +ParameterDefinition("outlen", TypeDefinition.INT, modifiesReturn = true)
-            }
-        }
-    }
-}
