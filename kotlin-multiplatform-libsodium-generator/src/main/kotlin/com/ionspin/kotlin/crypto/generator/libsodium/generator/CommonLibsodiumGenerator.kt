@@ -32,7 +32,7 @@ object CommonLibsodiumGenerator {
                     MultiplatformModifier.EXPECT,
                     ::createCommonMethodSpec
                 )
-            fileBuilder.addType(commonClassSpec)
+            fileBuilder.addType(commonClassSpec.build())
         }
         val file = fileBuilder.build()
         file.writeTo(System.out)

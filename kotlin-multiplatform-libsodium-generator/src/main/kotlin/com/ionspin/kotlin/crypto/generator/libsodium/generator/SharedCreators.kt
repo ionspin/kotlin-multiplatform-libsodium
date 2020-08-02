@@ -15,13 +15,13 @@ fun createClass(
     classDefinition: ClassDefinition,
     multiplatformModifier: MultiplatformModifier,
     methodCreator: (FunctionDefinition) -> FunSpec
-): TypeSpec {
+): TypeSpec.Builder {
     val commonClassBuilder = TypeSpec.classBuilder(classDefinition.name)
     commonClassBuilder.modifiers += multiplatformModifier.modifierList
     for (methodDefinition in classDefinition.methods) {
         commonClassBuilder.addFunction(methodCreator(methodDefinition))
     }
-    return commonClassBuilder.build()
+    return commonClassBuilder
 }
 
 

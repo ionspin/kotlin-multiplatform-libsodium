@@ -18,6 +18,7 @@ object NativeLibsodiumGenerator {
         fileBuilder.addImport("kotlinx.cinterop", "ptr")
         fileBuilder.addImport("kotlinx.cinterop", "pin")
         fileBuilder.addImport("kotlinx.cinterop", "addressOf")
+
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
@@ -29,7 +30,14 @@ object NativeLibsodiumGenerator {
                 MultiplatformModifier.ACTUAL,
                 ::createNativeFunctionImplementation
             )
-            fileBuilder.addType(commonClassSpec)
+            //Workarounds for native not emitting types
+            val byteEmitter = PropertySpec.builder("_emitByte", Byte::class.asTypeName())
+            byteEmitter.initializer(CodeBlock.of("0"))
+            val byteArrayEmitter = PropertySpec.builder("_emitByteArray", Byte::class.asTypeName())
+            byteArrayEmitter.initializer(CodeBlock.of("ByteArray(0) {}"))
+            commonClassSpec.addProperty(byteEmitter.build())
+            commonClassSpec.addProperty(byteArrayEmitter.build())
+            fileBuilder.addType(commonClassSpec.build())
         }
         val file = fileBuilder.build()
         file.writeTo(System.out)

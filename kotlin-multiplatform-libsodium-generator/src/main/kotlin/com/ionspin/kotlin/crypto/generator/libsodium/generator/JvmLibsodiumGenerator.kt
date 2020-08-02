@@ -27,7 +27,7 @@ object JvmLibsodiumGenerator {
                 MultiplatformModifier.ACTUAL,
                 ::createJvmFunctionImplementation
             )
-            fileBuilder.addType(commonClassSpec)
+            fileBuilder.addType(commonClassSpec.build())
         }
         val file = fileBuilder.build()
         file.writeTo(System.out)

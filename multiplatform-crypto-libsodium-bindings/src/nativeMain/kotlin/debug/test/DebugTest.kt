@@ -1,5 +1,6 @@
 package debug.test
 
+import kotlin.Byte
 import kotlin.Int
 import kotlin.UByteArray
 import kotlinx.cinterop.addressOf
@@ -18,6 +19,10 @@ actual typealias Sha512State = crypto_hash_sha512_state
 actual typealias GenericHashState = crypto_generichash_blake2b_state
 
 actual class Crypto {
+  val _emitByte: Byte = 0
+
+  val _emitByteArray: Byte = ByteArray(0) {}
+
   actual fun crypto_hash_sha256_init(state: Sha256State): Int {
     println("Debug")
     return libsodium.crypto_hash_sha256_init(state.ptr)

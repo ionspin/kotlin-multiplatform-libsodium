@@ -18,13 +18,13 @@ object Coordinator {
         val nativeFileSpec = NativeLibsodiumGenerator.createNativeFile(packageName, LibSodiumDefinitions.testKotlinFile)
         val jsFileSpec = JsLibsodiumGenerator.createJsFile(packageName, LibSodiumDefinitions.testKotlinFile)
 
-        val commonFile = File("../multiplatform-crypto-libsodium-bindings/src/commonMain/kotlin/")
+        val commonFile = File("multiplatform-crypto-libsodium-bindings/src/commonMain/kotlin/")
         commonFileSpec.writeTo(commonFile)
-        val jvmFile = File("../multiplatform-crypto-libsodium-bindings/src/jvmMain/kotlin/")
+        val jvmFile = File("multiplatform-crypto-libsodium-bindings/src/jvmMain/kotlin/")
         jvmFileSpec.writeTo(jvmFile)
-        val nativeFile = File("../multiplatform-crypto-libsodium-bindings/src/nativeMain/kotlin/")
+        val nativeFile = File("multiplatform-crypto-libsodium-bindings/src/nativeMain/kotlin/")
         nativeFileSpec.writeTo(nativeFile)
-        val jsFile = File("../multiplatform-crypto-libsodium-bindings/src/jsMain/kotlin/")
+        val jsFile = File("multiplatform-crypto-libsodium-bindings/src/jsMain/kotlin/")
         jsFileSpec.writeTo(jsFile)
 
     }
