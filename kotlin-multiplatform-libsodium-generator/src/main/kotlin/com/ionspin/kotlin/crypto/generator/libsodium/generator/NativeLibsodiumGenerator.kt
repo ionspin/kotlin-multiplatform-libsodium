@@ -21,7 +21,7 @@ object NativeLibsodiumGenerator {
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
-                fileBuilder.addTypeAlias(createJvmInnerClassSpec(it, MultiplatformModifier.ACTUAL))
+                fileBuilder.addTypeAlias(createNativeInnerClassSpec(it, MultiplatformModifier.ACTUAL))
             }
 
             val commonClassSpec = createClass(
@@ -36,7 +36,7 @@ object NativeLibsodiumGenerator {
         return file
     }
 
-    fun createJvmInnerClassSpec(
+    fun createNativeInnerClassSpec(
         innerClassDefinition: InnerClassDefinition,
         multiplatformModifier: MultiplatformModifier
     ): TypeAliasSpec {

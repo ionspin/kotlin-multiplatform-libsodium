@@ -2,14 +2,11 @@ package ext.libsodium.com.ionspin.kotlin.crypto
 
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
-import org.khronos.webgl.set
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
- * on 25-Jun-2020
- *
- * TODO investigate using unsafe cast
+ * on 02-Aug-2020
  */
 fun UByteArray.toUInt8Array() : Uint8Array {
     val uint8Result = Uint8Array(toByteArray().toTypedArray())
