@@ -16,9 +16,8 @@ object NativeLibsodiumGenerator {
         fileBuilder.addImport("kotlinx.cinterop", "toCValues")
         fileBuilder.addImport("kotlinx.cinterop", "convert")
         fileBuilder.addImport("kotlinx.cinterop", "ptr")
-//        val sodiumProperty = PropertySpec.builder("sodium", ClassName.bestGuess("com.goterl.lazycode.lazysodium.SodiumJava"))
-//        sodiumProperty.initializer(CodeBlock.of("SodiumJava()"))
-//        fileBuilder.addProperty(sodiumProperty.build())
+        fileBuilder.addImport("kotlinx.cinterop", "pin")
+        fileBuilder.addImport("kotlinx.cinterop", "addressOf")
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
@@ -66,6 +65,8 @@ object NativeLibsodiumGenerator {
             }
         }
 
+        pinParams(methodDefinition, methodBuilder)
+
         if (methodDefinition.returnType == TypeDefinition.ARRAY_OF_UBYTES) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
@@ -85,12 +86,12 @@ object NativeLibsodiumGenerator {
         }
 
         if (methodDefinition.returnType == TypeDefinition.UNIT) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("libsodium.${methodDefinition.nativeName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
 
-            methodBuilder.addStatement(constructJvmCall.toString())
+            val constructNativeCall = StringBuilder()
+            constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
+            constructNativeCall.append(paramsToString(methodDefinition))
+
+            methodBuilder.addStatement(constructNativeCall.toString())
         }
 
         if (methodDefinition.returnType is CustomTypeDefinition) {
@@ -102,8 +103,66 @@ object NativeLibsodiumGenerator {
             methodBuilder.addStatement(constructJvmCall.toString())
         }
 
+        unpinParams(methodDefinition, methodBuilder)
+
         methodBuilder.returns(methodDefinition.returnType.typeName)
         return methodBuilder.build()
+    }
+
+    fun pinParams(methodDefinition: FunctionDefinition, methodBuilder: FunSpec.Builder) {
+        methodDefinition.parameterList.forEachIndexed { index, paramDefinition ->
+            if (paramDefinition.parameterType is TypeDefinition) {
+                when (paramDefinition.parameterType) {
+                    TypeDefinition.ARRAY_OF_UBYTES -> {
+                        methodBuilder.addStatement("val pinned${paramDefinition.parameterName.capitalize()} = ${paramDefinition.parameterName}.pin()")
+                    }
+                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                        methodBuilder.addStatement("val pinned${paramDefinition.parameterName.capitalize()} = ${paramDefinition.parameterName}.pin()")
+                    }
+                    TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
+                        methodBuilder.addStatement("val pinned${paramDefinition.parameterName.capitalize()} = ${paramDefinition.parameterName}.pin()")
+                    }
+                    TypeDefinition.LONG -> {
+
+                    }
+                    TypeDefinition.INT -> {
+
+                    }
+                    TypeDefinition.STRING -> {
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    fun unpinParams(methodDefinition: FunctionDefinition, methodBuilder: FunSpec.Builder) {
+        methodDefinition.parameterList.forEachIndexed { index, paramDefinition ->
+            if (paramDefinition.parameterType is TypeDefinition) {
+                when (paramDefinition.parameterType) {
+                    TypeDefinition.ARRAY_OF_UBYTES -> {
+                        methodBuilder.addStatement("pinned${paramDefinition.parameterName.capitalize()}.unpin()")
+                    }
+                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                        methodBuilder.addStatement("pinned${paramDefinition.parameterName.capitalize()}.unpin()")
+                    }
+                    TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
+                        methodBuilder.addStatement("pinned${paramDefinition.parameterName.capitalize()}.unpin()")
+                    }
+                    TypeDefinition.LONG -> {
+
+                    }
+                    TypeDefinition.INT -> {
+
+                    }
+                    TypeDefinition.STRING -> {
+
+                    }
+                }
+            }
+
+        }
     }
 
     fun paramsToString(methodDefinition: FunctionDefinition): String {
@@ -121,13 +180,13 @@ object NativeLibsodiumGenerator {
             if (paramDefinition.parameterType is TypeDefinition) {
                 when (paramDefinition.parameterType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues(), " + paramDefinition.parameterName + ".size.convert()" + separator)
+                        paramsBuilder.append("pinned" + paramDefinition.parameterName.capitalize() + ".addressOf(0), "+ paramDefinition.parameterName + ".size.convert()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues(), " + paramDefinition.parameterName + ".size.convert()" + separator)
+                        paramsBuilder.append("pinned" + paramDefinition.parameterName.capitalize() + ".addressOf(0), "+  paramDefinition.parameterName + ".size.convert()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toCValues()" + separator)
+                        paramsBuilder.append("pinned" + paramDefinition.parameterName.capitalize() + ".addressOf(0)" + separator)
                     }
                     TypeDefinition.LONG -> {
                         paramsBuilder.append(paramDefinition.parameterName + ".convert()" + separator)
