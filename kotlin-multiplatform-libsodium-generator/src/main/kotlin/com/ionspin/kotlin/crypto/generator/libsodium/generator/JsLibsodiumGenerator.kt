@@ -13,9 +13,8 @@ object JsLibsodiumGenerator {
 
     fun createJsFile(packageName: String, fileDefinition: KotlinFileDefinition): FileSpec {
         val fileBuilder = FileSpec.builder(packageName, fileDefinition.name)
-        val sodiumProperty = PropertySpec.builder("sodium", ClassName.bestGuess("com.goterl.lazycode.lazysodium.SodiumJava"))
-        sodiumProperty.initializer(CodeBlock.of("SodiumJava()"))
-        fileBuilder.addProperty(sodiumProperty.build())
+        fileBuilder.addImport("ext.libsodium.com.ionspin.kotlin.crypto", "toUInt8Array")
+        fileBuilder.addImport("com.ionspin.kotlin.crypto", "getSodium")
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
@@ -38,7 +37,7 @@ object JsLibsodiumGenerator {
         innerClassDefinition: InnerClassDefinition,
         multiplatformModifier: MultiplatformModifier
     ): TypeAliasSpec {
-        val innerClassBuilder = TypeAliasSpec.builder(innerClassDefinition.name, ClassName.bestGuess(innerClassDefinition.javaName))
+        val innerClassBuilder = TypeAliasSpec.builder(innerClassDefinition.name, Any::class.asTypeName())
         innerClassBuilder.modifiers += multiplatformModifier.modifierList
 
         return innerClassBuilder.build()
@@ -65,7 +64,7 @@ object JsLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.ARRAY_OF_UBYTES) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -74,7 +73,7 @@ object JsLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.INT) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -83,7 +82,7 @@ object JsLibsodiumGenerator {
         if (methodDefinition.returnType == TypeDefinition.UNIT) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("getSodium().${methodDefinition.javaName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -92,7 +91,7 @@ object JsLibsodiumGenerator {
         if (methodDefinition.returnType is CustomTypeDefinition) {
             methodBuilder.addStatement("println(\"Debug\")")
             val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
+            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
             constructJvmCall.append(paramsToString(methodDefinition))
 
             methodBuilder.addStatement(constructJvmCall.toString())
@@ -117,13 +116,13 @@ object JsLibsodiumGenerator {
             if (paramDefinition.parameterType is TypeDefinition) {
                 when(paramDefinition.parameterType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray(), " + paramDefinition.parameterName + ".size" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + paramDefinition.parameterName + ".size" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray(), " + paramDefinition.parameterName + ".size.toLong()" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + paramDefinition.parameterName + ".size.toLong()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".asByteArray()" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
                     }
                     TypeDefinition.LONG -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
