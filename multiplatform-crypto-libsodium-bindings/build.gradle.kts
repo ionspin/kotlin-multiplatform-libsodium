@@ -528,12 +528,12 @@ tasks {
 
 
     create<Jar>("javadocJar") {
-        dependsOn(dokka)
+        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokka.get().outputDirectory)
+        from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokka {
+    dokkaJavadoc {
         println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {

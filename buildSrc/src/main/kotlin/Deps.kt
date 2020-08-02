@@ -20,7 +20,7 @@ object Versions {
     val kotlinSerialization = "1.0-M1-1.4.0-rc"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "0.11.0-dev-44"
+    val dokkaPlugin = "1.4.0-M3-dev-92"
     val taskTreePlugin = "1.5"
 
     val kotlinBigNumVersion = "0.1.6-1.4.0-rc-SNAPSHOT"

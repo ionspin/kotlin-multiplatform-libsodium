@@ -22,9 +22,9 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
-    id (PluginsDeps.mavenPublish)
-    id (PluginsDeps.signing)
-    id (PluginsDeps.dokka)
+    id(PluginsDeps.mavenPublish)
+    id(PluginsDeps.signing)
+    id(PluginsDeps.dokka)
 }
 
 repositories {
@@ -267,12 +267,12 @@ kotlin {
 
 tasks {
     create<Jar>("javadocJar") {
-        dependsOn(dokka)
+        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokka.get().outputDirectory)
+        from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokka {
+    dokkaJavadoc {
         println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
