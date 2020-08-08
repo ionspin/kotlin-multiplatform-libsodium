@@ -134,10 +134,8 @@ matrix:
 cache:
   directories:
     - $HOME/.m2/
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.konan/cache
-    - $HOME/.konan/dependencies
+    - $HOME/.gradle
+    - $HOME/.konan
     - $HOME/AppData/Local/Temp/chocolatey
     - /C/tools/msys64
 branches:
