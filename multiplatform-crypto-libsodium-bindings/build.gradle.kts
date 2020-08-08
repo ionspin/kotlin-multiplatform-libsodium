@@ -566,12 +566,12 @@ tasks {
 //            }
 //        }
 
-//        val jsIrBrowserTest by getting(KotlinJsTest::class) {
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                 showStandardStreams = true
-//            }
-//        }
+        val jsBrowserTest by getting(KotlinJsTest::class) {
+            testLogging {
+                events("PASSED", "FAILED", "SKIPPED")
+                 showStandardStreams = true
+            }
+        }
     }
 
     if (getHostOsName() == "windows") {

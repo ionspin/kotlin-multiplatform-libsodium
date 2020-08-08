@@ -85,8 +85,13 @@ object JsLibsodiumGenerator {
                 constructJsCall.append(paramsToString(methodDefinition))
             }
             is CustomTypeDefinition -> {
-                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
-                constructJsCall.append(paramsToString(methodDefinition))
+                if (methodDefinition.parameterList.filter { it.isStateType.not() }.size > 0) {
+                    constructJsCall.append("return getSodium().${methodDefinition.jsName}")
+                    constructJsCall.append(paramsToString(methodDefinition))
+                } else {
+                    constructJsCall.append("val result  = js(\"getSodium().${methodDefinition.jsName}()\")")
+                    constructJsCall.append("\nreturn result")
+                }
             }
         }
         methodBuilder.addStatement(constructJsCall.toString())

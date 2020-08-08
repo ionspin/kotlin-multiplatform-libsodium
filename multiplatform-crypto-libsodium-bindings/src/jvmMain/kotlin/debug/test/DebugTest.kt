@@ -15,7 +15,7 @@ actual typealias Sha512State = Hash.State512
 actual typealias GenericHashState = ByteArray
 
 actual class Crypto internal actual constructor() {
-  actual fun crypto_hash_sha256_init_spec(): Sha256State {
+  actual fun crypto_hash_sha256_init(): Sha256State {
     val state = debug.test.Sha256State()
     println("Debug")
     sodium.crypto_hash_sha256_init(state)
