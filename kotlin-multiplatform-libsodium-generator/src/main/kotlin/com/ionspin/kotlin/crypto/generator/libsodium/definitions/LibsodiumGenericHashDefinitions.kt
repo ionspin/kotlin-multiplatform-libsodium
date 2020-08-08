@@ -14,7 +14,7 @@ fun ClassDefinition.defineGenericHashFunctions() {
 
     +innerClassDef(
         "GenericHashState",
-        "ByteArray",
+        "kotlin.ByteArray",
         "Uint8Array",
         "crypto_generichash_blake2b_state"
     )
@@ -29,7 +29,8 @@ fun ClassDefinition.defineGenericHashFunctions() {
             "state",
             CustomTypeDefinition((withPackageName("GenericHashState"))),
             isStateType = true,
-            dropParameterFromDefinition = true
+            dropParameterFromDefinition = true,
+            specificJvmInitializer = "sodium.crypto_generichash_statebytes()"
         )
         +ParameterDefinition("key", TypeDefinition.ARRAY_OF_UBYTES)
         +ParameterDefinition("outlen", TypeDefinition.INT, modifiesReturn = true)

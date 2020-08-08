@@ -49,7 +49,7 @@ object NativeLibsodiumGenerator {
             val byteEmitter = PropertySpec.builder("_emitByte", Byte::class.asTypeName())
             byteEmitter.initializer(CodeBlock.of("0"))
             val byteArrayEmitter = PropertySpec.builder("_emitByteArray", ByteArray::class.asTypeName())
-            byteArrayEmitter.initializer(CodeBlock.of("ByteArray(0) {}"))
+            byteArrayEmitter.initializer(CodeBlock.of("ByteArray(0)"))
             commonClassSpec.addProperty(byteEmitter.build())
             commonClassSpec.addProperty(byteArrayEmitter.build())
             fileBuilder.addType(commonClassSpec.build())

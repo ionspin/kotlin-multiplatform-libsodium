@@ -9,8 +9,8 @@ expect class Sha512State
 
 expect class GenericHashState
 
-expect class Crypto {
-  fun crypto_hash_sha256_init(): Sha256State
+expect class Crypto internal constructor() {
+  fun crypto_hash_sha256_init_spec(): Sha256State
 
   fun crypto_hash_sha256_update(state: Sha256State, input: UByteArray)
 

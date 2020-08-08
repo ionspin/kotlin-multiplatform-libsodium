@@ -18,6 +18,9 @@ fun ClassDefinition.defineHashFunctions() {
         "crypto_hash_sha256_state"
     )
     +funcDef(
+        "crypto_hash_sha256_init_spec",
+        "crypto_hash_sha256_init",
+        "crypto_hash_sha256_init",
         "crypto_hash_sha256_init",
         CustomTypeDefinition(ClassName(packageName, "Sha256State")),
         dynamicJsReturn = true,

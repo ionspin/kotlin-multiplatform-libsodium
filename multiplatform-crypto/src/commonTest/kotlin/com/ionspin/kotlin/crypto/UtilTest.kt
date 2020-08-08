@@ -14,8 +14,13 @@
  *    limitations under the License.
  */
 
-package com.ionspin.kotlin.crypto.util
+package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.util.chunked
+import com.ionspin.kotlin.crypto.util.fromBigEndianArrayToULong
+import com.ionspin.kotlin.crypto.util.fromLittleEndianArrayToULong
+import com.ionspin.kotlin.crypto.util.toBigEndianUByteArray
+import com.ionspin.kotlin.crypto.util.toLittleEndianTypedUByteArray
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

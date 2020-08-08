@@ -73,19 +73,19 @@ object JsLibsodiumGenerator {
         val constructJsCall = StringBuilder()
         when (methodDefinition.returnType) {
             TypeDefinition.ARRAY_OF_UBYTES -> {
-                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
                 constructJsCall.append(paramsToString(methodDefinition) + ".toUByteArray()")
             }
             TypeDefinition.INT -> {
-                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
                 constructJsCall.append(paramsToString(methodDefinition))
             }
             TypeDefinition.UNIT -> {
-                constructJsCall.append("getSodium().${methodDefinition.javaName}")
+                constructJsCall.append("getSodium().${methodDefinition.jsName}")
                 constructJsCall.append(paramsToString(methodDefinition))
             }
             is CustomTypeDefinition -> {
-                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
                 constructJsCall.append(paramsToString(methodDefinition))
             }
         }

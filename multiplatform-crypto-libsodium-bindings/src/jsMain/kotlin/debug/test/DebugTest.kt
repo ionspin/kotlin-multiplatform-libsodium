@@ -13,8 +13,8 @@ actual typealias Sha512State = Any
 
 actual typealias GenericHashState = Any
 
-actual class Crypto {
-  actual fun crypto_hash_sha256_init(): dynamic {
+actual class Crypto internal actual constructor() {
+  actual fun crypto_hash_sha256_init_spec(): dynamic {
     println("Debug")
     return getSodium().crypto_hash_sha256_init()
   }

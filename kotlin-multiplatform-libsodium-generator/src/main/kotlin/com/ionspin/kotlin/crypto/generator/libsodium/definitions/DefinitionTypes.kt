@@ -72,6 +72,7 @@ class ParameterDefinition(
     val isActuallyAnOutputParam: Boolean = false,
     val isStateType: Boolean = false,
     val dropParameterFromDefinition: Boolean = false,
+    val specificJvmInitializer: String? = null,
 )
 
 interface GeneralTypeDefinition {
@@ -108,6 +109,7 @@ fun innerClassDef(
     javaName: String,
     jsName: String,
     nativeName: String,
+    specificConstructor : String? = null,
     body: InnerClassDefinition.() -> Unit = {}
 ): InnerClassDefinition {
     val genClass = InnerClassDefinition(

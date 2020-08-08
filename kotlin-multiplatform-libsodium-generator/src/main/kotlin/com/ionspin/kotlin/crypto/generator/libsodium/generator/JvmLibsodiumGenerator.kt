@@ -1,7 +1,18 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.generator
 
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.*
-import com.squareup.kotlinpoet.*
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.CustomTypeDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.FunctionDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.InnerClassDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.KotlinFileDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.ParameterDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.TypeDefinition
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeAliasSpec
 
 /**
  * Created by Ugljesa Jovanovic
@@ -49,10 +60,17 @@ object JvmLibsodiumGenerator {
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
         var returnModifierName = ""
+        lateinit var actualReturnParameterDefinition: ParameterDefinition
+        var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
-            val parameterSpec =
-                ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-            methodBuilder.addParameter(parameterSpec.build())
+            if (paramDefinition.isStateType && methodDefinition.isStateCreationFunction) {
+                createStateParam(paramDefinition, methodBuilder)
+            }
+            if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.isActuallyAnOutputParam.not()) {
+                val parameterSpec =
+                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                methodBuilder.addParameter(parameterSpec.build())
+            }
             if (paramDefinition.modifiesReturn) {
                 if (returnModifierFound == true) {
                     throw RuntimeException("Return modifier already found")
@@ -60,31 +78,96 @@ object JvmLibsodiumGenerator {
                 returnModifierFound = true
                 returnModifierName = paramDefinition.parameterName
             }
+            if (paramDefinition.isActuallyAnOutputParam) {
+                actualReturnParameterDefinition = paramDefinition
+                actualReturnTypeFound = true
+            }
         }
-
+        if (actualReturnTypeFound) {
+            if (returnModifierFound) {
+                createOutputParam(
+                    actualReturnParameterDefinition,
+                    returnModifierName,
+                    methodBuilder
+                )
+            } else {
+                if (methodDefinition.outputLengthWhenArray == -1) {
+                    throw RuntimeException("Function definition lacks a way to define output array length, function ${methodDefinition.name}")
+                }
+                createOutputParam(
+                    actualReturnParameterDefinition,
+                    methodDefinition.outputLengthWhenArray.toString(),
+                    methodBuilder
+                )
+            }
+        }
         methodBuilder.addStatement("println(\"Debug\")")
         val constructJvmCall = StringBuilder()
-        when (methodDefinition.returnType) {
-            TypeDefinition.ARRAY_OF_UBYTES -> {
-                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
-                constructJvmCall.append(paramsToString(methodDefinition))
-            }
-            TypeDefinition.INT -> {
-                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
-                constructJvmCall.append(paramsToString(methodDefinition))
-            }
-            TypeDefinition.UNIT -> {
-                constructJvmCall.append("sodium.${methodDefinition.nativeName}")
-                constructJvmCall.append(paramsToString(methodDefinition))
-            }
-            is CustomTypeDefinition -> {
-                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
-                constructJvmCall.append(paramsToString(methodDefinition))
+        if (methodDefinition.isStateCreationFunction) {
+            constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+            constructJvmCall.append(paramsToString(methodDefinition))
+            methodBuilder.addStatement(constructJvmCall.toString())
+            methodBuilder.addStatement("return state")
+        } else if (actualReturnTypeFound) {
+            constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+            constructJvmCall.append(paramsToString(methodDefinition))
+            methodBuilder.addStatement(constructJvmCall.toString())
+            methodBuilder.addStatement("return out")
+        } else {
+            when (methodDefinition.returnType) {
+                TypeDefinition.ARRAY_OF_UBYTES -> {
+                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                    methodBuilder.addStatement("return result")
+                }
+                TypeDefinition.INT -> {
+                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                    methodBuilder.addStatement("return result")
+                }
+                TypeDefinition.UNIT -> {
+                    constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                }
+                is CustomTypeDefinition -> {
+                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                    methodBuilder.addStatement("return result")
+                }
             }
         }
-        methodBuilder.addStatement(constructJvmCall.toString())
         methodBuilder.returns(methodDefinition.returnType.typeName)
         return methodBuilder.build()
+    }
+
+    fun createOutputParam(outputParam: ParameterDefinition, length: String?, methodBuilder: FunSpec.Builder) {
+        /*
+        val hashed = ByteArray(Sha256Properties.MAX_HASH_BYTES)
+        sodium.crypto_hash_sha256_final(state, hashed)
+        return hashed.asUByteArray()
+         */
+        when (outputParam.parameterType) {
+            TypeDefinition.ARRAY_OF_UBYTES, TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                methodBuilder.addStatement("val out = UByteArray($length)")
+            }
+            else -> {
+                throw RuntimeException("Unhandled native output param type: ${outputParam.parameterType.typeName}")
+            }
+
+
+        }
+    }
+
+    fun createStateParam(stateParameterDefinition: ParameterDefinition, methodBuilder: FunSpec.Builder) {
+        /*
+        val state = Hash.State256()
+         */
+        val specificInitializer = stateParameterDefinition.specificJvmInitializer ?: ""
+        methodBuilder.addStatement("val state = ${stateParameterDefinition.parameterType.typeName}($specificInitializer)")
     }
 
     fun paramsToString(methodDefinition: FunctionDefinition) : String {
