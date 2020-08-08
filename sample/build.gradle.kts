@@ -247,9 +247,6 @@ kotlin {
         runningOnWindows {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
             }
 
             val mingwX64Test by getting {
