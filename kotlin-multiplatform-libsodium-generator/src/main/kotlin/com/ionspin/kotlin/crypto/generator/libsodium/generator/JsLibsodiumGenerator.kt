@@ -69,7 +69,7 @@ object JsLibsodiumGenerator {
                 actualReturnType = paramDefinition.parameterType.typeName
             }
         }
-        methodBuilder.addStatement("println(\"Debug\")")
+        methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJsCall = StringBuilder()
         when (methodDefinition.returnType) {
             TypeDefinition.ARRAY_OF_UBYTES -> {

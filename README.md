@@ -18,6 +18,11 @@ for prototyping or experimentation purposes.
 
 APIs of both variants are identical. 
 
+* `multiplatform-crypto-libsodium-bindings` is a generated bindings library using `kotlin-multiplatform-libsodium-generator`
+  * Under HEAVY development at the moment
+
+
+
 ### Table of contents
 1. [Supported platforms](#supported-platforms-by-variant)
 2. [API](#api)
@@ -53,19 +58,15 @@ Next steps:
 - Expand API (ECC, Signing ...)
 
 ## Should I use this in production?
-
-No, until it is reviewed.
-
-## Should I use this in code that is *critical* in any way, shape or form?
-
-No, but even if after being warned you decide to, then use `multiplatform-crypto-delegated` as it relies on reputable libraries.
+**NO.**
+The library is under HEAVY development.
 
 ## Why?
 
 This is an experimental implementation, mostly for expanding personal understanding of cryptography. 
-It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure.
+It's not peer reviewed, not guaranteed to be bug free, and not guaranteed to be secure. 
 
-## API
+## API for Pure and Delegated flavourd
 
 ### Hashing functions
 * Blake2b
@@ -225,7 +226,7 @@ println("Tag: ${tagString}")
 assertEquals(tagString, expectedTagString)
 ```
 
-### Symmetric encryption (OUTDATED, won't be exposed in next release, no counterpart in delegated flavor - 0.10.1)
+### Symmetric encryption (OUTDATED, won't be exposed in next release, no counterpart in delegated flavor - 0.1.1)
 
 #### AES 
 
@@ -272,7 +273,8 @@ plainText == decrypted.toHexString()
 ```
 
 ## Libsodium bindings
-TODO
+
+* Under development
 
 
 

@@ -21,7 +21,7 @@ class SmokeTest {
             Initializer.initialize()
             val crypto = Crypto()
             //TODO seems to be a bug in JS compiler, if we have the same method name in crypto an in JsSodiumInterface, method tries to call wrong method name (unneeded suffix _0)
-            //I've workaround this by making state functions with 1 parameter execute call with js("") wrap, but still might sail somewhere else
+            //I've worked around this by making state functions with 1 parameter execute call with js("") wrap, but still might sail somewhere else
             val state256 = crypto.crypto_hash_sha256_init()
             crypto.crypto_hash_sha256_update(state256, "Hello".encodeToUByteArray())
             val result = crypto.crypto_hash_sha256_final(state256)

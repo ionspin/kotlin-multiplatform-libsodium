@@ -15,39 +15,39 @@ actual typealias GenericHashState = Any
 
 actual class Crypto internal actual constructor() {
   actual fun crypto_hash_sha256_init(): dynamic {
-    println("Debug crypto_hash_sha256_init")
+    println("Debug")
     val result  = js("getSodium().crypto_hash_sha256_init()")
         return result
   }
 
   actual fun crypto_hash_sha256_update(state: Sha256State, input: UByteArray) {
-    println("Debug crypto_hash_sha256_update")
+    println("Debug")
     getSodium().crypto_hash_sha256_update(state, input.toUInt8Array(), )
   }
 
   actual fun crypto_hash_sha256_final(state: Sha256State): UByteArray {
-    println("Debug crypto_hash_sha256_final")
+    println("Debug")
     return getSodium().crypto_hash_sha256_final(state).toUByteArray()
   }
 
   actual fun crypto_hash_sha512_init(): dynamic {
-    println("Debug crypto_hash_sha512_init")
+    println("Debug")
     val result  = js("getSodium().crypto_hash_sha512_init()")
         return result
   }
 
   actual fun crypto_hash_sha512_update(state: Sha512State, input: UByteArray) {
-    println("Debug crypto_hash_sha512_update")
+    println("Debug")
     getSodium().crypto_hash_sha512_update(state, input.toUInt8Array(), )
   }
 
   actual fun crypto_hash_sha512_final(state: Sha512State): UByteArray {
-    println("Debug crypto_hash_sha512_final")
+    println("Debug")
     return getSodium().crypto_hash_sha512_final(state).toUByteArray()
   }
 
   actual fun crypto_generichash_init(key: UByteArray, outlen: Int): dynamic {
-    println("Debug crypto_generichash_init")
+    println("Debug")
     return getSodium().crypto_generichash_init(key.toUInt8Array(), outlen)
   }
 }

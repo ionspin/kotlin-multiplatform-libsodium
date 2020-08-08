@@ -108,6 +108,7 @@ object NativeLibsodiumGenerator {
                 createOutputParam(actualReturnParameterDefinition, methodDefinition.outputLengthWhenArray.toString(), methodBuilder)
             }
         }
+        methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         pinParams(methodDefinition, methodBuilder)
         val constructNativeCall = StringBuilder()
         if (methodDefinition.isStateCreationFunction) {

@@ -101,7 +101,7 @@ object JvmLibsodiumGenerator {
                 )
             }
         }
-        methodBuilder.addStatement("println(\"Debug\")")
+        methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJvmCall = StringBuilder()
         if (methodDefinition.isStateCreationFunction) {
             constructJvmCall.append("sodium.${methodDefinition.nativeName}")
