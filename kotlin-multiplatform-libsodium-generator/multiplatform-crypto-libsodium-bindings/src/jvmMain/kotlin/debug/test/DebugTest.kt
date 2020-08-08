@@ -17,45 +17,45 @@ actual typealias GenericHashState = ByteArray
 actual class Crypto internal actual constructor() {
   actual fun crypto_hash_sha256_init(): Sha256State {
     val state = debug.test.Sha256State()
-    println("Debug")
+    println("Debug crypto_hash_sha256_init")
     sodium.crypto_hash_sha256_init(state)
     return state
   }
 
   actual fun crypto_hash_sha256_update(state: Sha256State, input: UByteArray) {
-    println("Debug")
+    println("Debug crypto_hash_sha256_update")
     sodium.crypto_hash_sha256_update(state, input.asByteArray(), input.size.toLong())
   }
 
   actual fun crypto_hash_sha256_final(state: Sha256State): UByteArray {
     val out = UByteArray(32)
-    println("Debug")
+    println("Debug crypto_hash_sha256_final")
     sodium.crypto_hash_sha256_final(state, out.asByteArray())
     return out
   }
 
   actual fun crypto_hash_sha512_init(): Sha512State {
     val state = debug.test.Sha512State()
-    println("Debug")
+    println("Debug crypto_hash_sha512_init")
     sodium.crypto_hash_sha512_init(state)
     return state
   }
 
   actual fun crypto_hash_sha512_update(state: Sha512State, input: UByteArray) {
-    println("Debug")
+    println("Debug crypto_hash_sha512_update")
     sodium.crypto_hash_sha512_update(state, input.asByteArray(), input.size.toLong())
   }
 
   actual fun crypto_hash_sha512_final(state: Sha512State): UByteArray {
     val out = UByteArray(64)
-    println("Debug")
+    println("Debug crypto_hash_sha512_final")
     sodium.crypto_hash_sha512_final(state, out.asByteArray())
     return out
   }
 
   actual fun crypto_generichash_init(key: UByteArray, outlen: Int): GenericHashState {
     val state = debug.test.GenericHashState(sodium.crypto_generichash_statebytes())
-    println("Debug")
+    println("Debug crypto_generichash_init")
     sodium.crypto_generichash_init(state, key.asByteArray(), key.size, outlen)
     return state
   }

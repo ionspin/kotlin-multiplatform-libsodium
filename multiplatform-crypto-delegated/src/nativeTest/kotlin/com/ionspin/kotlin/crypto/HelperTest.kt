@@ -5,6 +5,7 @@ import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.free
+import platform.posix.malloc
 import kotlin.test.Ignore
 import kotlin.test.Test
 
@@ -29,7 +30,7 @@ class HelperTest {
     fun generateForRounds256(target: Long) {
         val updateValue =
             "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno".encodeToUByteArray().toCValues()
-        val state = platform.linux.malloc(crypto_hash_sha256_state.size.convert())!!
+        val state = malloc(crypto_hash_sha256_state.size.convert())!!
             .reinterpret<crypto_hash_sha256_state>()
 
         crypto_hash_sha256_init(state)
@@ -59,7 +60,7 @@ class HelperTest {
         println("Wut")
         val updateValue =
             "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno".encodeToUByteArray().toCValues()
-        val state = platform.linux.malloc(crypto_hash_sha512_state.size.convert())!!
+        val state = malloc(crypto_hash_sha512_state.size.convert())!!
             .reinterpret<crypto_hash_sha512_state>()
 
         crypto_hash_sha512_init(state)
