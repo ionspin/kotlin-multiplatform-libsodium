@@ -62,42 +62,27 @@ object JvmLibsodiumGenerator {
             }
         }
 
-        if (methodDefinition.returnType == TypeDefinition.ARRAY_OF_UBYTES) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
+        methodBuilder.addStatement("println(\"Debug\")")
+        val constructJvmCall = StringBuilder()
+        when (methodDefinition.returnType) {
+            TypeDefinition.ARRAY_OF_UBYTES -> {
+                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+            }
+            TypeDefinition.INT -> {
+                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+            }
+            TypeDefinition.UNIT -> {
+                constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+            }
+            is CustomTypeDefinition -> {
+                constructJvmCall.append("return sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+            }
         }
-
-        if (methodDefinition.returnType == TypeDefinition.INT) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
-        if (methodDefinition.returnType == TypeDefinition.UNIT) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("sodium.${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
-        if (methodDefinition.returnType is CustomTypeDefinition) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return sodium.${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
+        methodBuilder.addStatement(constructJvmCall.toString())
         methodBuilder.returns(methodDefinition.returnType.typeName)
         return methodBuilder.build()
     }

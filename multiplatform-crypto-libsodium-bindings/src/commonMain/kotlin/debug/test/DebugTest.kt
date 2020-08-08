@@ -10,21 +10,17 @@ expect class Sha512State
 expect class GenericHashState
 
 expect class Crypto {
-  fun crypto_hash_sha256_init(state: Sha256State): Int
+  fun crypto_hash_sha256_init(): Sha256State
 
   fun crypto_hash_sha256_update(state: Sha256State, input: UByteArray)
 
-  fun crypto_hash_sha256_final(state: Sha256State, out: UByteArray)
+  fun crypto_hash_sha256_final(state: Sha256State): UByteArray
 
-  fun crypto_hash_sha512_init(state: Sha512State): Int
+  fun crypto_hash_sha512_init(): Sha512State
 
   fun crypto_hash_sha512_update(state: Sha512State, input: UByteArray)
 
-  fun crypto_hash_sha512_final(state: Sha512State, out: UByteArray)
+  fun crypto_hash_sha512_final(state: Sha512State): UByteArray
 
-  fun crypto_generichash_init(
-    state: GenericHashState,
-    key: UByteArray,
-    outlen: Int
-  ): Int
+  fun crypto_generichash_init(key: UByteArray, outlen: Int): GenericHashState
 }

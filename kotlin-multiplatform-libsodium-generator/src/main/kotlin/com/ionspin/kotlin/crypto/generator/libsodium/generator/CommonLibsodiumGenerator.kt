@@ -51,12 +51,24 @@ object CommonLibsodiumGenerator {
 
     fun createCommonMethodSpec(methodDefinition: FunctionDefinition): FunSpec {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
+        var actualReturnType : TypeName = Any::class.asTypeName()
+        var actualReturnTypeFound : Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
-            val parameterSpec =
-                ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-            methodBuilder.addParameter(parameterSpec.build())
+            if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.dropParameterFromDefinition.not()) {
+                val parameterSpec =
+                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                methodBuilder.addParameter(parameterSpec.build())
+            }
+            if (paramDefinition.isActuallyAnOutputParam) {
+                actualReturnTypeFound = true
+                actualReturnType = paramDefinition.parameterType.typeName
+            }
         }
-        methodBuilder.returns(methodDefinition.returnType.typeName)
+        if (actualReturnTypeFound) {
+            methodBuilder.returns(actualReturnType)
+        } else {
+            methodBuilder.returns(methodDefinition.returnType.typeName)
+        }
         return methodBuilder.build()
     }
 

@@ -14,6 +14,7 @@ object JsLibsodiumGenerator {
     fun createJsFile(packageName: String, fileDefinition: KotlinFileDefinition): FileSpec {
         val fileBuilder = FileSpec.builder(packageName, fileDefinition.name)
         fileBuilder.addImport("ext.libsodium.com.ionspin.kotlin.crypto", "toUInt8Array")
+        fileBuilder.addImport("ext.libsodium.com.ionspin.kotlin.crypto", "toUByteArray")
         fileBuilder.addImport("com.ionspin.kotlin.crypto", "getSodium")
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
@@ -48,10 +49,14 @@ object JsLibsodiumGenerator {
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
         var returnModifierName = ""
+        var actualReturnType: TypeName = DYNAMIC
+        var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
-            val parameterSpec =
-                ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-            methodBuilder.addParameter(parameterSpec.build())
+            if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.isActuallyAnOutputParam.not()) {
+                val parameterSpec =
+                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                methodBuilder.addParameter(parameterSpec.build())
+            }
             if (paramDefinition.modifiesReturn) {
                 if (returnModifierFound == true) {
                     throw RuntimeException("Return modifier already found")
@@ -59,53 +64,51 @@ object JsLibsodiumGenerator {
                 returnModifierFound = true
                 returnModifierName = paramDefinition.parameterName
             }
+            if (paramDefinition.isActuallyAnOutputParam) {
+                actualReturnTypeFound = true
+                actualReturnType = paramDefinition.parameterType.typeName
+            }
+        }
+        methodBuilder.addStatement("println(\"Debug\")")
+        val constructJsCall = StringBuilder()
+        when (methodDefinition.returnType) {
+            TypeDefinition.ARRAY_OF_UBYTES -> {
+                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append(paramsToString(methodDefinition) + ".toUByteArray()")
+            }
+            TypeDefinition.INT -> {
+                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append(paramsToString(methodDefinition))
+            }
+            TypeDefinition.UNIT -> {
+                constructJsCall.append("getSodium().${methodDefinition.javaName}")
+                constructJsCall.append(paramsToString(methodDefinition))
+            }
+            is CustomTypeDefinition -> {
+                constructJsCall.append("return getSodium().${methodDefinition.javaName}")
+                constructJsCall.append(paramsToString(methodDefinition))
+            }
+        }
+        methodBuilder.addStatement(constructJsCall.toString())
+        if (actualReturnTypeFound) {
+            methodBuilder.returns(actualReturnType)
+            return methodBuilder.build()
         }
 
-        if (methodDefinition.returnType == TypeDefinition.ARRAY_OF_UBYTES) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
+        if (methodDefinition.dynamicJsReturn) {
+            methodBuilder.returns(Dynamic)
+        } else {
+            methodBuilder.returns(methodDefinition.returnType.typeName)
         }
-
-        if (methodDefinition.returnType == TypeDefinition.INT) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
-        if (methodDefinition.returnType == TypeDefinition.UNIT) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("getSodium().${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
-        if (methodDefinition.returnType is CustomTypeDefinition) {
-            methodBuilder.addStatement("println(\"Debug\")")
-            val constructJvmCall = StringBuilder()
-            constructJvmCall.append("return getSodium().${methodDefinition.javaName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-
-            methodBuilder.addStatement(constructJvmCall.toString())
-        }
-
-        methodBuilder.returns(methodDefinition.returnType.typeName)
         return methodBuilder.build()
     }
 
-    fun paramsToString(methodDefinition: FunctionDefinition) : String {
+    fun paramsToString(methodDefinition: FunctionDefinition): String {
         val paramsBuilder = StringBuilder()
         paramsBuilder.append("(")
-        methodDefinition.parameterList.forEachIndexed { index, paramDefinition ->
-            val separator = if (index == methodDefinition.parameterList.size - 1) {
+        val jsParams = methodDefinition.parameterList.filter { it.dropParameterFromDefinition.not() }
+        jsParams.forEachIndexed { index, paramDefinition ->
+            val separator = if (index == jsParams.size - 1) {
                 ""
             } else {
                 ", "
@@ -114,12 +117,12 @@ object JsLibsodiumGenerator {
                 paramsBuilder.append(paramDefinition.parameterName + separator)
             }
             if (paramDefinition.parameterType is TypeDefinition) {
-                when(paramDefinition.parameterType) {
+                when (paramDefinition.parameterType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + paramDefinition.parameterName + ".size" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + paramDefinition.parameterName + ".size.toLong()" + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
                         paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
@@ -136,11 +139,11 @@ object JsLibsodiumGenerator {
                 }
             }
 
+
         }
         paramsBuilder.append(')')
         return paramsBuilder.toString()
     }
-
 
 
 }

@@ -35,9 +35,13 @@ class ClassDefinition(
     operator fun FunctionDefinition.unaryPlus() {
         methods.add(this)
     }
+
+    operator fun List<FunctionDefinition>.unaryPlus() {
+        methods.addAll(this)
+    }
 }
 
-class InnerClassDefinition (
+class InnerClassDefinition(
     val name: String,
     val javaName: String,
     val jsName: String,
@@ -51,7 +55,10 @@ class FunctionDefinition(
     val jsName: String,
     val nativeName: String,
     val parameterList: MutableList<ParameterDefinition> = mutableListOf(),
-    val returnType: GeneralTypeDefinition
+    val returnType: GeneralTypeDefinition,
+    val dynamicJsReturn: Boolean = false,
+    val isStateCreationFunction: Boolean = false,
+    val outputLengthWhenArray: Int = -1
 ) {
     operator fun ParameterDefinition.unaryPlus() {
         parameterList.add(this)
@@ -61,11 +68,14 @@ class FunctionDefinition(
 class ParameterDefinition(
     val parameterName: String,
     val parameterType: GeneralTypeDefinition,
-    val modifiesReturn: Boolean = false
+    val modifiesReturn: Boolean = false,
+    val isActuallyAnOutputParam: Boolean = false,
+    val isStateType: Boolean = false,
+    val dropParameterFromDefinition: Boolean = false,
 )
 
 interface GeneralTypeDefinition {
-    val typeName : TypeName
+    val typeName: TypeName
 }
 
 data class CustomTypeDefinition(override val typeName: TypeName) : GeneralTypeDefinition
@@ -80,7 +90,7 @@ enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefiniti
     UNIT(Unit::class.asTypeName())
 }
 
-fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit) : KotlinFileDefinition {
+fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit): KotlinFileDefinition {
     val commonKotlinFileInstance = KotlinFileDefinition(name)
     commonKotlinFileInstance.body()
     return commonKotlinFileInstance
@@ -99,7 +109,7 @@ fun innerClassDef(
     jsName: String,
     nativeName: String,
     body: InnerClassDefinition.() -> Unit = {}
-) : InnerClassDefinition {
+): InnerClassDefinition {
     val genClass = InnerClassDefinition(
         name,
         javaName,
@@ -116,9 +126,21 @@ fun funcDef(
     jsName: String,
     nativeName: String,
     returnType: GeneralTypeDefinition,
+    dynamicJsReturn: Boolean = false,
+    isStateCreationFunction: Boolean = false,
+    outputLengthWhenArray: Int = -1,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
-    val function = FunctionDefinition(name, javaName, jsName, nativeName, returnType = returnType)
+    val function = FunctionDefinition(
+        name,
+        javaName,
+        jsName,
+        nativeName,
+        returnType = returnType,
+        dynamicJsReturn = dynamicJsReturn,
+        isStateCreationFunction = isStateCreationFunction,
+        outputLengthWhenArray = outputLengthWhenArray
+    )
     function.body()
     return function
 }
@@ -126,9 +148,22 @@ fun funcDef(
 fun funcDef(
     name: String,
     returnType: GeneralTypeDefinition,
+    dynamicJsReturn: Boolean = false,
+    isStateCreationFunction: Boolean = false,
+    outputLengthWhenArray: Int = -1,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
-    val function = FunctionDefinition(name, name, name, name, returnType = returnType)
+    val function =
+        FunctionDefinition(
+            name,
+            name,
+            name,
+            name,
+            returnType = returnType,
+            dynamicJsReturn = dynamicJsReturn,
+            isStateCreationFunction = isStateCreationFunction,
+            outputLengthWhenArray = outputLengthWhenArray
+        )
     function.body()
     return function
 }
