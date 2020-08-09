@@ -103,7 +103,7 @@ kotlin {
                 }
             }
         }
-        iosArm64("ios64Arm") {
+        iosArm64("iosArm64") {
             binaries {
                 framework {
 
@@ -111,7 +111,7 @@ kotlin {
             }
         }
 
-        iosArm32("ios32Arm") {
+        iosArm32("iosArm32") {
             binaries {
                 framework {
 
@@ -221,17 +221,17 @@ kotlin {
                 dependsOn(nativeTest)
             }
 
-            val ios64ArmMain by getting {
+            val iosArm64Main by getting {
                 dependsOn(nativeMain)
             }
-            val ios64ArmTest by getting {
+            val iosArm64Test by getting {
                 dependsOn(nativeTest)
             }
 
-            val ios32ArmMain by getting {
+            val iosArm32Main by getting {
                 dependsOn(nativeMain)
             }
-            val ios32ArmTest by getting {
+            val iosArm32Test by getting {
                 dependsOn(nativeTest)
             }
 
