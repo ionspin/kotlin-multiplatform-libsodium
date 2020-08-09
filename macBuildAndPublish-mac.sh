@@ -5,7 +5,6 @@ set -e
 #now let's build linux deps
 cd sodiumWrapper
 ./makeMacosX86-64.sh
-./makeIos.sh
 #now we can do the delegated build of ios and macos libraries
 cd ..
 ./gradlew multiplatform-crypto-delegated:publishMacosX64PublicationToSnapshotRepository

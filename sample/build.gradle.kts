@@ -96,14 +96,14 @@ kotlin {
     }
 
     runningOnMacos {
-        iosX64("ios") {
+        iosX64() {
             binaries {
                 framework {
 
                 }
             }
         }
-        iosArm64("iosArm64") {
+        iosArm64() {
             binaries {
                 framework {
 
@@ -111,7 +111,7 @@ kotlin {
             }
         }
 
-        iosArm32("iosArm32") {
+        iosArm32() {
             binaries {
                 framework {
 

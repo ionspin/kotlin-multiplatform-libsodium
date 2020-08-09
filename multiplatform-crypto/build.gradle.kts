@@ -101,14 +101,14 @@ kotlin {
     }
 
     runningOnMacos {
-        iosX64("ios") {
+        iosX64() {
             binaries {
                 framework {
                     optimized = true
                 }
             }
         }
-        iosArm64("iosArm64") {
+        iosArm64() {
             binaries {
                 framework {
                     optimized = true
@@ -116,7 +116,7 @@ kotlin {
             }
         }
 
-        iosArm32("iosArm32") {
+        iosArm32() {
             binaries {
                 framework {
                     optimized = true
