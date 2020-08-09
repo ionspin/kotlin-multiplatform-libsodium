@@ -214,10 +214,10 @@ kotlin {
 
         runningOnMacos {
 
-            val iosMain by getting {
+            val iosX64Main by getting {
                 dependsOn(nativeMain)
             }
-            val iosTest by getting {
+            val iosX64Test by getting {
                 dependsOn(nativeTest)
             }
 
