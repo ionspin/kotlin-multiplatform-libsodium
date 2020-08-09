@@ -274,6 +274,14 @@ tasks {
 
     dokkaJavadoc {
         println("Dokka !")
+        dokkaSourceSets {
+            create("commonMain") {
+                displayName = "common"
+                platform = "common"
+            }
+        }
+
+
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 
