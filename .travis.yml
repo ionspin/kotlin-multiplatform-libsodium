@@ -15,9 +15,9 @@ matrix:
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./linuxBuild.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./linuxBuildAndPublish.sh; fi'
-#       OSX macos/ios
+    # OSX macos
     - os: osx
-      name: osx-mac-ios
+      name: osx-mac
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
@@ -26,8 +26,21 @@ matrix:
         KBUILD=linux
         JAVA_OPTS=-Xmx2g
       script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac-ios.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac-ios.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-mac.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-mac.sh; fi'
+    # OSX ios
+    - os: osx
+      name: osx-ios
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-ios.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-ios.sh; fi'
     #   OSX watchos
     - os: osx
       name: osx-watchos
@@ -54,9 +67,10 @@ matrix:
       script:
         - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-tvos.sh; fi'
         - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-tvos.sh; fi'
-    #   OSX pure
+
+    # OSX macos PURE
     - os: osx
-      name: osx-pure
+      name: osx-mac-pure
       osx_image: xcode11.4
       language: java
       jdk: openjdk12
@@ -65,8 +79,48 @@ matrix:
         KBUILD=linux
         JAVA_OPTS=-Xmx2g
       script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure.sh; fi'
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure-mac.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure-mac.sh; fi'
+    # OSX ios PURE
+    - os: osx
+      name: osx-ios-pure
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure-ios.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure-ios.sh; fi'
+    #   OSX watchos PURE
+    - os: osx
+      name: osx-watchos-pure
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure-watchos.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure-watchos.sh; fi'
+    #   OSX tvos PURE
+    - os: osx
+      name: osx-tvos-pure
+      osx_image: xcode11.4
+      language: java
+      jdk: openjdk12
+      install: true
+      env:
+        KBUILD=linux
+        JAVA_OPTS=-Xmx2g
+      script:
+        - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./macBuild-pure-tvos.sh; fi'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./macBuildAndPublish-pure-tvos.sh; fi'
+
     - os: windows
       name: windows-pure
       language: shell
