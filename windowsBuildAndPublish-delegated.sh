@@ -15,4 +15,7 @@ echo "completed libsodium build"
 cd ..
 ./gradlew multiplatform-crypto-delegated:build
 ./gradlew multiplatform-crypto-delegated:publishMingwX64PublicationToSnapshotRepository
+
+./gradlew multiplatform-crypto-libsodium-bindings:build
+./gradlew multiplatform-crypto-libsodium-bindings:publishMingwX64PublicationToSnapshotRepository
 set +e

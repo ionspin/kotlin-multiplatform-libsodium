@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.rotateRight
 
 /**
@@ -25,11 +26,11 @@ import com.ionspin.kotlin.crypto.util.rotateRight
  */
 
 
-class Sha512Pure : Sha512 {
+class Sha512Pure : Sha512Multipart {
 
     override val MAX_HASH_BYTES: Int = 32
 
-    companion object : StatelessSha512 {
+    companion object : Sha512 {
         const val BLOCK_SIZE = 1024
         const val BLOCK_SIZE_IN_BYTES = 128
         const val CHUNK_SIZE = 80
@@ -136,7 +137,7 @@ class Sha512Pure : Sha512 {
 
             var h = iv.copyOf()
 
-            val expansionArray = createExpansionArray(inputMessage.size)
+            val expansionArray = createExpansionArray(inputMessage.size.toLong())
 
             val chunks =
                 (inputMessage + expansionArray + (inputMessage.size * 8).toULong().toPadded128BitByteArray()).chunked(
@@ -248,13 +249,13 @@ class Sha512Pure : Sha512 {
             return h
         }
 
-        fun createExpansionArray(originalSizeInBytes: Int): UByteArray {
+        fun createExpansionArray(originalSizeInBytes: Long): UByteArray {
             val originalMessageSizeInBits = originalSizeInBytes * 8
 
             val expandedRemainderOf1024 = (originalMessageSizeInBits + 129) % BLOCK_SIZE
             val zeroAddAmount = when (expandedRemainderOf1024) {
-                0 -> 0
-                else -> (BLOCK_SIZE - expandedRemainderOf1024) / 8
+                0L -> 0
+                else -> ((BLOCK_SIZE - expandedRemainderOf1024) / 8).toInt()
             }
             val expansionArray = UByteArray(zeroAddAmount + 1) {
                 when (it) {
@@ -304,18 +305,22 @@ class Sha512Pure : Sha512 {
     }
 
     var h = iv.copyOf()
-    var counter = 0
+    var counter = 0L
     var bufferCounter = 0
     var buffer = UByteArray(BLOCK_SIZE_IN_BYTES) { 0U }
+    var digested = false
 
 
     fun update(data: String) {
-        return update(data.encodeToByteArray().toUByteArray())
+        return update(data.encodeToUByteArray())
     }
 
     override fun update(data: UByteArray) {
         if (data.isEmpty()) {
             throw RuntimeException("Updating with empty array is not allowed. If you need empty hash, just call digest without updating")
+        }
+        if (digested) {
+            throw RuntimeException("This instance of updateable SHA256 was already finished once. You should use new instance")
         }
 
         when {
@@ -376,6 +381,7 @@ class Sha512Pure : Sha512 {
                 h[5].toPaddedByteArray() +
                 h[6].toPaddedByteArray() +
                 h[7].toPaddedByteArray()
+        digested = true
         return digest
     }
 

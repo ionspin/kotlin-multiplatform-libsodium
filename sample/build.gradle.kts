@@ -96,14 +96,14 @@ kotlin {
     }
 
     runningOnMacos {
-        iosX64("ios") {
+        iosX64() {
             binaries {
                 framework {
 
                 }
             }
         }
-        iosArm64("ios64Arm") {
+        iosArm64() {
             binaries {
                 framework {
 
@@ -111,7 +111,7 @@ kotlin {
             }
         }
 
-        iosArm32("ios32Arm") {
+        iosArm32() {
             binaries {
                 framework {
 
@@ -143,7 +143,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
-                implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
                 implementation(project(":multiplatform-crypto-delegated"))
             }
@@ -159,14 +158,12 @@ kotlin {
         val nativeMain by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation(Deps.Native.coroutines)
             }
         }
 
         val nativeTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation(Deps.Native.coroutines)
             }
         }
 
@@ -176,26 +173,22 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.stdLib))
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesCore)
                 }
             }
             val jvmTest by getting {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesTest)
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(Deps.Js.coroutines)
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
                 }
             }
@@ -221,24 +214,24 @@ kotlin {
 
         runningOnMacos {
 
-            val iosMain by getting {
+            val iosX64Main by getting {
                 dependsOn(nativeMain)
             }
-            val iosTest by getting {
+            val iosX64Test by getting {
                 dependsOn(nativeTest)
             }
 
-            val ios64ArmMain by getting {
+            val iosArm64Main by getting {
                 dependsOn(nativeMain)
             }
-            val ios64ArmTest by getting {
+            val iosArm64Test by getting {
                 dependsOn(nativeTest)
             }
 
-            val ios32ArmMain by getting {
+            val iosArm32Main by getting {
                 dependsOn(nativeMain)
             }
-            val ios32ArmTest by getting {
+            val iosArm32Test by getting {
                 dependsOn(nativeTest)
             }
 
@@ -254,9 +247,6 @@ kotlin {
         runningOnWindows {
             val mingwX64Main by getting {
                 dependsOn(commonMain)
-                dependencies {
-                    implementation(Deps.Native.coroutines)
-                }
             }
 
             val mingwX64Test by getting {

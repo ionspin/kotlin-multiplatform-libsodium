@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 
 import com.ionspin.kotlin.crypto.Crypto
+import com.ionspin.kotlin.crypto.CryptoPrimitives
 import com.ionspin.kotlin.crypto.Initializer
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
@@ -23,7 +24,7 @@ class Blake2bTest {
         Initializer.initialize()
         val expected = "a71079d42853dea26e453004338670a53814b78137ffbed07603a41d76a483aa9bc33b582f77d30a65e6f29a89" +
                 "6c0411f38312e1d66e0bf16386c86a89bea572"
-        val result = Crypto.Blake2b.stateless("test".encodeToUByteArray()).toHexString()
+        val result = CryptoPrimitives.Blake2b.stateless("test".encodeToUByteArray()).toHexString()
 //        println("Result: $result")
         assertTrue { result == expected }
     }
@@ -35,7 +36,7 @@ class Blake2bTest {
         Initializer.initialize()
         val expected = "a71079d42853dea26e453004338670a53814b78137ffbed07603a41d76a483aa9bc33b582f77d30a65e6f29a89" +
                 "6c0411f38312e1d66e0bf16386c86a89bea572"
-        val blake2b = Crypto.Blake2b.updateable()
+        val blake2b = CryptoPrimitives.Blake2b.updateable()
         blake2b.update("t".encodeToUByteArray())
         blake2b.update(("est".encodeToUByteArray()))
         val result = blake2b.digest().toHexString()

@@ -22,9 +22,9 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
-    id (PluginsDeps.mavenPublish)
-    id (PluginsDeps.signing)
-    id (PluginsDeps.dokka)
+    id(PluginsDeps.mavenPublish)
+    id(PluginsDeps.signing)
+    id(PluginsDeps.dokka)
 }
 
 repositories {
@@ -69,7 +69,6 @@ kotlin {
             }
         }
 
-        //Not supported in OFFICIAL coroutines at the moment
         linuxArm64() {
             binaries {
                 staticLib {
@@ -77,7 +76,6 @@ kotlin {
             }
         }
 
-        //Not supported in OFFICAL coroutines at the moment
         linuxArm32Hfp() {
             binaries {
                 staticLib {
@@ -269,12 +267,12 @@ kotlin {
 
 tasks {
     create<Jar>("javadocJar") {
-        dependsOn(dokka)
+        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokka.get().outputDirectory)
+        from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokka {
+    dokkaJavadoc {
         println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {

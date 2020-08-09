@@ -18,6 +18,7 @@ package com.ionspin.kotlin.crypto.symmetric
 
 import com.ionspin.kotlin.bignum.Endianness
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.Sign
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import com.ionspin.kotlin.crypto.SRNG
 import com.ionspin.kotlin.crypto.symmetric.AesCtrPure.Companion.encrypt
@@ -36,7 +37,7 @@ import com.ionspin.kotlin.crypto.util.xor
  * on 22-Sep-2019
  */
 
-class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initialCounter: UByteArray? = null) {
+internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val mode: Mode, initialCounter: UByteArray? = null) {
 
     companion object {
         const val BLOCK_BYTES = 16
@@ -46,20 +47,20 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
          * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
          * data call [encrypt]
          */
-        fun createEncryptor(aesKey: AesKey) : AesCtrPure {
+        fun createEncryptor(aesKey: InternalAesKey) : AesCtrPure {
             return AesCtrPure(aesKey, Mode.ENCRYPT)
         }
         /**
          * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
          * data call [decrypt]
          */
-        fun createDecryptor(aesKey : AesKey) : AesCtrPure {
+        fun createDecryptor(aesKey : InternalAesKey) : AesCtrPure {
             return AesCtrPure(aesKey, Mode.DECRYPT)
         }
         /**
-         * Bulk encryption, returns encrypted data and a random initial counter 
+         * Bulk encryption, returns encrypted data and a random initial counter
          */
-        fun encrypt(aesKey: AesKey, data: UByteArray): EncryptedDataAndInitialCounter {
+        fun encrypt(aesKey: InternalAesKey, data: UByteArray): EncryptedDataAndInitialCounter {
             val aesCtr = AesCtrPure(aesKey, Mode.ENCRYPT)
             aesCtr.addData(data)
             return aesCtr.encrypt()
@@ -67,7 +68,7 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: AesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
+        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
             val aesCtr = AesCtrPure(aesKey, Mode.DECRYPT, initialCounter)
             aesCtr.addData(data)
             return aesCtr.decrypt()
@@ -82,7 +83,7 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
     } else {
         initialCounter
     }
-    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart.toTypedArray(), Endianness.BIG))
+    var blockCounter = modularCreator.fromBigInteger(BigInteger.fromUByteArray(counterStart, Sign.POSITIVE))
 
     val output = MutableList<UByteArray>(0) { ubyteArrayOf() }
 
@@ -161,7 +162,7 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
     }
 
     private fun consumeBlock(data: UByteArray, blockCount: ModularBigInteger): UByteArray {
-        val blockCountAsByteArray = blockCount.toUByteArray(Endianness.BIG).toUByteArray().expandCounterTo16Bytes()
+        val blockCountAsByteArray = blockCount.toUByteArray().expandCounterTo16Bytes()
         return when (mode) {
             Mode.ENCRYPT -> {
                 AesPure.encrypt(aesKey, blockCountAsByteArray) xor data
@@ -186,16 +187,15 @@ class AesCtrPure internal constructor(val aesKey: AesKey, val mode: Mode, initia
 
 }
 
-
 data class EncryptedDataAndInitialCounter(val encryptedData : UByteArray, val initialCounter : UByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
-        other as EncryptedDataAndInitializationVector
+        other as EncryptedDataAndInitialCounter
 
         if (!encryptedData.contentEquals(other.encryptedData)) return false
-        if (!initialCounter.contentEquals(other.initilizationVector)) return false
+        if (!initialCounter.contentEquals(other.initialCounter)) return false
 
         return true
     }
@@ -206,3 +206,4 @@ data class EncryptedDataAndInitialCounter(val encryptedData : UByteArray, val in
         return result
     }
 }
+

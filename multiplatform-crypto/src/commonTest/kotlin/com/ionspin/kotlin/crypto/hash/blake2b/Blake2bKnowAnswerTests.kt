@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.hash.blake2b
 
+import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -36,13 +37,13 @@ class Blake2bKnowAnswerTests {
     @Test
     fun knownAnswerTest() {
         kat.forEach {
-            val parsedInput = it.input.chunked(2).map { it.toUByte(16) }.toUByteArray()
+            val parsedInput = it.input.hexStringToUByteArray()
             val result = Blake2bPure.digest(
                 inputMessage = parsedInput,
-                key = it.key.chunked(2).map { it.toUByte(16) }.toUByteArray()
+                key = it.key.hexStringToUByteArray()
             )
             assertTrue {
-                result.contentEquals(it.hash.chunked(2).map { it.toUByte(16) }.toUByteArray())
+                result.contentEquals(it.hash.hexStringToUByteArray())
             }
         }
     }
@@ -51,13 +52,13 @@ class Blake2bKnowAnswerTests {
     fun knownAnswerTestInstance() {
 
         kat.forEach { kat ->
-            val parsedInput = kat.input.chunked(2).map { it.toUByte(16) }.toUByteArray()
+            val parsedInput = kat.input.hexStringToUByteArray()
             val chunkedInput = parsedInput.toList().chunked(128).map { it.toUByteArray() }
-            val blake2b = Blake2bPure(key = kat.key.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            val blake2b = Blake2bPure(key = kat.key.hexStringToUByteArray())
             chunkedInput.forEach { blake2b.update(it) }
             val result = blake2b.digest()
             assertTrue("KAT ${kat.input} \nkey: ${kat.key} \nexpected: {${kat.hash}") {
-                result.contentEquals(kat.hash.chunked(2).map { it.toUByte(16) }.toUByteArray())
+                result.contentEquals(kat.hash.hexStringToUByteArray())
             }
         }
     }

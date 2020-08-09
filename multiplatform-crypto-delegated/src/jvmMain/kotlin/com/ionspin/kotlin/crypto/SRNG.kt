@@ -29,6 +29,6 @@ actual object SRNG {
     actual fun getRandomBytes(amount: Int): UByteArray {
         val byteArray = ByteArray(amount)
         secureRandom.nextBytes(byteArray)
-        return byteArray.toUByteArray()
+        return byteArray.asUByteArray()
     }
 }

@@ -12,7 +12,7 @@ import platform.posix.malloc
  */
 
 
-actual class Sha512Delegated : Sha512 {
+actual class Sha512Delegated : Sha512Multipart {
     val state : crypto_hash_sha512_state
 
     init {
@@ -37,7 +37,7 @@ actual class Sha512Delegated : Sha512 {
 
 }
 
-actual object Sha512StatelessDelegated : StatelessSha512 {
+actual object Sha512StatelessDelegated : Sha512  {
 
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashResult = UByteArray(Sha512StatelessDelegated.MAX_HASH_BYTES)

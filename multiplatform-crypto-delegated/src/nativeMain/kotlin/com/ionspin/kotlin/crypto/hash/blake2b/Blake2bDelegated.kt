@@ -11,7 +11,7 @@ import platform.posix.malloc
  */
 
 
-actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2b {
+actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: Int) : Blake2bMultipart {
     override val MAX_HASH_BYTES: Int = 64
 
     val requestedHashLength : Int
@@ -20,7 +20,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
         requestedHashLength = hashLength
         val allocated = malloc(crypto_generichash_state.size.convert())!!
         state = allocated.reinterpret<crypto_generichash_state>().pointed
-        crypto_generichash_init(state.ptr, key?.run { this.toUByteArray().toCValues() }, key?.size?.convert() ?: 0UL.convert(), hashLength.convert())
+        crypto_generichash_init(state.ptr, key?.run { this.toCValues() }, key?.size?.convert() ?: 0UL.convert(), hashLength.convert())
     }
 
     override fun update(data: UByteArray) {
@@ -38,7 +38,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
 }
 
 @Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-actual object Blake2bDelegatedStateless : Blake2bStateless {
+actual object Blake2bDelegatedStateless : Blake2b {
 
     override fun digest(inputMessage: UByteArray, key: UByteArray, hashLength: Int): UByteArray {
         val hashResult = UByteArray(MAX_HASH_BYTES)

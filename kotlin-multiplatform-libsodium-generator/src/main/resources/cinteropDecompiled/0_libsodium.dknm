@@ -1,0 +1,101 @@
+// IntelliJ API Decompiler stub source generated from a class file
+// Implementation of methods is not available
+
+package libsodium
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_aead_aes256gcm_state_ public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val opaque: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_hash_sha512_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val buf: kotlinx.cinterop.CArrayPointer<platform.posix.uint8_tVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<platform.posix.uint8_tVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+
+    public final val count: kotlinx.cinterop.CArrayPointer<platform.posix.uint64_tVar /* = kotlinx.cinterop.ULongVarOf<kotlin.ULong> */> /* = kotlinx.cinterop.CPointer<platform.posix.uint64_tVar /* = kotlinx.cinterop.ULongVarOf<kotlin.ULong> */> */ /* compiled code */
+
+    public final val state: kotlinx.cinterop.CArrayPointer<platform.posix.uint64_tVar /* = kotlinx.cinterop.ULongVarOf<kotlin.ULong> */> /* = kotlinx.cinterop.CPointer<platform.posix.uint64_tVar /* = kotlinx.cinterop.ULongVarOf<kotlin.ULong> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_auth_hmacsha512_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val ictx: libsodium.crypto_hash_sha512_state /* compiled code */
+
+    public final val octx: libsodium.crypto_hash_sha512_state /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_hash_sha256_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val buf: kotlinx.cinterop.CArrayPointer<platform.posix.uint8_tVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<platform.posix.uint8_tVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+
+    public final var count: platform.posix.uint64_t /* = kotlin.ULong */ /* compiled code */
+
+    public final val state: kotlinx.cinterop.CArrayPointer<platform.posix.uint32_tVar /* = kotlinx.cinterop.UIntVarOf<kotlin.UInt> */> /* = kotlinx.cinterop.CPointer<platform.posix.uint32_tVar /* = kotlinx.cinterop.UIntVarOf<kotlin.UInt> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_auth_hmacsha256_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val ictx: libsodium.crypto_hash_sha256_state /* compiled code */
+
+    public final val octx: libsodium.crypto_hash_sha256_state /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_generichash_blake2b_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val opaque: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_onetimeauth_poly1305_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val opaque: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_secretstream_xchacha20poly1305_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val _pad: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+
+    public final val k: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+
+    public final val nonce: kotlinx.cinterop.CArrayPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> /* = kotlinx.cinterop.CPointer<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */> */ /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class crypto_sign_ed25519ph_state public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final val hs: libsodium.crypto_hash_sha512_state /* compiled code */
+}
+
+@kotlinx.cinterop.internal.CStruct public final class randombytes_implementation public constructor(rawPtr: kotlinx.cinterop.NativePtr /* = kotlin.native.internal.NativePtr */) : kotlinx.cinterop.CStructVar {
+    @kotlinx.cinterop.internal.CStruct.VarType public companion object : kotlinx.cinterop.CStructVar.Type {
+    }
+
+    public final var buf: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<(kotlinx.cinterop.COpaquePointer? /* = kotlinx.cinterop.CPointer<out kotlinx.cinterop.CPointed>? */, platform.posix.size_t /* = kotlin.ULong */) -> kotlin.Unit>>? /* compiled code */
+
+    public final var close: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<() -> kotlin.Int>>? /* compiled code */
+
+    public final var implementation_name: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<() -> kotlinx.cinterop.CPointer<kotlinx.cinterop.ByteVar /* = kotlinx.cinterop.ByteVarOf<kotlin.Byte> */>?>>? /* compiled code */
+
+    public final var random: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<() -> platform.posix.uint32_t /* = kotlin.UInt */>>? /* compiled code */
+
+    public final var stir: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<() -> kotlin.Unit>>? /* compiled code */
+
+    public final var uniform: kotlinx.cinterop.CPointer<kotlinx.cinterop.CFunction<(platform.posix.uint32_t /* = kotlin.UInt */) -> platform.posix.uint32_t /* = kotlin.UInt */>>? /* compiled code */
+}
+

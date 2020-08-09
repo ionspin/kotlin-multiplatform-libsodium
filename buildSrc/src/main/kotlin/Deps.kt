@@ -15,18 +15,20 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.3.5-native-mt-arm-1.4-M2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
-    val kotlin = "1.4-M2"
-    val kotlinSerialization = "0.20.0-1.4-M2"
+    val kotlinCoroutines = "1.3.8-1.4.0-rc"
+    val kotlin = "1.4.0-rc"
+    val kotlinSerialization = "1.0-M1-1.4.0-rc"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "0.11.0-dev-44"
+    val dokkaPlugin = "1.4.0-M3-dev-92"
     val taskTreePlugin = "1.5"
 
-    val kotlinBigNumVersion = "0.1.6-1.4-M2-SNAPSHOT"
+    val kotlinBigNumVersion = "0.1.6-1.4.0-rc-SNAPSHOT"
 
     val lazySodium = "4.2.6"
     val jna = "5.5.0"
+
+    val kotlinPoet = "1.6.0"
 
 
 }
@@ -42,8 +44,7 @@ object Deps {
         val stdLib = "stdlib-common"
         val test = "test-common"
         val testAnnotation = "test-annotations-common"
-//        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.kotlinCoroutines}"
-        val coroutines = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.kotlinSerialization}"
         val atomicfu = "com.ionspin.kotlin.atomicfu:atomicfu:${Versions.atomicfu}"
 
@@ -56,13 +57,11 @@ object Deps {
     object Js {
         val stdLib = "stdlib-js"
         val test = "test-js"
-//        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.kotlinCoroutines}"
-        val coroutines = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.kotlinSerialization}"
 
         object Npm {
             val libsodium = Pair("libsodium-wrappers-sumo", "0.7.6")
-//            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.6")
             val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "file:${getProjectPath()}/multiplatform-crypto-delegated/libsodium-wrappers-sumo-0.7.6.tgz")
         }
 
@@ -73,12 +72,12 @@ object Deps {
         val test = "test"
         val testJUnit = "test-junit"
         val reflection = "reflect"
-//        val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
-        val coroutinesCore = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
         val coroutinesjdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.kotlinSerialization}"
-//        val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}"
-        val coroutinesTest = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-test:${Versions.kotlinCoroutines}"
+        val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}"
+
+        val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoet}"
 
         object Delegated {
             val lazysodium = "com.goterl.lazycode:lazysodium-java:${Versions.lazySodium}"
@@ -88,14 +87,12 @@ object Deps {
 
     object iOs {
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.kotlinSerialization}"
-//        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
-        val coroutines = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
     }
 
     object Native {
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.kotlinSerialization}"
-//        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
-        val coroutines = "com.ionspin.kotlin.coroutines:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
 
     }
 

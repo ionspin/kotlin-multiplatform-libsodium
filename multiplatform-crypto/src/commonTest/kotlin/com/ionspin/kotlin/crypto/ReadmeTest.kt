@@ -22,6 +22,7 @@ import com.ionspin.kotlin.crypto.hash.sha.Sha256Pure
 import com.ionspin.kotlin.crypto.hash.sha.Sha512Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Pure
 import com.ionspin.kotlin.crypto.keyderivation.argon2.ArgonType
+import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
@@ -70,7 +71,7 @@ class ReadmeTest {
         }
         val expectedResult = ("5c6a9a4ae911c02fb7e71a991eb9aea371ae993d4842d206e" +
                 "6020d46f5e41358c6d5c277c110ef86c959ed63e6ecaaaceaaff38019a43264ae06acf73b9550b1")
-            .chunked(2).map { it.toUByte(16) }.toUByteArray()
+            .hexStringToUByteArray()
 
         assertTrue {
             result.contentEquals(expectedResult)
@@ -84,7 +85,7 @@ class ReadmeTest {
         val result = Sha256Pure.digest(input.encodeToUByteArray())
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
 
 
@@ -94,12 +95,12 @@ class ReadmeTest {
     @Test
     fun sha512Example() {
         val input = "abc"
-        val result = Sha512Pure.digest(inputMessage = input.encodeToByteArray().map { it.toUByte() }.toUByteArray())
+        val result = Sha512Pure.digest(inputMessage = input.encodeToUByteArray())
         println(result.map { it.toString(16) })
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
                 "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
 
 
@@ -113,7 +114,7 @@ class ReadmeTest {
         val result = sha256.digest()
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
     }
 
@@ -126,7 +127,7 @@ class ReadmeTest {
         val expectedResult = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a" +
                 "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
 
 
@@ -159,7 +160,7 @@ class ReadmeTest {
 
     @Test
     fun debugTest() {
-        val result = Blake2bPureStateless.digest("test".encodeToUByteArray())
+        val result = Blake2bPure.digest("test".encodeToUByteArray())
         println(result.toHexString())
     }
 

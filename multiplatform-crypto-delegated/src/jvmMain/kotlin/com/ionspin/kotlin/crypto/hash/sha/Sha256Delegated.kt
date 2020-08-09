@@ -26,7 +26,7 @@ actual class Sha256Delegated actual constructor() : Sha256 {
     override fun digest(): UByteArray {
         val hashed = ByteArray(Sha256Properties.MAX_HASH_BYTES)
         sodium.crypto_hash_sha256_final(state, hashed)
-        return hashed.toUByteArray()
+        return hashed.asUByteArray()
     }
 
 }
@@ -36,6 +36,6 @@ actual object Sha256StatelessDelegated : StatelessSha256 {
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashed = ByteArray(Sha256Properties.MAX_HASH_BYTES)
         sodium.crypto_hash_sha256(hashed, inputMessage.toByteArray(), inputMessage.size.toLong())
-        return hashed.toUByteArray()
+        return hashed.asUByteArray()
     }
 }

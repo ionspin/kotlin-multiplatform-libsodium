@@ -1,0 +1,261 @@
+// IntelliJ API Decompiler stub source generated from a class file
+// Implementation of methods is not available
+
+package libsodium
+
+public const val SODIUM_LIBRARY_VERSION_MAJOR: kotlin.Int /* compiled code */
+
+public const val SODIUM_LIBRARY_VERSION_MINOR: kotlin.Int /* compiled code */
+
+public const val SODIUM_SIZE_MAX: kotlin.ULong /* compiled code */
+
+public const val SODIUM_VERSION_STRING: kotlin.String /* compiled code */
+
+public const val crypto_aead_aegis128l_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis128l_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis128l_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_aegis128l_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis128l_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis256_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis256_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis256_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_aegis256_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aegis256_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aes256gcm_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aes256gcm_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aes256gcm_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_aes256gcm_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_aes256gcm_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_IETF_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_IETF_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_IETF_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_IETF_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_IETF_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ietf_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ietf_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ietf_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ietf_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_chacha20poly1305_ietf_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_IETF_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_IETF_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_IETF_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_IETF_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_IETF_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_ietf_ABYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_ietf_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_ietf_NPUBBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_aead_xchacha20poly1305_ietf_NSECBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_PRIMITIVE: kotlin.String /* compiled code */
+
+public const val crypto_auth_hmacsha256_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_hmacsha256_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_hmacsha512256_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_hmacsha512256_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_hmacsha512_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_auth_hmacsha512_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_BEFORENMBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_BOXZEROBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_MACBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_box_NONCEBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_PRIMITIVE: kotlin.String /* compiled code */
+
+public const val crypto_box_PUBLICKEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_SEALBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_SECRETKEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_SEEDBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_ZEROBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_BEFORENMBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_BOXZEROBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_MACBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_NONCEBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_PUBLICKEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_SECRETKEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_SEEDBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_box_curve25519xsalsa20poly1305_ZEROBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hchacha20_CONSTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hchacha20_INPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hchacha20_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hchacha20_OUTPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hsalsa20_CONSTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hsalsa20_INPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hsalsa20_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_hsalsa20_OUTPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa2012_CONSTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa2012_INPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa2012_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa2012_OUTPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa208_CONSTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa208_INPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa208_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa208_OUTPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa20_CONSTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa20_INPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa20_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_core_salsa20_OUTPUTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_BYTES_MAX: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_BYTES_MIN: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_KEYBYTES_MAX: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_KEYBYTES_MIN: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_PRIMITIVE: kotlin.String /* compiled code */
+
+public const val crypto_generichash_blake2b_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_BYTES_MAX: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_BYTES_MIN: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_KEYBYTES_MAX: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_KEYBYTES_MIN: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_PERSONALBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_generichash_blake2b_SALTBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_hash_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_hash_PRIMITIVE: kotlin.String /* compiled code */
+
+public const val crypto_hash_sha256_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_hash_sha512_BYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_kdf_blake2b_BYTES_MAX: kotlin.Int /* compiled code */
+
+public const val crypto_kdf_blake2b_BYTES_MIN: kotlin.Int /* compiled code */
+
+public const val crypto_stream_xsalsa20_KEYBYTES: kotlin.UInt /* compiled code */
+
+public const val crypto_stream_xsalsa20_MESSAGEBYTES_MAX: kotlin.ULong /* compiled code */
+
+public const val crypto_stream_xsalsa20_NONCEBYTES: kotlin.UInt /* compiled code */
+
+public val randombytes_internal_implementation: libsodium.randombytes_implementation /* compiled code */
+
+public val randombytes_sysrandom_implementation: libsodium.randombytes_implementation /* compiled code */
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_salsa208(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, clen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_salsa208_keygen(k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Unit { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_salsa208_messagebytes_max(): platform.posix.size_t /* = kotlin.ULong */ { /* compiled code */ }
+
+@kotlinx.cinterop.internal.CCall public external fun crypto_stream_salsa208_xor(c: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, m: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, mlen: kotlin.ULong, n: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?, k: kotlinx.cinterop.CValuesRef<kotlinx.cinterop.UByteVar /* = kotlinx.cinterop.UByteVarOf<kotlin.UByte> */>?): kotlin.Int { /* compiled code */ }
+
+public typealias crypto_aead_aes256gcm_state = libsodium.crypto_aead_aes256gcm_state_
+
+public typealias crypto_auth_hmacsha512256_state = libsodium.crypto_auth_hmacsha512_state
+
+public typealias crypto_generichash_state = libsodium.crypto_generichash_blake2b_state
+
+public typealias crypto_onetimeauth_state = libsodium.crypto_onetimeauth_poly1305_state
+
+public typealias crypto_sign_state = libsodium.crypto_sign_ed25519ph_state
+

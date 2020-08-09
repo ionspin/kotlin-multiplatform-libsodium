@@ -131,7 +131,6 @@ kotlin {
     }
 
 
-    //Not supported in OFFICIAL coroutines at the moment (we're running a custom build)
     runningOnLinuxArm64 {
         println("Configuring Linux Arm 64 targets")
 
@@ -249,7 +248,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
-                implementation(Deps.Common.coroutines)
                 implementation(Deps.Common.kotlinBigNum)
                 api(project(Deps.Common.apiProject))
             }
@@ -262,7 +260,6 @@ kotlin {
         }
 
         val nativeDependencies = independentDependencyBlock {
-            implementation(Deps.Native.coroutines)
         }
 
         val nativeMain by creating {
@@ -281,7 +278,6 @@ kotlin {
                 kotlin.setSrcDirs(emptySet<String>())
             }
             dependencies {
-                implementation(Deps.Native.coroutines)
             }
         }
 
@@ -420,7 +416,6 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.stdLib))
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesCore)
 
                     //lazysodium
                     implementation(Deps.Jvm.Delegated.lazysodium)
@@ -431,20 +426,17 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesTest)
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(Deps.Js.coroutines)
                     implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
                 }
             }
             val jsTest by getting {
                 dependencies {
-                    implementation(Deps.Js.coroutines)
                     implementation(kotlin(Deps.Js.test))
                     implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
                 }
@@ -536,12 +528,12 @@ tasks {
 
 
     create<Jar>("javadocJar") {
-        dependsOn(dokka)
+        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokka.get().outputDirectory)
+        from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokka {
+    dokkaJavadoc {
         println("Dokka !")
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {

@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 class SRNGTest {
     @Test
     fun testSrng() = testBlocking {
-        Crypto.initialize()
+        CryptoInitializerDelegated.initialize()
         //Just a sanity test, need to add better srng tests.
         val randomBytes1 = SRNG.getRandomBytes(10)
         val randomBytes2 = SRNG.getRandomBytes(10)

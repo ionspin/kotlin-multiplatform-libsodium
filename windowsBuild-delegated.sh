@@ -14,5 +14,7 @@ echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
 ./gradlew multiplatform-crypto-delegated:build
+#and then libsodium bindings
+./gradlew multiplatform-crypto-libsodium-bindings:build
 set +e
 

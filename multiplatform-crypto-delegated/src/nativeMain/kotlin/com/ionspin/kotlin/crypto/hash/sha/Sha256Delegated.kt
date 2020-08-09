@@ -18,7 +18,7 @@ actual class Sha256Delegated : Sha256 {
     val state : crypto_hash_sha256_state
 
     init {
-        val allocated = malloc(crypto_hash_sha256_state.size.convert())!!
+        val allocated = sodium_malloc(crypto_hash_sha256_state.size.convert())!!
         state = allocated.reinterpret<crypto_hash_sha256_state>().pointed
         crypto_hash_sha256_init(state.ptr)
     }
@@ -33,7 +33,7 @@ actual class Sha256Delegated : Sha256 {
         val hashResult = UByteArray(Sha256Properties.MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
         crypto_hash_sha256_final(state.ptr, hashResultPinned.addressOf(0))
-        free(state.ptr)
+        sodium_free(state.ptr)
         return hashResult
     }
 

@@ -19,8 +19,11 @@
 package com.ionspin.kotlin.crypto.keyderivation.argon2
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import com.ionspin.kotlin.crypto.Blake2bPureStateless
+
 import com.ionspin.kotlin.crypto.SRNG
+import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bPure
+import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.keyderivation.ArgonResult
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.argonBlake2bArbitraryLenghtHash
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.compressionFunctionG
 import com.ionspin.kotlin.crypto.keyderivation.argon2.Argon2Utils.validateArgonParameters
@@ -42,14 +45,7 @@ data class SegmentPosition(
     val slice: Int
 )
 
-data class ArgonResult(
-    val hashBytes: UByteArray,
-    val salt: UByteArray
-) {
-    val hashString by lazy { hashBytes.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
-    val saltString by lazy { salt.map { it.toString(16).padStart(2, '0') }.joinToString(separator = "") }
 
-}
 
 
 
@@ -79,14 +75,14 @@ class Argon2Pure(
         ): ArgonResult {
             val salt = SRNG.getRandomBytes(64)
             val argon = Argon2Pure(
-                password.encodeToByteArray().toUByteArray(),
+                password.encodeToUByteArray(),
                 salt,
                 parallelism,
                 tagLength.toUInt(),
                 memory.toUInt(),
                 numberOfIterations,
-                key.encodeToByteArray().toUByteArray(),
-                associatedData.encodeToByteArray().toUByteArray(),
+                key.encodeToUByteArray(),
+                associatedData.encodeToUByteArray(),
                 ArgonType.Argon2id
             )
             val resultArray = argon.derive()
@@ -105,14 +101,14 @@ class Argon2Pure(
         associatedData: String = "",
         argonType: ArgonType = ArgonType.Argon2id
     ) : this(
-        password.encodeToByteArray().toUByteArray(),
-        salt.encodeToByteArray().toUByteArray(),
+        password.encodeToUByteArray(),
+        salt.encodeToUByteArray(),
         parallelism,
         tagLength,
         requestedMemorySize,
         numberOfIterations,
-        key.encodeToByteArray().toUByteArray(),
-        associatedData.encodeToByteArray().toUByteArray(),
+        key.encodeToUByteArray(),
+        associatedData.encodeToUByteArray(),
         argonType
     )
 
@@ -296,7 +292,7 @@ class Argon2Pure(
                 salt.size.toUInt().toLittleEndianUByteArray() + salt +
                 key.size.toUInt().toLittleEndianUByteArray() + key +
                 associatedData.size.toUInt().toLittleEndianUByteArray() + associatedData
-        val h0 = Blake2bPureStateless.digest(
+        val h0 = Blake2bPure.digest(
             blakeInput
         )
 

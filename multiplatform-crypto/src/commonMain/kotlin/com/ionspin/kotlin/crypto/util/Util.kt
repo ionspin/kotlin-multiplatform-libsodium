@@ -18,30 +18,14 @@
 
 package com.ionspin.kotlin.crypto.util
 
+//TODO Reorganize this, currently it's just a pile of useful helper functions
+
+val _emitIntArray: IntArray = intArrayOf(1)
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 15-Jul-2019
  */
-fun Array<Byte>.hexColumsPrint() {
-    val printout = this.map { it.toString(16) }.chunked(16)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun UByteArray.hexColumsPrint(chunk : Int = 16) {
-    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
-
-fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
-    val printout = this.map { it.toString(16) }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
-}
 
 inline fun <reified T> Array<T>.chunked(sliceSize: Int): Array<Array<T>> {
     val last = this.size % sliceSize
@@ -72,6 +56,14 @@ infix fun ULong.rotateRight(places: Int): ULong {
     return (this shr places) xor (this shl (64 - places))
 }
 
+infix fun UInt.rotateLeft(places: Int): UInt {
+    return (this shl places) xor (this shr (32 - places))
+}
+
+
+infix fun ULong.rotateLeft(places: Int): ULong {
+    return (this shl places) xor (this shr (64 - places))
+}
 
 infix fun Array<UByte>.xor(other : Array<UByte>) : Array<UByte> {
     if (this.size != other.size) {
@@ -88,35 +80,21 @@ infix fun UByteArray.xor(other : UByteArray) : UByteArray {
     return UByteArray(this.size) { this[it] xor other[it] }
 }
 
-
-fun String.hexStringToTypedUByteArray() : Array<UByte> {
-    return this.chunked(2).map { it.toUByte(16) }.toTypedArray()
+fun UByteArray.xorWithPositions(start: Int, end: Int, other : UByteArray, otherStart: Int) : UByteArray {
+    return UByteArray(end - start) { this[start + it] xor other[otherStart + it] }
 }
 
-
-fun String.hexStringToUByteArray() : UByteArray {
-    return this.chunked(2).map { it.toUByte(16) }.toUByteArray()
-}
-
-
-fun Array<UByte>.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
-    }
-}
-
-
-fun UByteArray.toHexString() : String {
-    return this.joinToString(separator = "") {
-        if (it <= 0x0FU) {
-            "0${it.toString(16)}"
-        } else {
-            it.toString(16)
-        }
+/**
+ * Start index is included, end index is excluded
+ */
+fun UByteArray.xorWithPositionsAndInsertIntoArray(
+    start: Int, end: Int,
+    other : UByteArray, otherStart: Int,
+    targetArray: UByteArray, targetStart : Int
+) {
+    val length = end - start
+    for (i in 0 until length) {
+        targetArray[targetStart + i] = this[start + i] xor other[otherStart + i]
     }
 }
 
@@ -139,6 +117,19 @@ fun UInt.toLittleEndianUByteArray() : UByteArray {
     return UByteArray (4) {
         ((this shr (it * 8)) and 0xFFU).toUByte()
     }
+}
+
+
+fun UIntArray.toLittleEndianUByteArray() : UByteArray {
+    val result = UByteArray(size * 4)
+    for (i in 0 until size) {
+        val converted = this[i].toLittleEndianUByteArray()
+        result[i * 4] = converted[0]
+        result[i * 4 + 1] = converted[1]
+        result[i * 4 + 2] = converted[2]
+        result[i * 4 + 3] = converted[3]
+    }
+    return result
 }
 
 // UInt / Array utils
@@ -231,9 +222,60 @@ fun UByteArray.fromLittleEndianArrayToUInt() : UInt {
     return uint
 }
 
+fun UByteArray.fromLittleEndianArrayToUIntWithPosition(position: Int) : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint or (this[position + i].toUInt() shl (i * 8))
+    }
+    return uint
+}
+
+fun UByteArray.fromBigEndianArrayToUInt() : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint shl 8 or (this[i].toUInt())
+    }
+    return uint
+}
+
+fun UByteArray.fromBigEndianArrayToUIntWithPosition(position: Int) : UInt{
+    var uint = 0U
+    for (i in 0 until 4) {
+        uint = uint shl 8 or (this[position + i].toUInt())
+    }
+    return uint
+}
+
+fun UByteArray.insertUIntAtPositionAsLittleEndian(position: Int, value: UInt) {
+    for (i in position until position + 4) {
+        this[i] = ((value shr (i * 8)) and 0xFFU).toUByte()
+    }
+}
+
+fun UByteArray.insertUIntAtPositionAsBigEndian(position: Int, value: UInt) {
+    for (i in position until position + 4) {
+        this[i] = ((value shr (24 - i * 8)) and 0xFFU).toUByte()
+    }
+}
+
+fun UByteArray.fromLittleEndianToUInt() : UIntArray {
+    if (size % 4 != 0) {
+        throw RuntimeException("Invalid size (not divisible by 4)")
+    }
+    return UIntArray(size / 4) {
+        fromLittleEndianArrayToUIntWithPosition(it * 4)
+    }
+}
 
 
-
+fun UByteArray.fromBigEndianToUInt() : UIntArray {
+    if (size % 4 != 0) {
+        throw RuntimeException("Invalid size (not divisible by 4)")
+    }
+    return UIntArray(size / 4) {
+        fromBigEndianArrayToUIntWithPosition(it * 4)
+    }
+}
 
 fun Array<UByte>.fromBigEndianArrayToUInt() : UInt {
     if (this.size > 4) {

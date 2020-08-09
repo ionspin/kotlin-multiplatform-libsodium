@@ -15,14 +15,14 @@
  */
 
 package com.ionspin.kotlin.crypto.util
-
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.promise
-
-
-/**
- * Created by Ugljesa Jovanovic
- * ugljesa.jovanovic@ionspin.com
- * on 20-Jul-2019
- */
-actual fun testBlocking(block: suspend ()-> Unit) : dynamic = GlobalScope.promise { block() }
+//
+//import kotlinx.coroutines.GlobalScope
+//import kotlinx.coroutines.promise
+//
+//
+///**
+// * Created by Ugljesa Jovanovic
+// * ugljesa.jovanovic@ionspin.com
+// * on 20-Jul-2019
+// */
+//actual fun testBlocking(block: suspend ()-> Unit) : dynamic = GlobalScope.promise { block() }

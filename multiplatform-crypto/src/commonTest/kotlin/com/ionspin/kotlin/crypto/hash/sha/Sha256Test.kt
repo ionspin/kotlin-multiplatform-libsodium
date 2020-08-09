@@ -17,6 +17,7 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -35,7 +36,7 @@ class Sha256Test {
         val result = Sha256Pure.digest("abc".encodeToUByteArray())
         val expectedResult = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         assertTrue {
-            result.contentEquals(expectedResult.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            result.contentEquals(expectedResult.hexStringToUByteArray())
         }
 
 
@@ -48,7 +49,7 @@ class Sha256Test {
         val resultDoubleBlock = Sha256Pure.digest("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq".encodeToUByteArray())
         val expectedResultForDoubleBlock = "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
         assertTrue {
-            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.hexStringToUByteArray())
         }
     }
 
@@ -61,7 +62,7 @@ class Sha256Test {
         println(resultDoubleBlock.map{ it.toString(16)}.joinToString(separator = ""))
         val expectedResultForDoubleBlock = "cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1"
         assertTrue {
-            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.hexStringToUByteArray())
         }
     }
 
@@ -75,7 +76,7 @@ class Sha256Test {
         val resultDoubleBlock = Sha256Pure.digest(inputMessage = (inputBuilder.toString()).encodeToByteArray().map { it.toUByte() }.toUByteArray())
         val expectedResultForDoubleBlock = "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
         assertTrue {
-            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.chunked(2).map { it.toUByte(16) }.toUByteArray())
+            resultDoubleBlock.contentEquals(expectedResultForDoubleBlock.hexStringToUByteArray())
         }
     }
 }
