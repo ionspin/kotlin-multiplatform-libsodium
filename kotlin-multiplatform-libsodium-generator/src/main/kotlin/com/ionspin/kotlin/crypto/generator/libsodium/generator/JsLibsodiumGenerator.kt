@@ -10,6 +10,8 @@ import com.squareup.kotlinpoet.*
  */
 object JsLibsodiumGenerator {
 
+    val jsInterfaceFunctionDefinitions : MutableList<FunSpec> = mutableListOf()
+
 
     fun createJsFile(packageName: String, fileDefinition: KotlinFileDefinition): FileSpec {
         val fileBuilder = FileSpec.builder(packageName, fileDefinition.name)
@@ -29,9 +31,20 @@ object JsLibsodiumGenerator {
             )
             fileBuilder.addType(commonClassSpec.build())
         }
+        createJsInterfaceFile()
         val file = fileBuilder.build()
         file.writeTo(System.out)
         return file
+    }
+
+    // This helps with static typing in js target
+    fun createJsInterfaceFile() {
+        val fileBuilder = FileSpec.builder(packageName, "JsSodiumInterfaceDebug")
+        val jsInterface = TypeSpec.interfaceBuilder("JsSodiumInterfaceDebug")
+        jsInterface.addFunctions(jsInterfaceFunctionDefinitions)
+        fileBuilder.addType(jsInterface.build())
+        val file = fileBuilder.build()
+        file.writeTo(System.out)
     }
 
     fun createJsInnerClassSpec(
@@ -46,7 +59,7 @@ object JsLibsodiumGenerator {
 
     fun createJsFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
-        methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
+
         var returnModifierFound = false
         var returnModifierName = ""
         var actualReturnType: TypeName = DYNAMIC
@@ -69,6 +82,19 @@ object JsLibsodiumGenerator {
                 actualReturnType = paramDefinition.parameterType.typeName
             }
         }
+        if (actualReturnTypeFound) {
+            methodBuilder.returns(actualReturnType)
+        } else if (methodDefinition.dynamicJsReturn) {
+            methodBuilder.returns(Dynamic)
+        } else {
+            methodBuilder.returns(methodDefinition.returnType.typeName)
+        }
+        //Create a spec for interface
+        methodBuilder.addModifiers(KModifier.ABSTRACT)
+        jsInterfaceFunctionDefinitions.add(methodBuilder.build())
+        //continue with normal func spec for implementation
+        methodBuilder.modifiers.clear()
+        methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJsCall = StringBuilder()
         when (methodDefinition.returnType) {
@@ -95,16 +121,6 @@ object JsLibsodiumGenerator {
             }
         }
         methodBuilder.addStatement(constructJsCall.toString())
-        if (actualReturnTypeFound) {
-            methodBuilder.returns(actualReturnType)
-            return methodBuilder.build()
-        }
-
-        if (methodDefinition.dynamicJsReturn) {
-            methodBuilder.returns(Dynamic)
-        } else {
-            methodBuilder.returns(methodDefinition.returnType.typeName)
-        }
         return methodBuilder.build()
     }
 
