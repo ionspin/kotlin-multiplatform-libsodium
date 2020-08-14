@@ -1,6 +1,7 @@
 package debug.test
 
 import kotlin.Int
+import kotlin.UByte
 import kotlin.UByteArray
 
 expect class Sha256State
@@ -35,5 +36,19 @@ expect class Crypto internal constructor() {
 
   fun crypto_generichash_init(key: UByteArray, outlen: Int): GenericHashState
 
-  fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray
+  /**
+   * Initialize a state and generate a random header. Both are returned inside
+   * `SecretStreamStateAndHeader` object
+   */
+  fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): SecretStreamStateAndHeader
+
+  /**
+   * Encrypt next block of data using the previously initialized state. Returns encrypted block.
+   */
+  fun crypto_secretstream_xchacha20poly1305_push(
+    state: SecretStreamState,
+    m: UByteArray,
+    ad: UByteArray,
+    tag: UByte
+  ): UByteArray
 }

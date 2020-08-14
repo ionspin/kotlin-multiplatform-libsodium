@@ -10,7 +10,7 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         "SecretStreamState",
         "com.goterl.lazycode.lazysodium.interfaces.SecretStream.State",
         "SecretStreamState",
-        "crypto_hash_sha256_state"
+        "crypto_secretstream_xchacha20poly1305_state"
     )
     +dataClassDef(
         "SecretStreamStateAndHeader",
@@ -42,30 +42,35 @@ fun ClassDefinition.defineSecretStreamFunctions() {
 
     val jvmSecretStreamInit = CodeBlockDefinition(
         """
-            val header = UByteArray(24)
-            val state = SecretStream.State()
-            sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
-            return SecretStreamStateAndHeader(state, header)
+        val header = UByteArray(24)
+        val state = SecretStream.State()
+        sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
+        return SecretStreamStateAndHeader(state, header)
         """.trimIndent(),
         setOf(TargetPlatform.JVM)
     )
 
     val nativeSecretStreamInit = CodeBlockDefinition(
         """
-            val state = libsodium.sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
-                .reinterpret<libsodium.crypto_secretstream_xchacha20poly1305_state>()
-                .pointed
-            val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
-            val pinnedHeader = header.pin()
-            libsodium.crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
-            pinnedHeader.unpin()
-            return SecretStreamStateAndHeader(state, header)
+        val pinnedKey = key.pin()
+        val state = sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+            .reinterpret<libsodium.crypto_secretstream_xchacha20poly1305_state>()
+            .pointed
+        val header = UByteArray(libsodium.crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
+        val pinnedHeader = header.pin()
+        libsodium.crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), pinnedKey.addressOf(0))
+        pinnedHeader.unpin()
+        pinnedKey.unpin()
+        return SecretStreamStateAndHeader(state, header)
         """.trimIndent(),
         setOf(TargetPlatform.NATIVE)
     )
     +funcDef(
         "crypto_secretstream_xchacha20poly1305_init_push",
-        returnType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE,
+        codeDocumentation = """
+            Initialize a state and generate a random header. Both are returned inside `SecretStreamStateAndHeader` object
+        """.trimIndent(),
+        returnType = CustomTypeDefinition(withPackageName("SecretStreamStateAndHeader")),
         dynamicJsReturn = true,
         isStateCreationFunction = true,
         customCodeBlockReplacesFunctionBody = listOf(jsSecretStreamInit, jvmSecretStreamInit, nativeSecretStreamInit)
@@ -73,6 +78,38 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         +ParameterDefinition(
             "key",
             parameterType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE
+        )
+    }
+
+    +funcDef(
+        name = "crypto_secretstream_xchacha20poly1305_push",
+        codeDocumentation = """
+            Encrypt next block of data using the previously initialized state. Returns encrypted block.
+        """.trimIndent(),
+        returnType = TypeDefinition.ARRAY_OF_UBYTES
+    ) {
+        +ParameterDefinition(
+            "state",
+            CustomTypeDefinition(withPackageName("SecretStreamState"))
+        )
+        +ParameterDefinition(
+            "c",
+            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
+            isActuallyAnOutputParam = true,
+            dropParameterFromDefinition = true
+        )
+        +ParameterDefinition(
+            "m",
+            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
+            modifiesReturn = true
+        )
+        +ParameterDefinition(
+            "ad",
+            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE
+        )
+        +ParameterDefinition(
+            "tag",
+            TypeDefinition.UBYTE
         )
     }
 

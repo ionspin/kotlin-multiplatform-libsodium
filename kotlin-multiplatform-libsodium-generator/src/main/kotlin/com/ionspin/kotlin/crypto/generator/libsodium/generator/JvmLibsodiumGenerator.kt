@@ -72,7 +72,14 @@ object JvmLibsodiumGenerator {
                     throw RuntimeException("Return modifier already found")
                 }
                 returnModifierFound = true
-                returnModifierName = paramDefinition.parameterName
+                when (paramDefinition.parameterType) {
+                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                        returnModifierName = "${paramDefinition.parameterName}.size"
+                    }
+                    TypeDefinition.INT -> {
+                        returnModifierName = paramDefinition.parameterName
+                    }
+                }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
                 actualReturnParameterDefinition = paramDefinition
@@ -114,7 +121,7 @@ object JvmLibsodiumGenerator {
                 constructJvmCall.append("sodium.${methodDefinition.nativeName}")
                 constructJvmCall.append(paramsToString(methodDefinition))
                 methodBuilder.addStatement(constructJvmCall.toString())
-                methodBuilder.addStatement("return out")
+                methodBuilder.addStatement("return ${actualReturnParameterDefinition.parameterName}")
             } else {
                 when (methodDefinition.returnType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
@@ -155,7 +162,7 @@ object JvmLibsodiumGenerator {
          */
         when (outputParam.parameterType) {
             TypeDefinition.ARRAY_OF_UBYTES, TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                methodBuilder.addStatement("val out = UByteArray($length)")
+                methodBuilder.addStatement("val ${outputParam.parameterName} = UByteArray($length)")
             }
             else -> {
                 throw RuntimeException("Unhandled native output param type: ${outputParam.parameterType.typeName}")
@@ -203,6 +210,9 @@ object JvmLibsodiumGenerator {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                     TypeDefinition.STRING -> {
+                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                    }
+                    TypeDefinition.UBYTE -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                 }

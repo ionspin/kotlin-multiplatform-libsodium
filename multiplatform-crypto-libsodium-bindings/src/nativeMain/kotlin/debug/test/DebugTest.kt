@@ -3,6 +3,7 @@ package debug.test
 import kotlin.Byte
 import kotlin.ByteArray
 import kotlin.Int
+import kotlin.UByte
 import kotlin.UByteArray
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
@@ -14,6 +15,7 @@ import kotlinx.cinterop.toCValues
 import libsodium.crypto_generichash_blake2b_state
 import libsodium.crypto_hash_sha256_state
 import libsodium.crypto_hash_sha512_state
+import libsodium.crypto_secretstream_xchacha20poly1305_state
 import libsodium.sodium_malloc
 
 actual typealias Sha256State = crypto_hash_sha256_state
@@ -22,7 +24,7 @@ actual typealias Sha512State = crypto_hash_sha512_state
 
 actual typealias GenericHashState = crypto_generichash_blake2b_state
 
-actual typealias SecretStreamState = crypto_hash_sha256_state
+actual typealias SecretStreamState = crypto_secretstream_xchacha20poly1305_state
 
 actual class Crypto internal actual constructor() {
   val _emitByte: Byte = 0
@@ -92,18 +94,48 @@ actual class Crypto internal actual constructor() {
     return state
   }
 
-  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray {
+  /**
+   * Initialize a state and generate a random header. Both are returned inside
+   * `SecretStreamStateAndHeader` object
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray):
+      SecretStreamStateAndHeader {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
     val pinnedKey = key.pin()
-    val state =
-        libsodium.sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+        val state =
+            sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
             .reinterpret<libsodium.crypto_secretstream_xchacha20poly1305_state>()
             .pointed
-        val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
+        val header = UByteArray(libsodium.crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt())
+            { 0U }
         val pinnedHeader = header.pin()
         libsodium.crypto_secretstream_xchacha20poly1305_init_push(state.ptr,
-            pinnedHeader.addressOf(0), key.toCValues())
+            pinnedHeader.addressOf(0), pinnedKey.addressOf(0))
         pinnedHeader.unpin()
+        pinnedKey.unpin()
         return SecretStreamStateAndHeader(state, header)
+  }
+
+  /**
+   * Encrypt next block of data using the previously initialized state. Returns encrypted block.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_push(
+    state: SecretStreamState,
+    m: UByteArray,
+    ad: UByteArray,
+    tag: UByte
+  ): UByteArray {
+    val c = UByteArray(m.size)
+    println("Debug crypto_secretstream_xchacha20poly1305_push")
+    val pinnedC = c.pin()
+    val pinnedM = m.pin()
+    val pinnedAd = ad.pin()
+    libsodium.crypto_secretstream_xchacha20poly1305_push(state.ptr, pinnedC.addressOf(0),
+        c.size.convert(), pinnedM.addressOf(0), m.size.convert(), pinnedAd.addressOf(0),
+        ad.size.convert(), tag)
+    pinnedC.unpin()
+    pinnedM.unpin()
+    pinnedAd.unpin()
+    return c
   }
 }

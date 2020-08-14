@@ -5,6 +5,7 @@ import com.goterl.lazycode.lazysodium.interfaces.Hash
 import com.goterl.lazycode.lazysodium.interfaces.SecretStream
 import kotlin.ByteArray
 import kotlin.Int
+import kotlin.UByte
 import kotlin.UByteArray
 
 val sodium: SodiumJava = SodiumJava()
@@ -67,12 +68,33 @@ actual class Crypto internal actual constructor() {
     return state
   }
 
-  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray {
+  /**
+   * Initialize a state and generate a random header. Both are returned inside
+   * `SecretStreamStateAndHeader` object
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray):
+      SecretStreamStateAndHeader {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
     val header = UByteArray(24)
         val state = SecretStream.State()
         sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(),
             key.asByteArray())
         return SecretStreamStateAndHeader(state, header)
+  }
+
+  /**
+   * Encrypt next block of data using the previously initialized state. Returns encrypted block.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_push(
+    state: SecretStreamState,
+    m: UByteArray,
+    ad: UByteArray,
+    tag: UByte
+  ): UByteArray {
+    val c = UByteArray(m.size)
+    println("Debug crypto_secretstream_xchacha20poly1305_push")
+    sodium.crypto_secretstream_xchacha20poly1305_push(state, c.asByteArray(), c.size.toLong(),
+        m.asByteArray(), m.size.toLong(), ad.asByteArray(), ad.size.toLong(), tag)
+    return c
   }
 }

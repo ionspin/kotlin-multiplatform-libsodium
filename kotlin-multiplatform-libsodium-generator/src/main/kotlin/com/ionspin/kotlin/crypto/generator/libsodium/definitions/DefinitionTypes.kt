@@ -85,6 +85,13 @@ class FunctionDefinition(
     }
 }
 
+/**
+ *
+ * isActuallyAnOutputParam - drop this parameter from the generated param list and provide it as output. Param
+ * will be automatically generated inside function body block
+ * isStateType - provides special handling when type is a non-primitive state type
+ * dropParameterFromDefinition - don't show this parameter in method definition
+ */
 class ParameterDefinition(
     val parameterName: String,
     val parameterType: GeneralTypeDefinition,
@@ -118,7 +125,8 @@ enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefiniti
     LONG(Long::class.asTypeName()),
     INT(Int::class.asTypeName()),
     STRING(String::class.asTypeName()),
-    UNIT(Unit::class.asTypeName())
+    UNIT(Unit::class.asTypeName()),
+    UBYTE(UByte::class.asTypeName())
 }
 
 enum class TargetPlatform {

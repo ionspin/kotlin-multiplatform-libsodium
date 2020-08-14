@@ -77,7 +77,14 @@ object JsLibsodiumGenerator {
                     throw RuntimeException("Return modifier already found")
                 }
                 returnModifierFound = true
-                returnModifierName = paramDefinition.parameterName
+                when (paramDefinition.parameterType) {
+                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                        returnModifierName = "${paramDefinition.parameterName}.size"
+                    }
+                    TypeDefinition.INT -> {
+                        returnModifierName = paramDefinition.parameterName
+                    }
+                }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
                 actualReturnTypeFound = true
@@ -163,6 +170,9 @@ object JsLibsodiumGenerator {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                     TypeDefinition.STRING -> {
+                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                    }
+                    TypeDefinition.UBYTE -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                 }

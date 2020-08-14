@@ -87,7 +87,15 @@ object NativeLibsodiumGenerator {
                     throw RuntimeException("Return modifier already found")
                 }
                 returnModifierFound = true
-                returnModifierName = paramDefinition.parameterName
+                when (paramDefinition.parameterType) {
+                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                        returnModifierName = "${paramDefinition.parameterName}.size"
+                    }
+                    TypeDefinition.INT -> {
+                        returnModifierName = paramDefinition.parameterName
+                    }
+                }
+
             }
             if (paramDefinition.isActuallyAnOutputParam) {
                 actualReturnParameterDefinition = paramDefinition
@@ -105,7 +113,6 @@ object NativeLibsodiumGenerator {
             }
         }
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
-        pinParams(methodDefinition, methodBuilder)
         val constructNativeCall = StringBuilder()
         if (methodDefinition.customCodeBlockReplacesFunctionBody != null) {
             for (codeBlock in methodDefinition.customCodeBlockReplacesFunctionBody.filter { it.applyOnTargets.contains(TargetPlatform.NATIVE) }) {
@@ -113,6 +120,7 @@ object NativeLibsodiumGenerator {
                 methodBuilder.addStatement(constructNativeCall.toString())
             }
         } else {
+            pinParams(methodDefinition, methodBuilder)
             if (methodDefinition.isStateCreationFunction) {
                 constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
                 constructNativeCall.append(paramsToString(methodDefinition))
@@ -124,7 +132,7 @@ object NativeLibsodiumGenerator {
                 constructNativeCall.append(paramsToString(methodDefinition))
                 methodBuilder.addStatement(constructNativeCall.toString())
                 unpinParams(methodDefinition, methodBuilder)
-                methodBuilder.addStatement("return out")
+                methodBuilder.addStatement("return ${actualReturnParameterDefinition.parameterName}")
             } else {
                 when (methodDefinition.returnType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
@@ -184,7 +192,7 @@ object NativeLibsodiumGenerator {
          */
         when (outputParam.parameterType) {
             TypeDefinition.ARRAY_OF_UBYTES, TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                methodBuilder.addStatement("val out = UByteArray($length)")
+                methodBuilder.addStatement("val ${outputParam.parameterName} = UByteArray($length)")
             }
             else -> {
                 throw RuntimeException("Unhandled native output param type: ${outputParam.parameterType.typeName}")
@@ -280,6 +288,9 @@ object NativeLibsodiumGenerator {
                         paramsBuilder.append(paramDefinition.parameterName + ".convert()" + separator)
                     }
                     TypeDefinition.STRING -> {
+                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                    }
+                    TypeDefinition.UBYTE -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                 }

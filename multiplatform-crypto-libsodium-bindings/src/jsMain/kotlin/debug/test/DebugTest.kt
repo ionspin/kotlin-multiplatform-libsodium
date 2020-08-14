@@ -5,6 +5,7 @@ import ext.libsodium.com.ionspin.kotlin.crypto.toUByteArray
 import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 import kotlin.Any
 import kotlin.Int
+import kotlin.UByte
 import kotlin.UByteArray
 import org.khronos.webgl.Uint8Array
 
@@ -58,6 +59,10 @@ actual class Crypto internal actual constructor() {
     return getSodium().crypto_generichash_init(key.toUInt8Array(), outlen)
   }
 
+  /**
+   * Initialize a state and generate a random header. Both are returned inside
+   * `SecretStreamStateAndHeader` object
+   */
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): dynamic {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
     val stateAndHeader =
@@ -65,5 +70,19 @@ actual class Crypto internal actual constructor() {
         val state = stateAndHeader.state
         val header = (stateAndHeader.header as Uint8Array).toUByteArray()
         return SecretStreamStateAndHeader(state, header) 
+  }
+
+  /**
+   * Encrypt next block of data using the previously initialized state. Returns encrypted block.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_push(
+    state: SecretStreamState,
+    m: UByteArray,
+    ad: UByteArray,
+    tag: UByte
+  ): UByteArray {
+    println("Debug crypto_secretstream_xchacha20poly1305_push")
+    return getSodium().crypto_secretstream_xchacha20poly1305_push(state, m.toUInt8Array(), ,
+        ad.toUInt8Array(), , tag).toUByteArray()
   }
 }
