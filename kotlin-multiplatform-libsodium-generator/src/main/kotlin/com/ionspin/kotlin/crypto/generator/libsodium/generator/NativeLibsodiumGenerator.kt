@@ -36,6 +36,7 @@ object NativeLibsodiumGenerator {
             }
 
             val commonClassSpec = createClass(
+                fileBuilder,
                 commonClassDefinition,
                 MultiplatformModifier.ACTUAL,
                 ::createNativeFunctionImplementation
@@ -106,9 +107,11 @@ object NativeLibsodiumGenerator {
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         pinParams(methodDefinition, methodBuilder)
         val constructNativeCall = StringBuilder()
-        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
-            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JS)) {
-            constructNativeCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null) {
+            for (codeBlock in methodDefinition.customCodeBlockReplacesFunctionBody.filter { it.applyOnTargets.contains(TargetPlatform.NATIVE) }) {
+                constructNativeCall.append(codeBlock.codeBlock)
+                methodBuilder.addStatement(constructNativeCall.toString())
+            }
         } else {
             if (methodDefinition.isStateCreationFunction) {
                 constructNativeCall.append("libsodium.${methodDefinition.nativeName}")

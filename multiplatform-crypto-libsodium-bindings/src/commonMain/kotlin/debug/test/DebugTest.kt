@@ -11,6 +11,11 @@ expect class GenericHashState
 
 expect class SecretStreamState
 
+data class SecretStreamStateAndHeader(
+  val state: SecretStreamState,
+  val header: UByteArray
+)
+
 expect class Crypto internal constructor() {
   /**
    * Initialize the SHA256 hash
@@ -31,9 +36,4 @@ expect class Crypto internal constructor() {
   fun crypto_generichash_init(key: UByteArray, outlen: Int): GenericHashState
 
   fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray
-
-  data class SecretStreamStateAndHeader(
-    val state: SecretStreamState,
-    val header: UByteArray
-  )
 }

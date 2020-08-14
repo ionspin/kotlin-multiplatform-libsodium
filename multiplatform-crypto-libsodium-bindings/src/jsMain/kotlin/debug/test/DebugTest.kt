@@ -6,6 +6,7 @@ import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 import kotlin.Any
 import kotlin.Int
 import kotlin.UByteArray
+import org.khronos.webgl.Uint8Array
 
 actual typealias Sha256State = Any
 
@@ -59,6 +60,10 @@ actual class Crypto internal actual constructor() {
 
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): dynamic {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
-
+    val stateAndHeader =
+        getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
+        val state = stateAndHeader.state
+        val header = (stateAndHeader.header as Uint8Array).toUByteArray()
+        return SecretStreamStateAndHeader(state, header) 
   }
 }

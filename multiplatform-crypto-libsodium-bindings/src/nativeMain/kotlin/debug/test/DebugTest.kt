@@ -95,8 +95,15 @@ actual class Crypto internal actual constructor() {
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
     val pinnedKey = key.pin()
-    libsodium.crypto_secretstream_xchacha20poly1305_init_push(pinnedKey.addressOf(0))
-    pinnedKey.unpin()
-    return state
+    val state =
+        libsodium.sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+            .reinterpret<libsodium.crypto_secretstream_xchacha20poly1305_state>()
+            .pointed
+        val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
+        val pinnedHeader = header.pin()
+        libsodium.crypto_secretstream_xchacha20poly1305_init_push(state.ptr,
+            pinnedHeader.addressOf(0), key.toCValues())
+        pinnedHeader.unpin()
+        return SecretStreamStateAndHeader(state, header)
   }
 }

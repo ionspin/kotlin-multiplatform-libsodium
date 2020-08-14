@@ -29,6 +29,7 @@ object JvmLibsodiumGenerator {
             }
 
             val commonClassSpec = createClass(
+                fileBuilder,
                 commonClassDefinition,
                 MultiplatformModifier.ACTUAL,
                 ::createJvmFunctionImplementation
@@ -98,9 +99,11 @@ object JvmLibsodiumGenerator {
         }
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJvmCall = StringBuilder()
-        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
-            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JVM)) {
-            constructJvmCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null) {
+            for (codeBlock in methodDefinition.customCodeBlockReplacesFunctionBody.filter { it.applyOnTargets.contains(TargetPlatform.JVM) }) {
+                constructJvmCall.append(codeBlock.codeBlock)
+            }
+            methodBuilder.addStatement(constructJvmCall.toString())
         } else {
             if (methodDefinition.isStateCreationFunction) {
                 constructJvmCall.append("sodium.${methodDefinition.nativeName}")

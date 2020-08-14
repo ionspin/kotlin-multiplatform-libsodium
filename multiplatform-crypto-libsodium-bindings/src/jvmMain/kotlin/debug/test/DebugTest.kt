@@ -69,7 +69,10 @@ actual class Crypto internal actual constructor() {
 
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
-    sodium.crypto_secretstream_xchacha20poly1305_init_push(key.asByteArray())
-    return state
+    val header = UByteArray(24)
+        val state = SecretStream.State()
+        sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(),
+            key.asByteArray())
+        return SecretStreamStateAndHeader(state, header)
   }
 }

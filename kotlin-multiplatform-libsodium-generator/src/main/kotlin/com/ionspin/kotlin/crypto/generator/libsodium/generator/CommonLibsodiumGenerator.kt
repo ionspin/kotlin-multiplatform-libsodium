@@ -28,6 +28,7 @@ object CommonLibsodiumGenerator {
             }
             val commonClassSpec =
                 createClass(
+                    fileBuilder,
                     commonClassDefinition,
                     MultiplatformModifier.EXPECT,
                     ::createCommonMethodSpec

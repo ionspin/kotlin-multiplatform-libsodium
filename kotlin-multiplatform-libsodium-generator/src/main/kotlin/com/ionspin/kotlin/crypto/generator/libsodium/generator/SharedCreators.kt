@@ -12,6 +12,7 @@ import com.squareup.kotlinpoet.*
  * on 31-Jul-2020
  */
 fun createClass(
+    fileBuilder: FileSpec.Builder,
     classDefinition: ClassDefinition,
     multiplatformModifier: MultiplatformModifier,
     methodCreator: (FunctionDefinition) -> FunSpec.Builder
@@ -22,7 +23,7 @@ fun createClass(
     if (multiplatformModifier == MultiplatformModifier.EXPECT) {
         primaryConstructor.addModifiers(KModifier.INTERNAL)
         for (dataClassDefinition in classDefinition.dataClasses) {
-            generateDataClass(commonClassBuilder, dataClassDefinition)
+            generateDataClass(fileBuilder, dataClassDefinition)
         }
     } else {
         primaryConstructor.addModifiers(KModifier.INTERNAL, KModifier.ACTUAL)
@@ -38,7 +39,7 @@ fun createClass(
     return commonClassBuilder
 }
 
-fun generateDataClass(classBuilder: TypeSpec.Builder, dataClassDefinition: DataClassDefinition) {
+fun generateDataClass(fileBuilder: FileSpec.Builder, dataClassDefinition: DataClassDefinition) {
     val dataClassBuilder = TypeSpec.classBuilder(dataClassDefinition.name)
     dataClassBuilder.addModifiers(KModifier.DATA)
     val dataClassConstructor = FunSpec.constructorBuilder()
@@ -54,7 +55,7 @@ fun generateDataClass(classBuilder: TypeSpec.Builder, dataClassDefinition: DataC
                 .build()
         )
     }
-    classBuilder.addType(dataClassBuilder.build())
+    fileBuilder.addType(dataClassBuilder.build())
 }
 
 fun generateDocumentationForMethod(builder: FunSpec.Builder, methodSpec: FunctionDefinition) {

@@ -30,11 +30,45 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         )
 
     )
+    val jsSecretStreamInit = CodeBlockDefinition(
+        """
+        val stateAndHeader = getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
+        val state = stateAndHeader.state
+        val header = (stateAndHeader.header as Uint8Array).toUByteArray()
+        return SecretStreamStateAndHeader(state, header) 
+        """.trimIndent(),
+        setOf(TargetPlatform.JS)
+    )
+
+    val jvmSecretStreamInit = CodeBlockDefinition(
+        """
+            val header = UByteArray(24)
+            val state = SecretStream.State()
+            sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
+            return SecretStreamStateAndHeader(state, header)
+        """.trimIndent(),
+        setOf(TargetPlatform.JVM)
+    )
+
+    val nativeSecretStreamInit = CodeBlockDefinition(
+        """
+            val state = libsodium.sodium_malloc(libsodium.crypto_secretstream_xchacha20poly1305_state.size.convert())!!
+                .reinterpret<libsodium.crypto_secretstream_xchacha20poly1305_state>()
+                .pointed
+            val header = UByteArray(crypto_secretstream_xchacha20poly1305_HEADERBYTES.toInt()) { 0U }
+            val pinnedHeader = header.pin()
+            libsodium.crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
+            pinnedHeader.unpin()
+            return SecretStreamStateAndHeader(state, header)
+        """.trimIndent(),
+        setOf(TargetPlatform.NATIVE)
+    )
     +funcDef(
         "crypto_secretstream_xchacha20poly1305_init_push",
         returnType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE,
         dynamicJsReturn = true,
-        isStateCreationFunction = true
+        isStateCreationFunction = true,
+        customCodeBlockReplacesFunctionBody = listOf(jsSecretStreamInit, jvmSecretStreamInit, nativeSecretStreamInit)
     ) {
         +ParameterDefinition(
             "key",

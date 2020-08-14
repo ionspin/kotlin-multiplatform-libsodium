@@ -78,7 +78,7 @@ class FunctionDefinition(
     val dynamicJsReturn: Boolean = false,
     val isStateCreationFunction: Boolean = false,
     val outputLengthWhenArray: Int = -1,
-    val customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null
+    val customCodeBlockReplacesFunctionBody: List<CodeBlockDefinition>? = null
 ) {
     operator fun ParameterDefinition.unaryPlus() {
         parameterList.add(this)
@@ -186,7 +186,7 @@ fun funcDef(
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
     outputLengthWhenArray: Int = -1,
-    customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null,
+    customCodeBlockReplacesFunctionBody: List<CodeBlockDefinition>? = null,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
     val function = FunctionDefinition(
@@ -212,7 +212,7 @@ fun funcDef(
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
     outputLengthWhenArray: Int = -1,
-    customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null,
+    customCodeBlockReplacesFunctionBody: List<CodeBlockDefinition>? = null,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
     val function =

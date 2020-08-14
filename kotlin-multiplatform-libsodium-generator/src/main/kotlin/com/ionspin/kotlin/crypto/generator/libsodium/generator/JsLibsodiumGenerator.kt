@@ -18,6 +18,7 @@ object JsLibsodiumGenerator {
         fileBuilder.addImport("ext.libsodium.com.ionspin.kotlin.crypto", "toUInt8Array")
         fileBuilder.addImport("ext.libsodium.com.ionspin.kotlin.crypto", "toUByteArray")
         fileBuilder.addImport("com.ionspin.kotlin.crypto", "getSodium")
+        fileBuilder.addImport("org.khronos.webgl", "Uint8Array")
         for (commonClassDefinition in fileDefinition.commonClassList) {
             //Create type-aliases
             commonClassDefinition.innerClasses.forEach {
@@ -25,6 +26,7 @@ object JsLibsodiumGenerator {
             }
 
             val commonClassSpec = createClass(
+                fileBuilder,
                 commonClassDefinition,
                 MultiplatformModifier.ACTUAL,
                 ::createJsFunctionImplementation
@@ -97,9 +99,10 @@ object JsLibsodiumGenerator {
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJsCall = StringBuilder()
-        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
-            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JS)) {
-            constructJsCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null) {
+            for (codeBlock in methodDefinition.customCodeBlockReplacesFunctionBody.filter { it.applyOnTargets.contains(TargetPlatform.JS) }) {
+                constructJsCall.append(codeBlock.codeBlock)
+            }
         } else {
             when (methodDefinition.returnType) {
                 TypeDefinition.ARRAY_OF_UBYTES -> {
