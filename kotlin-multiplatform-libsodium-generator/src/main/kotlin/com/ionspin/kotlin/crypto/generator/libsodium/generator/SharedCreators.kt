@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.TypeSpec
 fun createClass(
     classDefinition: ClassDefinition,
     multiplatformModifier: MultiplatformModifier,
-    methodCreator: (FunctionDefinition) -> FunSpec
+    methodCreator: (FunctionDefinition) -> FunSpec.Builder
 ): TypeSpec.Builder {
     val commonClassBuilder = TypeSpec.classBuilder(classDefinition.name)
     // Ugly
@@ -29,9 +29,15 @@ fun createClass(
     commonClassBuilder.primaryConstructor(primaryConstructor.build())
     commonClassBuilder.modifiers += multiplatformModifier.modifierList
     for (methodDefinition in classDefinition.methods) {
-        commonClassBuilder.addFunction(methodCreator(methodDefinition))
+        val builder = methodCreator(methodDefinition)
+        generateDocumentationForMethod(builder, methodDefinition)
+        commonClassBuilder.addFunction(builder.build())
     }
     return commonClassBuilder
+}
+
+fun generateDocumentationForMethod(builder: FunSpec.Builder, methodSpec: FunctionDefinition) {
+    builder.addKdoc(methodSpec.codeDocumentation)
 }
 
 

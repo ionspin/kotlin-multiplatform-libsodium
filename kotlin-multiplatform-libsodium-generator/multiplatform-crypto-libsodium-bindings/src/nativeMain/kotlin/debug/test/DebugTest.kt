@@ -27,6 +27,10 @@ actual class Crypto internal actual constructor() {
 
   val _emitByteArray: ByteArray = ByteArray(0)
 
+  /**
+   * Initialize the SHA256 hash
+   * returns sha 256 state
+   */
   actual fun crypto_hash_sha256_init(): Sha256State {
     val allocated = sodium_malloc(debug.test.Sha256State.size.convert())!!
     val state = allocated.reinterpret<debug.test.Sha256State>().pointed

@@ -19,7 +19,11 @@ fun ClassDefinition.defineHashFunctions() {
     )
     +funcDef(
         "crypto_hash_sha256_init",
-        CustomTypeDefinition(ClassName(packageName, "Sha256State")),
+        codeDocumentation = """
+            Initialize the SHA256 hash
+            returns sha 256 state
+        """.trimIndent(),
+        returnType = CustomTypeDefinition(ClassName(packageName, "Sha256State")),
         dynamicJsReturn = true,
         isStateCreationFunction = true
     ) {
@@ -31,7 +35,7 @@ fun ClassDefinition.defineHashFunctions() {
         )
     }
 
-    +funcDef("crypto_hash_sha256_update", TypeDefinition.UNIT) {
+    +funcDef("crypto_hash_sha256_update", returnType = TypeDefinition.UNIT) {
         +ParameterDefinition(
             "state",
             CustomTypeDefinition((withPackageName("Sha256State"))),
@@ -40,7 +44,7 @@ fun ClassDefinition.defineHashFunctions() {
         +ParameterDefinition("input", TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE)
     }
 
-    +funcDef("crypto_hash_sha256_final", TypeDefinition.ARRAY_OF_UBYTES, outputLengthWhenArray = 32) {
+    +funcDef("crypto_hash_sha256_final", returnType = TypeDefinition.ARRAY_OF_UBYTES, outputLengthWhenArray = 32) {
         +ParameterDefinition("state", CustomTypeDefinition((withPackageName("Sha256State"))))
         +ParameterDefinition("out", TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, isActuallyAnOutputParam = true, dropParameterFromDefinition = true)
     }
@@ -56,8 +60,8 @@ fun ClassDefinition.defineHashFunctions() {
     )
     +funcDef(
         "crypto_hash_sha512_init",
-        CustomTypeDefinition(ClassName(packageName, "Sha512State")),
-        true,
+        returnType = CustomTypeDefinition(ClassName(packageName, "Sha512State")),
+        dynamicJsReturn = true,
         isStateCreationFunction = true
     ) {
         +ParameterDefinition(
@@ -68,12 +72,12 @@ fun ClassDefinition.defineHashFunctions() {
         )
     }
 
-    +funcDef("crypto_hash_sha512_update", TypeDefinition.UNIT) {
+    +funcDef("crypto_hash_sha512_update", returnType = TypeDefinition.UNIT) {
         +ParameterDefinition("state", CustomTypeDefinition((withPackageName("Sha512State"))))
         +ParameterDefinition("input", TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE)
     }
 
-    +funcDef("crypto_hash_sha512_final", TypeDefinition.ARRAY_OF_UBYTES, outputLengthWhenArray = 64) {
+    +funcDef("crypto_hash_sha512_final", returnType = TypeDefinition.ARRAY_OF_UBYTES, outputLengthWhenArray = 64) {
         +ParameterDefinition("state", CustomTypeDefinition((withPackageName("Sha512State"))))
         +ParameterDefinition("out", TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, isActuallyAnOutputParam = true, dropParameterFromDefinition = true)
     }

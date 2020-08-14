@@ -57,7 +57,7 @@ object JsLibsodiumGenerator {
         return innerClassBuilder.build()
     }
 
-    fun createJsFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
+    fun createJsFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec.Builder {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
 
         var returnModifierFound = false
@@ -121,7 +121,7 @@ object JsLibsodiumGenerator {
             }
         }
         methodBuilder.addStatement(constructJsCall.toString())
-        return methodBuilder.build()
+        return methodBuilder
     }
 
     fun paramsToString(methodDefinition: FunctionDefinition): String {

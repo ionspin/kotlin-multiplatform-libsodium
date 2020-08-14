@@ -10,6 +10,10 @@ expect class Sha512State
 expect class GenericHashState
 
 expect class Crypto internal constructor() {
+  /**
+   * Initialize the SHA256 hash
+   * returns sha 256 state
+   */
   fun crypto_hash_sha256_init(): Sha256State
 
   fun crypto_hash_sha256_update(state: Sha256State, input: UByteArray)

@@ -21,8 +21,8 @@ fun ClassDefinition.defineGenericHashFunctions() {
 
     +funcDef(
         "crypto_generichash_init",
-        CustomTypeDefinition(ClassName(packageName, "GenericHashState")),
-        true,
+        returnType = CustomTypeDefinition(ClassName(packageName, "GenericHashState")),
+        dynamicJsReturn = true,
         isStateCreationFunction = true
     ) {
         +ParameterDefinition(

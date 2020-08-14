@@ -25,6 +25,7 @@ class KotlinFileDefinition(
 
 class ClassDefinition(
     val name: String,
+    val codeDocumentation: String = "",
     val innerClasses: MutableList<InnerClassDefinition> = mutableListOf(),
     val methods: MutableList<FunctionDefinition> = mutableListOf()
 ) {
@@ -46,6 +47,7 @@ class InnerClassDefinition(
     val javaName: String,
     val jsName: String,
     val nativeName: String,
+    val codeDocumentation: String = "",
     val functions: MutableList<FunctionDefinition> = mutableListOf()
 )
 
@@ -54,6 +56,7 @@ class FunctionDefinition(
     val javaName: String,
     val jsName: String,
     val nativeName: String,
+    val codeDocumentation: String = "",
     val parameterList: MutableList<ParameterDefinition> = mutableListOf(),
     val returnType: GeneralTypeDefinition,
     val dynamicJsReturn: Boolean = false,
@@ -73,6 +76,10 @@ class ParameterDefinition(
     val isStateType: Boolean = false,
     val dropParameterFromDefinition: Boolean = false,
     val specificJvmInitializer: String? = null,
+)
+
+class CodeBlockDefinition(
+    codeBlock: String
 )
 
 interface GeneralTypeDefinition {
@@ -98,10 +105,16 @@ fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit): KotlinFileDefi
 }
 
 
-fun classDef(name: String, body: ClassDefinition.() -> Unit): ClassDefinition {
-    val commonClass = ClassDefinition(name)
+fun classDef(name: String,  codeDocumentation: String = "",body: ClassDefinition.() -> Unit): ClassDefinition {
+    val commonClass = ClassDefinition(name, codeDocumentation)
     commonClass.body()
     return commonClass
+}
+
+fun codeBlock(codeBlock: String) : CodeBlockDefinition {
+    val codeBlockDefinition = CodeBlockDefinition(codeBlock)
+    return codeBlockDefinition
+
 }
 
 fun innerClassDef(
@@ -109,6 +122,7 @@ fun innerClassDef(
     javaName: String,
     jsName: String,
     nativeName: String,
+    codeDocumentation: String = "",
     specificConstructor : String? = null,
     body: InnerClassDefinition.() -> Unit = {}
 ): InnerClassDefinition {
@@ -116,7 +130,8 @@ fun innerClassDef(
         name,
         javaName,
         jsName,
-        nativeName
+        nativeName,
+        codeDocumentation
     )
     genClass.body()
     return genClass
@@ -127,6 +142,7 @@ fun funcDef(
     javaName: String,
     jsName: String,
     nativeName: String,
+    codeDocumentation: String = "",
     returnType: GeneralTypeDefinition,
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
@@ -138,6 +154,7 @@ fun funcDef(
         javaName,
         jsName,
         nativeName,
+        codeDocumentation,
         returnType = returnType,
         dynamicJsReturn = dynamicJsReturn,
         isStateCreationFunction = isStateCreationFunction,
@@ -149,6 +166,7 @@ fun funcDef(
 
 fun funcDef(
     name: String,
+    codeDocumentation: String = "",
     returnType: GeneralTypeDefinition,
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
@@ -161,6 +179,7 @@ fun funcDef(
             name,
             name,
             name,
+            codeDocumentation,
             returnType = returnType,
             dynamicJsReturn = dynamicJsReturn,
             isStateCreationFunction = isStateCreationFunction,

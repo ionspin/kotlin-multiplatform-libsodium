@@ -70,7 +70,7 @@ object NativeLibsodiumGenerator {
         return innerClassBuilder.build()
     }
 
-    fun createNativeFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
+    fun createNativeFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec.Builder {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
@@ -159,7 +159,7 @@ object NativeLibsodiumGenerator {
 
         methodBuilder.returns(methodDefinition.returnType.typeName)
 
-        return methodBuilder.build()
+        return methodBuilder
     }
 
     fun createStateParam(stateParameterDefinition: ParameterDefinition, methodBuilder: FunSpec.Builder) {

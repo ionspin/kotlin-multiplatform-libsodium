@@ -55,7 +55,7 @@ object JvmLibsodiumGenerator {
         return innerClassBuilder.build()
     }
 
-    fun createJvmFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec {
+    fun createJvmFunctionImplementation(methodDefinition: FunctionDefinition): FunSpec.Builder {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
@@ -141,7 +141,7 @@ object JvmLibsodiumGenerator {
             }
         }
         methodBuilder.returns(methodDefinition.returnType.typeName)
-        return methodBuilder.build()
+        return methodBuilder
     }
 
     fun createOutputParam(outputParam: ParameterDefinition, length: String?, methodBuilder: FunSpec.Builder) {

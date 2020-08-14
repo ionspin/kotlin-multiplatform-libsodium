@@ -49,7 +49,7 @@ object CommonLibsodiumGenerator {
         return innerClassBuilder.build()
     }
 
-    fun createCommonMethodSpec(methodDefinition: FunctionDefinition): FunSpec {
+    fun createCommonMethodSpec(methodDefinition: FunctionDefinition): FunSpec.Builder {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
         var actualReturnType : TypeName = Any::class.asTypeName()
         var actualReturnTypeFound : Boolean = false
@@ -69,7 +69,7 @@ object CommonLibsodiumGenerator {
         } else {
             methodBuilder.returns(methodDefinition.returnType.typeName)
         }
-        return methodBuilder.build()
+        return methodBuilder
     }
 
 }
