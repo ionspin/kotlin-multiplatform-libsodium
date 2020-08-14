@@ -13,7 +13,13 @@ actual typealias Sha512State = Any
 
 actual typealias GenericHashState = Any
 
+actual typealias SecretStreamState = Any
+
 actual class Crypto internal actual constructor() {
+  /**
+   * Initialize the SHA256 hash
+   * returns sha 256 state
+   */
   actual fun crypto_hash_sha256_init(): dynamic {
     println("Debug crypto_hash_sha256_init")
     val result  = js("getSodium().crypto_hash_sha256_init()")
@@ -49,5 +55,10 @@ actual class Crypto internal actual constructor() {
   actual fun crypto_generichash_init(key: UByteArray, outlen: Int): dynamic {
     println("Debug crypto_generichash_init")
     return getSodium().crypto_generichash_init(key.toUInt8Array(), outlen)
+  }
+
+  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): dynamic {
+    println("Debug crypto_secretstream_xchacha20poly1305_init_push")
+
   }
 }

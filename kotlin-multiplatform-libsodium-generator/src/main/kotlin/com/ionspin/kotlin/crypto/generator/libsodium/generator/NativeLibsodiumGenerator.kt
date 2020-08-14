@@ -1,11 +1,6 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.generator
 
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.CustomTypeDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.FunctionDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.InnerClassDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.KotlinFileDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.ParameterDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.TypeDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.*
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -111,50 +106,55 @@ object NativeLibsodiumGenerator {
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         pinParams(methodDefinition, methodBuilder)
         val constructNativeCall = StringBuilder()
-        if (methodDefinition.isStateCreationFunction) {
-            constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
-            constructNativeCall.append(paramsToString(methodDefinition))
-            methodBuilder.addStatement(constructNativeCall.toString())
-            unpinParams(methodDefinition, methodBuilder)
-            methodBuilder.addStatement("return state")
-        } else if (actualReturnTypeFound) {
-            constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
-            constructNativeCall.append(paramsToString(methodDefinition))
-            methodBuilder.addStatement(constructNativeCall.toString())
-            unpinParams(methodDefinition, methodBuilder)
-            methodBuilder.addStatement("return out")
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
+            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JS)) {
+            constructNativeCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
         } else {
-            when (methodDefinition.returnType) {
-                TypeDefinition.ARRAY_OF_UBYTES -> {
-                    constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
-                    constructNativeCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructNativeCall.toString())
-                    unpinParams(methodDefinition, methodBuilder)
-                    methodBuilder.addStatement("return result")
+            if (methodDefinition.isStateCreationFunction) {
+                constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
+                constructNativeCall.append(paramsToString(methodDefinition))
+                methodBuilder.addStatement(constructNativeCall.toString())
+                unpinParams(methodDefinition, methodBuilder)
+                methodBuilder.addStatement("return state")
+            } else if (actualReturnTypeFound) {
+                constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
+                constructNativeCall.append(paramsToString(methodDefinition))
+                methodBuilder.addStatement(constructNativeCall.toString())
+                unpinParams(methodDefinition, methodBuilder)
+                methodBuilder.addStatement("return out")
+            } else {
+                when (methodDefinition.returnType) {
+                    TypeDefinition.ARRAY_OF_UBYTES -> {
+                        constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
+                        constructNativeCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructNativeCall.toString())
+                        unpinParams(methodDefinition, methodBuilder)
+                        methodBuilder.addStatement("return result")
+                    }
+                    TypeDefinition.INT -> {
+                        constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
+                        constructNativeCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructNativeCall.toString())
+                        unpinParams(methodDefinition, methodBuilder)
+                        methodBuilder.addStatement("return result")
+                    }
+                    TypeDefinition.UNIT -> {
+                        constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
+                        constructNativeCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructNativeCall.toString())
+                        unpinParams(methodDefinition, methodBuilder)
+                    }
+                    is CustomTypeDefinition -> {
+                        constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
+                        constructNativeCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructNativeCall.toString())
+                        unpinParams(methodDefinition, methodBuilder)
+                        methodBuilder.addStatement("return result")
+                    }
                 }
-                TypeDefinition.INT -> {
-                    constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
-                    constructNativeCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructNativeCall.toString())
-                    unpinParams(methodDefinition, methodBuilder)
-                    methodBuilder.addStatement("return result")
-                }
-                TypeDefinition.UNIT -> {
-                    constructNativeCall.append("libsodium.${methodDefinition.nativeName}")
-                    constructNativeCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructNativeCall.toString())
-                    unpinParams(methodDefinition, methodBuilder)
-                }
-                is CustomTypeDefinition -> {
-                    constructNativeCall.append("val result = libsodium.${methodDefinition.nativeName}")
-                    constructNativeCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructNativeCall.toString())
-                    unpinParams(methodDefinition, methodBuilder)
-                    methodBuilder.addStatement("return result")
-                }
+
+
             }
-
-
         }
 
         methodBuilder.returns(methodDefinition.returnType.typeName)

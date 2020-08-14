@@ -10,8 +10,8 @@ import java.io.File
  * on 31-Jul-2020
  */
 object Coordinator {
-
-    fun run() {
+    @JvmStatic
+    fun main(args : Array<String>) {
 
         val commonFileSpec = CommonLibsodiumGenerator.createCommonFile(packageName, LibSodiumDefinitions.testKotlinFile)
         val jvmFileSpec = JvmLibsodiumGenerator.createJvmFile(packageName, LibSodiumDefinitions.testKotlinFile)

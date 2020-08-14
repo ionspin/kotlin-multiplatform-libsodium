@@ -22,11 +22,17 @@ actual typealias Sha512State = crypto_hash_sha512_state
 
 actual typealias GenericHashState = crypto_generichash_blake2b_state
 
+actual typealias SecretStreamState = crypto_hash_sha256_state
+
 actual class Crypto internal actual constructor() {
   val _emitByte: Byte = 0
 
   val _emitByteArray: ByteArray = ByteArray(0)
 
+  /**
+   * Initialize the SHA256 hash
+   * returns sha 256 state
+   */
   actual fun crypto_hash_sha256_init(): Sha256State {
     val allocated = sodium_malloc(debug.test.Sha256State.size.convert())!!
     val state = allocated.reinterpret<debug.test.Sha256State>().pointed
@@ -82,6 +88,14 @@ actual class Crypto internal actual constructor() {
     val pinnedKey = key.pin()
     libsodium.crypto_generichash_init(state.ptr, pinnedKey.addressOf(0), key.size.convert(),
         outlen.convert())
+    pinnedKey.unpin()
+    return state
+  }
+
+  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): UByteArray {
+    println("Debug crypto_secretstream_xchacha20poly1305_init_push")
+    val pinnedKey = key.pin()
+    libsodium.crypto_secretstream_xchacha20poly1305_init_push(pinnedKey.addressOf(0))
     pinnedKey.unpin()
     return state
   }

@@ -1,11 +1,10 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.generator
 
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.ClassDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.DataClassDefinition
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.FunctionDefinition
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.InnerClassDefinition
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 
 /**
  * Created by Ugljesa Jovanovic
@@ -22,6 +21,9 @@ fun createClass(
     val primaryConstructor = FunSpec.constructorBuilder()
     if (multiplatformModifier == MultiplatformModifier.EXPECT) {
         primaryConstructor.addModifiers(KModifier.INTERNAL)
+        for (dataClassDefinition in classDefinition.dataClasses) {
+            generateDataClass(commonClassBuilder, dataClassDefinition)
+        }
     } else {
         primaryConstructor.addModifiers(KModifier.INTERNAL, KModifier.ACTUAL)
     }
@@ -34,6 +36,25 @@ fun createClass(
         commonClassBuilder.addFunction(builder.build())
     }
     return commonClassBuilder
+}
+
+fun generateDataClass(classBuilder: TypeSpec.Builder, dataClassDefinition: DataClassDefinition) {
+    val dataClassBuilder = TypeSpec.classBuilder(dataClassDefinition.name)
+    dataClassBuilder.addModifiers(KModifier.DATA)
+    val dataClassConstructor = FunSpec.constructorBuilder()
+    for (parameter in dataClassDefinition.parameters) {
+        val parameterBuilder = ParameterSpec.builder(parameter.parameterName, parameter.parameterType.typeName)
+        dataClassConstructor.addParameter(parameterBuilder.build())
+    }
+    dataClassBuilder.primaryConstructor(dataClassConstructor.build())
+    for (parameter in dataClassDefinition.parameters) {
+        dataClassBuilder.addProperty(
+            PropertySpec.builder(parameter.parameterName, parameter.parameterType.typeName)
+                .initializer(parameter.parameterName)
+                .build()
+        )
+    }
+    classBuilder.addType(dataClassBuilder.build())
 }
 
 fun generateDocumentationForMethod(builder: FunSpec.Builder, methodSpec: FunctionDefinition) {

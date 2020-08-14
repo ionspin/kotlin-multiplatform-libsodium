@@ -1,8 +1,7 @@
 package com.ionspin.kotlin.crypto.generator
 
-import com.ionspin.kotlin.crypto.generator.libsodium.generator.CommonLibsodiumGenerator
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.LibSodiumDefinitions
 import com.ionspin.kotlin.crypto.generator.libsodium.generator.Coordinator
+import com.squareup.kotlinpoet.*
 import org.junit.Test
 
 /**
@@ -11,8 +10,5 @@ import org.junit.Test
  * on 31-Jul-2020
  */
 class DebugTest {
-    @Test
-    fun debugTest() {
-        Coordinator.run()
-    }
+
 }

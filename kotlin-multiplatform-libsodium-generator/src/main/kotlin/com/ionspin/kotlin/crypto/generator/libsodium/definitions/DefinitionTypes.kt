@@ -27,7 +27,8 @@ class ClassDefinition(
     val name: String,
     val codeDocumentation: String = "",
     val innerClasses: MutableList<InnerClassDefinition> = mutableListOf(),
-    val methods: MutableList<FunctionDefinition> = mutableListOf()
+    val methods: MutableList<FunctionDefinition> = mutableListOf(),
+    val dataClasses: MutableList<DataClassDefinition> = mutableListOf()
 ) {
     operator fun InnerClassDefinition.unaryPlus() {
         innerClasses.add(this)
@@ -35,6 +36,10 @@ class ClassDefinition(
 
     operator fun FunctionDefinition.unaryPlus() {
         methods.add(this)
+    }
+
+    operator fun DataClassDefinition.unaryPlus() {
+        dataClasses.add(this)
     }
 
     operator fun List<FunctionDefinition>.unaryPlus() {
@@ -51,6 +56,17 @@ class InnerClassDefinition(
     val functions: MutableList<FunctionDefinition> = mutableListOf()
 )
 
+class DataClassDefinition(
+    val name: String,
+    val codeDocumentation: String = "",
+    val parameters : List<ParameterDefinition>
+)
+
+/**
+ * outputLengthWhenArray - if output is an a array and there is no parameter that modifies output length we need
+ * to tell the function what to expect (think SHA256 32byte output always, and Blake2 dynamic output controlled
+ * by outputLen parameter)
+ */
 class FunctionDefinition(
     val name: String,
     val javaName: String,
@@ -61,7 +77,8 @@ class FunctionDefinition(
     val returnType: GeneralTypeDefinition,
     val dynamicJsReturn: Boolean = false,
     val isStateCreationFunction: Boolean = false,
-    val outputLengthWhenArray: Int = -1
+    val outputLengthWhenArray: Int = -1,
+    val customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null
 ) {
     operator fun ParameterDefinition.unaryPlus() {
         parameterList.add(this)
@@ -79,7 +96,13 @@ class ParameterDefinition(
 )
 
 class CodeBlockDefinition(
-    codeBlock: String
+    val codeBlock: String,
+    val applyOnTargets: Set<TargetPlatform> = setOf(
+        TargetPlatform.COMMON,
+        TargetPlatform.JVM,
+        TargetPlatform.JS,
+        TargetPlatform.NATIVE
+    )
 )
 
 interface GeneralTypeDefinition {
@@ -98,6 +121,10 @@ enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefiniti
     UNIT(Unit::class.asTypeName())
 }
 
+enum class TargetPlatform {
+    JVM, NATIVE, JS, COMMON
+}
+
 fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit): KotlinFileDefinition {
     val commonKotlinFileInstance = KotlinFileDefinition(name)
     commonKotlinFileInstance.body()
@@ -105,14 +132,26 @@ fun fileDef(name: String, body: KotlinFileDefinition.() -> Unit): KotlinFileDefi
 }
 
 
-fun classDef(name: String,  codeDocumentation: String = "",body: ClassDefinition.() -> Unit): ClassDefinition {
+fun classDef(name: String, codeDocumentation: String = "", body: ClassDefinition.() -> Unit): ClassDefinition {
     val commonClass = ClassDefinition(name, codeDocumentation)
     commonClass.body()
     return commonClass
 }
 
-fun codeBlock(codeBlock: String) : CodeBlockDefinition {
-    val codeBlockDefinition = CodeBlockDefinition(codeBlock)
+fun dataClassDef(name : String, codeDocumentation: String = "", parameters: List<ParameterDefinition>) : DataClassDefinition {
+    return DataClassDefinition(name, codeDocumentation, parameters)
+}
+
+fun codeBlock(
+    codeBlock: String,
+    applyOnTargets: Set<TargetPlatform> = setOf(
+        TargetPlatform.COMMON,
+        TargetPlatform.JVM,
+        TargetPlatform.JS,
+        TargetPlatform.NATIVE
+    )
+): CodeBlockDefinition {
+    val codeBlockDefinition = CodeBlockDefinition(codeBlock, applyOnTargets)
     return codeBlockDefinition
 
 }
@@ -123,7 +162,7 @@ fun innerClassDef(
     jsName: String,
     nativeName: String,
     codeDocumentation: String = "",
-    specificConstructor : String? = null,
+    specificConstructor: String? = null,
     body: InnerClassDefinition.() -> Unit = {}
 ): InnerClassDefinition {
     val genClass = InnerClassDefinition(
@@ -147,6 +186,7 @@ fun funcDef(
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
     outputLengthWhenArray: Int = -1,
+    customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
     val function = FunctionDefinition(
@@ -154,11 +194,12 @@ fun funcDef(
         javaName,
         jsName,
         nativeName,
-        codeDocumentation,
+        codeDocumentation = codeDocumentation,
         returnType = returnType,
         dynamicJsReturn = dynamicJsReturn,
         isStateCreationFunction = isStateCreationFunction,
-        outputLengthWhenArray = outputLengthWhenArray
+        outputLengthWhenArray = outputLengthWhenArray,
+        customCodeBlockReplacesFunctionBody = customCodeBlockReplacesFunctionBody
     )
     function.body()
     return function
@@ -171,6 +212,7 @@ fun funcDef(
     dynamicJsReturn: Boolean = false,
     isStateCreationFunction: Boolean = false,
     outputLengthWhenArray: Int = -1,
+    customCodeBlockReplacesFunctionBody: CodeBlockDefinition? = null,
     body: FunctionDefinition.() -> Unit
 ): FunctionDefinition {
     val function =
@@ -183,7 +225,8 @@ fun funcDef(
             returnType = returnType,
             dynamicJsReturn = dynamicJsReturn,
             isStateCreationFunction = isStateCreationFunction,
-            outputLengthWhenArray = outputLengthWhenArray
+            outputLengthWhenArray = outputLengthWhenArray,
+            customCodeBlockReplacesFunctionBody = customCodeBlockReplacesFunctionBody
         )
     function.body()
     return function

@@ -97,26 +97,31 @@ object JsLibsodiumGenerator {
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJsCall = StringBuilder()
-        when (methodDefinition.returnType) {
-            TypeDefinition.ARRAY_OF_UBYTES -> {
-                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
-                constructJsCall.append(paramsToString(methodDefinition) + ".toUByteArray()")
-            }
-            TypeDefinition.INT -> {
-                constructJsCall.append("return getSodium().${methodDefinition.jsName}")
-                constructJsCall.append(paramsToString(methodDefinition))
-            }
-            TypeDefinition.UNIT -> {
-                constructJsCall.append("getSodium().${methodDefinition.jsName}")
-                constructJsCall.append(paramsToString(methodDefinition))
-            }
-            is CustomTypeDefinition -> {
-                if (methodDefinition.parameterList.filter { it.isStateType.not() }.size > 0) {
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
+            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JS)) {
+            constructJsCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
+        } else {
+            when (methodDefinition.returnType) {
+                TypeDefinition.ARRAY_OF_UBYTES -> {
+                    constructJsCall.append("return getSodium().${methodDefinition.jsName}")
+                    constructJsCall.append(paramsToString(methodDefinition) + ".toUByteArray()")
+                }
+                TypeDefinition.INT -> {
                     constructJsCall.append("return getSodium().${methodDefinition.jsName}")
                     constructJsCall.append(paramsToString(methodDefinition))
-                } else {
-                    constructJsCall.append("val result  = js(\"getSodium().${methodDefinition.jsName}()\")")
-                    constructJsCall.append("\nreturn result")
+                }
+                TypeDefinition.UNIT -> {
+                    constructJsCall.append("getSodium().${methodDefinition.jsName}")
+                    constructJsCall.append(paramsToString(methodDefinition))
+                }
+                is CustomTypeDefinition -> {
+                    if (methodDefinition.parameterList.filter { it.isStateType.not() }.size > 0) {
+                        constructJsCall.append("return getSodium().${methodDefinition.jsName}")
+                        constructJsCall.append(paramsToString(methodDefinition))
+                    } else {
+                        constructJsCall.append("val result  = js(\"getSodium().${methodDefinition.jsName}()\")")
+                        constructJsCall.append("\nreturn result")
+                    }
                 }
             }
         }

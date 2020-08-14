@@ -1,11 +1,6 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.generator
 
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.CustomTypeDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.FunctionDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.InnerClassDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.KotlinFileDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.ParameterDefinition
-import com.ionspin.kotlin.crypto.generator.libsodium.definitions.TypeDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.*
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -103,40 +98,45 @@ object JvmLibsodiumGenerator {
         }
         methodBuilder.addStatement("println(\"Debug ${methodDefinition.name}\")")
         val constructJvmCall = StringBuilder()
-        if (methodDefinition.isStateCreationFunction) {
-            constructJvmCall.append("sodium.${methodDefinition.nativeName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-            methodBuilder.addStatement(constructJvmCall.toString())
-            methodBuilder.addStatement("return state")
-        } else if (actualReturnTypeFound) {
-            constructJvmCall.append("sodium.${methodDefinition.nativeName}")
-            constructJvmCall.append(paramsToString(methodDefinition))
-            methodBuilder.addStatement(constructJvmCall.toString())
-            methodBuilder.addStatement("return out")
+        if (methodDefinition.customCodeBlockReplacesFunctionBody != null &&
+            methodDefinition.customCodeBlockReplacesFunctionBody.applyOnTargets.contains(TargetPlatform.JVM)) {
+            constructJvmCall.append(methodDefinition.customCodeBlockReplacesFunctionBody.codeBlock)
         } else {
-            when (methodDefinition.returnType) {
-                TypeDefinition.ARRAY_OF_UBYTES -> {
-                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
-                    constructJvmCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructJvmCall.toString())
-                    methodBuilder.addStatement("return result")
-                }
-                TypeDefinition.INT -> {
-                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
-                    constructJvmCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructJvmCall.toString())
-                    methodBuilder.addStatement("return result")
-                }
-                TypeDefinition.UNIT -> {
-                    constructJvmCall.append("sodium.${methodDefinition.nativeName}")
-                    constructJvmCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructJvmCall.toString())
-                }
-                is CustomTypeDefinition -> {
-                    constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
-                    constructJvmCall.append(paramsToString(methodDefinition))
-                    methodBuilder.addStatement(constructJvmCall.toString())
-                    methodBuilder.addStatement("return result")
+            if (methodDefinition.isStateCreationFunction) {
+                constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+                methodBuilder.addStatement(constructJvmCall.toString())
+                methodBuilder.addStatement("return state")
+            } else if (actualReturnTypeFound) {
+                constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                constructJvmCall.append(paramsToString(methodDefinition))
+                methodBuilder.addStatement(constructJvmCall.toString())
+                methodBuilder.addStatement("return out")
+            } else {
+                when (methodDefinition.returnType) {
+                    TypeDefinition.ARRAY_OF_UBYTES -> {
+                        constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                        constructJvmCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructJvmCall.toString())
+                        methodBuilder.addStatement("return result")
+                    }
+                    TypeDefinition.INT -> {
+                        constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                        constructJvmCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructJvmCall.toString())
+                        methodBuilder.addStatement("return result")
+                    }
+                    TypeDefinition.UNIT -> {
+                        constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                        constructJvmCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructJvmCall.toString())
+                    }
+                    is CustomTypeDefinition -> {
+                        constructJvmCall.append("val result = sodium.${methodDefinition.nativeName}")
+                        constructJvmCall.append(paramsToString(methodDefinition))
+                        methodBuilder.addStatement(constructJvmCall.toString())
+                        methodBuilder.addStatement("return result")
+                    }
                 }
             }
         }

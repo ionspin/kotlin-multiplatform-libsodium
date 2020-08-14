@@ -10,6 +10,7 @@ object LibSodiumDefinitions {
         +classDef("Crypto") {
             defineHashFunctions()
             defineGenericHashFunctions()
+            defineSecretStreamFunctions()
         }
     }
 }
