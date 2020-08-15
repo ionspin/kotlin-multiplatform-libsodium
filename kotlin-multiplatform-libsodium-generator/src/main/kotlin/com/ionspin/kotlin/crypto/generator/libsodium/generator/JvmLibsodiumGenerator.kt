@@ -55,7 +55,7 @@ object JvmLibsodiumGenerator {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
-        var returnModifierName = ""
+        var returnModifierValue = ""
         lateinit var actualReturnParameterDefinition: ParameterDefinition
         var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
@@ -69,18 +69,23 @@ object JvmLibsodiumGenerator {
                     methodBuilder.addParameter(parameterSpec.build())
                 }
             }
-            if (paramDefinition.modifiesReturn) {
+            if (paramDefinition.modifiesReturnObjectSize) {
                 if (returnModifierFound == true) {
                     throw RuntimeException("Return modifier already found")
                 }
                 returnModifierFound = true
-                when (paramDefinition.parameterType) {
-                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        returnModifierName = "${paramDefinition.parameterName}.size"
+
+                if (paramDefinition.specificReturnModification == null) {
+                    when (paramDefinition.parameterType) {
+                        TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                            returnModifierValue = "${paramDefinition.parameterName}.size"
+                        }
+                        TypeDefinition.INT -> {
+                            returnModifierValue = paramDefinition.parameterName
+                        }
                     }
-                    TypeDefinition.INT -> {
-                        returnModifierName = paramDefinition.parameterName
-                    }
+                } else {
+                    returnModifierValue = paramDefinition.specificReturnModification!!
                 }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
@@ -92,7 +97,7 @@ object JvmLibsodiumGenerator {
             if (returnModifierFound) {
                 createOutputParam(
                     actualReturnParameterDefinition,
-                    returnModifierName,
+                    returnModifierValue,
                     methodBuilder
                 )
             } else {

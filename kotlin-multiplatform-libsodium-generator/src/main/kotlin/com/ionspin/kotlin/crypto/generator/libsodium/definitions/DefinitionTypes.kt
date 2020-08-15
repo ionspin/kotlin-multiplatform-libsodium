@@ -95,7 +95,8 @@ class FunctionDefinition(
 class ParameterDefinition(
     val parameterName: String,
     val parameterType: GeneralTypeDefinition,
-    val modifiesReturn: Boolean = false,
+    val modifiesReturnObjectSize: Boolean = false,
+    val specificReturnModification : String? = null,
     val isActuallyAnOutputParam: Boolean = false,
     val isStateType: Boolean = false,
     val dropParameterFromDefinition: Boolean = false,

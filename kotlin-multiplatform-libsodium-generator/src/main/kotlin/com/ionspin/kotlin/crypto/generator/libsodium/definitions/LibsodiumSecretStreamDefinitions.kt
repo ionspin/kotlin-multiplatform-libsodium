@@ -1,7 +1,5 @@
 package com.ionspin.kotlin.crypto.generator.libsodium.definitions
 
-import com.squareup.kotlinpoet.ClassName
-
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 14/Aug/2020
  */
@@ -132,7 +130,8 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         +ParameterDefinition(
             "m",
             TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
-            modifiesReturn = true
+            modifiesReturnObjectSize = true,
+            specificReturnModification = "m.size + 17"
         )
         +ParameterDefinition(
             "ad",
@@ -173,7 +172,8 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         +ParameterDefinition(
             "c",
             TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
-            modifiesReturn = true
+            modifiesReturnObjectSize = true,
+            specificReturnModification = "c.size - 17"
         )
         +ParameterDefinition(
             "ad",
@@ -181,6 +181,7 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         )
 
     }
+
 
 
 }

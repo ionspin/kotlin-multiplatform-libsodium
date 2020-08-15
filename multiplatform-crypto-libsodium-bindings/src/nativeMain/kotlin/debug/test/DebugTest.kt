@@ -142,7 +142,7 @@ actual class Crypto internal actual constructor() {
     ad: UByteArray,
     tag: UByte
   ): UByteArray {
-    val c = UByteArray(m.size)
+    val c = UByteArray(m.size + 17)
     println("Debug crypto_secretstream_xchacha20poly1305_push")
     val pinnedC = c.pin()
     val pinnedM = m.pin()
@@ -163,7 +163,7 @@ actual class Crypto internal actual constructor() {
     c: UByteArray,
     ad: UByteArray
   ): UByteArray {
-    val m = UByteArray(c.size)
+    val m = UByteArray(c.size - 17)
     println("Debug crypto_secretstream_xchacha20poly1305_pull")
     val pinnedM = m.pin()
     val pinnedC = c.pin()

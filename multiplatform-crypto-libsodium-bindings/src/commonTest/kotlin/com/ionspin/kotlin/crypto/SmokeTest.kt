@@ -1,7 +1,7 @@
 package com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import com.ionspin.kotlin.crypto.util.toHexString
 import debug.test.Crypto

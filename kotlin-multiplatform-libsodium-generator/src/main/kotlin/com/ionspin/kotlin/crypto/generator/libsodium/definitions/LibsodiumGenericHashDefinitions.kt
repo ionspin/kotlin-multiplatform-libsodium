@@ -33,6 +33,6 @@ fun ClassDefinition.defineGenericHashFunctions() {
             specificJvmInitializer = "sodium.crypto_generichash_statebytes()"
         )
         +ParameterDefinition("key", TypeDefinition.ARRAY_OF_UBYTES)
-        +ParameterDefinition("outlen", TypeDefinition.INT, modifiesReturn = true)
+        +ParameterDefinition("outlen", TypeDefinition.INT, modifiesReturnObjectSize = true)
     }
 }

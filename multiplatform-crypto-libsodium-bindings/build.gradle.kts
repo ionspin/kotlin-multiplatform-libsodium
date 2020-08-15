@@ -249,7 +249,6 @@ kotlin {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
-                api(project(Deps.Common.apiProject))
             }
         }
         val commonTest by getting {

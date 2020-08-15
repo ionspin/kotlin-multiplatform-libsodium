@@ -34,3 +34,17 @@ fun testBlocking(block : suspend () -> Unit) {
     }
     block.startCoroutine(continuation)
 }
+
+fun String.encodeToUByteArray() : UByteArray{
+    return encodeToByteArray().asUByteArray()
+}
+
+fun UByteArray.toHexString() : String {
+    return this.joinToString(separator = "") {
+        if (it <= 0x0FU) {
+            "0${it.toString(16)}"
+        } else {
+            it.toString(16)
+        }
+    }
+}

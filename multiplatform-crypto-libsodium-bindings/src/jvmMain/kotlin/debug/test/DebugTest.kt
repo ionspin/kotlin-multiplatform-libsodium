@@ -103,7 +103,7 @@ actual class Crypto internal actual constructor() {
     ad: UByteArray,
     tag: UByte
   ): UByteArray {
-    val c = UByteArray(m.size)
+    val c = UByteArray(m.size + 17)
     println("Debug crypto_secretstream_xchacha20poly1305_push")
     sodium.crypto_secretstream_xchacha20poly1305_push(state, c.asByteArray(), null, m.asByteArray(),
         m.size.toLong(), ad.asByteArray(), ad.size.toLong(), tag.toByte())
@@ -118,7 +118,7 @@ actual class Crypto internal actual constructor() {
     c: UByteArray,
     ad: UByteArray
   ): UByteArray {
-    val m = UByteArray(c.size)
+    val m = UByteArray(c.size - 17)
     println("Debug crypto_secretstream_xchacha20poly1305_pull")
     sodium.crypto_secretstream_xchacha20poly1305_pull(state, m.asByteArray(), null, null,
         c.asByteArray(), c.size.toLong(), ad.asByteArray(), ad.size.toLong())

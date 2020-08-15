@@ -63,7 +63,7 @@ object JsLibsodiumGenerator {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
 
         var returnModifierFound = false
-        var returnModifierName = ""
+        var returnModifierValue = ""
         var actualReturnType: TypeName = DYNAMIC
         var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
@@ -74,18 +74,22 @@ object JsLibsodiumGenerator {
                     methodBuilder.addParameter(parameterSpec.build())
                 }
             }
-            if (paramDefinition.modifiesReturn) {
+            if (paramDefinition.modifiesReturnObjectSize) {
                 if (returnModifierFound == true) {
                     throw RuntimeException("Return modifier already found")
                 }
                 returnModifierFound = true
-                when (paramDefinition.parameterType) {
-                    TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        returnModifierName = "${paramDefinition.parameterName}.size"
+                if (paramDefinition.specificReturnModification == null) {
+                    when (paramDefinition.parameterType) {
+                        TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                            returnModifierValue = "${paramDefinition.parameterName}.size"
+                        }
+                        TypeDefinition.INT -> {
+                            returnModifierValue = paramDefinition.parameterName
+                        }
                     }
-                    TypeDefinition.INT -> {
-                        returnModifierName = paramDefinition.parameterName
-                    }
+                } else {
+                    returnModifierValue = paramDefinition.specificReturnModification!!
                 }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
