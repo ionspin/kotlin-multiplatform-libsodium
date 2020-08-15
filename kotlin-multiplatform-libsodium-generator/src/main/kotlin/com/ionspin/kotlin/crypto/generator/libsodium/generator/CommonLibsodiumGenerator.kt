@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.generator.libsodium.generator
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.FunctionDefinition
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.InnerClassDefinition
 import com.ionspin.kotlin.crypto.generator.libsodium.definitions.KotlinFileDefinition
+import com.ionspin.kotlin.crypto.generator.libsodium.definitions.TypeDefinition
 import com.squareup.kotlinpoet.*
 
 /**
@@ -56,9 +57,11 @@ object CommonLibsodiumGenerator {
         var actualReturnTypeFound : Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
             if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.dropParameterFromDefinition.not()) {
-                val parameterSpec =
-                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-                methodBuilder.addParameter(parameterSpec.build())
+                if (paramDefinition.parameterType != TypeDefinition.NULL) {
+                    val parameterSpec =
+                        ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                    methodBuilder.addParameter(parameterSpec.build())
+                }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
                 actualReturnTypeFound = true

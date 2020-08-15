@@ -63,9 +63,11 @@ object JvmLibsodiumGenerator {
                 createStateParam(paramDefinition, methodBuilder)
             }
             if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.isActuallyAnOutputParam.not()) {
-                val parameterSpec =
-                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-                methodBuilder.addParameter(parameterSpec.build())
+                if (paramDefinition.parameterType != TypeDefinition.NULL) {
+                    val parameterSpec =
+                        ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                    methodBuilder.addParameter(parameterSpec.build())
+                }
             }
             if (paramDefinition.modifiesReturn) {
                 if (returnModifierFound == true) {
@@ -213,7 +215,10 @@ object JvmLibsodiumGenerator {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
                     }
                     TypeDefinition.UBYTE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toByte()" + separator)
+                    }
+                    TypeDefinition.NULL -> {
+                        paramsBuilder.append("null" + separator)
                     }
                 }
             }

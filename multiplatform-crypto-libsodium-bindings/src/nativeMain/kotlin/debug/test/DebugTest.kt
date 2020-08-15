@@ -96,7 +96,7 @@ actual class Crypto internal actual constructor() {
 
   /**
    * Initialize a state and generate a random header. Both are returned inside
-   * `SecretStreamStateAndHeader` object
+   * `SecretStreamStateAndHeader` object.
    */
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray):
       SecretStreamStateAndHeader {
@@ -117,6 +117,23 @@ actual class Crypto internal actual constructor() {
   }
 
   /**
+   * Initialize state from header and key. The state can then be used for decryption.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_init_pull(header: UByteArray, key: UByteArray):
+      SecretStreamState {
+    val allocated = sodium_malloc(debug.test.SecretStreamState.size.convert())!!
+    val state = allocated.reinterpret<debug.test.SecretStreamState>().pointed
+    println("Debug crypto_secretstream_xchacha20poly1305_init_pull")
+    val pinnedHeader = header.pin()
+    val pinnedKey = key.pin()
+    libsodium.crypto_secretstream_xchacha20poly1305_init_pull(state.ptr, pinnedHeader.addressOf(0),
+        pinnedKey.addressOf(0))
+    pinnedHeader.unpin()
+    pinnedKey.unpin()
+    return state
+  }
+
+  /**
    * Encrypt next block of data using the previously initialized state. Returns encrypted block.
    */
   actual fun crypto_secretstream_xchacha20poly1305_push(
@@ -130,12 +147,32 @@ actual class Crypto internal actual constructor() {
     val pinnedC = c.pin()
     val pinnedM = m.pin()
     val pinnedAd = ad.pin()
-    libsodium.crypto_secretstream_xchacha20poly1305_push(state.ptr, pinnedC.addressOf(0),
-        c.size.convert(), pinnedM.addressOf(0), m.size.convert(), pinnedAd.addressOf(0),
-        ad.size.convert(), tag)
+    libsodium.crypto_secretstream_xchacha20poly1305_push(state.ptr, pinnedC.addressOf(0), null,
+        pinnedM.addressOf(0), m.size.convert(), pinnedAd.addressOf(0), ad.size.convert(), tag)
     pinnedC.unpin()
     pinnedM.unpin()
     pinnedAd.unpin()
     return c
+  }
+
+  /**
+   * Decrypt next block of data using the previously initialized state. Returns decrypted block.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_pull(
+    state: SecretStreamState,
+    c: UByteArray,
+    ad: UByteArray
+  ): UByteArray {
+    val m = UByteArray(c.size)
+    println("Debug crypto_secretstream_xchacha20poly1305_pull")
+    val pinnedM = m.pin()
+    val pinnedC = c.pin()
+    val pinnedAd = ad.pin()
+    libsodium.crypto_secretstream_xchacha20poly1305_pull(state.ptr, pinnedM.addressOf(0), null,
+        null, pinnedC.addressOf(0), c.size.convert(), pinnedAd.addressOf(0), ad.size.convert())
+    pinnedM.unpin()
+    pinnedC.unpin()
+    pinnedAd.unpin()
+    return m
   }
 }

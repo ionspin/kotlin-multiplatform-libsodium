@@ -68,13 +68,39 @@ fun ClassDefinition.defineSecretStreamFunctions() {
     +funcDef(
         "crypto_secretstream_xchacha20poly1305_init_push",
         codeDocumentation = """
-            Initialize a state and generate a random header. Both are returned inside `SecretStreamStateAndHeader` object
+            Initialize a state and generate a random header. Both are returned inside `SecretStreamStateAndHeader` object.
         """.trimIndent(),
         returnType = CustomTypeDefinition(withPackageName("SecretStreamStateAndHeader")),
         dynamicJsReturn = true,
         isStateCreationFunction = true,
         customCodeBlockReplacesFunctionBody = listOf(jsSecretStreamInit, jvmSecretStreamInit, nativeSecretStreamInit)
     ) {
+        +ParameterDefinition(
+            "key",
+            parameterType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE
+        )
+    }
+
+
+    +funcDef(
+        "crypto_secretstream_xchacha20poly1305_init_pull",
+        codeDocumentation = """
+            Initialize state from header and key. The state can then be used for decryption.
+        """.trimIndent(),
+        returnType = CustomTypeDefinition(withPackageName("SecretStreamState")),
+        dynamicJsReturn = true,
+        isStateCreationFunction = true,
+    ) {
+        +ParameterDefinition(
+            "state",
+            parameterType = CustomTypeDefinition(withPackageName("SecretStreamState")),
+            dropParameterFromDefinition = true,
+            isStateType = true
+        )
+        +ParameterDefinition(
+            "header",
+            parameterType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE
+        )
         +ParameterDefinition(
             "key",
             parameterType = TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE
@@ -94,8 +120,13 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         )
         +ParameterDefinition(
             "c",
-            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
+            TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE,
             isActuallyAnOutputParam = true,
+            dropParameterFromDefinition = true
+        )
+        +ParameterDefinition(
+            "clen",
+            TypeDefinition.NULL,
             dropParameterFromDefinition = true
         )
         +ParameterDefinition(
@@ -111,6 +142,44 @@ fun ClassDefinition.defineSecretStreamFunctions() {
             "tag",
             TypeDefinition.UBYTE
         )
+    }
+
+    +funcDef(
+        name = "crypto_secretstream_xchacha20poly1305_pull",
+        codeDocumentation = """
+            Decrypt next block of data using the previously initialized state. Returns decrypted block.
+        """.trimIndent(),
+        returnType = TypeDefinition.ARRAY_OF_UBYTES
+    ) {
+        +ParameterDefinition(
+            "state",
+            CustomTypeDefinition(withPackageName("SecretStreamState"))
+        )
+        +ParameterDefinition(
+            "m",
+            TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE,
+            isActuallyAnOutputParam = true,
+            dropParameterFromDefinition = true
+        )
+        +ParameterDefinition(
+            "mlen",
+            TypeDefinition.NULL,
+            dropParameterFromDefinition = true
+        )
+        +ParameterDefinition(
+            "tag_p",
+            TypeDefinition.NULL
+        )
+        +ParameterDefinition(
+            "c",
+            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE,
+            modifiesReturn = true
+        )
+        +ParameterDefinition(
+            "ad",
+            TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE
+        )
+
     }
 
 

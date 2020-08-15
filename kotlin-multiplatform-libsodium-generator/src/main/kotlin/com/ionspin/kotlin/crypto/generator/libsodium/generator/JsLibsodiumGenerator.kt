@@ -68,9 +68,11 @@ object JsLibsodiumGenerator {
         var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
             if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.isActuallyAnOutputParam.not()) {
-                val parameterSpec =
-                    ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
-                methodBuilder.addParameter(parameterSpec.build())
+                if (paramDefinition.parameterType != TypeDefinition.NULL) {
+                    val parameterSpec =
+                        ParameterSpec.builder(paramDefinition.parameterName, paramDefinition.parameterType.typeName)
+                    methodBuilder.addParameter(parameterSpec.build())
+                }
             }
             if (paramDefinition.modifiesReturn) {
                 if (returnModifierFound == true) {
@@ -158,7 +160,7 @@ object JsLibsodiumGenerator {
                         paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array(), " + separator)
+                        paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
                     }
                     TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE -> {
                         paramsBuilder.append(paramDefinition.parameterName + ".toUInt8Array()" + separator)
@@ -174,6 +176,10 @@ object JsLibsodiumGenerator {
                     }
                     TypeDefinition.UBYTE -> {
                         paramsBuilder.append(paramDefinition.parameterName + separator)
+                    }
+                    TypeDefinition.NULL -> {
+                        println("Got null parameter in js")
+//                        paramsBuilder.append("null" + separator)
                     }
                 }
             }

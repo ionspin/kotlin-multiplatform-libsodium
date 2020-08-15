@@ -126,7 +126,9 @@ enum class TypeDefinition(override val typeName: TypeName) : GeneralTypeDefiniti
     INT(Int::class.asTypeName()),
     STRING(String::class.asTypeName()),
     UNIT(Unit::class.asTypeName()),
-    UBYTE(UByte::class.asTypeName())
+    UBYTE(UByte::class.asTypeName()),
+    IRRELEVANT(Unit::class.asTypeName()),
+    NULL(Unit::class.asTypeName())
 }
 
 enum class TargetPlatform {

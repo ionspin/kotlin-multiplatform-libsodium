@@ -38,9 +38,15 @@ expect class Crypto internal constructor() {
 
   /**
    * Initialize a state and generate a random header. Both are returned inside
-   * `SecretStreamStateAndHeader` object
+   * `SecretStreamStateAndHeader` object.
    */
   fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): SecretStreamStateAndHeader
+
+  /**
+   * Initialize state from header and key. The state can then be used for decryption.
+   */
+  fun crypto_secretstream_xchacha20poly1305_init_pull(header: UByteArray, key: UByteArray):
+      SecretStreamState
 
   /**
    * Encrypt next block of data using the previously initialized state. Returns encrypted block.
@@ -50,5 +56,14 @@ expect class Crypto internal constructor() {
     m: UByteArray,
     ad: UByteArray,
     tag: UByte
+  ): UByteArray
+
+  /**
+   * Decrypt next block of data using the previously initialized state. Returns decrypted block.
+   */
+  fun crypto_secretstream_xchacha20poly1305_pull(
+    state: SecretStreamState,
+    c: UByteArray,
+    ad: UByteArray
   ): UByteArray
 }

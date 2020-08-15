@@ -70,7 +70,7 @@ actual class Crypto internal actual constructor() {
 
   /**
    * Initialize a state and generate a random header. Both are returned inside
-   * `SecretStreamStateAndHeader` object
+   * `SecretStreamStateAndHeader` object.
    */
   actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray):
       SecretStreamStateAndHeader {
@@ -80,6 +80,18 @@ actual class Crypto internal actual constructor() {
         sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(),
             key.asByteArray())
         return SecretStreamStateAndHeader(state, header)
+  }
+
+  /**
+   * Initialize state from header and key. The state can then be used for decryption.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_init_pull(header: UByteArray, key: UByteArray):
+      SecretStreamState {
+    val state = debug.test.SecretStreamState()
+    println("Debug crypto_secretstream_xchacha20poly1305_init_pull")
+    sodium.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(),
+        key.asByteArray())
+    return state
   }
 
   /**
@@ -93,8 +105,23 @@ actual class Crypto internal actual constructor() {
   ): UByteArray {
     val c = UByteArray(m.size)
     println("Debug crypto_secretstream_xchacha20poly1305_push")
-    sodium.crypto_secretstream_xchacha20poly1305_push(state, c.asByteArray(), c.size.toLong(),
-        m.asByteArray(), m.size.toLong(), ad.asByteArray(), ad.size.toLong(), tag)
+    sodium.crypto_secretstream_xchacha20poly1305_push(state, c.asByteArray(), null, m.asByteArray(),
+        m.size.toLong(), ad.asByteArray(), ad.size.toLong(), tag.toByte())
     return c
+  }
+
+  /**
+   * Decrypt next block of data using the previously initialized state. Returns decrypted block.
+   */
+  actual fun crypto_secretstream_xchacha20poly1305_pull(
+    state: SecretStreamState,
+    c: UByteArray,
+    ad: UByteArray
+  ): UByteArray {
+    val m = UByteArray(c.size)
+    println("Debug crypto_secretstream_xchacha20poly1305_pull")
+    sodium.crypto_secretstream_xchacha20poly1305_pull(state, m.asByteArray(), null, null,
+        c.asByteArray(), c.size.toLong(), ad.asByteArray(), ad.size.toLong())
+    return m
   }
 }
