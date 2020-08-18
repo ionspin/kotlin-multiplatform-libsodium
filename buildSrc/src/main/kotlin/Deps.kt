@@ -15,12 +15,12 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.3.8-1.4.0-rc"
-    val kotlin = "1.4.0-rc"
-    val kotlinSerialization = "1.0-M1-1.4.0-rc"
+    val kotlinCoroutines = "1.3.9"
+    val kotlin = "1.4.0"
+    val kotlinSerialization = "1.0.0-RC"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "1.4.0-M3-dev-92"
+    val dokkaPlugin = "1.4.0-rc"
     val taskTreePlugin = "1.5"
 
     val kotlinBigNumVersion = "0.1.6-1.4.0-rc-SNAPSHOT"

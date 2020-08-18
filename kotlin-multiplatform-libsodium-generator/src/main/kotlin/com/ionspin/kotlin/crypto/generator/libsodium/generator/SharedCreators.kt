@@ -45,6 +45,10 @@ fun generateDataClass(fileBuilder: FileSpec.Builder, dataClassDefinition: DataCl
     val dataClassConstructor = FunSpec.constructorBuilder()
     for (parameter in dataClassDefinition.parameters) {
         val parameterBuilder = ParameterSpec.builder(parameter.parameterName, parameter.parameterType.typeName)
+        val annotationBuilder =
+            AnnotationSpec.builder(ClassName("kotlin.js", "JsName"))
+                .addMember("\"${parameter.parameterName}\"")
+        parameterBuilder.addAnnotation(annotationBuilder.build())
         dataClassConstructor.addParameter(parameterBuilder.build())
     }
     dataClassBuilder.primaryConstructor(dataClassConstructor.build())

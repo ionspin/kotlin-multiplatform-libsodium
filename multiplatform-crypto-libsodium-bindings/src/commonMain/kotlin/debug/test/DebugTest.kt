@@ -3,6 +3,7 @@ package debug.test
 import kotlin.Int
 import kotlin.UByte
 import kotlin.UByteArray
+import kotlin.js.JsName
 
 expect class Sha256State
 
@@ -13,7 +14,9 @@ expect class GenericHashState
 expect class SecretStreamState
 
 data class SecretStreamStateAndHeader(
+  @JsName("state")
   val state: SecretStreamState,
+  @JsName("header")
   val header: UByteArray
 )
 

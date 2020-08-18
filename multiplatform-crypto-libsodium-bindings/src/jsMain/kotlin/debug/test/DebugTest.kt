@@ -63,23 +63,24 @@ actual class Crypto internal actual constructor() {
    * Initialize a state and generate a random header. Both are returned inside
    * `SecretStreamStateAndHeader` object.
    */
-  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray): dynamic {
+  actual fun crypto_secretstream_xchacha20poly1305_init_push(key: UByteArray):
+      SecretStreamStateAndHeader {
     println("Debug crypto_secretstream_xchacha20poly1305_init_push")
     val stateAndHeader =
         getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
         val state = stateAndHeader.state
         val header = (stateAndHeader.header as Uint8Array).toUByteArray()
-        return SecretStreamStateAndHeader(state, header) 
+        return SecretStreamStateAndHeader(state, header)
   }
 
   /**
    * Initialize state from header and key. The state can then be used for decryption.
    */
   actual fun crypto_secretstream_xchacha20poly1305_init_pull(header: UByteArray, key: UByteArray):
-      dynamic {
+      SecretStreamState {
     println("Debug crypto_secretstream_xchacha20poly1305_init_pull")
     return getSodium().crypto_secretstream_xchacha20poly1305_init_pull(header.toUInt8Array(),
-        key.toUInt8Array())
+        key.toUInt8Array()) as SecretStreamState
   }
 
   /**

@@ -69,7 +69,7 @@ fun ClassDefinition.defineSecretStreamFunctions() {
             Initialize a state and generate a random header. Both are returned inside `SecretStreamStateAndHeader` object.
         """.trimIndent(),
         returnType = CustomTypeDefinition(withPackageName("SecretStreamStateAndHeader")),
-        dynamicJsReturn = true,
+        dynamicJsReturn = false,
         isStateCreationFunction = true,
         customCodeBlockReplacesFunctionBody = listOf(jsSecretStreamInit, jvmSecretStreamInit, nativeSecretStreamInit)
     ) {
