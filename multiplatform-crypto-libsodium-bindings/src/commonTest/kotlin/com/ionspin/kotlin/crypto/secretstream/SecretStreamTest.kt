@@ -65,7 +65,7 @@ class SecretStreamTest {
                 encrypted.hexColumsPrint()
                 val decryptState = crypto.crypto_secretstream_xchacha20poly1305_init_pull(stateAndHeader.header, key)
                 val decrypted =
-                    crypto.crypto_secretstream_xchacha20poly1305_pull(decryptState, encrypted, ubyteArrayOf()) //TODO JS pull returns a tag and a message!!!
+                    crypto.crypto_secretstream_xchacha20poly1305_pull(decryptState, encrypted, ubyteArrayOf())
                 decrypted.hexColumsPrint()
                 decrypted.contentEquals(message)
 

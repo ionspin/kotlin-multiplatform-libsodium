@@ -53,7 +53,7 @@ object CommonLibsodiumGenerator {
 
     fun createCommonMethodSpec(methodDefinition: FunctionDefinition): FunSpec.Builder {
         val methodBuilder = FunSpec.builder(methodDefinition.name)
-        var actualReturnType : TypeName = Any::class.asTypeName()
+        val actualReturnTypes = mutableListOf<TypeName>()
         var actualReturnTypeFound : Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
             if ((paramDefinition.isStateType.not() || methodDefinition.isStateCreationFunction.not()) && paramDefinition.dropParameterFromDefinition.not()) {
@@ -65,11 +65,11 @@ object CommonLibsodiumGenerator {
             }
             if (paramDefinition.isActuallyAnOutputParam) {
                 actualReturnTypeFound = true
-                actualReturnType = paramDefinition.parameterType.typeName
+                actualReturnTypes += paramDefinition.parameterType.typeName
             }
         }
-        if (actualReturnTypeFound) {
-            methodBuilder.returns(actualReturnType)
+        if (actualReturnTypeFound && actualReturnTypes.size == 1) {
+            methodBuilder.returns(actualReturnTypes[0])
         } else {
             methodBuilder.returns(methodDefinition.returnType.typeName)
         }

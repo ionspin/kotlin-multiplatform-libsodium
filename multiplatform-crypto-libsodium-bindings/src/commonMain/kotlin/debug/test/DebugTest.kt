@@ -20,6 +20,13 @@ data class SecretStreamStateAndHeader(
   val header: UByteArray
 )
 
+data class DecryptedDataAndTag(
+  @JsName("decrypted")
+  val decrypted: UByteArray,
+  @JsName("tag")
+  val tag: UByte
+)
+
 expect class Crypto internal constructor() {
   /**
    * Initialize the SHA256 hash
@@ -68,5 +75,5 @@ expect class Crypto internal constructor() {
     state: SecretStreamState,
     c: UByteArray,
     ad: UByteArray
-  ): UByteArray
+  ): DecryptedDataAndTag
 }

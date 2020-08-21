@@ -162,17 +162,18 @@ actual class Crypto internal actual constructor() {
     state: SecretStreamState,
     c: UByteArray,
     ad: UByteArray
-  ): UByteArray {
+  ): DecryptedDataAndTag {
     val m = UByteArray(c.size - 17)
+    var tag_p : UByte = 0U
     println("Debug crypto_secretstream_xchacha20poly1305_pull")
     val pinnedM = m.pin()
     val pinnedC = c.pin()
     val pinnedAd = ad.pin()
     libsodium.crypto_secretstream_xchacha20poly1305_pull(state.ptr, pinnedM.addressOf(0), null,
-        null, pinnedC.addressOf(0), c.size.convert(), pinnedAd.addressOf(0), ad.size.convert())
+        tag_p, pinnedC.addressOf(0), c.size.convert(), pinnedAd.addressOf(0), ad.size.convert())
     pinnedM.unpin()
     pinnedC.unpin()
     pinnedAd.unpin()
-    return m
+    return debug.test.DecryptedDataAndTag(m, tag_p)
   }
 }

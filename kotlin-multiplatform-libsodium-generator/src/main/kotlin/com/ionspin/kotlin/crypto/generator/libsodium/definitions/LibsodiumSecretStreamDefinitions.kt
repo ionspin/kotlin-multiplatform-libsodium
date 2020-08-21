@@ -28,6 +28,27 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         )
 
     )
+
+    +dataClassDef(
+        "DecryptedDataAndTag",
+        """
+        This data class wraps the decrypted data and tag returned when decrypting 
+        """.trimIndent(),
+        listOf(
+            ParameterDefinition(
+                parameterName = "decrypted",
+                parameterType = TypeDefinition.ARRAY_OF_UBYTES
+            ),
+            ParameterDefinition(
+                parameterName = "tag",
+                parameterType = TypeDefinition.UBYTE
+            )
+
+        )
+
+    )
+
+
     val jsSecretStreamInit = CodeBlockDefinition(
         """
         val stateAndHeader = getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
@@ -148,7 +169,7 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         codeDocumentation = """
             Decrypt next block of data using the previously initialized state. Returns decrypted block.
         """.trimIndent(),
-        returnType = TypeDefinition.ARRAY_OF_UBYTES
+        returnType = CustomTypeDefinition(withPackageName("DecryptedDataAndTag"))
     ) {
         +ParameterDefinition(
             "state",
@@ -167,7 +188,9 @@ fun ClassDefinition.defineSecretStreamFunctions() {
         )
         +ParameterDefinition(
             "tag_p",
-            TypeDefinition.NULL
+            TypeDefinition.UBYTE,
+            dropParameterFromDefinition = true,
+            isActuallyAnOutputParam = true
         )
         +ParameterDefinition(
             "c",

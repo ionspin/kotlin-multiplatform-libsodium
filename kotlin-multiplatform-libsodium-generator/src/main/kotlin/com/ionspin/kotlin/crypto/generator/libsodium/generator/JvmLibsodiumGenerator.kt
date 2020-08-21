@@ -8,6 +8,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeAliasSpec
+import com.squareup.kotlinpoet.TypeName
 
 /**
  * Created by Ugljesa Jovanovic
@@ -56,7 +57,7 @@ object JvmLibsodiumGenerator {
         methodBuilder.modifiers += MultiplatformModifier.ACTUAL.modifierList
         var returnModifierFound = false
         var returnModifierValue = ""
-        lateinit var actualReturnParameterDefinition: ParameterDefinition
+        val actualReturnTypes = mutableListOf<ParameterDefinition>()
         var actualReturnTypeFound: Boolean = false
         for (paramDefinition in methodDefinition.parameterList) {
             if (paramDefinition.isStateType && methodDefinition.isStateCreationFunction) {
@@ -89,14 +90,14 @@ object JvmLibsodiumGenerator {
                 }
             }
             if (paramDefinition.isActuallyAnOutputParam) {
-                actualReturnParameterDefinition = paramDefinition
+                actualReturnTypes += paramDefinition
                 actualReturnTypeFound = true
             }
         }
         if (actualReturnTypeFound) {
             if (returnModifierFound) {
                 createOutputParam(
-                    actualReturnParameterDefinition,
+                    actualReturnTypes,
                     returnModifierValue,
                     methodBuilder
                 )
@@ -105,7 +106,7 @@ object JvmLibsodiumGenerator {
                     throw RuntimeException("Function definition lacks a way to define output array length, function ${methodDefinition.name}")
                 }
                 createOutputParam(
-                    actualReturnParameterDefinition,
+                    actualReturnTypes,
                     methodDefinition.outputLengthWhenArray.toString(),
                     methodBuilder
                 )
@@ -125,10 +126,18 @@ object JvmLibsodiumGenerator {
                 methodBuilder.addStatement(constructJvmCall.toString())
                 methodBuilder.addStatement("return state")
             } else if (actualReturnTypeFound) {
-                constructJvmCall.append("sodium.${methodDefinition.nativeName}")
-                constructJvmCall.append(paramsToString(methodDefinition))
-                methodBuilder.addStatement(constructJvmCall.toString())
-                methodBuilder.addStatement("return ${actualReturnParameterDefinition.parameterName}")
+                if (actualReturnTypes.size == 1) {
+                    constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                    methodBuilder.addStatement("return ${actualReturnTypes[0].parameterName}")
+                } else {
+                    constructJvmCall.append("sodium.${methodDefinition.nativeName}")
+                    constructJvmCall.append(paramsToString(methodDefinition))
+                    methodBuilder.addStatement(constructJvmCall.toString())
+                    methodBuilder.addStatement(
+                        "return ${methodDefinition.returnType.typeName}(${createTupleOutputParams(actualReturnTypes)})")
+                }
             } else {
                 when (methodDefinition.returnType) {
                     TypeDefinition.ARRAY_OF_UBYTES -> {
@@ -161,22 +170,29 @@ object JvmLibsodiumGenerator {
         return methodBuilder
     }
 
-    fun createOutputParam(outputParam: ParameterDefinition, length: String?, methodBuilder: FunSpec.Builder) {
+    fun createOutputParam(outputParams: List<ParameterDefinition>, length: String?, methodBuilder: FunSpec.Builder) {
         /*
         val hashed = ByteArray(Sha256Properties.MAX_HASH_BYTES)
         sodium.crypto_hash_sha256_final(state, hashed)
         return hashed.asUByteArray()
          */
-        when (outputParam.parameterType) {
-            TypeDefinition.ARRAY_OF_UBYTES, TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
-                methodBuilder.addStatement("val ${outputParam.parameterName} = UByteArray($length)")
+        for (outputParam in outputParams) {
+            when (outputParam.parameterType) {
+                TypeDefinition.ARRAY_OF_UBYTES, TypeDefinition.ARRAY_OF_UBYTES_NO_SIZE, TypeDefinition.ARRAY_OF_UBYTES_LONG_SIZE -> {
+                    methodBuilder.addStatement("val ${outputParam.parameterName} = UByteArray($length)")
+                }
+                TypeDefinition.UBYTE -> {
+                    methodBuilder.addStatement("var ${outputParam.parameterName} : UByte = 0U")
+                }
+                else -> {
+                    throw RuntimeException("Unhandled native output param type: ${outputParam.parameterType.typeName}")
+                }
             }
-            else -> {
-                throw RuntimeException("Unhandled native output param type: ${outputParam.parameterType.typeName}")
-            }
-
-
         }
+    }
+
+    fun createTupleOutputParams(outputParams: List<ParameterDefinition>) : String {
+        return outputParams.map { it.parameterName }.joinToString (separator = ", ")
     }
 
     fun createStateParam(stateParameterDefinition: ParameterDefinition, methodBuilder: FunSpec.Builder) {

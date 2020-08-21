@@ -70,17 +70,17 @@ actual class Crypto internal actual constructor() {
         getSodium().crypto_secretstream_xchacha20poly1305_init_push(key.toUInt8Array())
         val state = stateAndHeader.state
         val header = (stateAndHeader.header as Uint8Array).toUByteArray()
-        return SecretStreamStateAndHeader(state, header)
+        return SecretStreamStateAndHeader(state, header) 
   }
 
   /**
    * Initialize state from header and key. The state can then be used for decryption.
    */
   actual fun crypto_secretstream_xchacha20poly1305_init_pull(header: UByteArray, key: UByteArray):
-      SecretStreamState {
+      dynamic {
     println("Debug crypto_secretstream_xchacha20poly1305_init_pull")
     return getSodium().crypto_secretstream_xchacha20poly1305_init_pull(header.toUInt8Array(),
-        key.toUInt8Array()) as SecretStreamState
+        key.toUInt8Array())
   }
 
   /**
@@ -104,9 +104,9 @@ actual class Crypto internal actual constructor() {
     state: SecretStreamState,
     c: UByteArray,
     ad: UByteArray
-  ): UByteArray {
+  ): UByte {
     println("Debug crypto_secretstream_xchacha20poly1305_pull")
     return getSodium().crypto_secretstream_xchacha20poly1305_pull(state, c.toUInt8Array(),
-        ad.toUInt8Array()).toUByteArray()
+        ad.toUInt8Array())
   }
 }
