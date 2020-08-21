@@ -107,5 +107,7 @@ object PluginsDeps {
     val signing = "signing"
     val dokka = "org.jetbrains.dokka"
     val taskTree = "com.dorongold.task-tree"
+    val androidLibrary = "com.android.library"
+    val kotlinAndroidExtensions = "kotlin-android-extensions"
 }
 

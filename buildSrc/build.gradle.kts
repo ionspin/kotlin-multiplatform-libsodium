@@ -25,10 +25,12 @@ repositories {
     maven ("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://dl.bintray.com/kotlin/kotlin-dev")
     jcenter()
+    google()
 }
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0-rc")
+    implementation("com.android.tools.build:gradle:4.0.1")
 }
 
 System.setProperty("PROJECT_PATH", project.projectDir.parentFile.toString())

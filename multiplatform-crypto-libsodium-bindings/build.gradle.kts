@@ -28,6 +28,9 @@ plugins {
     id(PluginsDeps.node) version Versions.nodePlugin
     id(PluginsDeps.dokka)
     id(PluginsDeps.taskTree) version Versions.taskTreePlugin
+    id(PluginsDeps.androidLibrary)
+    id(PluginsDeps.kotlinAndroidExtensions)
+
 }
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -51,13 +54,27 @@ version = ReleaseInfo.version
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
 
-
+android {
+    compileSdkVersion(29)
+    defaultConfig {
+        minSdkVersion(24)
+        targetSdkVersion(29)
+        versionCode = 1
+        versionName = "1.0"
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+    }
+}
 
 kotlin {
     val hostOsName = getHostOsName()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
         jvm()
+        android()
         js {
             browser {
                 testTask {
@@ -428,6 +445,12 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
+            val androidMain by getting {
+                dependencies {
+                    implementation("androidx.core:core-ktx:1.2.0")
+                }
+            }
+
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
