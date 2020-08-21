@@ -170,7 +170,7 @@ actual class Crypto internal actual constructor() {
     val pinnedC = c.pin()
     val pinnedAd = ad.pin()
     libsodium.crypto_secretstream_xchacha20poly1305_pull(state.ptr, pinnedM.addressOf(0), null,
-        tag_p, pinnedC.addressOf(0), c.size.convert(), pinnedAd.addressOf(0), ad.size.convert())
+        ubyteArrayOf().toCValues(), pinnedC.addressOf(0), c.size.convert(), pinnedAd.addressOf(0), ad.size.convert())
     pinnedM.unpin()
     pinnedC.unpin()
     pinnedAd.unpin()

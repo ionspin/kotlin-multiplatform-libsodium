@@ -12,7 +12,7 @@ interface JsSodiumInterface {
 
     fun randombytes_buf(numberOfBytes: Int): Uint8Array
 
-    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array,): Uint8Array
+    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array
 
     fun crypto_hash_sha256(message: Uint8Array): Uint8Array
 
@@ -54,6 +54,7 @@ interface JsSodiumInterface {
 
     //util
     fun memzero(array: Uint8Array)
+
 
 
 

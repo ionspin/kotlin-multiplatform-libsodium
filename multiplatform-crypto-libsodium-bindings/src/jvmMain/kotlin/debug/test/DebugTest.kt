@@ -121,7 +121,7 @@ actual class Crypto internal actual constructor() {
     val m = UByteArray(c.size - 17)
     var tag_p : UByte = 0U
     println("Debug crypto_secretstream_xchacha20poly1305_pull")
-    sodium.crypto_secretstream_xchacha20poly1305_pull(state, m.asByteArray(), null, tag_p.toByte(),
+    sodium.crypto_secretstream_xchacha20poly1305_pull(state, m.asByteArray(), null, byteArrayOf(),
         c.asByteArray(), c.size.toLong(), ad.asByteArray(), ad.size.toLong())
     return debug.test.DecryptedDataAndTag(m, tag_p)
   }
