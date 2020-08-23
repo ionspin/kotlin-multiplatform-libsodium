@@ -46,6 +46,7 @@ val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://dl.bintray.com/terl/lazysodium-maven")
 
 }
 group = ReleaseInfo.group
@@ -61,6 +62,7 @@ android {
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         getByName("release") {
@@ -68,6 +70,7 @@ android {
         }
     }
 }
+
 
 kotlin {
     val hostOsName = getHostOsName()
@@ -128,25 +131,7 @@ kotlin {
         //     >>> referenced by randombytes_sysrandom.c
         //     >>>               libsodium_la-randombytes_sysrandom.o:(_randombytes_linux_getrandom) in archive /tmp/included11051337748775083797/libsodium.a
 
-//        linuxArm32Hfp() {
-//            binaries {
-//                staticLib {
-//                }
-//            }
-//            compilations.getByName("main") {
-//                val libsodiumCinterop by cinterops.creating {
-//                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-//                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm32/include/")
-//                }
-//                kotlinOptions.freeCompilerArgs = listOf(
-//                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm32/lib/libsodium.a"
-//                )
-//            }
-//        }
-
-
     }
-
 
     runningOnLinuxArm64 {
         println("Configuring Linux Arm 64 targets")
@@ -428,6 +413,7 @@ kotlin {
         runningOnLinuxx86_64 {
             println("Configuring Linux 64 Bit source sets")
             val jvmMain by getting {
+                kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
                 dependencies {
                     implementation(kotlin(Deps.Jvm.stdLib))
                     implementation(kotlin(Deps.Jvm.test))
@@ -446,8 +432,24 @@ kotlin {
                 }
             }
             val androidMain by getting {
+                isNotRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+                }
+                isRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific")
+                }
                 dependencies {
-                    implementation("androidx.core:core-ktx:1.2.0")
+                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
+                    implementation("net.java.dev.jna:jna:5.5.0@aar")
+                }
+            }
+
+            val androidTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation("androidx.test:runner:1.2.0")
+                    implementation("androidx.test:rules:1.2.0")
                 }
             }
 
@@ -544,7 +546,11 @@ kotlin {
 
 }
 
-
+tasks.whenTaskAdded {
+    if("DebugUnitTest" in name || "ReleaseUnitTest" in name) {
+        enabled = false // https://youtrack.jetbrains.com/issue/KT-34662 otherwise common tests fail, because we require native android libs to be loaded
+    }
+}
 
 tasks {
 
@@ -587,6 +593,8 @@ tasks {
 //                showStandardStreams = true
             }
         }
+
+
 
 //        val legacyjsNodeTest by getting(KotlinJsTest::class) {
 //

@@ -1,11 +1,9 @@
 package com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.crypto.generichash.GenericHashing
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import com.ionspin.kotlin.crypto.util.toHexString
-import debug.test.Crypto
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -19,19 +17,7 @@ class SmokeTest {
     @Test
     fun testIfLibraryIsNotOnFire() {
         testBlocking {
-            Initializer.initialize()
-            val crypto = Crypto()
-//            //TODO seems to be a bug in JS compiler, if we have the same method name in crypto an in JsSodiumInterface, method tries to call wrong method name (unneeded suffix _0)
-//            //I've worked around this by making state functions with 1 parameter execute call with js("") wrap, but still might sail somewhere else
-//            val state256 = crypto.crypto_hash_sha256_init()
-//            crypto.crypto_hash_sha256_update(state256, "Hello".encodeToUByteArray())
-//            val result = crypto.crypto_hash_sha256_final(state256)
-//            val resultString = result.toHexString()
-//            println("Result: $resultString")
-//            assertTrue {
-//                "185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969" == resultString
-//            }
-            //Blake512 Hello - EF15EAF92D5E335345A3E1D977BC7D8797C3D275717CC1B10AF79C93CDA01AEB2A0C59BC02E2BDF9380FD1B54EB9E1669026930CCC24BD49748E65F9A6B2EE68
+            LibsodiumInitializer.initialize()
             val hashResult = GenericHashing.genericHash("Hello".encodeToUByteArray(), 64)
             println(hashResult.toHexString())
             assertTrue {
@@ -41,4 +27,5 @@ class SmokeTest {
 
         }
     }
+
 }

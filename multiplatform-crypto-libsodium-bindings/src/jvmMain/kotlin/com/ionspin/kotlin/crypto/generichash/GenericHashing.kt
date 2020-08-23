@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.generichash
 
-import com.ionspin.kotlin.crypto.Initializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
 
 /**
  * Created by Ugljesa Jovanovic

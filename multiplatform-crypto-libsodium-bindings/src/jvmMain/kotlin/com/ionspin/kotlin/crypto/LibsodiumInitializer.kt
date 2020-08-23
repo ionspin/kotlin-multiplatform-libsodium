@@ -1,21 +1,19 @@
 package com.ionspin.kotlin.crypto
 
-import com.goterl.lazycode.lazysodium.SodiumJava
-
 /**
  * Created by Ugljesa Jovanovic (jovanovic.ugljesa@gmail.com) on 02/Aug/2020
  */
-actual object Initializer {
+actual object LibsodiumInitializer {
     private var isPlatformInitialized = false
 
-    lateinit var sodium : SodiumJava
+    lateinit var sodium : SodiumWrapper
     actual suspend fun initialize() {
-        sodium = SodiumJava()
+        sodium = SodiumWrapper()
         isPlatformInitialized = true
     }
 
     actual fun initializeWithCallback(done: () -> Unit) {
-        sodium = SodiumJava()
+        sodium = SodiumWrapper()
         isPlatformInitialized = true
         done()
     }

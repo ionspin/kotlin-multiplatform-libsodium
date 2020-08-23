@@ -5,7 +5,7 @@ package com.ionspin.kotlin.crypto
 import libsodium.sodium_init
 import kotlin.native.concurrent.AtomicInt
 
-actual object Initializer {
+actual object LibsodiumInitializer {
 
     private var isPlatformInitialized : AtomicInt = AtomicInt(0)
 

@@ -8,6 +8,4 @@ import com.goterl.lazycode.lazysodium.SodiumJava
  * ugljesa.jovanovic@ionspin.com
  * on 22-Aug-2020
  */
-class ASodiumWrapper : SodiumJava() {
-
-}
+typealias SodiumWrapper = SodiumJava

@@ -20,7 +20,7 @@ fun setSodiumLoaded(loaded: Boolean) {
     js("sodiumLoaded = loaded")
 }
 
-actual object Initializer {
+actual object LibsodiumInitializer {
     private var isPlatformInitialized = false
 
     actual suspend fun initialize() {
