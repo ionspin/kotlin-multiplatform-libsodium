@@ -30,7 +30,7 @@ actual object GenericHash {
         requestedHashLength: Int,
         key: UByteArray?
     ): GenericHashState {
-        val state = getSodium().crypto_generichash_init(key.toUInt8Array(), requestedHashLength)
+        val state = getSodium().crypto_generichash_init(key?.toUInt8Array() ?: Uint8Array(0), requestedHashLength)
         return GenericHashState(requestedHashLength, state)
     }
 
