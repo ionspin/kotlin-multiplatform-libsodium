@@ -54,8 +54,8 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
          * Creates and returns AesCtr instance that can be fed data using [addData]. Once you have submitted all
          * data call [decrypt]
          */
-        fun createDecryptor(aesKey : InternalAesKey) : AesCtrPure {
-            return AesCtrPure(aesKey, Mode.DECRYPT)
+        fun createDecryptor(aesKey : InternalAesKey, initialCounter: UByteArray) : AesCtrPure {
+            return AesCtrPure(aesKey, Mode.DECRYPT, initialCounter = initialCounter)
         }
         /**
          * Bulk encryption, returns encrypted data and a random initial counter
@@ -68,8 +68,8 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
-            val aesCtr = AesCtrPure(aesKey, Mode.DECRYPT, initialCounter)
+        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray): UByteArray {
+            val aesCtr = AesCtrPure(aesKey, Mode.DECRYPT, initialCounter = initialCounter)
             aesCtr.addData(data)
             return aesCtr.decrypt()
         }
