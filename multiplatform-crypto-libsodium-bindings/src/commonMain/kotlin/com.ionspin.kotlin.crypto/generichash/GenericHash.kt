@@ -6,14 +6,11 @@ package com.ionspin.kotlin.crypto.generichash
  * on 21-Aug-2020
  */
 
-data class GenericHashState(val hashLength: Int, val state: GenericHashStateInternal)
+data class GenericHashState(val hashLength: Int, val internalState: GenericHashStateInternal)
 
 expect class GenericHashStateInternal
 
-expect object GenericHashing {
-
-
-
+expect object GenericHash {
 
     fun genericHash(message : UByteArray, requestedHashLength: Int, key : UByteArray? = null) : UByteArray
 

@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.crypto.generichash.GenericHashing
+import com.ionspin.kotlin.crypto.generichash.GenericHash
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import com.ionspin.kotlin.crypto.util.toHexString
@@ -18,7 +18,7 @@ class SmokeTest {
     fun testIfLibraryIsNotOnFire() {
         testBlocking {
             LibsodiumInitializer.initialize()
-            val hashResult = GenericHashing.genericHash("Hello".encodeToUByteArray(), 64)
+            val hashResult = GenericHash.genericHash("Hello".encodeToUByteArray(), 64)
             println(hashResult.toHexString())
             assertTrue {
                 "EF15EAF92D5E335345A3E1D977BC7D8797C3D275717CC1B10AF79C93CDA01AEB2A0C59BC02E2BDF9380FD1B54EB9E1669026930CCC24BD49748E65F9A6B2EE68".toLowerCase() == hashResult.toHexString()

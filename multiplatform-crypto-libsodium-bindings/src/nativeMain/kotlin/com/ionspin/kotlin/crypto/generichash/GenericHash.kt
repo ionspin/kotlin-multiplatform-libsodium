@@ -9,7 +9,6 @@ import kotlinx.cinterop.reinterpret
 import libsodium.crypto_generichash
 import libsodium.crypto_generichash_final
 import libsodium.crypto_generichash_init
-import libsodium.crypto_generichash_state
 import libsodium.crypto_generichash_update
 import platform.posix.malloc
 
@@ -21,7 +20,7 @@ import platform.posix.malloc
 
 actual typealias GenericHashStateInternal = libsodium.crypto_generichash_blake2b_state
 
-actual object GenericHashing {
+actual object GenericHash {
     val _emitByte: Byte = 0
     val _emitByteArray: ByteArray = ByteArray(0)
 
@@ -69,7 +68,7 @@ actual object GenericHashing {
     ) {
         val pinnedMessage = messagePart.pin()
         crypto_generichash_update(
-            state.state.ptr,
+            state.internalState.ptr,
             pinnedMessage.addressOf(0),
             messagePart.size.convert()
         )
@@ -80,7 +79,7 @@ actual object GenericHashing {
         val hashResult = UByteArray(state.hashLength)
         val hashResultPinned = hashResult.pin()
         crypto_generichash_final(
-            state.state.ptr,
+            state.internalState.ptr,
             hashResultPinned.addressOf(0),
             state.hashLength.convert()
         )
