@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.blake2b
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.free
@@ -30,7 +31,7 @@ actual class Blake2bDelegated actual constructor(key: UByteArray?, hashLength: I
     override fun digest(): UByteArray {
         val hashResult = UByteArray(requestedHashLength)
         val hashResultPinned = hashResult.pin()
-        crypto_generichash_final(state.ptr, hashResultPinned.addressOf(0), requestedHashLength.convert())
+        crypto_generichash_final(state.ptr, hashResultPinned.toPtr(), requestedHashLength.convert())
         free(state.ptr)
         return hashResult
     }
@@ -44,7 +45,7 @@ actual object Blake2bDelegatedStateless : Blake2b {
         val hashResult = UByteArray(MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
         crypto_generichash(
-            hashResultPinned.addressOf(0),
+            hashResultPinned.toPtr(),
             hashLength.convert(),
             inputMessage.toCValues(),
             inputMessage.size.convert(),

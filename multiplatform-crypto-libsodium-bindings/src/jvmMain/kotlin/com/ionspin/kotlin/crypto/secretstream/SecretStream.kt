@@ -7,8 +7,10 @@ actual typealias SecretStreamState = SecretStream.State
 
 actual object SecretStream {
     actual fun xChaCha20Poly1305InitPush(key: UByteArray): SecretStreamStateAndHeader {
-        TODO("not implemented yet")
-//        sodium.crypto_secretstream_xchacha20poly1305_init_push()
+        val state = SecretStreamState()
+        val header = UByteArray(sodium.crypto_secretstream_xchacha20poly1305_headerbytes())
+        sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
+        return SecretStreamStateAndHeader(state, header)
     }
 
     actual fun xChaCha20Poly1305Push(
@@ -17,14 +19,27 @@ actual object SecretStream {
         additionalData: UByteArray,
         tag: UByte
     ): UByteArray {
-        TODO("not implemented yet")
+        val ciphertext = UByteArray(message.size)
+        sodium.crypto_secretstream_xchacha20poly1305_push(
+            state,
+            ciphertext.asByteArray(),
+            null,
+            message.asByteArray(),
+            message.size.toLong(),
+            additionalData.asByteArray(),
+            additionalData.size.toLong(),
+            tag.toByte()
+        )
+        return ciphertext
     }
 
     actual fun xChaCha20Poly1305InitPull(
         key: UByteArray,
         header: UByteArray
     ): SecretStreamStateAndHeader {
-        TODO("not implemented yet")
+        val state = SecretStreamState()
+        sodium.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(), key.asByteArray())
+        return SecretStreamStateAndHeader(state, header)
     }
 
     actual fun xChaCha20Poly1305Pull(
@@ -32,7 +47,19 @@ actual object SecretStream {
         ciphertext: UByteArray,
         additionalData: UByteArray
     ): DecryptedDataAndTag {
-        TODO("not implemented yet")
+        val result = UByteArray(ciphertext.size)
+        val tagArray = UByteArray(1) { 0U }
+        sodium.crypto_secretstream_xchacha20poly1305_pull(
+            state,
+            result.asByteArray(),
+            null,
+            tagArray.asByteArray(),
+            ciphertext.asByteArray(),
+            ciphertext.size.toLong(),
+            additionalData.asByteArray(),
+            additionalData.size.toLong()
+        )
+        return DecryptedDataAndTag(result, tagArray[0])
     }
 
 }

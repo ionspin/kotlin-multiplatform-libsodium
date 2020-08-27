@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.hash.sha
 
+import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.free
@@ -30,7 +31,7 @@ actual class Sha512Delegated : Sha512Multipart {
     override fun digest(): UByteArray {
         val hashResult = UByteArray(Sha512Properties.MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
-        crypto_hash_sha512_final(state.ptr, hashResultPinned.addressOf(0))
+        crypto_hash_sha512_final(state.ptr, hashResultPinned.toPtr())
         free(state.ptr)
         return hashResult
     }
@@ -42,7 +43,7 @@ actual object Sha512StatelessDelegated : Sha512  {
     override fun digest(inputMessage: UByteArray): UByteArray {
         val hashResult = UByteArray(Sha512StatelessDelegated.MAX_HASH_BYTES)
         val hashResultPinned = hashResult.pin()
-        crypto_hash_sha512(hashResultPinned.addressOf(0), inputMessage.toCValues(), inputMessage.size.convert())
+        crypto_hash_sha512(hashResultPinned.toPtr(), inputMessage.toCValues(), inputMessage.size.convert())
         hashResultPinned.unpin()
         return hashResult
     }

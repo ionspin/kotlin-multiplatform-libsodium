@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.authenticated
 
 import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.InvalidTagException
+import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.*
 import libsodium.*
 
@@ -22,7 +23,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             val ciphertext = UByteArray(ciphertextLength)
             val ciphertextPinned = ciphertext.pin()
             crypto_aead_xchacha20poly1305_ietf_encrypt(
-                ciphertextPinned.addressOf(0),
+                ciphertextPinned.toPtr(),
                 ulongArrayOf(ciphertextLength.convert()).toCValues(),
                 message.toCValues(),
                 message.size.convert(),
@@ -46,7 +47,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             val message = UByteArray(messageLength)
             val messagePinned = message.pin()
             crypto_aead_xchacha20poly1305_ietf_decrypt(
-                messagePinned.addressOf(0),
+                messagePinned.toPtr(),
                 ulongArrayOf(messageLength.convert()).toCValues(),
                 null,
                 ciphertext.toCValues(),
@@ -95,7 +96,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
 
     actual fun initializeForEncryption(key: UByteArray) : UByteArray {
         val pinnedHeader = header.pin()
-        crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.addressOf(0), key.toCValues())
+        crypto_secretstream_xchacha20poly1305_init_push(state.ptr, pinnedHeader.toPtr(), key.toCValues())
         println("state-----------")
         state.ptr.readBytes(crypto_secretstream_xchacha20poly1305_state.size.toInt()).asUByteArray().hexColumsPrint()
         println("state-----------")
@@ -116,7 +117,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         val ciphertextWithTagPinned = ciphertextWithTag.pin()
         crypto_secretstream_xchacha20poly1305_push(
             state.ptr,
-            ciphertextWithTagPinned.addressOf(0),
+            ciphertextWithTagPinned.toPtr(),
             null,
             data.toCValues(),
             data.size.convert(),
@@ -136,7 +137,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         val plaintextPinned = plaintext.pin()
         val validTag = crypto_secretstream_xchacha20poly1305_pull(
             state.ptr,
-            plaintextPinned.addressOf(0),
+            plaintextPinned.toPtr(),
             null,
             null,
             data.toCValues(),

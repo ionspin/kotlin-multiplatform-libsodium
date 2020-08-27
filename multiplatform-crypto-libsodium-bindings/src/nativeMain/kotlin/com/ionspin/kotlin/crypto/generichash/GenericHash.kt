@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.generichash
 
+import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -32,11 +33,11 @@ actual object GenericHash {
         val pinnedKey = key?.pin()
         val pinnedMessage = message.pin()
         crypto_generichash(
-            pinnedHash.addressOf(0),
+            pinnedHash.toPtr(),
             requestedHashLength.convert(),
-            pinnedMessage.addressOf(0),
+            pinnedMessage.toPtr(),
             message.size.convert(),
-            pinnedKey?.addressOf(0),
+            pinnedKey?.toPtr(),
             (key?.size ?: 0).convert()
         )
         pinnedHash.unpin()
@@ -54,7 +55,7 @@ actual object GenericHash {
         val pinnedKey = key?.pin()
         crypto_generichash_init(
             statePointed.ptr,
-            pinnedKey?.addressOf(0),
+            pinnedKey?.toPtr(),
             (key?.size ?: 0).convert(),
             requestedHashLength.convert()
         )
@@ -69,7 +70,7 @@ actual object GenericHash {
         val pinnedMessage = messagePart.pin()
         crypto_generichash_update(
             state.internalState.ptr,
-            pinnedMessage.addressOf(0),
+            pinnedMessage.toPtr(),
             messagePart.size.convert()
         )
         pinnedMessage.unpin()
@@ -80,7 +81,7 @@ actual object GenericHash {
         val hashResultPinned = hashResult.pin()
         crypto_generichash_final(
             state.internalState.ptr,
-            hashResultPinned.addressOf(0),
+            hashResultPinned.toPtr(),
             state.hashLength.convert()
         )
         hashResultPinned.unpin()

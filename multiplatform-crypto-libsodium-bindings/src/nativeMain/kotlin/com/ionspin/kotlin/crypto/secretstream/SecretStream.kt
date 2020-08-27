@@ -1,10 +1,39 @@
 package com.ionspin.kotlin.crypto.secretstream
 
+import com.ionspin.kotlin.crypto.util.toPtr
+import kotlinx.cinterop.UByteVar
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.pin
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.toCPointer
+import libsodium.crypto_secretstream_xchacha20poly1305_headerbytes
+import libsodium.crypto_secretstream_xchacha20poly1305_init_pull
+import libsodium.crypto_secretstream_xchacha20poly1305_init_push
+import libsodium.crypto_secretstream_xchacha20poly1305_pull
+import libsodium.crypto_secretstream_xchacha20poly1305_push
+import platform.posix.malloc
+
 actual typealias SecretStreamState = libsodium.crypto_secretstream_xchacha20poly1305_state
 
 actual object SecretStream {
     actual fun xChaCha20Poly1305InitPush(key: UByteArray): SecretStreamStateAndHeader {
-        TODO("not implemented yet")
+        val stateAllocated = malloc(SecretStreamState.size.convert())
+        val statePointed = stateAllocated!!.reinterpret<SecretStreamState>().pointed
+
+        val header = UByteArray(crypto_secretstream_xchacha20poly1305_headerbytes().convert()) { 0U }
+        val headerPinned = header.pin()
+        val keyPinned = key.pin()
+        crypto_secretstream_xchacha20poly1305_init_push(
+            statePointed.ptr,
+            headerPinned.toPtr(),
+            keyPinned.toPtr()
+        )
+        headerPinned.unpin()
+        keyPinned.unpin()
+        return SecretStreamStateAndHeader(statePointed, header)
+
     }
 
     actual fun xChaCha20Poly1305Push(
@@ -13,14 +42,42 @@ actual object SecretStream {
         additionalData: UByteArray,
         tag: UByte
     ): UByteArray {
-        TODO("not implemented yet")
+        val ciphertext = UByteArray(message.size)
+        val ciphertextPinned = ciphertext.pin()
+        val messagePinned = message.pin()
+        val additionalDataPinned = additionalData.pin()
+        crypto_secretstream_xchacha20poly1305_push(
+            state.ptr,
+            ciphertextPinned.toPtr(),
+            null,
+            messagePinned.toPtr(),
+            message.size.convert(),
+            additionalDataPinned.toPtr(),
+            additionalData.size.convert(),
+            tag
+        )
+        ciphertextPinned.unpin()
+        messagePinned.unpin()
+        additionalDataPinned.unpin()
+        return ciphertext
     }
 
     actual fun xChaCha20Poly1305InitPull(
         key: UByteArray,
         header: UByteArray
     ): SecretStreamStateAndHeader {
-        TODO("not implemented yet")
+        val stateAllocated = malloc(SecretStreamState.size.convert())
+        val statePointed = stateAllocated!!.reinterpret<SecretStreamState>().pointed
+        val keyPinned = key.pin()
+        val headerPinned = header.pin()
+        crypto_secretstream_xchacha20poly1305_init_pull(
+            statePointed.ptr,
+            headerPinned.toPtr(),
+            keyPinned.toPtr()
+        )
+        headerPinned.unpin()
+        keyPinned.unpin()
+        return SecretStreamStateAndHeader(statePointed, header)
     }
 
     actual fun xChaCha20Poly1305Pull(
@@ -28,7 +85,28 @@ actual object SecretStream {
         ciphertext: UByteArray,
         additionalData: UByteArray
     ): DecryptedDataAndTag {
-        TODO("not implemented yet")
+        val message = UByteArray(ciphertext.size)
+        val messagePinned = message.pin()
+        val ciphertextPinned = ciphertext.pin()
+        val additionalDataPinned = additionalData.pin()
+        val tag = UByteArray(1) { 0U }
+        val tagPinned = tag.pin()
+        crypto_secretstream_xchacha20poly1305_pull(
+            state.ptr,
+            messagePinned.toPtr(),
+            null,
+            tagPinned.toPtr(),
+            ciphertextPinned.toPtr(),
+            ciphertext.size.convert(),
+            additionalDataPinned.toPtr(),
+            additionalData.size.convert(),
+
+        )
+        ciphertextPinned.unpin()
+        messagePinned.unpin()
+        additionalDataPinned.unpin()
+        tagPinned.unpin()
+        return DecryptedDataAndTag(message, tag[0])
     }
 
 }
