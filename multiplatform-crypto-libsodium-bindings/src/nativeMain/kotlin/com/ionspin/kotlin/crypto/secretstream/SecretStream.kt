@@ -1,13 +1,12 @@
 package com.ionspin.kotlin.crypto.secretstream
 
 import com.ionspin.kotlin.crypto.util.toPtr
-import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.toCPointer
+import libsodium.crypto_secretstream_xchacha20poly1305_ABYTES
 import libsodium.crypto_secretstream_xchacha20poly1305_headerbytes
 import libsodium.crypto_secretstream_xchacha20poly1305_init_pull
 import libsodium.crypto_secretstream_xchacha20poly1305_init_push
@@ -42,23 +41,28 @@ actual object SecretStream {
         additionalData: UByteArray,
         tag: UByte
     ): UByteArray {
-        val ciphertext = UByteArray(message.size)
+        val ciphertext = UByteArray(message.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt()) { 0U }
         val ciphertextPinned = ciphertext.pin()
         val messagePinned = message.pin()
-        val additionalDataPinned = additionalData.pin()
+        val additionalDataPinned = if (additionalData.isNotEmpty()) {
+            additionalData.pin()
+        } else {
+            null
+        }
         crypto_secretstream_xchacha20poly1305_push(
             state.ptr,
             ciphertextPinned.toPtr(),
             null,
             messagePinned.toPtr(),
             message.size.convert(),
-            additionalDataPinned.toPtr(),
+            additionalDataPinned?.toPtr(),
             additionalData.size.convert(),
             tag
         )
+
         ciphertextPinned.unpin()
         messagePinned.unpin()
-        additionalDataPinned.unpin()
+        additionalDataPinned?.unpin()
         return ciphertext
     }
 
@@ -85,27 +89,33 @@ actual object SecretStream {
         ciphertext: UByteArray,
         additionalData: UByteArray
     ): DecryptedDataAndTag {
-        val message = UByteArray(ciphertext.size)
+        val message = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
         val messagePinned = message.pin()
         val ciphertextPinned = ciphertext.pin()
-        val additionalDataPinned = additionalData.pin()
+        val additionalDataPinned = if (additionalData.isNotEmpty()) {
+            additionalData.pin()
+        } else {
+            null
+        }
         val tag = UByteArray(1) { 0U }
         val tagPinned = tag.pin()
-        crypto_secretstream_xchacha20poly1305_pull(
+        val validTag = crypto_secretstream_xchacha20poly1305_pull(
             state.ptr,
             messagePinned.toPtr(),
             null,
             tagPinned.toPtr(),
             ciphertextPinned.toPtr(),
             ciphertext.size.convert(),
-            additionalDataPinned.toPtr(),
-            additionalData.size.convert(),
-
-        )
+            additionalDataPinned?.toPtr(),
+            additionalData.size.convert()
+            )
         ciphertextPinned.unpin()
         messagePinned.unpin()
-        additionalDataPinned.unpin()
+        additionalDataPinned?.unpin()
         tagPinned.unpin()
+        if (validTag != 0) {
+            throw RuntimeException("Invalid tag")
+        }
         return DecryptedDataAndTag(message, tag[0])
     }
 
