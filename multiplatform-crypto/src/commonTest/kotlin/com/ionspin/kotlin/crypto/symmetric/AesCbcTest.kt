@@ -75,7 +75,9 @@ class AesCbcTest {
         assertTrue {
             val key = "4278b840fb44aaa757c1bf04acbe1a3e"
             val iv = "57f02a5c5339daeb0a2908a06ac6393f"
-            val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
+            val cipherText = "479c89ec14bc98994e62b2c705b5014e" +
+                    "175bd7832e7e60a1e92aac568a861eb7" +
+                    "fc2dc2f4a527ce39f79c56b31432c779"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val aesCbc =
                 AesCbcPure(InternalAesKey.Aes128Key(key), mode = Mode.DECRYPT, initializationVector = iv.hexStringToUByteArray())
@@ -95,7 +97,9 @@ class AesCbcTest {
         assertTrue {
             val key = "4278b840fb44aaa757c1bf04acbe1a3e"
             val iv = "57f02a5c5339daeb0a2908a06ac6393f"
-            val cipherText = "479c89ec14bc98994e62b2c705b5014e175bd7832e7e60a1e92aac568a861eb7"
+            val cipherText = "479c89ec14bc98994e62b2c705b5014e" +
+                    "175bd7832e7e60a1e92aac568a861eb7" +
+                    "fc2dc2f4a527ce39f79c56b31432c779"
             val expectedPlainText = "3c888bbbb1a8eb9f3e9b87acaad986c466e2f7071c83083b8a557971918850e5"
             val decrypted = AesCbcPure.decrypt(InternalAesKey.Aes128Key(key), cipherText.hexStringToUByteArray(), iv.hexStringToUByteArray())
             println("Decrypted: ${decrypted.toHexString()}")

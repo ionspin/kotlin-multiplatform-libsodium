@@ -55,7 +55,7 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
          * data call [decrypt]
          */
         fun createDecryptor(aesKey : InternalAesKey, initialCounter: UByteArray) : AesCtrPure {
-            return AesCtrPure(aesKey, Mode.DECRYPT, initialCounter = initialCounter)
+            return AesCtrPure(aesKey, Mode.DECRYPT, initialCounter)
         }
         /**
          * Bulk encryption, returns encrypted data and a random initial counter
@@ -68,8 +68,8 @@ internal class AesCtrPure internal constructor(val aesKey: InternalAesKey, val m
         /**
          * Bulk decryption, returns decrypted data
          */
-        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray): UByteArray {
-            val aesCtr = AesCtrPure(aesKey, Mode.DECRYPT, initialCounter = initialCounter)
+        fun decrypt(aesKey: InternalAesKey, data: UByteArray, initialCounter: UByteArray? = null): UByteArray {
+            val aesCtr = AesCtrPure(aesKey = aesKey, mode = Mode.DECRYPT, initialCounter = initialCounter)
             aesCtr.addData(data)
             return aesCtr.decrypt()
         }

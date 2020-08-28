@@ -26,6 +26,11 @@ interface JsSodiumInterface {
 
     fun crypto_generichash_final(state: dynamic, hashLength: Int) : Uint8Array
 
+    //Short hash
+    fun crypto_shorthash(data : Uint8Array, key: Uint8Array) : Uint8Array
+
+    fun crypto_shorthash_keygen() : Uint8Array
+
 
     fun crypto_hash_sha256_init() : dynamic
 
