@@ -10,8 +10,10 @@ import libsodium.crypto_secretstream_xchacha20poly1305_ABYTES
 import libsodium.crypto_secretstream_xchacha20poly1305_headerbytes
 import libsodium.crypto_secretstream_xchacha20poly1305_init_pull
 import libsodium.crypto_secretstream_xchacha20poly1305_init_push
+import libsodium.crypto_secretstream_xchacha20poly1305_keygen
 import libsodium.crypto_secretstream_xchacha20poly1305_pull
 import libsodium.crypto_secretstream_xchacha20poly1305_push
+import libsodium.crypto_secretstream_xchacha20poly1305_rekey
 import platform.posix.malloc
 
 actual typealias SecretStreamState = libsodium.crypto_secretstream_xchacha20poly1305_state
@@ -117,6 +119,18 @@ actual object SecretStream {
             throw RuntimeException("Invalid tag")
         }
         return DecryptedDataAndTag(message, tag[0])
+    }
+
+    actual fun xChaCha20Poly1305Keygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_secretstream_xchacha20poly1305_KEYBYTES)
+        val generatedKeyPinned = generatedKey.pin()
+        crypto_secretstream_xchacha20poly1305_keygen(generatedKeyPinned.toPtr())
+        generatedKeyPinned.unpin()
+        return generatedKey
+    }
+
+    actual fun xChaCha20Poly1305Rekey(state: SecretStreamState) {
+        crypto_secretstream_xchacha20poly1305_rekey(state.ptr)
     }
 
 }

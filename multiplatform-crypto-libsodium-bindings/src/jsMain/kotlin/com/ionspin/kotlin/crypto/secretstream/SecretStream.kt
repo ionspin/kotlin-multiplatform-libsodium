@@ -44,4 +44,12 @@ actual object SecretStream {
 
     }
 
+    actual fun xChaCha20Poly1305Keygen(): UByteArray {
+        return getSodium().crypto_shorthash_keygen().toUByteArray()
+    }
+
+    actual fun xChaCha20Poly1305Rekey(state: SecretStreamState) {
+        getSodium().crypto_secretstream_xchacha20poly1305_rekey(state)
+    }
+
 }

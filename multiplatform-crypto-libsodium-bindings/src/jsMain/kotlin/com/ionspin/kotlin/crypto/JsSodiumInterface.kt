@@ -57,6 +57,10 @@ interface JsSodiumInterface {
     fun crypto_secretstream_xchacha20poly1305_init_pull(header: Uint8Array, key: Uint8Array) : dynamic
     fun crypto_secretstream_xchacha20poly1305_pull(state: dynamic, ciphertext: Uint8Array, additionalData: Uint8Array) : dynamic
 
+    //keygen and rekey
+    fun crypto_secretstream_xchacha20poly1305_keygen() : Uint8Array
+    fun crypto_secretstream_xchacha20poly1305_rekey(state: dynamic)
+
     //util
     fun memzero(array: Uint8Array)
 

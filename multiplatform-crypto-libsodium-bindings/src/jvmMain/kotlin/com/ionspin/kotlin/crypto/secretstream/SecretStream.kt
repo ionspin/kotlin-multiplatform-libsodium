@@ -19,7 +19,7 @@ actual object SecretStream {
         additionalData: UByteArray,
         tag: UByte
     ): UByteArray {
-        val ciphertext = UByteArray(message.size + 17)
+        val ciphertext = UByteArray(message.size + crypto_secretstream_xchacha20poly1305_ABYTES)
         sodium.crypto_secretstream_xchacha20poly1305_push(
             state,
             ciphertext.asByteArray(),
@@ -47,7 +47,7 @@ actual object SecretStream {
         ciphertext: UByteArray,
         additionalData: UByteArray
     ): DecryptedDataAndTag {
-        val result = UByteArray(ciphertext.size - 17)
+        val result = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES)
         val tagArray = UByteArray(1) { 0U }
         sodium.crypto_secretstream_xchacha20poly1305_pull(
             state,
@@ -60,6 +60,16 @@ actual object SecretStream {
             additionalData.size.toLong()
         )
         return DecryptedDataAndTag(result, tagArray[0])
+    }
+
+    actual fun xChaCha20Poly1305Keygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_aead_xchacha20poly1305_ietf_KEYBYTES)
+        sodium.crypto_secretstream_xchacha20poly1305_keygen(generatedKey.asByteArray())
+        return generatedKey
+    }
+
+    actual fun xChaCha20Poly1305Rekey(state: SecretStreamState) {
+        sodium.crypto_secretstream_xchacha20poly1305_rekey(state)
     }
 
 }
