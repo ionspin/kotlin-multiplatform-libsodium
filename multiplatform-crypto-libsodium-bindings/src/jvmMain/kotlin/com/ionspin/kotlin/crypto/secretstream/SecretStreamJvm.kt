@@ -49,7 +49,7 @@ actual object SecretStream {
     ): DecryptedDataAndTag {
         val result = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES)
         val tagArray = UByteArray(1) { 0U }
-        sodium.crypto_secretstream_xchacha20poly1305_pull(
+        val validationResult = sodium.crypto_secretstream_xchacha20poly1305_pull(
             state,
             result.asByteArray(),
             null,
@@ -59,11 +59,14 @@ actual object SecretStream {
             additionalData.asByteArray(),
             additionalData.size.toLong()
         )
+        if (validationResult != 0) {
+            throw SecretStreamCorrupedOrTamperedDataException()
+        }
         return DecryptedDataAndTag(result, tagArray[0])
     }
 
     actual fun xChaCha20Poly1305Keygen(): UByteArray {
-        val generatedKey = UByteArray(crypto_aead_xchacha20poly1305_ietf_KEYBYTES)
+        val generatedKey = UByteArray(crypto_secretstream_xchacha20poly1305_KEYBYTES)
         sodium.crypto_secretstream_xchacha20poly1305_keygen(generatedKey.asByteArray())
         return generatedKey
     }

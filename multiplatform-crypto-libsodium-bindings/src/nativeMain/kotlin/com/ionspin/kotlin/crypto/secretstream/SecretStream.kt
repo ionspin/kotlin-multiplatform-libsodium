@@ -101,7 +101,7 @@ actual object SecretStream {
         }
         val tag = UByteArray(1) { 0U }
         val tagPinned = tag.pin()
-        val validTag = crypto_secretstream_xchacha20poly1305_pull(
+        val validationResult = crypto_secretstream_xchacha20poly1305_pull(
             state.ptr,
             messagePinned.toPtr(),
             null,
@@ -115,8 +115,8 @@ actual object SecretStream {
         messagePinned.unpin()
         additionalDataPinned?.unpin()
         tagPinned.unpin()
-        if (validTag != 0) {
-            throw RuntimeException("Invalid tag")
+        if (validationResult != 0) {
+            throw SecretStreamCorrupedOrTamperedDataException()
         }
         return DecryptedDataAndTag(message, tag[0])
     }

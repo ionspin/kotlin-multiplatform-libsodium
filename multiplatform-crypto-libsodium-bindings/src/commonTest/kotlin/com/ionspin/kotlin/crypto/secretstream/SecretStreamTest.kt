@@ -5,6 +5,7 @@ import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
@@ -71,7 +72,12 @@ class SecretStreamTest {
             decrypted.decryptedData.hexColumsPrint()
             assertTrue {
                 decrypted.decryptedData.contentEquals(message)
-
+            }
+            assertFailsWith(SecretStreamCorrupedOrTamperedDataException::class) {
+                encrypted[encrypted.size - 5] = 0U
+                val decryptState = SecretStream.xChaCha20Poly1305InitPull(key, stateAndHeader.header)
+                val decrypted =
+                    SecretStream.xChaCha20Poly1305Pull(decryptState.state, encrypted, ubyteArrayOf())
             }
 
 
@@ -80,7 +86,8 @@ class SecretStreamTest {
 
 
 }
-
+// TODO modify nonce in state so we can have reproducible tests, theres already a similar way of doing this
+// in crypto delegated project XChaCha20Poly1305 test
 expect fun modifyState(state: SecretStreamState, forceNonce: UByteArray)
 
 

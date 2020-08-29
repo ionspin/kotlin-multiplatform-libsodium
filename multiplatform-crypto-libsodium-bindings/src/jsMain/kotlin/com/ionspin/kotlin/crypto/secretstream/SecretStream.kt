@@ -40,6 +40,9 @@ actual object SecretStream {
         val dataAndTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(
             state, ciphertext.toUInt8Array(), additionalData.toUInt8Array()
         )
+        if (dataAndTag == false) {
+            throw SecretStreamCorrupedOrTamperedDataException()
+        }
         return DecryptedDataAndTag((dataAndTag.message as Uint8Array).toUByteArray(), dataAndTag.tag)
 
     }

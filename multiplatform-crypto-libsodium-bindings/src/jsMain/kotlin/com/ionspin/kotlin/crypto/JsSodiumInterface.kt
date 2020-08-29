@@ -61,6 +61,16 @@ interface JsSodiumInterface {
     fun crypto_secretstream_xchacha20poly1305_keygen() : Uint8Array
     fun crypto_secretstream_xchacha20poly1305_rekey(state: dynamic)
 
+    // ---- SecretBox ----
+    fun crypto_secretbox_detached(message: Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
+    fun crypto_secretbox_easy(message: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_secretbox_keygen() : Uint8Array
+    fun crypto_secretbox_open_detached(ciphertext : Uint8Array, tag : Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
+    fun crypto_secretbox_open_easy(ciphertext : Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
+
+
+    // ---- SecretBox End ----
+
     //util
     fun memzero(array: Uint8Array)
 

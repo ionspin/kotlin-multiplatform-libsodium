@@ -4,6 +4,8 @@ package com.ionspin.kotlin.crypto.secretstream
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 26-Aug-2020
+ *
+ * This file is named with Jvm suffix because of https://youtrack.jetbrains.com/issue/KT-21186
  */
 expect class SecretStreamState
 
@@ -19,6 +21,8 @@ val crypto_secretstream_xchacha20poly1305_TAG_FINAL = 3
 val crypto_secretstream_xchacha20poly1305_HEADERBYTES = 24
 val crypto_secretstream_xchacha20poly1305_KEYBYTES = 32
 val crypto_secretstream_xchacha20poly1305_ABYTES = 17
+
+class SecretStreamCorrupedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
 
 expect object SecretStream {
 

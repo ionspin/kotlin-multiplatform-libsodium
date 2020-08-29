@@ -61,8 +61,9 @@ object Deps {
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.kotlinSerialization}"
 
         object Npm {
-            val libsodium = Pair("libsodium-wrappers-sumo", "0.7.6")
-            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "file:${getProjectPath()}/multiplatform-crypto-delegated/libsodium-wrappers-sumo-0.7.6.tgz")
+            val libsodium = Pair("libsodium-wrappers-sumo", "0.7.8")
+            //val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "file:${getProjectPath()}/multiplatform-crypto-delegated/libsodium-wrappers-sumo-0.7.6.tgz")
+            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.8")
         }
 
     }

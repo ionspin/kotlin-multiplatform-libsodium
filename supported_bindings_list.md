@@ -102,19 +102,19 @@
 | crypto_scalarmult_base | | 
 | crypto_scalarmult_ristretto255 | | 
 | crypto_scalarmult_ristretto255_base | |    
-| crypto_secretbox_detached | |  
-| crypto_secretbox_easy | |  
-| crypto_secretbox_keygen | |    
-| crypto_secretbox_open_detached | | 
-| crypto_secretbox_open_easy | | 
-| crypto_secretstream_xchacha20poly1305_init_pull | :heavy_check_mark: |             DONE
-| crypto_secretstream_xchacha20poly1305_init_push | :heavy_check_mark: |             DONE
-| crypto_secretstream_xchacha20poly1305_keygen | :heavy_check_mark: |               DONE
-| crypto_secretstream_xchacha20poly1305_pull | :heavy_check_mark: |               DONE
-| crypto_secretstream_xchacha20poly1305_push | :heavy_check_mark: |               DONE
-| crypto_secretstream_xchacha20poly1305_rekey | :heavy_check_mark: |                 DONE
-| crypto_shorthash |:heavy_check_mark:  |                                           DONE
-| crypto_shorthash_keygen | :heavy_check_mark: |                                     DONE
+| crypto_secretbox_detached | :heavy_check_mark: |  
+| crypto_secretbox_easy | :heavy_check_mark: |  
+| crypto_secretbox_keygen | :heavy_check_mark: |    
+| crypto_secretbox_open_detached | :heavy_check_mark: | 
+| crypto_secretbox_open_easy | :heavy_check_mark: | 
+| crypto_secretstream_xchacha20poly1305_init_pull | :heavy_check_mark: |             
+| crypto_secretstream_xchacha20poly1305_init_push | :heavy_check_mark: |             
+| crypto_secretstream_xchacha20poly1305_keygen | :heavy_check_mark: |               
+| crypto_secretstream_xchacha20poly1305_pull | :heavy_check_mark: |               
+| crypto_secretstream_xchacha20poly1305_push | :heavy_check_mark: |               
+| crypto_secretstream_xchacha20poly1305_rekey | :heavy_check_mark: |                 
+| crypto_shorthash |:heavy_check_mark:  |                                           
+| crypto_shorthash_keygen | :heavy_check_mark: |                                     
 | crypto_shorthash_siphashx24 | |    
 | crypto_sign | |    
 | crypto_sign_detached | |   
@@ -310,10 +310,10 @@
 | crypto_scalarmult_ed25519_SCALARBYTES | |  
 | crypto_scalarmult_ristretto255_BYTES | |   
 | crypto_scalarmult_ristretto255_SCALARBYTES | | 
-| crypto_secretbox_KEYBYTES | |  
-| crypto_secretbox_MACBYTES | |  
+| crypto_secretbox_KEYBYTES |  :heavy_check_mark:  |  
+| crypto_secretbox_MACBYTES |  :heavy_check_mark:  |  
 | crypto_secretbox_MESSAGEBYTES_MAX | |  
-| crypto_secretbox_NONCEBYTES | |    
+| crypto_secretbox_NONCEBYTES | :heavy_check_mark:  |    
 | crypto_secretbox_xchacha20poly1305_KEYBYTES | |    
 | crypto_secretbox_xchacha20poly1305_MACBYTES | |    
 | crypto_secretbox_xchacha20poly1305_MESSAGEBYTES_MAX | |    
@@ -322,14 +322,14 @@
 | crypto_secretbox_xsalsa20poly1305_MACBYTES | | 
 | crypto_secretbox_xsalsa20poly1305_MESSAGEBYTES_MAX | | 
 | crypto_secretbox_xsalsa20poly1305_NONCEBYTES | |   
-| crypto_secretstream_xchacha20poly1305_ABYTES | |   
-| crypto_secretstream_xchacha20poly1305_HEADERBYTES | |  
-| crypto_secretstream_xchacha20poly1305_KEYBYTES | | 
+| crypto_secretstream_xchacha20poly1305_ABYTES |  :heavy_check_mark:  |   
+| crypto_secretstream_xchacha20poly1305_HEADERBYTES |  :heavy_check_mark:  |  
+| crypto_secretstream_xchacha20poly1305_KEYBYTES |  :heavy_check_mark:  | 
 | crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX | | 
-| crypto_secretstream_xchacha20poly1305_TAG_FINAL | |    
-| crypto_secretstream_xchacha20poly1305_TAG_MESSAGE | |  
-| crypto_secretstream_xchacha20poly1305_TAG_PUSH | | 
-| crypto_secretstream_xchacha20poly1305_TAG_REKEY | |    
+| crypto_secretstream_xchacha20poly1305_TAG_FINAL |  :heavy_check_mark:  |    
+| crypto_secretstream_xchacha20poly1305_TAG_MESSAGE |  :heavy_check_mark:  |  
+| crypto_secretstream_xchacha20poly1305_TAG_PUSH |  :heavy_check_mark:  | 
+| crypto_secretstream_xchacha20poly1305_TAG_REKEY |  :heavy_check_mark:  |    
 | crypto_shorthash_BYTES | | 
 | crypto_shorthash_KEYBYTES | |  
 | crypto_shorthash_siphash24_BYTES | |   
