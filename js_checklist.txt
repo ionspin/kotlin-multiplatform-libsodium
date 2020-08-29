@@ -123,10 +123,10 @@ crypto_secretbox_open_detached
 crypto_secretbox_open_easy
 crypto_secretstream_xchacha20poly1305_init_pull         DONE
 crypto_secretstream_xchacha20poly1305_init_push         DONE
-crypto_secretstream_xchacha20poly1305_keygen
+crypto_secretstream_xchacha20poly1305_keygen            DONE
 crypto_secretstream_xchacha20poly1305_pull              DONE
 crypto_secretstream_xchacha20poly1305_push              DONE
-crypto_secretstream_xchacha20poly1305_rekey
+crypto_secretstream_xchacha20poly1305_rekey             DONE
 crypto_shorthash                                        DONE
 crypto_shorthash_keygen                                 DONE
 crypto_shorthash_siphashx24
