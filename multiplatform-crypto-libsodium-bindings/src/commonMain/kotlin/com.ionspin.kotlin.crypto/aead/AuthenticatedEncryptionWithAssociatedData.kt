@@ -25,6 +25,8 @@ val crypto_aead_chacha20poly1305_ABYTES = 16
 
 data class AeadEncryptedDataAndTag(val data: UByteArray, val tag: UByteArray)
 
+class AeadCorrupedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
+
 expect object AuthenticatedEncryptionWithAssociatedData {
     // X - Ietf
     fun xChaCha20Poly1305IetfEncrypt(
