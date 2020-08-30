@@ -14,9 +14,7 @@ val crypto_secretbox_NONCEBYTES = 24
 
 class SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
 
-data class SecretBoxEncryptedDataAndTag(
-    @JsName("data")
-    val data: UByteArray, val tag: UByteArray)
+data class SecretBoxEncryptedDataAndTag(val data: UByteArray, val tag: UByteArray)
 
 expect object SecretBox {
 
