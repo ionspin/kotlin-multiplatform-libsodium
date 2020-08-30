@@ -12,21 +12,21 @@
 | to_base64 | |  
 | to_hex | | 
 | to_string | |  
-| crypto_aead_chacha20poly1305_decrypt | |   
-| crypto_aead_chacha20poly1305_decrypt_detached | |  
-| crypto_aead_chacha20poly1305_encrypt | |   
-| crypto_aead_chacha20poly1305_encrypt_detached | |  
-| crypto_aead_chacha20poly1305_ietf_decrypt | |  
-| crypto_aead_chacha20poly1305_ietf_decrypt_detached | | 
-| crypto_aead_chacha20poly1305_ietf_encrypt | |  
-| crypto_aead_chacha20poly1305_ietf_encrypt_detached | | 
-| crypto_aead_chacha20poly1305_ietf_keygen | |   
-| crypto_aead_chacha20poly1305_keygen | |    
-| crypto_aead_xchacha20poly1305_ietf_decrypt | | 
-| crypto_aead_xchacha20poly1305_ietf_decrypt_detached | |    
-| crypto_aead_xchacha20poly1305_ietf_encrypt | | 
-| crypto_aead_xchacha20poly1305_ietf_encrypt_detached | |    
-| crypto_aead_xchacha20poly1305_ietf_keygen | |  
+| crypto_aead_chacha20poly1305_decrypt | :heavy_check_mark: |   
+| crypto_aead_chacha20poly1305_decrypt_detached | :heavy_check_mark: |  
+| crypto_aead_chacha20poly1305_encrypt | :heavy_check_mark: |   
+| crypto_aead_chacha20poly1305_encrypt_detached | :heavy_check_mark: |  
+| crypto_aead_chacha20poly1305_ietf_decrypt | :heavy_check_mark: |  
+| crypto_aead_chacha20poly1305_ietf_decrypt_detached | :heavy_check_mark: | 
+| crypto_aead_chacha20poly1305_ietf_encrypt | :heavy_check_mark: |  
+| crypto_aead_chacha20poly1305_ietf_encrypt_detached | :heavy_check_mark: | 
+| crypto_aead_chacha20poly1305_ietf_keygen | :heavy_check_mark: |   
+| crypto_aead_chacha20poly1305_keygen | :heavy_check_mark: |    
+| crypto_aead_xchacha20poly1305_ietf_decrypt | :heavy_check_mark: | 
+| crypto_aead_xchacha20poly1305_ietf_decrypt_detached | :heavy_check_mark: |    
+| crypto_aead_xchacha20poly1305_ietf_encrypt | :heavy_check_mark: | 
+| crypto_aead_xchacha20poly1305_ietf_encrypt_detached | :heavy_check_mark: |    
+| crypto_aead_xchacha20poly1305_ietf_keygen | :heavy_check_mark: |  
 | crypto_auth | |    
 | crypto_auth_hmacsha256 | | 
 | crypto_auth_hmacsha256_keygen | |  
@@ -150,29 +150,29 @@
 | SODIUM_LIBRARY_VERSION_MAJOR | |   
 | SODIUM_LIBRARY_VERSION_MINOR | |   
 | crypto_aead_chacha20poly1305_ABYTES | |    
-| crypto_aead_chacha20poly1305_IETF_ABYTES | |   
-| crypto_aead_chacha20poly1305_IETF_KEYBYTES | | 
+| crypto_aead_chacha20poly1305_IETF_ABYTES | :heavy_check_mark:  |   
+| crypto_aead_chacha20poly1305_IETF_KEYBYTES | :heavy_check_mark:  | 
 | crypto_aead_chacha20poly1305_IETF_MESSAGEBYTES_MAX | | 
-| crypto_aead_chacha20poly1305_IETF_NPUBBYTES | |    
+| crypto_aead_chacha20poly1305_IETF_NPUBBYTES | :heavy_check_mark:  |    
 | crypto_aead_chacha20poly1305_IETF_NSECBYTES | |    
 | crypto_aead_chacha20poly1305_KEYBYTES | |  
 | crypto_aead_chacha20poly1305_MESSAGEBYTES_MAX | |  
 | crypto_aead_chacha20poly1305_NPUBBYTES | | 
 | crypto_aead_chacha20poly1305_NSECBYTES | | 
-| crypto_aead_chacha20poly1305_ietf_ABYTES | |   
-| crypto_aead_chacha20poly1305_ietf_KEYBYTES | | 
+| crypto_aead_chacha20poly1305_ietf_ABYTES | :heavy_check_mark:  |   
+| crypto_aead_chacha20poly1305_ietf_KEYBYTES | :heavy_check_mark:  | 
 | crypto_aead_chacha20poly1305_ietf_MESSAGEBYTES_MAX | | 
-| crypto_aead_chacha20poly1305_ietf_NPUBBYTES | |    
+| crypto_aead_chacha20poly1305_ietf_NPUBBYTES | :heavy_check_mark:  |    
 | crypto_aead_chacha20poly1305_ietf_NSECBYTES | |    
 | crypto_aead_xchacha20poly1305_IETF_ABYTES | |  
 | crypto_aead_xchacha20poly1305_IETF_KEYBYTES | |    
 | crypto_aead_xchacha20poly1305_IETF_MESSAGEBYTES_MAX | |    
 | crypto_aead_xchacha20poly1305_IETF_NPUBBYTES | |   
 | crypto_aead_xchacha20poly1305_IETF_NSECBYTES | |   
-| crypto_aead_xchacha20poly1305_ietf_ABYTES | |  
-| crypto_aead_xchacha20poly1305_ietf_KEYBYTES | |    
+| crypto_aead_xchacha20poly1305_ietf_ABYTES | :heavy_check_mark:  |  
+| crypto_aead_xchacha20poly1305_ietf_KEYBYTES | :heavy_check_mark:  |    
 | crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX | |    
-| crypto_aead_xchacha20poly1305_ietf_NPUBBYTES | |   
+| crypto_aead_xchacha20poly1305_ietf_NPUBBYTES | :heavy_check_mark:  |   
 | crypto_aead_xchacha20poly1305_ietf_NSECBYTES | |   
 | crypto_auth_BYTES | |  
 | crypto_auth_KEYBYTES | |   
