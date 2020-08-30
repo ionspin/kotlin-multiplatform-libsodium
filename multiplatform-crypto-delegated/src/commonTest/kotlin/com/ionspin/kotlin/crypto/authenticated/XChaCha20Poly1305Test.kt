@@ -26,7 +26,7 @@ class XChaCha20Poly1305Test {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
 
-            val additionalData = ubyteArrayOf(
+            val associatedData = ubyteArrayOf(
                 0x50U, 0x51U, 0x52U, 0x53U, 0xc0U, 0xc1U, 0xc2U, 0xc3U, 0xc4U, 0xc5U, 0xc6U, 0xc7U
             )
             val key = ubyteArrayOf(
@@ -61,9 +61,9 @@ class XChaCha20Poly1305Test {
                 0x98U, 0x79U, 0x47U, 0xdeU, 0xafU, 0xd8U, 0x78U, 0x0aU,
                 0xcfU, 0x49U
             )
-            val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, additionalData)
+            val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, associatedData)
             encrypted.hexColumsPrint()
-            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
+            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, associatedData)
             println("Decrypted")
             decrypted.hexColumsPrint()
             println("----------")
@@ -74,7 +74,7 @@ class XChaCha20Poly1305Test {
             val message = ubyteArrayOf(
                 0x00U
             )
-            val additionalData = ubyteArrayOf(
+            val associatedData = ubyteArrayOf(
                 0x00U
             )
             val key = ubyteArrayOf(
@@ -93,8 +93,8 @@ class XChaCha20Poly1305Test {
                 0xbdU, 0x3bU, 0x8aU, 0xd7U, 0xa1U, 0x9dU, 0xe8U, 0xc4U, 0x55U,
                 0x84U, 0x6fU, 0xfcU, 0x75U, 0x31U, 0xbfU, 0x0cU, 0x2dU
             )
-            val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, additionalData)
-            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, additionalData)
+            val encrypted = XChaCha20Poly1305Delegated.encrypt(key, nonce, message, associatedData)
+            val decrypted = XChaCha20Poly1305Delegated.decrypt(key, nonce, encrypted, associatedData)
 
             encrypted.contentEquals(expected)  && decrypted.contentEquals(message)
         }
@@ -109,7 +109,7 @@ class XChaCha20Poly1305Test {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
 
-            val additionalData = ubyteArrayOf(
+            val associatedData = ubyteArrayOf(
                 0x50U, 0x51U, 0x52U, 0x53U, 0xc0U, 0xc1U, 0xc2U, 0xc3U, 0xc4U, 0xc5U, 0xc6U, 0xc7U
             )
             val key = ubyteArrayOf(
@@ -144,7 +144,7 @@ class XChaCha20Poly1305Test {
                 0x98U, 0x79U, 0x47U, 0xdeU, 0xafU, 0xd8U, 0x78U, 0x0aU,
                 0xcfU, 0x49U
             )
-//            val xChaChaPoly = XChaCha20Poly1305Delegated(key, additionalData)
+//            val xChaChaPoly = XChaCha20Poly1305Delegated(key, associatedData)
 //            val firstChunk = xChaChaPoly.encrypt(message)
 //            val finalChunk = xChaChaPoly.finishEncryption().first
 //            val result = firstChunk + finalChunk
@@ -157,7 +157,7 @@ class XChaCha20Poly1305Test {
             val message = ubyteArrayOf(
                 0x00U
             )
-            val additionalData = ubyteArrayOf(
+            val associatedData = ubyteArrayOf(
                 0x00U
             )
             val key = ubyteArrayOf(
@@ -176,7 +176,7 @@ class XChaCha20Poly1305Test {
                 0xbdU, 0x3bU, 0x8aU, 0xd7U, 0xa1U, 0x9dU, 0xe8U, 0xc4U, 0x55U,
                 0x84U, 0x6fU, 0xfcU, 0x75U, 0x31U, 0xbfU, 0x0cU, 0x2dU
             )
-//            val xChaChaPoly = XChaCha20Poly1305Delegated(key, additionalData)
+//            val xChaChaPoly = XChaCha20Poly1305Delegated(key, associatedData)
 //            val firstChunk = xChaChaPoly.encrypt(message)
 //            val finalChunk = xChaChaPoly.finishEncryption().first
 //            val result = firstChunk + finalChunk

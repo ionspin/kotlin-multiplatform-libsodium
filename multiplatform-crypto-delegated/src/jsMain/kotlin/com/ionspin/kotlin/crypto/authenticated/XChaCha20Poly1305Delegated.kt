@@ -24,11 +24,11 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             key: UByteArray,
             nonce: UByteArray,
             message: UByteArray,
-            additionalData: UByteArray
+            associatedData: UByteArray
         ): UByteArray {
             val encrypted = getSodium().crypto_aead_xchacha20poly1305_ietf_encrypt(
                 message.toUInt8Array(),
-                additionalData.toUInt8Array(),
+                associatedData.toUInt8Array(),
                 Uint8Array(0),
                 nonce.toUInt8Array(),
                 key.toUInt8Array()
@@ -40,12 +40,12 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             key: UByteArray,
             nonce: UByteArray,
             ciphertext: UByteArray,
-            additionalData: UByteArray
+            associatedData: UByteArray
         ): UByteArray {
             val decrypted = getSodium().crypto_aead_xchacha20poly1305_ietf_decrypt(
                 Uint8Array(0),
                 ciphertext.toUInt8Array(),
-                additionalData.toUInt8Array(),
+                associatedData.toUInt8Array(),
                 nonce.toUInt8Array(),
                 key.toUInt8Array()
             )
@@ -92,25 +92,25 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         isEncryptor = !isDecryptor
     }
 
-    actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+    actual fun encrypt(data: UByteArray, associatedData: UByteArray): UByteArray {
         if (!isInitialized) {
             throw RuntimeException("Not initalized!")
         }
         if (!isEncryptor) {
             throw RuntimeException("Initialized as decryptor, attempted to use as encryptor")
         }
-        val encrypted = getSodium().crypto_secretstream_xchacha20poly1305_push(state, data.toUInt8Array(), additionalData.toUInt8Array(), 0U)
+        val encrypted = getSodium().crypto_secretstream_xchacha20poly1305_push(state, data.toUInt8Array(), associatedData.toUInt8Array(), 0U)
         return encrypted.toUByteArray()
     }
 
-    actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+    actual fun decrypt(data: UByteArray, associatedData: UByteArray): UByteArray {
         if (!isInitialized) {
             throw RuntimeException("Not initalized!")
         }
         if (isEncryptor) {
             throw RuntimeException("Initialized as encryptor, attempted to use as decryptor")
         }
-        val decryptedWithTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(state, data.toUInt8Array(), additionalData.toUInt8Array())
+        val decryptedWithTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(state, data.toUInt8Array(), associatedData.toUInt8Array())
         val decrypted = decryptedWithTag.message as Uint8Array
         val validTag = decryptedWithTag.tag
 

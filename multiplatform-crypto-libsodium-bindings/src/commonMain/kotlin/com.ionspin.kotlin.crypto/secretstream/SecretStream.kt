@@ -27,9 +27,9 @@ class SecretStreamCorrupedOrTamperedDataException() : RuntimeException("MAC vali
 expect object SecretStream {
 
     fun xChaCha20Poly1305InitPush(key: UByteArray) : SecretStreamStateAndHeader
-    fun xChaCha20Poly1305Push(state : SecretStreamState, message: UByteArray, additionalData : UByteArray = ubyteArrayOf(), tag: UByte) : UByteArray
+    fun xChaCha20Poly1305Push(state : SecretStreamState, message: UByteArray, associatedData : UByteArray = ubyteArrayOf(), tag: UByte) : UByteArray
     fun xChaCha20Poly1305InitPull(key: UByteArray, header: UByteArray) : SecretStreamStateAndHeader
-    fun xChaCha20Poly1305Pull(state : SecretStreamState, ciphertext: UByteArray, additionalData : UByteArray = ubyteArrayOf()) : DecryptedDataAndTag
+    fun xChaCha20Poly1305Pull(state : SecretStreamState, ciphertext: UByteArray, associatedData : UByteArray = ubyteArrayOf()) : DecryptedDataAndTag
     fun xChaCha20Poly1305Keygen() : UByteArray
     fun xChaCha20Poly1305Rekey(state: SecretStreamState)
 

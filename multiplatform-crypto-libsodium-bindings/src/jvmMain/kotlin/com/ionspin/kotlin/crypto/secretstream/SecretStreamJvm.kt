@@ -16,7 +16,7 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Push(
         state: SecretStreamState,
         message: UByteArray,
-        additionalData: UByteArray,
+        associatedData: UByteArray,
         tag: UByte
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_secretstream_xchacha20poly1305_ABYTES)
@@ -26,8 +26,8 @@ actual object SecretStream {
             null,
             message.asByteArray(),
             message.size.toLong(),
-            additionalData.asByteArray(),
-            additionalData.size.toLong(),
+            associatedData.asByteArray(),
+            associatedData.size.toLong(),
             tag.toByte()
         )
         return ciphertext
@@ -45,7 +45,7 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Pull(
         state: SecretStreamState,
         ciphertext: UByteArray,
-        additionalData: UByteArray
+        associatedData: UByteArray
     ): DecryptedDataAndTag {
         val result = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES)
         val tagArray = UByteArray(1) { 0U }
@@ -56,8 +56,8 @@ actual object SecretStream {
             tagArray.asByteArray(),
             ciphertext.asByteArray(),
             ciphertext.size.toLong(),
-            additionalData.asByteArray(),
-            additionalData.size.toLong()
+            associatedData.asByteArray(),
+            associatedData.size.toLong()
         )
         if (validationResult != 0) {
             throw SecretStreamCorrupedOrTamperedDataException()

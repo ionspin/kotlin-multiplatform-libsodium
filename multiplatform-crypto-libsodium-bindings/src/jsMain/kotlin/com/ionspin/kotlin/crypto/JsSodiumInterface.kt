@@ -45,17 +45,17 @@ interface JsSodiumInterface {
     fun crypto_hash_sha512_final(state: dynamic): Uint8Array
 
     //XChaCha20Poly1305
-    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, additionalData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-    fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, additionalData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, associatedData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
 
     //XChaCha20Poly1305
     //encrypt
     fun crypto_secretstream_xchacha20poly1305_init_push(key: Uint8Array) : dynamic
-    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, additionalData: Uint8Array, tag: UByte) : Uint8Array
+    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, associatedData: Uint8Array, tag: UByte) : Uint8Array
 
     //decrypt
     fun crypto_secretstream_xchacha20poly1305_init_pull(header: Uint8Array, key: Uint8Array) : dynamic
-    fun crypto_secretstream_xchacha20poly1305_pull(state: dynamic, ciphertext: Uint8Array, additionalData: Uint8Array) : dynamic
+    fun crypto_secretstream_xchacha20poly1305_pull(state: dynamic, ciphertext: Uint8Array, associatedData: Uint8Array) : dynamic
 
     //keygen and rekey
     fun crypto_secretstream_xchacha20poly1305_keygen() : Uint8Array

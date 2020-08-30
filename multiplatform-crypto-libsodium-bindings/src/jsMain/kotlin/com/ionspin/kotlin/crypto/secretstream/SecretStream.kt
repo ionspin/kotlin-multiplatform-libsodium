@@ -16,11 +16,11 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Push(
         state: SecretStreamState,
         message: UByteArray,
-        additionalData: UByteArray,
+        associatedData: UByteArray,
         tag: UByte
     ): UByteArray {
         return getSodium().crypto_secretstream_xchacha20poly1305_push(
-            state, message.toUInt8Array(), additionalData.toUInt8Array(), tag
+            state, message.toUInt8Array(), associatedData.toUInt8Array(), tag
         ).toUByteArray()
     }
 
@@ -35,10 +35,10 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Pull(
         state: SecretStreamState,
         ciphertext: UByteArray,
-        additionalData: UByteArray
+        associatedData: UByteArray
     ): DecryptedDataAndTag {
         val dataAndTag = getSodium().crypto_secretstream_xchacha20poly1305_pull(
-            state, ciphertext.toUInt8Array(), additionalData.toUInt8Array()
+            state, ciphertext.toUInt8Array(), associatedData.toUInt8Array()
         )
         if (dataAndTag == false) {
             throw SecretStreamCorrupedOrTamperedDataException()

@@ -16,7 +16,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             key: UByteArray,
             nonce: UByteArray,
             message: UByteArray,
-            additionalData: UByteArray
+            associatedData: UByteArray
         ): UByteArray {
             val ciphertext = ByteArray(message.size + 16)
             SodiumJava().crypto_aead_xchacha20poly1305_ietf_encrypt(
@@ -24,8 +24,8 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
                 longArrayOf(ciphertext.size.toLong()),
                 message.toByteArray(),
                 message.size.toLong(),
-                additionalData.toByteArray(),
-                additionalData.size.toLong(),
+                associatedData.toByteArray(),
+                associatedData.size.toLong(),
                 null,
                 nonce.toByteArray(),
                 key.toByteArray()
@@ -38,7 +38,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             key: UByteArray,
             nonce: UByteArray,
             ciphertext: UByteArray,
-            additionalData: UByteArray
+            associatedData: UByteArray
         ): UByteArray {
             val message = ByteArray(ciphertext.size - 16)
             SodiumJava().crypto_aead_xchacha20poly1305_ietf_decrypt(
@@ -47,8 +47,8 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
                 null,
                 ciphertext.toByteArray(),
                 ciphertext.size.toLong(),
-                additionalData.toByteArray(),
-                additionalData.size.toLong(),
+                associatedData.toByteArray(),
+                associatedData.size.toLong(),
                 nonce.toByteArray(),
                 key.toByteArray()
 
@@ -89,7 +89,7 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         isEncryptor = false
     }
 
-    actual fun encrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+    actual fun encrypt(data: UByteArray, associatedData: UByteArray): UByteArray {
         if (!isInitialized) {
             throw RuntimeException("Not initalized!")
         }
@@ -100,13 +100,13 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
         sodium.crypto_secretstream_xchacha20poly1305_push(
             state, ciphertext, null,
             data.asByteArray(), data.size.toLong(),
-            additionalData.asByteArray(), additionalData.size.toLong(),
+            associatedData.asByteArray(), associatedData.size.toLong(),
             0
         )
         return ciphertext.asUByteArray()
     }
 
-    actual fun decrypt(data: UByteArray, additionalData: UByteArray): UByteArray {
+    actual fun decrypt(data: UByteArray, associatedData: UByteArray): UByteArray {
         if (!isInitialized) {
             throw RuntimeException("Not initalized!")
         }
@@ -120,8 +120,8 @@ actual class XChaCha20Poly1305Delegated internal actual constructor() {
             null,
             data.asByteArray(),
             (data.size).toLong(),
-            additionalData.asByteArray(),
-            additionalData.size.toLong()
+            associatedData.asByteArray(),
+            associatedData.size.toLong()
         )
         if (validTag != 0) {
             println("Tag validation failed")

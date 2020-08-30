@@ -40,14 +40,14 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Push(
         state: SecretStreamState,
         message: UByteArray,
-        additionalData: UByteArray,
+        associatedData: UByteArray,
         tag: UByte
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_secretstream_xchacha20poly1305_ABYTES.toInt()) { 0U }
         val ciphertextPinned = ciphertext.pin()
         val messagePinned = message.pin()
-        val additionalDataPinned = if (additionalData.isNotEmpty()) {
-            additionalData.pin()
+        val associatedDataPinned = if (associatedData.isNotEmpty()) {
+            associatedData.pin()
         } else {
             null
         }
@@ -57,14 +57,14 @@ actual object SecretStream {
             null,
             messagePinned.toPtr(),
             message.size.convert(),
-            additionalDataPinned?.toPtr(),
-            additionalData.size.convert(),
+            associatedDataPinned?.toPtr(),
+            associatedData.size.convert(),
             tag
         )
 
         ciphertextPinned.unpin()
         messagePinned.unpin()
-        additionalDataPinned?.unpin()
+        associatedDataPinned?.unpin()
         return ciphertext
     }
 
@@ -89,13 +89,13 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305Pull(
         state: SecretStreamState,
         ciphertext: UByteArray,
-        additionalData: UByteArray
+        associatedData: UByteArray
     ): DecryptedDataAndTag {
         val message = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES.toInt())
         val messagePinned = message.pin()
         val ciphertextPinned = ciphertext.pin()
-        val additionalDataPinned = if (additionalData.isNotEmpty()) {
-            additionalData.pin()
+        val associatedDataPinned = if (associatedData.isNotEmpty()) {
+            associatedData.pin()
         } else {
             null
         }
@@ -108,12 +108,12 @@ actual object SecretStream {
             tagPinned.toPtr(),
             ciphertextPinned.toPtr(),
             ciphertext.size.convert(),
-            additionalDataPinned?.toPtr(),
-            additionalData.size.convert()
+            associatedDataPinned?.toPtr(),
+            associatedData.size.convert()
             )
         ciphertextPinned.unpin()
         messagePinned.unpin()
-        additionalDataPinned?.unpin()
+        associatedDataPinned?.unpin()
         tagPinned.unpin()
         if (validationResult != 0) {
             throw SecretStreamCorrupedOrTamperedDataException()

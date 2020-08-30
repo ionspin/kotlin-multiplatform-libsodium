@@ -22,7 +22,7 @@ class SecretStreamTest {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
 
-            val additionalData = ubyteArrayOf(
+            val associatedData = ubyteArrayOf(
                 0x50U, 0x51U, 0x52U, 0x53U, 0xc0U, 0xc1U, 0xc2U, 0xc3U, 0xc4U, 0xc5U, 0xc6U, 0xc7U
             )
             val key = ubyteArrayOf(
