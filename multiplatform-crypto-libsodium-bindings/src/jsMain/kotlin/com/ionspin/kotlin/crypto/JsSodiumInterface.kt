@@ -44,9 +44,9 @@ interface JsSodiumInterface {
 
     fun crypto_hash_sha512_final(state: dynamic): Uint8Array
 
-    //XChaCha20Poly1305
-    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-    fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, associatedData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    //XChaCha20Poly1305 - also in bindings
+    //fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    //fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, associatedData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
 
     //XChaCha20Poly1305
     //encrypt
@@ -70,6 +70,26 @@ interface JsSodiumInterface {
 
 
     // ---- SecretBox End ----
+
+
+    // ---- AEAD ----
+    fun crypto_aead_chacha20poly1305_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_chacha20poly1305_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
+    fun crypto_aead_chacha20poly1305_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_chacha20poly1305_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
+    fun crypto_aead_chacha20poly1305_ietf_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_chacha20poly1305_ietf_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
+    fun crypto_aead_chacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_chacha20poly1305_ietf_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
+    fun crypto_aead_chacha20poly1305_ietf_keygen() : Uint8Array
+    fun crypto_aead_chacha20poly1305_keygen() : Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
+    fun crypto_aead_xchacha20poly1305_ietf_keygen(): Uint8Array
+
+    // ---- AEAD end ----
 
     //util
     fun memzero(array: Uint8Array)

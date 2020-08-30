@@ -11,10 +11,13 @@ import libsodium.crypto_aead_chacha20poly1305_ietf_decrypt
 import libsodium.crypto_aead_chacha20poly1305_ietf_decrypt_detached
 import libsodium.crypto_aead_chacha20poly1305_ietf_encrypt
 import libsodium.crypto_aead_chacha20poly1305_ietf_encrypt_detached
+import libsodium.crypto_aead_chacha20poly1305_ietf_keygen
+import libsodium.crypto_aead_chacha20poly1305_keygen
 import libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt
 import libsodium.crypto_aead_xchacha20poly1305_ietf_decrypt_detached
 import libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt
 import libsodium.crypto_aead_xchacha20poly1305_ietf_encrypt_detached
+import libsodium.crypto_aead_xchacha20poly1305_ietf_keygen
 
 actual object AuthenticatedEncryptionWithAssociatedData {
 
@@ -502,6 +505,30 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         }
 
         return message
+    }
+
+    actual fun xChaCha20Poly1305IetfKeygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_aead_xchacha20poly1305_ietf_KEYBYTES)
+        val generatedKeyPinned = generatedKey.pin()
+        crypto_aead_xchacha20poly1305_ietf_keygen(generatedKeyPinned.toPtr())
+        generatedKeyPinned.unpin()
+        return generatedKey
+    }
+
+    actual fun chaCha20Poly1305IetfKeygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_aead_chacha20poly1305_ietf_KEYBYTES)
+        val generatedKeyPinned = generatedKey.pin()
+        crypto_aead_chacha20poly1305_ietf_keygen(generatedKeyPinned.toPtr())
+        generatedKeyPinned.unpin()
+        return generatedKey
+    }
+
+    actual fun chaCha20Poly1305Keygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_aead_chacha20poly1305_KEYBYTES)
+        val generatedKeyPinned = generatedKey.pin()
+        crypto_aead_chacha20poly1305_keygen(generatedKeyPinned.toPtr())
+        generatedKeyPinned.unpin()
+        return generatedKey
     }
 
 }

@@ -120,4 +120,9 @@ expect object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray
 
+
+    fun xChaCha20Poly1305IetfKeygen() : UByteArray
+    fun chaCha20Poly1305IetfKeygen() : UByteArray
+    fun chaCha20Poly1305Keygen() : UByteArray
+
 }
