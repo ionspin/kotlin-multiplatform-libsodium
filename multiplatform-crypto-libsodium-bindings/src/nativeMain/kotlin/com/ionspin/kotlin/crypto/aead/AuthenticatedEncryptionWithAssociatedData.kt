@@ -152,7 +152,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         val noncePinned = nonce.pin()
         val keyPinned = key.pin()
 
-        val message = UByteArray(ciphertext.size - crypto_aead_xchacha20poly1305_ietf_ABYTES)
+        val message = UByteArray(ciphertext.size)
         val messagePinned = message.pin()
 
         val validationResult = crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
@@ -313,7 +313,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         val noncePinned = nonce.pin()
         val keyPinned = key.pin()
 
-        val message = UByteArray(ciphertext.size - crypto_aead_chacha20poly1305_ietf_ABYTES)
+        val message = UByteArray(ciphertext.size)
         val messagePinned = message.pin()
 
         val validationResult = crypto_aead_chacha20poly1305_ietf_decrypt_detached(
@@ -474,7 +474,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         val noncePinned = nonce.pin()
         val keyPinned = key.pin()
 
-        val message = UByteArray(ciphertext.size - crypto_aead_chacha20poly1305_ABYTES)
+        val message = UByteArray(ciphertext.size)
         val messagePinned = message.pin()
 
         val validationResult = crypto_aead_chacha20poly1305_decrypt_detached(

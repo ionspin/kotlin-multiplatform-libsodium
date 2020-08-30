@@ -67,7 +67,6 @@ class SecretBoxTest {
                 0x50U, 0x51U, 0x52U, 0x53U, 0x54U, 0x55U, 0x56U, 0x57U,
             )
 
-            println("Debug")
             val encrypted = SecretBox.detached(message, nonce, key)
             val decrypted = SecretBox.openDetached(encrypted.data, encrypted.tag, nonce, key)
             assertTrue { decrypted.contentEquals(message) }
