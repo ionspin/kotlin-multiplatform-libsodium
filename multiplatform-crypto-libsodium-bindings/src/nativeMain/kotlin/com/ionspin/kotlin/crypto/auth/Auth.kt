@@ -47,7 +47,6 @@ actual object Auth {
         val macPinned = mac.pin()
         val messagePinned = message.pin()
         val keyPinned = key.pin()
-
         val verify = crypto_auth_verify(
             macPinned.toPtr(),
             messagePinned.toPtr(),
@@ -57,7 +56,7 @@ actual object Auth {
 
         keyPinned.unpin()
         messagePinned.unpin()
-        keyPinned.unpin()
+        macPinned.unpin()
         return verify == 0
     }
 
@@ -108,7 +107,7 @@ actual object Auth {
 
         keyPinned.unpin()
         messagePinned.unpin()
-        keyPinned.unpin()
+        macPinned.unpin()
         return verify == 0
     }
 
@@ -159,7 +158,7 @@ actual object Auth {
 
         keyPinned.unpin()
         messagePinned.unpin()
-        keyPinned.unpin()
+        macPinned.unpin()
         return verify == 0
     }
 
