@@ -63,12 +63,12 @@
 | crypto_core_ristretto255_scalar_reduce | | 
 | crypto_core_ristretto255_scalar_sub | |    
 | crypto_core_ristretto255_sub | |   
-| crypto_generichash | |                                       DONE
+| crypto_generichash | :heavy_check_mark:  |                                       
 | crypto_generichash_blake2b_salt_personal | |   
-| crypto_generichash_final | |                                   DONE
-| crypto_generichash_init | |                                     DONE
+| crypto_generichash_final | :heavy_check_mark:  |                                   
+| crypto_generichash_init | :heavy_check_mark:  |                                     
 | crypto_generichash_keygen | |  
-| crypto_generichash_update | |                                 DONE
+| crypto_generichash_update | :heavy_check_mark:  |                                 
 | crypto_hash | |    
 | crypto_hash_sha256 | | 
 | crypto_hash_sha256_final | |   
