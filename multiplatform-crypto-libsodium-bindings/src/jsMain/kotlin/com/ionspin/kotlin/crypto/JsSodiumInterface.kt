@@ -91,6 +91,20 @@ interface JsSodiumInterface {
 
     // ---- AEAD end ----
 
+    // ---- Auth ----
+
+    fun crypto_auth(message: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_auth_keygen() : Uint8Array
+    fun crypto_auth_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
+    fun crypto_auth_hmacsha256(message: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_auth_hmacsha256_keygen() : Uint8Array
+    fun crypto_auth_hmacsha256_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
+    fun crypto_auth_hmacsha512(message: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_auth_hmacsha512_keygen() : Uint8Array
+    fun crypto_auth_hmacsha512_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
+
+    // ---- Auth end ----
+
     //util
     fun memzero(array: Uint8Array)
 

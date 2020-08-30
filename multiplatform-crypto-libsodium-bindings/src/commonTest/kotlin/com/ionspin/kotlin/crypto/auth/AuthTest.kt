@@ -21,7 +21,6 @@ class AuthTest {
                     " to get some lyrics in these tests").encodeToUByteArray()
 
             val key = "We'll see1We'll see1We'll see123".encodeToUByteArray()
-            println("Key size ${key.size}")
 
             val expected = "702beb4494a1d80795512668df016807ec052dc848a4c958eb1544ec1c8d6314".hexStringToUByteArray()
 
@@ -91,5 +90,19 @@ class AuthTest {
                 Auth.authHmacSha512Verify(tampered, message, key)
             }
         }
+    }
+
+    @Test
+    fun simpleKeygenTest() {
+        LibsodiumInitializer.initializeWithCallback {
+            val authKey = Auth.authKeygen()
+            assertTrue { authKey.size == crypto_auth_KEYBYTES }
+            val auth256Key = Auth.authHmacSha256Keygen()
+            assertTrue { auth256Key.size == crypto_auth_hmacsha256_KEYBYTES }
+            val auth512Key = Auth.authHmacSha512Keygen()
+            assertTrue { auth512Key.size == crypto_auth_hmacsha512_KEYBYTES }
+        }
+
+
     }
 }

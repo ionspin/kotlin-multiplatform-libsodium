@@ -27,15 +27,15 @@
 | crypto_aead_xchacha20poly1305_ietf_encrypt | :heavy_check_mark: | 
 | crypto_aead_xchacha20poly1305_ietf_encrypt_detached | :heavy_check_mark: |    
 | crypto_aead_xchacha20poly1305_ietf_keygen | :heavy_check_mark: |  
-| crypto_auth | |    
-| crypto_auth_hmacsha256 | | 
-| crypto_auth_hmacsha256_keygen | |  
-| crypto_auth_hmacsha256_verify | |  
-| crypto_auth_hmacsha512 | | 
-| crypto_auth_hmacsha512_keygen | |  
-| crypto_auth_hmacsha512_verify | |  
-| crypto_auth_keygen | | 
-| crypto_auth_verify | | 
+| crypto_auth | :heavy_check_mark: |    
+| crypto_auth_hmacsha256 | :heavy_check_mark: | 
+| crypto_auth_hmacsha256_keygen | :heavy_check_mark: |  
+| crypto_auth_hmacsha256_verify | :heavy_check_mark: |  
+| crypto_auth_hmacsha512 | :heavy_check_mark: | 
+| crypto_auth_hmacsha512_keygen | :heavy_check_mark: |  
+| crypto_auth_hmacsha512_verify | :heavy_check_mark: |  
+| crypto_auth_keygen | :heavy_check_mark: | 
+| crypto_auth_verify | :heavy_check_mark: | 
 | crypto_box_beforenm | |    
 | crypto_box_curve25519xchacha20poly1305_keypair | | 
 | crypto_box_curve25519xchacha20poly1305_seal | |    
@@ -174,14 +174,14 @@
 | crypto_aead_xchacha20poly1305_ietf_MESSAGEBYTES_MAX | |    
 | crypto_aead_xchacha20poly1305_ietf_NPUBBYTES | :heavy_check_mark:  |   
 | crypto_aead_xchacha20poly1305_ietf_NSECBYTES | |   
-| crypto_auth_BYTES | |  
-| crypto_auth_KEYBYTES | |   
-| crypto_auth_hmacsha256_BYTES | |   
-| crypto_auth_hmacsha256_KEYBYTES | |    
-| crypto_auth_hmacsha512256_BYTES | |    
-| crypto_auth_hmacsha512256_KEYBYTES | | 
-| crypto_auth_hmacsha512_BYTES | |   
-| crypto_auth_hmacsha512_KEYBYTES | |    
+| crypto_auth_BYTES | :heavy_check_mark: |  
+| crypto_auth_KEYBYTES | :heavy_check_mark: |   
+| crypto_auth_hmacsha256_BYTES | :heavy_check_mark: |   
+| crypto_auth_hmacsha256_KEYBYTES | :heavy_check_mark: |    
+| crypto_auth_hmacsha512256_BYTES | :heavy_check_mark: |    
+| crypto_auth_hmacsha512256_KEYBYTES | :heavy_check_mark: | 
+| crypto_auth_hmacsha512_BYTES | :heavy_check_mark: |   
+| crypto_auth_hmacsha512_KEYBYTES | :heavy_check_mark: |    
 | crypto_box_BEFORENMBYTES | |   
 | crypto_box_MACBYTES | |    
 | crypto_box_MESSAGEBYTES_MAX | |    
