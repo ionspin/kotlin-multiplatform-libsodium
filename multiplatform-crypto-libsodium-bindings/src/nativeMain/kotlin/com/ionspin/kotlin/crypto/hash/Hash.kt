@@ -23,16 +23,17 @@ actual typealias Sha256State = crypto_hash_sha256_state
 actual typealias Sha512State = crypto_hash_sha512_state
 
 actual object Hash {
-    actual fun hash(data: UByteArray): UByteArray {
-        val hashResult = UByteArray(crypto_hash_BYTES)
-        val hashResultPinned = hashResult.pin()
-        val dataPinned = data.pin()
-        crypto_hash(hashResultPinned.toPtr(), dataPinned.toPtr(), data.size.convert())
-        hashResultPinned.unpin()
-        dataPinned.unpin()
-
-        return hashResult
-    }
+    //Not present in Lazy Sodium
+//    actual fun hash(data: UByteArray): UByteArray {
+//        val hashResult = UByteArray(crypto_hash_BYTES)
+//        val hashResultPinned = hashResult.pin()
+//        val dataPinned = data.pin()
+//        crypto_hash(hashResultPinned.toPtr(), dataPinned.toPtr(), data.size.convert())
+//        hashResultPinned.unpin()
+//        dataPinned.unpin()
+//
+//        return hashResult
+//    }
 
     actual fun sha256(data: UByteArray): UByteArray {
         val hashResult = UByteArray(crypto_hash_sha256_BYTES)

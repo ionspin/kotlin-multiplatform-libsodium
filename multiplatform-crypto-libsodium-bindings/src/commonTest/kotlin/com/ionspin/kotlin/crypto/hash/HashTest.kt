@@ -13,20 +13,21 @@ import kotlin.test.assertTrue
  * on 31-Aug-2020
  */
 class HashTest {
-    @Test
-    fun hashTest() {
-        LibsodiumInitializer.initializeWithCallback {
-            val input = ("Input for various hash functions").encodeToUByteArray()
-            val expected = ("34fcbcdcfe9e6aa3e6d5a64649afcfafb449c4b8435a65e5e7b7c2b6af3b04da350acee" +
-                    "838246d7c2637021def0c844fcb79ac42d6a50279f1078e535997b6e6").hexStringToUByteArray()
-
-            val result = Hash.hash(input)
-            assertTrue {
-                result.contentEquals(expected)
-            }
-        }
-
-    }
+    //Not present in Lazy sodium
+//    @Test
+//    fun hashTest() {
+//        LibsodiumInitializer.initializeWithCallback {
+//            val input = ("Input for various hash functions").encodeToUByteArray()
+//            val expected = ("34fcbcdcfe9e6aa3e6d5a64649afcfafb449c4b8435a65e5e7b7c2b6af3b04da350acee" +
+//                    "838246d7c2637021def0c844fcb79ac42d6a50279f1078e535997b6e6").hexStringToUByteArray()
+//
+//            val result = Hash.hash(input)
+//            assertTrue {
+//                result.contentEquals(expected)
+//            }
+//        }
+//
+//    }
 
 
     @Test

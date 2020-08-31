@@ -15,7 +15,8 @@ expect class Sha512State
 
 expect object Hash {
 
-    fun hash(data: UByteArray) : UByteArray
+    //Not present in LazySodium
+    //fun hash(data: UByteArray) : UByteArray
 
     fun sha256(data: UByteArray) : UByteArray
     fun sha256Init() : Sha256State
