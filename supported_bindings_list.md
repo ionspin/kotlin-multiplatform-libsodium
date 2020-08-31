@@ -6,8 +6,6 @@
 | output_formats | | 
 | pad | |    
 | unpad | |  
-| ready | |  
-| [[ | | 
 | symbols | |    
 | to_base64 | |  
 | to_hex | | 
@@ -37,9 +35,9 @@
 | crypto_auth_keygen | :heavy_check_mark: | 
 | crypto_auth_verify | :heavy_check_mark: | 
 | crypto_box_beforenm | |    
-| crypto_box_curve25519xchacha20poly1305_keypair | | 
-| crypto_box_curve25519xchacha20poly1305_seal | |    
-| crypto_box_curve25519xchacha20poly1305_seal_open | |   
+| crypto_box_curve25519xchacha20poly1305_keypair | not present in LazySodium | 
+| crypto_box_curve25519xchacha20poly1305_seal | not present in LazySodium |    
+| crypto_box_curve25519xchacha20poly1305_seal_open |not present in LazySodium  |   
 | crypto_box_detached | |    
 | crypto_box_easy | |    
 | crypto_box_easy_afternm | |    
@@ -70,14 +68,14 @@
 | crypto_generichash_keygen | :heavy_check_mark: |  
 | crypto_generichash_update | :heavy_check_mark: |                                 
 | crypto_hash | |    
-| crypto_hash_sha256 | | 
-| crypto_hash_sha256_final | |   
-| crypto_hash_sha256_init | |    
-| crypto_hash_sha256_update | |  
-| crypto_hash_sha512 | | 
-| crypto_hash_sha512_final | |   
-| crypto_hash_sha512_init | |    
-| crypto_hash_sha512_update | |  
+| crypto_hash_sha256 | :heavy_check_mark | 
+| crypto_hash_sha256_final | :heavy_check_mark |   
+| crypto_hash_sha256_init | :heavy_check_mark |    
+| crypto_hash_sha256_update | :heavy_check_mark |  
+| crypto_hash_sha512 | :heavy_check_mark | 
+| crypto_hash_sha512_final | :heavy_check_mark |   
+| crypto_hash_sha512_init | :heavy_check_mark |    
+| crypto_hash_sha512_update | :heavy_check_mark |  
 | crypto_kdf_derive_from_key | | 
 | crypto_kdf_keygen | |  
 | crypto_kx_client_session_keys | |  
@@ -245,8 +243,8 @@
 | crypto_generichash_blake2b_PERSONALBYTES | |   
 | crypto_generichash_blake2b_SALTBYTES | |   
 | crypto_hash_BYTES | |  
-| crypto_hash_sha256_BYTES | |   
-| crypto_hash_sha512_BYTES | |   
+| crypto_hash_sha256_BYTES | :heavy_check_mark: |   
+| crypto_hash_sha512_BYTES | :heavy_check_mark: |   
 | crypto_kdf_BYTES_MAX | |   
 | crypto_kdf_BYTES_MIN | |   
 | crypto_kdf_CONTEXTBYTES | |    

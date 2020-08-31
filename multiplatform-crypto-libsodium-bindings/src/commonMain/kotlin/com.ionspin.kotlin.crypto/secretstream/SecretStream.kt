@@ -22,7 +22,7 @@ val crypto_secretstream_xchacha20poly1305_HEADERBYTES = 24
 val crypto_secretstream_xchacha20poly1305_KEYBYTES = 32
 val crypto_secretstream_xchacha20poly1305_ABYTES = 17
 
-class SecretStreamCorrupedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
+class SecretStreamCorruptedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
 
 expect object SecretStream {
 
