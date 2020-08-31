@@ -44,4 +44,8 @@ actual object GenericHash {
     actual fun genericHashFinal(state: GenericHashState): UByteArray {
         return getSodium().crypto_generichash_final(state.internalState, state.hashLength).toUByteArray()
     }
+
+    actual fun genericHashKeygen(): UByteArray {
+        return getSodium().crypto_generichash_keygen().toUByteArray()
+    }
 }

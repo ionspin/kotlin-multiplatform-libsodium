@@ -49,5 +49,11 @@ actual object GenericHash {
         return hashResult.asUByteArray()
     }
 
+    actual fun genericHashKeygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_generichash_BYTES)
+        sodium.crypto_generichash_keygen(generatedKey.asByteArray())
+        return generatedKey
+    }
+
 
 }

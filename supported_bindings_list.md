@@ -67,8 +67,8 @@
 | crypto_generichash_blake2b_salt_personal | |   
 | crypto_generichash_final | :heavy_check_mark:  |                                   
 | crypto_generichash_init | :heavy_check_mark:  |                                     
-| crypto_generichash_keygen | |  
-| crypto_generichash_update | :heavy_check_mark:  |                                 
+| crypto_generichash_keygen | :heavy_check_mark: |  
+| crypto_generichash_update | :heavy_check_mark: |                                 
 | crypto_hash | |    
 | crypto_hash_sha256 | | 
 | crypto_hash_sha256_final | |   

@@ -10,6 +10,7 @@ import kotlinx.cinterop.reinterpret
 import libsodium.crypto_generichash
 import libsodium.crypto_generichash_final
 import libsodium.crypto_generichash_init
+import libsodium.crypto_generichash_keygen
 import libsodium.crypto_generichash_update
 import platform.posix.malloc
 
@@ -86,6 +87,14 @@ actual object GenericHash {
         )
         hashResultPinned.unpin()
         return hashResult
+    }
+
+    actual fun genericHashKeygen(): UByteArray {
+        val generatedKey = UByteArray(crypto_generichash_BYTES)
+        val generatedKeyPinned = generatedKey.pin()
+        crypto_generichash_keygen(generatedKeyPinned.toPtr())
+        generatedKeyPinned.unpin()
+        return generatedKey
     }
 
 
