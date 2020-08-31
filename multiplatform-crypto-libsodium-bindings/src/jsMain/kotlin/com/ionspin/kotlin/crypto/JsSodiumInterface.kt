@@ -18,7 +18,7 @@ interface JsSodiumInterface {
 
     fun crypto_hash_sha512(message: Uint8Array): Uint8Array
 
-    //Updateable
+    // ---- Generic hash ---- // Updateable
 
     fun crypto_generichash_init(key : Uint8Array, hashLength: Int) : dynamic
 
@@ -28,11 +28,27 @@ interface JsSodiumInterface {
 
     fun crypto_generichash_keygen() : Uint8Array
 
-    //Short hash
+    // ---- Generic hash end ---- // Updateable
+
+    // ---- Blake2b ----
+
+    fun crypto_generichash_blake2b(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array
+
+    fun crypto_generichash_blake2b_init(key : Uint8Array, hashLength: Int) : dynamic
+
+    fun crypto_generichash_blake2b_update(state: dynamic, inputMessage: Uint8Array)
+
+    fun crypto_generichash_blake2b_final(state: dynamic, hashLength: Int) : Uint8Array
+
+    fun crypto_generichash_blake2b_keygen() : Uint8Array
+
+    // ---- Blake2b end ----
+
+    // ---- Short hash ----
     fun crypto_shorthash(data : Uint8Array, key: Uint8Array) : Uint8Array
 
     fun crypto_shorthash_keygen() : Uint8Array
-
+    // ---- Short hash end ----
 
     fun crypto_hash_sha256_init() : dynamic
 
