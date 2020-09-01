@@ -116,7 +116,7 @@ actual object SecretStream {
         associatedDataPinned?.unpin()
         tagPinned.unpin()
         if (validationResult != 0) {
-            throw SecretStreamCorrupedOrTamperedDataException()
+            throw SecretStreamCorruptedOrTamperedDataException()
         }
         return DecryptedDataAndTag(message, tag[0])
     }

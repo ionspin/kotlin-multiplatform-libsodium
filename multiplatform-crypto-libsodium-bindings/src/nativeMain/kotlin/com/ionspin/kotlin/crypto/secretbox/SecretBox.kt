@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.secretbox
 
-import com.ionspin.kotlin.crypto.secretstream.SecretStreamCorrupedOrTamperedDataException
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin

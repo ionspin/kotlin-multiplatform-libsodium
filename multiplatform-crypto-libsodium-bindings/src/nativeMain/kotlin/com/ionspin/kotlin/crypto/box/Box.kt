@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.box
 
+import com.ionspin.kotlin.crypto.util.toHexString
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -9,6 +10,8 @@ import libsodium.crypto_box_easy
 import libsodium.crypto_box_easy_afternm
 import libsodium.crypto_box_keypair
 import libsodium.crypto_box_open_detached
+import libsodium.crypto_box_open_easy
+import libsodium.crypto_box_open_easy_afternm
 import libsodium.crypto_box_seal
 import libsodium.crypto_box_seal_open
 import libsodium.crypto_box_seed_keypair
@@ -38,7 +41,6 @@ actual object Box {
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
-        val seed: UByteArray = UByteArray(crypto_box_SEEDBYTES)
         val seedPinned = seed.pin()
         crypto_box_seed_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr(), seedPinned.toPtr())
         publicKeyPinned.unpin()
@@ -60,7 +62,7 @@ actual object Box {
         recipientsPublicKey: UByteArray,
         sendersSecretKey: UByteArray
     ): UByteArray {
-        val ciphertext = UByteArray(message.size - crypto_box_MACBYTES)
+        val ciphertext = UByteArray(message.size + crypto_box_MACBYTES)
         val ciphertextPinned = ciphertext.pin()
 
         val messagePinned = message.pin()
@@ -83,7 +85,7 @@ actual object Box {
         recipientsPublicKeyPinned.unpin()
         sendersSecretKeyPinned.unpin()
 
-        return message
+        return ciphertext
     }
 
     /**
@@ -99,7 +101,7 @@ actual object Box {
         sendersPublicKey: UByteArray,
         recipientsSecretKey: UByteArray
     ): UByteArray {
-        val message = UByteArray(ciphertext.size + crypto_box_MACBYTES)
+        val message = UByteArray(ciphertext.size - crypto_box_MACBYTES)
         val messagePinned = message.pin()
 
         val ciphertextPinned = ciphertext.pin()
@@ -107,7 +109,7 @@ actual object Box {
         val sendersPublicKeyPinned = sendersPublicKey.pin()
         val recipientsSecretKeyPinned = recipientsSecretKey.pin()
 
-        crypto_box_easy(
+        val validationResult = crypto_box_open_easy(
             messagePinned.toPtr(),
             ciphertextPinned.toPtr(),
             ciphertext.size.convert(),
@@ -121,6 +123,10 @@ actual object Box {
         noncePinned.unpin()
         sendersPublicKeyPinned.unpin()
         recipientsSecretKeyPinned.unpin()
+
+        if (validationResult != 0) {
+            throw BoxCorruptedOrTamperedDataException()
+        }
 
         return message
     }
@@ -173,6 +179,8 @@ actual object Box {
         noncePinned.unpin()
         precomputedKeyPinned.unpin()
 
+
+
         return ciphertext
     }
 
@@ -191,7 +199,7 @@ actual object Box {
         val noncePinned = nonce.pin()
         val precomputedKeyPinned = precomputedKey.pin()
 
-        crypto_box_easy_afternm(
+        val validationResult = crypto_box_open_easy_afternm(
             messagePinned.toPtr(),
             ciphertextPinned.toPtr(),
             ciphertext.size.convert(),
@@ -204,7 +212,11 @@ actual object Box {
         noncePinned.unpin()
         precomputedKeyPinned.unpin()
 
-        return ciphertext
+        if (validationResult != 0) {
+            throw BoxCorruptedOrTamperedDataException()
+        }
+
+        return message
     }
 
     /**
@@ -232,8 +244,8 @@ actual object Box {
 
         crypto_box_detached(
             ciphertextPinned.toPtr(),
-            messagePinned.toPtr(),
             tagPinned.toPtr(),
+            messagePinned.toPtr(),
             message.size.convert(),
             noncePinned.toPtr(),
             recipientsPublicKeyPinned.toPtr(),
@@ -246,7 +258,6 @@ actual object Box {
         noncePinned.unpin()
         recipientsPublicKeyPinned.unpin()
         sendersSecretKeyPinned.unpin()
-
         return BoxEncryptedDataAndTag(ciphertext, tag)
     }
 
@@ -265,23 +276,22 @@ actual object Box {
     ): UByteArray {
         val message = UByteArray(ciphertext.size)
 
+        val messagePinned = message.pin()
         val ciphertextPinned = ciphertext.pin()
         val tagPinned = tag.pin()
-
-        val messagePinned = message.pin()
         val noncePinned = nonce.pin()
         val recipientsSecretKeyPinned = recipientsSecretKey.pin()
         val sendersPublicKeyPinned = sendersPublicKey.pin()
 
 
-        crypto_box_open_detached(
+        val validationResult = crypto_box_open_detached(
             messagePinned.toPtr(),
             ciphertextPinned.toPtr(),
             tagPinned.toPtr(),
-            message.size.convert(),
+            ciphertext.size.convert(),
             noncePinned.toPtr(),
-            recipientsSecretKeyPinned.toPtr(),
-            sendersPublicKeyPinned.toPtr()
+            sendersPublicKeyPinned.toPtr(),
+            recipientsSecretKeyPinned.toPtr()
         )
 
         ciphertextPinned.unpin()
@@ -290,6 +300,10 @@ actual object Box {
         noncePinned.unpin()
         recipientsSecretKeyPinned.unpin()
         sendersPublicKeyPinned.unpin()
+
+        if (validationResult != 0) {
+            throw BoxCorruptedOrTamperedDataException()
+        }
 
         return message
     }
@@ -318,15 +332,30 @@ actual object Box {
 
     actual fun sealOpen(ciphertext: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_SEALBYTES)
+        val senderPublicKey = UByteArray(crypto_box_SEALBYTES) {
+            message[ciphertext.size - crypto_box_SEALBYTES + it - 1]
+        }
+        val senderPublicKeyPinned = senderPublicKey.pin()
         val messagePinned = message.pin()
         val ciphertextPinned = ciphertext.pin()
         val recipientsSecretKeyPinned = recipientsSecretKey.pin()
 
-        crypto_box_seal_open(messagePinned.toPtr(), ciphertextPinned.toPtr(), recipientsSecretKeyPinned.toPtr())
+        val validationResult = crypto_box_seal_open(
+            messagePinned.toPtr(),
+            ciphertextPinned.toPtr(),
+            ciphertext.size.convert(),
+            senderPublicKeyPinned.toPtr(),
+            recipientsSecretKeyPinned.toPtr()
+        )
 
         messagePinned.unpin()
         ciphertextPinned.unpin()
+        senderPublicKeyPinned.unpin()
         recipientsSecretKeyPinned.unpin()
+
+        if (validationResult != 0) {
+            throw BoxCorruptedOrTamperedDataException()
+        }
 
         return message
     }

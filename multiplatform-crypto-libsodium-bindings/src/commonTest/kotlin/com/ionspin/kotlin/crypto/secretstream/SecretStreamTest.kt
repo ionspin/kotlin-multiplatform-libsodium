@@ -73,7 +73,7 @@ class SecretStreamTest {
             assertTrue {
                 decrypted.decryptedData.contentEquals(message)
             }
-            assertFailsWith(SecretStreamCorrupedOrTamperedDataException::class) {
+            assertFailsWith(SecretStreamCorruptedOrTamperedDataException::class) {
                 encrypted[encrypted.size - 5] = 0U
                 val decryptState = SecretStream.xChaCha20Poly1305InitPull(key, stateAndHeader.header)
                 val decrypted =
