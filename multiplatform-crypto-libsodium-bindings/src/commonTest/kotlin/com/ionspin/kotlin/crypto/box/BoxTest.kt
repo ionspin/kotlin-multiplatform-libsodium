@@ -1,9 +1,7 @@
 package com.ionspin.kotlin.crypto.box
 
-import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
-import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.random.Random
 import kotlin.random.nextUBytes
 import kotlin.test.Test
@@ -31,64 +29,82 @@ class BoxTest {
 
     @Test
     fun testBoxEasy() {
-        val message = "Message message message".encodeToUByteArray()
-        val senderKeypair = Box.keypair()
-        val recipientKeypair = Box.keypair()
-        val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
-        val encrypted = Box.easy(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
-        val decrypted = Box.openEasy(encrypted, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
-        assertTrue {
-            decrypted.contentEquals(message)
-        }
+        LibsodiumInitializer.initializeWithCallback {
+            val message = "Message message message".encodeToUByteArray()
+            val senderKeypair = Box.keypair()
+            val recipientKeypair = Box.keypair()
+            val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
+            val encrypted = Box.easy(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
+            val decrypted = Box.openEasy(encrypted, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
+            assertTrue {
+                decrypted.contentEquals(message)
+            }
 
-        assertFailsWith<BoxCorruptedOrTamperedDataException>() {
-            val tampered = encrypted.copyOf()
-            tampered[1] = 0U
-            Box.openEasy(tampered, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
+            assertFailsWith<BoxCorruptedOrTamperedDataException>() {
+                val tampered = encrypted.copyOf()
+                tampered[1] = 0U
+                Box.openEasy(tampered, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
+            }
         }
     }
 
     @Test
     fun testBoxEasyDetached() {
-        val message = "Message message message".encodeToUByteArray()
-        val senderKeypair = Box.keypair()
-        val recipientKeypair = Box.keypair()
-        val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
-        val encrypted = Box.detached(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
-        val decrypted = Box.openDetached(encrypted.ciphertext, encrypted.tag, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
-        assertTrue {
-            decrypted.contentEquals(message)
-        }
+        LibsodiumInitializer.initializeWithCallback {
+            val message = "Message message message".encodeToUByteArray()
+            val senderKeypair = Box.keypair()
+            val recipientKeypair = Box.keypair()
+            val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
+            val encrypted = Box.detached(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
+            val decrypted = Box.openDetached(
+                encrypted.ciphertext,
+                encrypted.tag,
+                messageNonce,
+                senderKeypair.publicKey,
+                recipientKeypair.secretKey
+            )
+            assertTrue {
+                decrypted.contentEquals(message)
+            }
 
-        assertFailsWith<BoxCorruptedOrTamperedDataException>() {
-            val tampered = encrypted.ciphertext.copyOf()
-            tampered[1] = 0U
-            Box.openDetached(tampered, encrypted.tag, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
+            assertFailsWith<BoxCorruptedOrTamperedDataException>() {
+                val tampered = encrypted.ciphertext.copyOf()
+                tampered[1] = 0U
+                Box.openDetached(
+                    tampered,
+                    encrypted.tag,
+                    messageNonce,
+                    senderKeypair.publicKey,
+                    recipientKeypair.secretKey
+                )
+            }
         }
     }
 
     @Test
     fun testBeforeNonceAndMessage() {
-        val message = "Message message message".encodeToUByteArray()
-        val senderKeypair = Box.keypair()
-        val recipientKeypair = Box.keypair()
-        val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
-        val senderComputedSessionKey = Box.beforeNM(recipientKeypair.publicKey, senderKeypair.secretKey)
-        val recipientComputedSessionKey = Box.beforeNM(senderKeypair.publicKey, recipientKeypair.secretKey)
+        LibsodiumInitializer.initializeWithCallback {
+            val message = "Message message message".encodeToUByteArray()
+            val senderKeypair = Box.keypair()
+            val recipientKeypair = Box.keypair()
+            val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
+            val senderComputedSessionKey = Box.beforeNM(recipientKeypair.publicKey, senderKeypair.secretKey)
+            val recipientComputedSessionKey = Box.beforeNM(senderKeypair.publicKey, recipientKeypair.secretKey)
 
-        assertTrue {
-            senderComputedSessionKey.contentEquals(recipientComputedSessionKey)
-        }
-        val encrypted = Box.easyAfterNM(message, messageNonce, senderComputedSessionKey)
-        val decrypted = Box.openEasyAfterNM(encrypted, messageNonce, recipientComputedSessionKey)
-        assertTrue {
-            decrypted.contentEquals(message)
-        }
+            assertTrue {
+                senderComputedSessionKey.contentEquals(recipientComputedSessionKey)
+            }
+            val encrypted = Box.easyAfterNM(message, messageNonce, senderComputedSessionKey)
+            val decrypted = Box.openEasyAfterNM(encrypted, messageNonce, recipientComputedSessionKey)
+            assertTrue {
+                decrypted.contentEquals(message)
+            }
 
-        assertFailsWith<BoxCorruptedOrTamperedDataException>() {
-            val tampered = encrypted.copyOf()
-            tampered[1] = 0U
-            Box.openEasyAfterNM(tampered, messageNonce, recipientComputedSessionKey)
+            assertFailsWith<BoxCorruptedOrTamperedDataException>() {
+                val tampered = encrypted.copyOf()
+                tampered[1] = 0U
+                Box.openEasyAfterNM(tampered, messageNonce, recipientComputedSessionKey)
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.box
 
-import com.ionspin.kotlin.crypto.util.toHexString
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -326,7 +325,7 @@ actual object Box {
         messagePinned.unpin()
         recipientsPublicKeyPinned.unpin()
 
-        return message
+        return ciphertextWithPublicKey
 
     }
 

@@ -60,7 +60,7 @@ actual object SecretStream {
             associatedData.size.toLong()
         )
         if (validationResult != 0) {
-            throw SecretStreamCorrupedOrTamperedDataException()
+            throw SecretStreamCorruptedOrTamperedDataException()
         }
         return DecryptedDataAndTag(result, tagArray[0])
     }
