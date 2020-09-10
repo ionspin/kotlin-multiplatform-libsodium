@@ -85,6 +85,6 @@ expect object Box {
 
     fun seal(message: UByteArray, recipientsPublicKey: UByteArray) : UByteArray
 
-    fun sealOpen(ciphertext: UByteArray, recipientsSecretKey: UByteArray) : UByteArray
+    fun sealOpen(ciphertext: UByteArray, recipientsPublicKey: UByteArray, recipientsSecretKey: UByteArray) : UByteArray
 
 }

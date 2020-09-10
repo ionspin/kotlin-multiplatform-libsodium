@@ -329,12 +329,10 @@ actual object Box {
 
     }
 
-    actual fun sealOpen(ciphertext: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
+    actual fun sealOpen(ciphertext: UByteArray, recipientsPublicKey: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_SEALBYTES)
-        val senderPublicKey = UByteArray(crypto_box_SEALBYTES) {
-            message[ciphertext.size - crypto_box_SEALBYTES + it - 1]
-        }
-        val senderPublicKeyPinned = senderPublicKey.pin()
+
+        val recipientsPublicKeyPinned = recipientsPublicKey.pin()
         val messagePinned = message.pin()
         val ciphertextPinned = ciphertext.pin()
         val recipientsSecretKeyPinned = recipientsSecretKey.pin()
@@ -343,13 +341,13 @@ actual object Box {
             messagePinned.toPtr(),
             ciphertextPinned.toPtr(),
             ciphertext.size.convert(),
-            senderPublicKeyPinned.toPtr(),
+            recipientsPublicKeyPinned.toPtr(),
             recipientsSecretKeyPinned.toPtr()
         )
 
         messagePinned.unpin()
         ciphertextPinned.unpin()
-        senderPublicKeyPinned.unpin()
+        recipientsPublicKeyPinned.unpin()
         recipientsSecretKeyPinned.unpin()
 
         if (validationResult != 0) {

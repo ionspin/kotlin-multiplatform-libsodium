@@ -205,16 +205,13 @@ actual object Box {
         return ciphertextWithPublicKey
     }
 
-    actual fun sealOpen(ciphertext: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
+    actual fun sealOpen(ciphertext: UByteArray, recipientsPublicKey: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_SEALBYTES)
-        val senderPublicKey = UByteArray(crypto_box_SEALBYTES) {
-            message[ciphertext.size - crypto_box_SEALBYTES + it - 1]
-        }
         val validationResult = sodium.crypto_box_seal_open(
             message.asByteArray(),
             ciphertext.asByteArray(),
             ciphertext.size.toLong(),
-            senderPublicKey.asByteArray(),
+            recipientsPublicKey.asByteArray(),
             recipientsSecretKey.asByteArray()
         )
 

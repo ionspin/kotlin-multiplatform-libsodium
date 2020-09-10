@@ -108,5 +108,25 @@ class BoxTest {
         }
     }
 
+    @Test
+    fun testSeal() {
+        LibsodiumInitializer.initializeWithCallback {
+            val message = "Message message message".encodeToUByteArray()
+            val recipientKeypair = Box.keypair()
+            val sealed = Box.seal(message, recipientKeypair.publicKey)
+            val unsealed = Box.sealOpen(sealed, recipientKeypair.publicKey, recipientKeypair.secretKey)
+
+            assertTrue {
+                unsealed.contentEquals(message)
+            }
+
+            assertFailsWith<BoxCorruptedOrTamperedDataException>() {
+                val tampered = sealed.copyOf()
+                tampered[1] = 0U
+                Box.sealOpen(tampered, recipientKeypair.publicKey, recipientKeypair.secretKey)
+            }
+        }
+    }
+
 
 }
