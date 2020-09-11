@@ -41,7 +41,7 @@ actual object SecretStream {
             state, ciphertext.toUInt8Array(), associatedData.toUInt8Array()
         )
         if (dataAndTag == false) {
-            throw SecretStreamCorrupedOrTamperedDataException()
+            throw SecretStreamCorruptedOrTamperedDataException()
         }
         return DecryptedDataAndTag((dataAndTag.message as Uint8Array).toUByteArray(), dataAndTag.tag)
 

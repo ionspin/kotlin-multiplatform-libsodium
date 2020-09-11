@@ -1,6 +1,7 @@
 package ext.libsodium.com.ionspin.kotlin.crypto
 
 
+import com.ionspin.kotlin.crypto.box.BoxKeyPair
 import org.khronos.webgl.Uint8Array
 
 /**
@@ -122,6 +123,39 @@ interface JsSodiumInterface {
     fun crypto_auth_hmacsha512_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
 
     // ---- Auth end ----
+
+    // ---- Box ----
+
+    fun crypto_box_keypair() : dynamic
+    fun crypto_box_seed_keypair(seed : Uint8Array) : dynamic
+    fun crypto_box_easy(message: Uint8Array,
+                        nonce: Uint8Array,
+                        recipientsPublicKey: Uint8Array,
+                        sendersSecretKey: Uint8Array) : Uint8Array
+    fun crypto_box_open_easy(ciphertext: Uint8Array,
+                             nonce: Uint8Array,
+                             sendersPublicKey: Uint8Array,
+                             recipientsSecretKey: Uint8Array) : Uint8Array
+    fun crypto_box_detached(message: Uint8Array,
+                            nonce: Uint8Array,
+                            recipientsPublicKey: Uint8Array,
+                            sendersSecretKey: Uint8Array) : dynamic
+    fun crypto_box_open_detached(ciphertext: Uint8Array,
+                                 tag: Uint8Array,
+                                 nonce: Uint8Array,
+                                 sendersPublicKey: Uint8Array,
+                                 recipientsSecretKey: Uint8Array) : Uint8Array
+    fun crypto_box_beforenm(publicKey: Uint8Array, secretKey: Uint8Array) : Uint8Array
+    fun crypto_box_easy_afternm(message: Uint8Array,
+                                nonce: Uint8Array,
+                                precomputedKey: Uint8Array) : Uint8Array
+    fun crypto_box_open_easy_afternm(ciphertext: Uint8Array,
+                                     nonce: Uint8Array,
+                                     precomputedKey: Uint8Array) : Uint8Array
+    fun crypto_box_seal(message: Uint8Array, recipientsPublicKey: Uint8Array) : Uint8Array
+    fun crypto_box_seal_open(ciphertext: Uint8Array, recipientsPublicKey: Uint8Array, recipientsSecretKey: Uint8Array) : Uint8Array
+
+    // ---- Box end ----
 
     //util
     fun memzero(array: Uint8Array)
