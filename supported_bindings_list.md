@@ -34,20 +34,20 @@
 | crypto_auth_hmacsha512_verify | :heavy_check_mark: |  
 | crypto_auth_keygen | :heavy_check_mark: | 
 | crypto_auth_verify | :heavy_check_mark: | 
-| crypto_box_beforenm | |    
+| crypto_box_beforenm | :heavy_check_mark: |    
 | crypto_box_curve25519xchacha20poly1305_keypair | not present in LazySodium | 
 | crypto_box_curve25519xchacha20poly1305_seal | not present in LazySodium |    
 | crypto_box_curve25519xchacha20poly1305_seal_open |not present in LazySodium  |   
-| crypto_box_detached | |    
-| crypto_box_easy | |    
-| crypto_box_easy_afternm | |    
-| crypto_box_keypair | | 
-| crypto_box_open_detached | |   
-| crypto_box_open_easy | |   
-| crypto_box_open_easy_afternm | |   
-| crypto_box_seal | |    
-| crypto_box_seal_open | |   
-| crypto_box_seed_keypair | |    
+| crypto_box_detached | :heavy_check_mark: |    
+| crypto_box_easy | :heavy_check_mark: |    
+| crypto_box_easy_afternm | :heavy_check_mark: |    
+| crypto_box_keypair | :heavy_check_mark: | 
+| crypto_box_open_detached | :heavy_check_mark: |   
+| crypto_box_open_easy | :heavy_check_mark: |   
+| crypto_box_open_easy_afternm | :heavy_check_mark: |   
+| crypto_box_seal | :heavy_check_mark: |    
+| crypto_box_seal_open | :heavy_check_mark: |   
+| crypto_box_seed_keypair | :heavy_check_mark: |    
 | crypto_core_ristretto255_add | |   
 | crypto_core_ristretto255_from_hash | | 
 | crypto_core_ristretto255_is_valid_point | |    
