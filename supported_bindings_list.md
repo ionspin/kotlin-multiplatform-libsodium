@@ -302,7 +302,7 @@
 | crypto_pwhash_scryptsalsa208sha256_STRBYTES | |    
 | crypto_scalarmult_BYTES | |    
 | crypto_scalarmult_SCALARBYTES | |  
-| crypto_scalarmult_curve25519_BYTES | | 
+| crypto_scalarmult_curve25519_BYTES | :heavy_check_mark: | 
 | crypto_scalarmult_curve25519_SCALARBYTES | |   
 | crypto_scalarmult_ed25519_BYTES | |    
 | crypto_scalarmult_ed25519_SCALARBYTES | |  
@@ -334,11 +334,11 @@
 | crypto_shorthash_siphash24_KEYBYTES | |    
 | crypto_shorthash_siphashx24_BYTES | |  
 | crypto_shorthash_siphashx24_KEYBYTES | |   
-| crypto_sign_BYTES | |  
+| crypto_sign_BYTES | :heavy_check_mark: |  
 | crypto_sign_MESSAGEBYTES_MAX | |   
-| crypto_sign_PUBLICKEYBYTES | | 
-| crypto_sign_SECRETKEYBYTES | | 
-| crypto_sign_SEEDBYTES | |  
+| crypto_sign_PUBLICKEYBYTES | :heavy_check_mark: | 
+| crypto_sign_SECRETKEYBYTES | :heavy_check_mark: | 
+| crypto_sign_SEEDBYTES | :heavy_check_mark: |  
 | crypto_sign_ed25519_BYTES | |  
 | crypto_sign_ed25519_MESSAGEBYTES_MAX | |   
 | crypto_sign_ed25519_PUBLICKEYBYTES | | 
