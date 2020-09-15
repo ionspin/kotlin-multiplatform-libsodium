@@ -157,6 +157,25 @@ interface JsSodiumInterface {
 
     // ---- Box end ----
 
+    // ---- Sign start ----
+    fun crypto_sign(message: Uint8Array, secretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_detached(message: Uint8Array, secretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_ed25519_pk_to_curve25519(ed25519PublicKey: Uint8Array) : Uint8Array
+    fun crypto_sign_ed25519_sk_to_curve25519(ed25519SecretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_ed25519_sk_to_pk(ed25519SecretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_ed25519_sk_to_seed(ed25519SecretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_final_create(state: dynamic, secretKey: Uint8Array) : Uint8Array
+    fun crypto_sign_final_verify(state: dynamic, signature: Uint8Array, publicKey: Uint8Array) : Boolean
+    fun crypto_sign_init() : dynamic
+    fun crypto_sign_keypair() : dynamic
+    fun crypto_sign_open(signedMessage: Uint8Array, publicKey: Uint8Array) : Uint8Array
+    fun crypto_sign_seed_keypair(seed: Uint8Array) : dynamic
+    fun crypto_sign_update(state: dynamic, message: Uint8Array)
+    fun crypto_sign_verify_detached(signature: Uint8Array, message: Uint8Array, publicKey: Uint8Array) : Boolean
+
+
+    // ---- Sign end
+
     //util
     fun memzero(array: Uint8Array)
 
