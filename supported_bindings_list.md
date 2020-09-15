@@ -114,20 +114,20 @@
 | crypto_shorthash |:heavy_check_mark:  |                                           
 | crypto_shorthash_keygen | :heavy_check_mark: |                                     
 | crypto_shorthash_siphashx24 | |    
-| crypto_sign | |    
-| crypto_sign_detached | |   
-| crypto_sign_ed25519_pk_to_curve25519 | |   
-| crypto_sign_ed25519_sk_to_curve25519 | |   
-| crypto_sign_ed25519_sk_to_pk | |   
-| crypto_sign_ed25519_sk_to_seed | | 
-| crypto_sign_final_create | |   
-| crypto_sign_final_verify | |   
-| crypto_sign_init | |   
-| crypto_sign_keypair | |    
-| crypto_sign_open | |   
-| crypto_sign_seed_keypair | |   
-| crypto_sign_update | | 
-| crypto_sign_verify_detached | |    
+| crypto_sign | :heavy_check_mark: |    
+| crypto_sign_detached | :heavy_check_mark: |   
+| crypto_sign_ed25519_pk_to_curve25519 | :heavy_check_mark: |   
+| crypto_sign_ed25519_sk_to_curve25519 | :heavy_check_mark: |   
+| crypto_sign_ed25519_sk_to_pk | :heavy_check_mark: |   
+| crypto_sign_ed25519_sk_to_seed | :heavy_check_mark: | 
+| crypto_sign_final_create | :heavy_check_mark: |   
+| crypto_sign_final_verify | :heavy_check_mark: |   
+| crypto_sign_init | :heavy_check_mark: |   
+| crypto_sign_keypair | :heavy_check_mark: |    
+| crypto_sign_open | :heavy_check_mark: |   
+| crypto_sign_seed_keypair | :heavy_check_mark: |   
+| crypto_sign_update | :heavy_check_mark: | 
+| crypto_sign_verify_detached | :heavy_check_mark: |    
 | crypto_stream_chacha20 | | 
 | crypto_stream_chacha20_ietf_xor | |    
 | crypto_stream_chacha20_ietf_xor_ic | | 
