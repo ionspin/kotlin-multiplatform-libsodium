@@ -68,14 +68,14 @@
 | crypto_generichash_keygen | :heavy_check_mark: |  
 | crypto_generichash_update | :heavy_check_mark: |                                 
 | crypto_hash | |    
-| crypto_hash_sha256 | :heavy_check_mark | 
-| crypto_hash_sha256_final | :heavy_check_mark |   
-| crypto_hash_sha256_init | :heavy_check_mark |    
-| crypto_hash_sha256_update | :heavy_check_mark |  
-| crypto_hash_sha512 | :heavy_check_mark | 
-| crypto_hash_sha512_final | :heavy_check_mark |   
-| crypto_hash_sha512_init | :heavy_check_mark |    
-| crypto_hash_sha512_update | :heavy_check_mark |  
+| crypto_hash_sha256 | :heavy_check_mark: | 
+| crypto_hash_sha256_final | :heavy_check_mark: |   
+| crypto_hash_sha256_init | :heavy_check_mark: |    
+| crypto_hash_sha256_update | :heavy_check_mark: |  
+| crypto_hash_sha512 | :heavy_check_mark: | 
+| crypto_hash_sha512_final | :heavy_check_mark: |   
+| crypto_hash_sha512_init | :heavy_check_mark: |    
+| crypto_hash_sha512_update | :heavy_check_mark: |  
 | crypto_kdf_derive_from_key | | 
 | crypto_kdf_keygen | |  
 | crypto_kx_client_session_keys | |  
