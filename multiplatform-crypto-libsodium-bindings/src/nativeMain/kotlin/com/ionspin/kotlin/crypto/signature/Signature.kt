@@ -51,6 +51,10 @@ actual object Signature {
             signaturePinned.toPtr(),
             publicKeyPinned.toPtr()
         )
+
+        signaturePinned.unpin()
+        publicKeyPinned.unpin()
+
         if (verificationResult == -1) {
             throw InvalidSignatureException()
         }
@@ -136,6 +140,9 @@ actual object Signature {
             signedMessage.size.convert(),
             publicKeyPinned.toPtr()
         )
+        messagePinned.unpin()
+        signedMessagePinned.unpin()
+        publicKeyPinned.unpin()
         if (verificationResult == -1) {
             throw InvalidSignatureException()
         }
