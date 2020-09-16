@@ -48,19 +48,19 @@
 | crypto_box_seal | :heavy_check_mark: |    
 | crypto_box_seal_open | :heavy_check_mark: |   
 | crypto_box_seed_keypair | :heavy_check_mark: |    
-| crypto_core_ristretto255_add | |   
-| crypto_core_ristretto255_from_hash | | 
-| crypto_core_ristretto255_is_valid_point | |    
-| crypto_core_ristretto255_random | |    
-| crypto_core_ristretto255_scalar_add | |    
-| crypto_core_ristretto255_scalar_complement | | 
-| crypto_core_ristretto255_scalar_invert | | 
-| crypto_core_ristretto255_scalar_mul | |    
-| crypto_core_ristretto255_scalar_negate | | 
-| crypto_core_ristretto255_scalar_random | | 
-| crypto_core_ristretto255_scalar_reduce | | 
-| crypto_core_ristretto255_scalar_sub | |    
-| crypto_core_ristretto255_sub | |   
+| crypto_core_ristretto255_add | not present in LazySodium |   
+| crypto_core_ristretto255_from_hash | not present in LazySodium | 
+| crypto_core_ristretto255_is_valid_point | not present in LazySodium |    
+| crypto_core_ristretto255_random | not present in LazySodium |    
+| crypto_core_ristretto255_scalar_add | not present in LazySodium |    
+| crypto_core_ristretto255_scalar_complement | not present in LazySodium | 
+| crypto_core_ristretto255_scalar_invert | not present in LazySodium | 
+| crypto_core_ristretto255_scalar_mul | not present in LazySodium |    
+| crypto_core_ristretto255_scalar_negate | not present in LazySodium | 
+| crypto_core_ristretto255_scalar_random | not present in LazySodium | 
+| crypto_core_ristretto255_scalar_reduce | not present in LazySodium | 
+| crypto_core_ristretto255_scalar_sub | not present in LazySodium |    
+| crypto_core_ristretto255_sub | not present in LazySodium |   
 | crypto_generichash | :heavy_check_mark:  |                                       
 | crypto_generichash_blake2b_salt_personal | |   
 | crypto_generichash_final | :heavy_check_mark:  |                                   
@@ -76,23 +76,23 @@
 | crypto_hash_sha512_final | :heavy_check_mark: |   
 | crypto_hash_sha512_init | :heavy_check_mark: |    
 | crypto_hash_sha512_update | :heavy_check_mark: |  
-| crypto_kdf_derive_from_key | | 
-| crypto_kdf_keygen | |  
+| crypto_kdf_derive_from_key | :heavy_check_mark: | 
+| crypto_kdf_keygen | :heavy_check_mark: |  
 | crypto_kx_client_session_keys | |  
 | crypto_kx_keypair | |  
 | crypto_kx_seed_keypair | | 
 | crypto_kx_server_session_keys | |  
-| crypto_onetimeauth | | 
-| crypto_onetimeauth_final | |   
-| crypto_onetimeauth_init | |    
-| crypto_onetimeauth_keygen | |  
-| crypto_onetimeauth_update | |  
-| crypto_onetimeauth_verify | |  
+| crypto_onetimeauth | not present in LazySodium | 
+| crypto_onetimeauth_final | not present in LazySodium |   
+| crypto_onetimeauth_init | not present in LazySodium |    
+| crypto_onetimeauth_keygen | not present in LazySodium |  
+| crypto_onetimeauth_update | not present in LazySodium |  
+| crypto_onetimeauth_verify | not present in LazySodium |  
 | crypto_pwhash | |  
-| crypto_pwhash_scryptsalsa208sha256 | | 
-| crypto_pwhash_scryptsalsa208sha256_ll | |  
-| crypto_pwhash_scryptsalsa208sha256_str | | 
-| crypto_pwhash_scryptsalsa208sha256_str_verify | |  
+| crypto_pwhash_scryptsalsa208sha256 | not present in LazySodium for Android | 
+| crypto_pwhash_scryptsalsa208sha256_ll | not present in LazySodium for Android  |  
+| crypto_pwhash_scryptsalsa208sha256_str | not present in LazySodium for Android  | 
+| crypto_pwhash_scryptsalsa208sha256_str_verify | not present in LazySodium for Android  |  
 | crypto_pwhash_str | |  
 | crypto_pwhash_str_needs_rehash | | 
 | crypto_pwhash_str_verify | |   
@@ -135,9 +135,9 @@
 | crypto_stream_chacha20_xor | | 
 | crypto_stream_chacha20_xor_ic | |  
 | crypto_stream_keygen | |   
-| crypto_stream_xchacha20_keygen | | 
-| crypto_stream_xchacha20_xor | |    
-| crypto_stream_xchacha20_xor_ic | | 
+| crypto_stream_xchacha20_keygen | not present in LazySodium Android | 
+| crypto_stream_xchacha20_xor | not present in LazySodium Android|    
+| crypto_stream_xchacha20_xor_ic | not present in LazySodium Android | 
 | randombytes_buf | |    
 | randombytes_buf_deterministic | |  
 | randombytes_close | |  

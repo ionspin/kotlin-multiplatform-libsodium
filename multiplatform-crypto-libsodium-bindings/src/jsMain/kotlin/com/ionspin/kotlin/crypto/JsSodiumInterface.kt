@@ -174,7 +174,15 @@ interface JsSodiumInterface {
     fun crypto_sign_verify_detached(signature: Uint8Array, message: Uint8Array, publicKey: Uint8Array) : Boolean
 
 
-    // ---- Sign end
+    // ---- Sign end ----
+
+
+    // ---- KDF ----
+
+    fun crypto_kdf_derive_from_key(subkey_len: UInt, subkeyId : UInt, ctx: String, key: Uint8Array) : Uint8Array
+    fun crypto_kdf_keygen() : Uint8Array
+
+    // ---- KDF end -----
 
     //util
     fun memzero(array: Uint8Array)
