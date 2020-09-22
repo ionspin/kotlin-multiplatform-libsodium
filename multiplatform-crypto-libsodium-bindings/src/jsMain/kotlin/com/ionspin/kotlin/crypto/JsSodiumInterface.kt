@@ -184,6 +184,17 @@ interface JsSodiumInterface {
 
     // ---- KDF end -----
 
+    // ---- Password hashing ----
+
+    fun crypto_pwhash(keyLength : UInt, password : Uint8Array, salt: Uint8Array, opsLimit: UInt, memLimit: UInt, algorithm: UInt) : Uint8Array
+    fun crypto_pwhash_str(password: Uint8Array, opsLimit: UInt, memLimit: UInt) : String
+    fun crypto_pwhash_str_needs_rehash(hashedPassword: String, opsLimit: UInt, memLimit: UInt) : Boolean
+    fun crypto_pwhash_str_verify(hashedPassword: String, password: Uint8Array) : Boolean
+
+
+    // ---- Password hashing end ----
+
+
     //util
     fun memzero(array: Uint8Array)
 
