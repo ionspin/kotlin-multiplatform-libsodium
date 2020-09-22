@@ -88,14 +88,14 @@
 | crypto_onetimeauth_keygen | not present in LazySodium |  
 | crypto_onetimeauth_update | not present in LazySodium |  
 | crypto_onetimeauth_verify | not present in LazySodium |  
-| crypto_pwhash | |  
+| crypto_pwhash | :heavy_check_mark: |  
 | crypto_pwhash_scryptsalsa208sha256 | not present in LazySodium for Android | 
 | crypto_pwhash_scryptsalsa208sha256_ll | not present in LazySodium for Android  |  
 | crypto_pwhash_scryptsalsa208sha256_str | not present in LazySodium for Android  | 
 | crypto_pwhash_scryptsalsa208sha256_str_verify | not present in LazySodium for Android  |  
-| crypto_pwhash_str | |  
-| crypto_pwhash_str_needs_rehash | | 
-| crypto_pwhash_str_verify | |   
+| crypto_pwhash_str | :heavy_check_mark: |  
+| crypto_pwhash_str_needs_rehash | :heavy_check_mark: | 
+| crypto_pwhash_str_verify | :heavy_check_mark: |   
 | crypto_scalarmult | |  
 | crypto_scalarmult_base | | 
 | crypto_scalarmult_ristretto255 | | 
@@ -261,25 +261,25 @@
 | crypto_onetimeauth_KEYBYTES | |    
 | crypto_onetimeauth_poly1305_BYTES | |  
 | crypto_onetimeauth_poly1305_KEYBYTES | |   
-| crypto_pwhash_ALG_ARGON2I13 | |    
-| crypto_pwhash_ALG_ARGON2ID13 | |   
-| crypto_pwhash_ALG_DEFAULT | |  
+| crypto_pwhash_ALG_ARGON2I13 | :heavy_check_mark: |    
+| crypto_pwhash_ALG_ARGON2ID13 | :heavy_check_mark: |   
+| crypto_pwhash_ALG_DEFAULT | :heavy_check_mark: |  
 | crypto_pwhash_BYTES_MAX | |    
-| crypto_pwhash_BYTES_MIN | |    
-| crypto_pwhash_MEMLIMIT_INTERACTIVE | | 
+| crypto_pwhash_BYTES_MIN | :heavy_check_mark: |    
+| crypto_pwhash_MEMLIMIT_INTERACTIVE | :heavy_check_mark: | 
 | crypto_pwhash_MEMLIMIT_MAX | | 
-| crypto_pwhash_MEMLIMIT_MIN | | 
-| crypto_pwhash_MEMLIMIT_MODERATE | |    
-| crypto_pwhash_MEMLIMIT_SENSITIVE | |   
-| crypto_pwhash_OPSLIMIT_INTERACTIVE | | 
-| crypto_pwhash_OPSLIMIT_MAX | | 
-| crypto_pwhash_OPSLIMIT_MIN | | 
-| crypto_pwhash_OPSLIMIT_MODERATE | |    
-| crypto_pwhash_OPSLIMIT_SENSITIVE | |   
-| crypto_pwhash_PASSWD_MAX | |   
-| crypto_pwhash_PASSWD_MIN | |   
-| crypto_pwhash_SALTBYTES | |    
-| crypto_pwhash_STRBYTES | | 
+| crypto_pwhash_MEMLIMIT_MIN | :heavy_check_mark: | 
+| crypto_pwhash_MEMLIMIT_MODERATE | :heavy_check_mark: |    
+| crypto_pwhash_MEMLIMIT_SENSITIVE | :heavy_check_mark: |   
+| crypto_pwhash_OPSLIMIT_INTERACTIVE | :heavy_check_mark: | 
+| crypto_pwhash_OPSLIMIT_MAX | :heavy_check_mark: | 
+| crypto_pwhash_OPSLIMIT_MIN | :heavy_check_mark: | 
+| crypto_pwhash_OPSLIMIT_MODERATE | :heavy_check_mark: |    
+| crypto_pwhash_OPSLIMIT_SENSITIVE | :heavy_check_mark: |   
+| crypto_pwhash_PASSWD_MAX | :heavy_check_mark: |   
+| crypto_pwhash_PASSWD_MIN | :heavy_check_mark: |   
+| crypto_pwhash_SALTBYTES | :heavy_check_mark: |    
+| crypto_pwhash_STRBYTES | :heavy_check_mark: | 
 | crypto_pwhash_argon2i_BYTES_MAX | |    
 | crypto_pwhash_argon2i_BYTES_MIN | |    
 | crypto_pwhash_argon2i_SALTBYTES | |    
