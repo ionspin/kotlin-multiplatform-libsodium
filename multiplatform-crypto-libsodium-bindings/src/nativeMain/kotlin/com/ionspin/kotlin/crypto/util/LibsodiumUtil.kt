@@ -1,23 +1,26 @@
 package com.ionspin.kotlin.crypto.util
 
-import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
-import kotlinx.cinterop.reinterpret
+import libsodium.sodium_base642bin
+import libsodium.sodium_base64_encoded_len
+import libsodium.sodium_bin2base64
+import libsodium.sodium_bin2hex
+import libsodium.sodium_hex2bin
 import libsodium.sodium_memcmp
 import libsodium.sodium_memzero
 import libsodium.sodium_pad
 import libsodium.sodium_unpad
-import platform.posix.size_t
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 31-Aug-2020
  */
-actual object LibsodiumUtil {
 
+
+actual object LibsodiumUtil {
 
     actual fun memcmp(first: UByteArray, second: UByteArray): Boolean {
         val firstPinned = first.pin()
@@ -37,7 +40,7 @@ actual object LibsodiumUtil {
         val resultingSize = if (unpaddedData.size % blocksize != 0 ) {
             ((unpaddedData.size / blocksize) + 1 ) * blocksize
         } else {
-            unpaddedData.size
+            unpaddedData.size + 1
         }
         val paddedData = UByteArray(resultingSize)
         unpaddedData.copyInto(paddedData, 0, 0)
@@ -57,7 +60,7 @@ actual object LibsodiumUtil {
     actual fun unpad(paddedData: UByteArray, blocksize: Int) : UByteArray {
         val paddedDataCopy = paddedData.copyOf()
         val paddedDataCopyPinned = paddedDataCopy.pin()
-        var newSize = ULongArray(1) { 99UL }
+        var newSize = ULongArray(1) { 0UL }
         val newSizePinned = newSize.pin()
         sodium_unpad(
             newSizePinned.addressOf(0),
@@ -75,24 +78,88 @@ actual object LibsodiumUtil {
         return unpadded
     }
 
-    actual fun toBase64(data: UByteArray): String {
-        TODO("not implemented yet")
+    actual fun toBase64(data: UByteArray, variant : Base64Variants): String {
+        val maxlen = sodium_base64_encoded_len(data.size.convert(), variant.value)
+        val dataPinned = data.pin()
+        val result = ByteArray(maxlen.toInt()) { 0 }
+        val resultPinned = result.pin()
+        sodium_bin2base64(
+            resultPinned.addressOf(0),
+            maxlen,
+            dataPinned.toPtr(),
+            data.size.convert(),
+            variant.value
+        )
+        dataPinned.unpin()
+        resultPinned.unpin()
+        //Drop '\0'
+        return result.map { it.toChar() }.dropLast(1).joinToString("")
     }
 
     actual fun toHex(data: UByteArray): String {
-        TODO("not implemented yet")
+        val hexLen = (data.size * 2) + 1 // +1 for terminator char
+        val result = ByteArray(hexLen)
+        val resultPinned = result.pin()
+        val dataPinned = data.pin()
+        sodium_bin2hex(
+            resultPinned.addressOf(0),
+            hexLen.convert(),
+            dataPinned.toPtr(),
+            data.size.convert()
+        )
+        resultPinned.unpin()
+        dataPinned.unpin()
+        //Drop \0 termination
+        return result.map { it.toChar() }.dropLast(1).joinToString("")
     }
 
     actual fun toString(data: UByteArray): String {
         TODO("not implemented yet")
     }
 
-    actual fun fromBase64(data: String): UByteArray {
-        TODO("not implemented yet")
+    actual fun fromBase64(data: String, variant : Base64Variants): UByteArray {
+        val maxLength = (data.length * 3) / 4
+        val intermediaryResult = UByteArray(maxLength) { 0U }
+
+        val intermediaryResultPinned = intermediaryResult.pin()
+        var binLen = ULongArray(1) { 0UL }
+        var binLenPinned = binLen.pin()
+        sodium_base642bin(
+            intermediaryResultPinned.toPtr(),
+            maxLength.convert(),
+            data,
+            data.length.convert(),
+            null,
+            binLenPinned.addressOf(0),
+            null,
+            variant.value
+
+        )
+        binLenPinned.unpin()
+        intermediaryResultPinned.unpin()
+
+        return if (binLen[0].toInt() != maxLength) {
+            intermediaryResult.sliceArray(0 until binLen[0].toInt())
+        } else {
+            intermediaryResult
+        }
     }
 
     actual fun fromHex(data: String): UByteArray {
-        TODO("not implemented yet")
+        val expectedSize = (data.length + 1) / 2
+        val result = UByteArray(expectedSize)
+        val resultPinned = result.pin()
+        sodium_hex2bin(
+            resultPinned.toPtr(),
+            expectedSize.convert(),
+            data,
+            data.length.convert(),
+            null,
+            null,
+            null
+        )
+        resultPinned.unpin()
+        return result
     }
 
     actual fun fromString(data: String): UByteArray {
