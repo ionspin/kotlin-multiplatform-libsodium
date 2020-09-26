@@ -113,10 +113,6 @@ actual object LibsodiumUtil {
         return result.map { it.toChar() }.dropLast(1).joinToString("")
     }
 
-    actual fun toString(data: UByteArray): String {
-        TODO("not implemented yet")
-    }
-
     actual fun fromBase64(data: String, variant : Base64Variants): UByteArray {
         val maxLength = (data.length * 3) / 4
         val intermediaryResult = UByteArray(maxLength) { 0U }
@@ -160,10 +156,6 @@ actual object LibsodiumUtil {
         )
         resultPinned.unpin()
         return result
-    }
-
-    actual fun fromString(data: String): UByteArray {
-        TODO("not implemented yet")
     }
 
 }

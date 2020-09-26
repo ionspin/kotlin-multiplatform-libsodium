@@ -20,9 +20,8 @@ expect object LibsodiumUtil {
 
     fun toBase64(data: UByteArray, variant : Base64Variants = Base64Variants.URLSAFE_NO_PADDING) : String
     fun toHex(data: UByteArray) : String
-    fun toString(data : UByteArray) : String
 
     fun fromBase64(data: String, variant : Base64Variants = Base64Variants.URLSAFE_NO_PADDING) : UByteArray
     fun fromHex(data: String) : UByteArray
-    fun fromString(data: String) : UByteArray
+
 }

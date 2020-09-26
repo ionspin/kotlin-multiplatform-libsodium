@@ -194,9 +194,20 @@ interface JsSodiumInterface {
 
     // ---- Password hashing end ----
 
+    // ---- Utils ----
 
-    //util
-    fun memzero(array: Uint8Array)
+    fun memcmp(first: Uint8Array, second: Uint8Array) : Boolean
+    fun memzero(data: Uint8Array)
+    fun pad(data : Uint8Array, blocksize: Int) : Uint8Array
+    fun unpad(data: Uint8Array, blocksize: Int) : Uint8Array
+    fun to_base64(data: Uint8Array, variant: Int) : String
+    fun to_hex(data: Uint8Array) : String
+    fun to_string(data: Uint8Array) : String
+    fun from_base64(data: String, variant: Int): Uint8Array
+    fun from_hex(data : String): Uint8Array
+    fun from_string(data : String): Uint8Array
+
+    // ---- Utils end ----
 
 
 
