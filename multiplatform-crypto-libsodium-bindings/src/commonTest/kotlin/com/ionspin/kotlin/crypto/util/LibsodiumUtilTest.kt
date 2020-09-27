@@ -57,6 +57,22 @@ class LibsodiumUtilTest {
     }
 
     @Test
+    fun testPaddingChars() {
+        LibsodiumInitializer.initializeWithCallback {
+            val input = charArrayOf('a', 'b', 'c', 'd').map { it.toByte().toUByte() }.toUByteArray()
+            val blocksize = 4
+            val padded = LibsodiumUtil.pad(input, blocksize)
+            println(padded.hexColumsPrint())
+            val unpadded = LibsodiumUtil.unpad(padded, blocksize)
+            println(unpadded.hexColumsPrint())
+
+            assertTrue {
+                input.contentEquals(unpadded)
+            }
+        }
+    }
+
+    @Test
     fun testPaddingAligned() {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U)

@@ -11,9 +11,9 @@ actual object LibsodiumUtil {
 
     actual fun memzero(target: UByteArray) {
         // libsodium.js does this as well, and theres no clear way at the moment of casting ubytearray to uint8array
-        //although I feel like there should be a way to work around it
-        target.forEachIndexed {
-            index, _ -> target[index] = 0U
+        // although I feel like there should be a way to work around it
+        (target.indices).forEach {
+            index -> target[index] = 0U
         }
     }
 

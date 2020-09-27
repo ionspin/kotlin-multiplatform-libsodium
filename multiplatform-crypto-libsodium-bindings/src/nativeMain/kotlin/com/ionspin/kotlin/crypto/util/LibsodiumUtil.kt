@@ -40,7 +40,7 @@ actual object LibsodiumUtil {
         val resultingSize = if (unpaddedData.size % blocksize != 0 ) {
             ((unpaddedData.size / blocksize) + 1 ) * blocksize
         } else {
-            unpaddedData.size + 1
+            unpaddedData.size + blocksize
         }
         val paddedData = UByteArray(resultingSize)
         unpaddedData.copyInto(paddedData, 0, 0)
