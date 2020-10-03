@@ -1,8 +1,6 @@
 package com.ionspin.kotlin.crypto.util
 
-import com.goterl.lazycode.lazysodium.LazySodiumJava
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
-import com.sun.jna.ptr.IntByReference
 import java.lang.RuntimeException
 import java.util.*
 
