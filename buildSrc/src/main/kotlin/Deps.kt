@@ -25,7 +25,7 @@ object Versions {
 
     val kotlinBigNumVersion = "0.1.6-1.4.0-rc-SNAPSHOT"
 
-    val lazySodium = "4.2.6"
+    val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.5.0"
 
     val kotlinPoet = "1.6.0"
@@ -81,7 +81,10 @@ object Deps {
         val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoet}"
 
         object Delegated {
-            val lazysodium = "com.goterl.lazycode:lazysodium-java:${Versions.lazySodium}"
+            // Temporary until reported lazysodium issues are fixed. My snapshot build with
+            // And cause I registered com.ionspin.kotlin as maven central package root now I have to use
+            // that even though this is pure java library. :)
+            val lazysodium = "com.ionspin.kotlin:lazysodium-java:${Versions.lazySodium}"
             val jna = "net.java.dev.jna:jna:${Versions.jna}"
         }
     }

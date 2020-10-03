@@ -1,15 +1,16 @@
 |Function name| Implemented |
 |-------------|-------------|
 | add | |
-| memcmp | | 
-| memzero | |    
+| memcmp | :heavy_check_mark: | 
+| memzero | :heavy_check_mark: |    
 | output_formats | | 
-| pad | |    
-| unpad | |  
+| pad | :heavy_check_mark: |    
+| unpad | :heavy_check_mark: |  
 | symbols | |    
-| to_base64 | |  
-| to_hex | | 
-| to_string | |  
+| to_base64 | :heavy_check_mark: |  
+| to_hex | :heavy_check_mark: | 
+| from_base64 | :heavy_check_mark: |  
+| from_hex | :heavy_check_mark: |
 | crypto_aead_chacha20poly1305_decrypt | :heavy_check_mark: |   
 | crypto_aead_chacha20poly1305_decrypt_detached | :heavy_check_mark: |  
 | crypto_aead_chacha20poly1305_encrypt | :heavy_check_mark: |   
@@ -138,12 +139,12 @@
 | crypto_stream_xchacha20_keygen | not present in LazySodium Android | 
 | crypto_stream_xchacha20_xor | not present in LazySodium Android|    
 | crypto_stream_xchacha20_xor_ic | not present in LazySodium Android | 
-| randombytes_buf | |    
-| randombytes_buf_deterministic | |  
-| randombytes_close | |  
-| randombytes_random | | 
-| randombytes_stir | |   
-| randombytes_uniform | |    
+| randombytes_buf | :heavy_check_mark: |    
+| randombytes_buf_deterministic | :heavy_check_mark: |  
+| randombytes_close | not present in LazySodium |  
+| randombytes_random | :heavy_check_mark: | 
+| randombytes_stir | not present in LazySodium |   
+| randombytes_uniform | :heavy_check_mark: |    
 | sodium_version_string | |  
 | SODIUM_LIBRARY_VERSION_MAJOR | |   
 | SODIUM_LIBRARY_VERSION_MINOR | |   

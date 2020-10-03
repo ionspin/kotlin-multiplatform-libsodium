@@ -27,7 +27,7 @@ actual object LibsodiumRandom {
      */
     actual fun bufDeterministic(size: Int, seed: UByteArray): UByteArray {
         val result = ByteArray(size)
-        sodium.randombytes_buf(result, size, seed.asByteArray())
+        sodium.randombytes_buf_deterministic(result, size, seed.asByteArray())
         return result.asUByteArray()
     }
 
@@ -36,7 +36,8 @@ actual object LibsodiumRandom {
      */
     actual fun random(): UInt {
         //Broken in lazysodium-java https://github.com/terl/lazysodium-java/issues/86
-        TODO()
+        //Using temporary forked and fixed build until pull request is accepted in original repo
+        return sodium.randombytes_random().toUInt()
     }
 
 
@@ -48,7 +49,8 @@ actual object LibsodiumRandom {
      */
     actual fun uniform(upperBound: UInt): UInt {
         //Broken in lazysodium-java https://github.com/terl/lazysodium-java/issues/86
-        TODO("not implemented yet")
+        //Using temporary fixed build until pull request is accepted
+        return sodium.randombytes_uniform(upperBound.toInt()).toUInt()
     }
 
 }

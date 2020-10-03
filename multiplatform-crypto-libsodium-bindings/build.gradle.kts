@@ -47,6 +47,9 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://dl.bintray.com/terl/lazysodium-maven")
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
 
 }
 group = ReleaseInfo.group

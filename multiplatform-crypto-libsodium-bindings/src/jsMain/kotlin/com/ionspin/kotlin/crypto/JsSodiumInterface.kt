@@ -207,7 +207,16 @@ interface JsSodiumInterface {
     fun from_hex(data : String): Uint8Array
     fun from_string(data : String): Uint8Array
 
+    //  ---- > ---- Random ---- < -----
+
+    fun randombytes_buf(length: UInt) : Uint8Array
+    fun randombytes_buf_deterministic(length: UInt, seed : Uint8Array) : Uint8Array
+    fun randombytes_random() : UInt
+    fun randombytes_uniform(upper_bound: UInt) : UInt
+
     // ---- Utils end ----
+
+
 
 
 
