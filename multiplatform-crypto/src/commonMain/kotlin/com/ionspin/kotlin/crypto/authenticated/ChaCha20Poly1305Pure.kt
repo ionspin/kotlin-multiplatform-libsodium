@@ -13,7 +13,7 @@ import com.ionspin.kotlin.crypto.util.toLittleEndianUByteArray
 internal class ChaCha20Poly1305Pure {
     companion object {
 
-        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
+        fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, associatedData: UByteArray) : UByteArray {
             val state = UIntArray(16) {
                 when (it) {
                     0 -> ChaCha20Pure.sigma0_32
@@ -37,11 +37,11 @@ internal class ChaCha20Poly1305Pure {
             }
             val oneTimeKey = ChaCha20Pure.hash(state).sliceArray(0 until 32)
             val cipherText = ChaCha20Pure.xorWithKeystream(key, nonce, message, 1U)
-            val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
+            val associatedDataPad = UByteArray(16 - associatedData.size % 16) { 0U }
             val cipherTextPad = UByteArray(16 - cipherText.size % 16) { 0U }
-            val macData = additionalData + additionalDataPad +
+            val macData = associatedData + associatedDataPad +
                     cipherText + cipherTextPad +
-                    additionalData.size.toULong().toLittleEndianUByteArray() +
+                    associatedData.size.toULong().toLittleEndianUByteArray() +
                     cipherText.size.toULong().toLittleEndianUByteArray()
             val tag = Poly1305.poly1305Authenticate(oneTimeKey, macData)
             return  cipherText + tag

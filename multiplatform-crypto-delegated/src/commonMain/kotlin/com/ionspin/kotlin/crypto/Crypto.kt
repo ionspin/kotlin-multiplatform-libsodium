@@ -145,17 +145,17 @@ object Crypto {
     }
 
     object Encryption : EncryptionApi {
-        override fun encrypt(key: SymmetricKey, data : Encryptable<*>, additionalData : UByteArray) : EncryptedData {
+        override fun encrypt(key: SymmetricKey, data : Encryptable<*>, associatedData : UByteArray) : EncryptedData {
             if (key.value.size != 32) {
                 throw RuntimeException("Invalid key size! Required 32, supplied ${key.value.size}")
             }
             val nonce = SRNG.getRandomBytes(24)
-            return EncryptedData(XChaCha20Poly1305Delegated.encrypt(key.value, nonce, data.toEncryptableForm(), additionalData), nonce)
+            return EncryptedData(XChaCha20Poly1305Delegated.encrypt(key.value, nonce, data.toEncryptableForm(), associatedData), nonce)
 
         }
 
-        override fun <T: Encryptable<T>> decrypt(key: SymmetricKey, encryptedData : EncryptedData, additionalData: UByteArray, byteArrayDeserializer : (UByteArray) -> T) : T {
-            return byteArrayDeserializer(XChaCha20Poly1305Delegated.decrypt(key.value, encryptedData.nonce, encryptedData.ciphertext, additionalData))
+        override fun <T: Encryptable<T>> decrypt(key: SymmetricKey, encryptedData : EncryptedData, associatedData: UByteArray, byteArrayDeserializer : (UByteArray) -> T) : T {
+            return byteArrayDeserializer(XChaCha20Poly1305Delegated.decrypt(key.value, encryptedData.nonce, encryptedData.ciphertext, associatedData))
 
         }
 
@@ -185,8 +185,8 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
         return header
     }
 
-    override fun encryptPartialData(data: UByteArray, additionalData: UByteArray): EncryptedDataPart {
-        return EncryptedDataPart(primitive.encrypt(data, additionalData))
+    override fun encryptPartialData(data: UByteArray, associatedData: UByteArray): EncryptedDataPart {
+        return EncryptedDataPart(primitive.encrypt(data, associatedData))
     }
 
     override fun cleanup() {
@@ -196,8 +196,8 @@ class MultipartAuthenticatedEncryptor internal constructor(val key : SymmetricKe
 
 
 class MultipartAuthenticatedDecryptor internal constructor(val decryptor: XChaCha20Poly1305Delegated) : MultipartAuthenticatedDecryption {
-    override fun decryptPartialData(data: EncryptedDataPart, additionalData: UByteArray): DecryptedDataPart {
-        return DecryptedDataPart(decryptor.decrypt(data.data, additionalData))
+    override fun decryptPartialData(data: EncryptedDataPart, associatedData: UByteArray): DecryptedDataPart {
+        return DecryptedDataPart(decryptor.decrypt(data.data, associatedData))
     }
 
     override fun cleanup() {

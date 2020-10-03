@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.*
 import libsodium.*
 import platform.posix.free
@@ -39,7 +40,7 @@ class HelperTest {
         }
         val result = UByteArray(32)
         val resultPinned = result.pin()
-        crypto_hash_sha256_final(state, resultPinned.addressOf(0))
+        crypto_hash_sha256_final(state, resultPinned.toPtr())
         println("$target to \"${result.toHexString()}\",")
         free(state)
     }
@@ -69,7 +70,7 @@ class HelperTest {
         }
         val result = UByteArray(32)
         val resultPinned = result.pin()
-        crypto_hash_sha512_final(state, resultPinned.addressOf(0))
+        crypto_hash_sha512_final(state, resultPinned.toPtr())
         println("$target to \"${result.toHexString()}\",")
         free(state)
     }

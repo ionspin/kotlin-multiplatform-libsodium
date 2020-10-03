@@ -145,7 +145,8 @@ internal class AesCbcPure internal constructor(val aesKey: InternalAesKey, val m
     }
 
     /**
-     * Encrypt fed data and return it alongside the randomly chosen initialization vector
+     * Encrypt fed data and return it alongside the randomly chosen initialization vector.
+     * This also applies correct PKCS#7 padding
      * @return Encrypted data and initialization vector
      */
     fun encrypt(): EncryptedDataAndInitializationVector {
@@ -158,6 +159,8 @@ internal class AesCbcPure internal constructor(val aesKey: InternalAesKey, val m
             } else {
                 output += consumeBlock(lastBlockPadded)
             }
+        } else {
+            output += consumeBlock(UByteArray(BLOCK_BYTES) { BLOCK_BYTES.toUByte()})
         }
         return EncryptedDataAndInitializationVector(
             output.reversed().foldRight(UByteArray(0) { 0U }) { arrayOfUBytes, acc -> acc + arrayOfUBytes },
@@ -172,11 +175,10 @@ internal class AesCbcPure internal constructor(val aesKey: InternalAesKey, val m
     fun decrypt(): UByteArray {
         val removePaddingCount = output.last().last()
 
-
         val removedPadding = if (removePaddingCount > 0U && removePaddingCount < 16U) {
             output.last().dropLast(removePaddingCount.toInt() and 0x7F)
         } else {
-            output.last().toList()
+            ubyteArrayOf()
         }.toUByteArray()
         val preparedOutput = (output.dropLast(1) + listOf(removedPadding))
         //JS compiler freaks out here if we don't supply exact type

@@ -15,7 +15,7 @@ import com.ionspin.kotlin.crypto.util.*
 class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
     companion object : AuthenticatedEncryption {
 
-        override fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, additionalData: UByteArray) : UByteArray {
+        override fun encrypt(key: UByteArray, nonce: UByteArray, message: UByteArray, associatedData: UByteArray) : UByteArray {
             val subKey = XChaCha20Pure.hChacha(key, nonce)
             val authKey =
                 ChaCha20Pure.xorWithKeystream(
@@ -28,17 +28,17 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
                     //	at org.jetbrains.kotlin.ir.backend.js.lower.ConstTransformer.lowerConst(ConstLowering.kt:38)
                 )
             val cipherText = XChaCha20Pure.xorWithKeystream(key, nonce, message, 1U)
-            val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
+            val associatedDataPad = UByteArray(16 - associatedData.size % 16) { 0U }
             val cipherTextPad = UByteArray(16 - cipherText.size % 16) { 0U }
-            val macData = additionalData + additionalDataPad +
+            val macData = associatedData + associatedDataPad +
                     cipherText + cipherTextPad +
-                    additionalData.size.toULong().toLittleEndianUByteArray() +
+                    associatedData.size.toULong().toLittleEndianUByteArray() +
                     cipherText.size.toULong().toLittleEndianUByteArray()
             val tag = Poly1305.poly1305Authenticate(authKey, macData)
             return cipherText + tag
         }
 
-        override fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, additionalData: UByteArray) : UByteArray {
+        override fun decrypt(key: UByteArray, nonce: UByteArray, cipherText: UByteArray, associatedData: UByteArray) : UByteArray {
             val subKey = XChaCha20Pure.hChacha(key, nonce)
             val authKey =
                 ChaCha20Pure.xorWithKeystream(
@@ -51,11 +51,11 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
             val tag = cipherText.sliceArray(cipherText.size - 16 until cipherText.size)
             //3. Verify tag is valid
             val cipherTextWithoutTag = cipherText.sliceArray(0 until cipherText.size - 16)
-            val additionalDataPad = UByteArray(16 - additionalData.size % 16) { 0U }
+            val associatedDataPad = UByteArray(16 - associatedData.size % 16) { 0U }
             val cipherTextPad = UByteArray(16 - cipherTextWithoutTag.size % 16) { 0U }
-            val macData = additionalData + additionalDataPad +
+            val macData = associatedData + associatedDataPad +
                     cipherTextWithoutTag + cipherTextPad +
-                    additionalData.size.toULong().toLittleEndianUByteArray() +
+                    associatedData.size.toULong().toLittleEndianUByteArray() +
                     cipherTextWithoutTag.size.toULong().toLittleEndianUByteArray()
             val calculatedTag = Poly1305.poly1305Authenticate(authKey, macData)
             if (!calculatedTag.contentEquals(tag)) {
@@ -86,15 +86,15 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         calcNonce[3] = 0U
     }
 
-    fun streamEncrypt(data: UByteArray, additionalData: UByteArray, tag : UByte) : UByteArray {
+    fun streamEncrypt(data: UByteArray, associatedData: UByteArray, tag : UByte) : UByteArray {
         //get encryption state
         val block = UByteArray(64) { 0U }
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
         val poly1305 = Poly1305(block)
         block.overwriteWithZeroes()
-        if (additionalData.isNotEmpty()) {
-            val additionalDataPadded = additionalData + UByteArray(16 - additionalData.size % 16) { 0U }
-            processPolyBytes(poly1305, additionalDataPadded)
+        if (associatedData.isNotEmpty()) {
+            val associatedDataPadded = associatedData + UByteArray(16 - associatedData.size % 16) { 0U }
+            processPolyBytes(poly1305, associatedDataPadded)
         }
         block[0] = tag
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block) // This just xors block[0] with keystream
@@ -109,21 +109,21 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         // From security standpoint there are no obvious drawbacks, as padding was initially added to decrease implementation complexity.
         processPolyBytes(poly1305, ciphertext + UByteArray(((16U + data.size.toUInt() - block.size.toUInt()) % 16U).toInt()) { 0U } ) //TODO this is inefficient as it creates a new array and copies data
         // Last 16byte block containing actual additional data nad ciphertext sizes
-        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
+        val finalMac = associatedData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
         calcNonce.xorWithPositionsAndInsertIntoArray(0, 12, mac, 0, calcNonce, 0)
         return ubyteArrayOf(encryptedTag) + ciphertext + mac
     }
 
-    fun streamDecrypt(data: UByteArray, additionalData: UByteArray, tag: UByte) : UByteArray {
+    fun streamDecrypt(data: UByteArray, associatedData: UByteArray, tag: UByte) : UByteArray {
         val block = UByteArray(64) { 0U }
         ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 0U).copyInto(block) // This is equivalent to the first 64 bytes of keystream
         val poly1305 = Poly1305(block)
         block.overwriteWithZeroes()
-        if (additionalData.isNotEmpty()) {
-            val additionalDataPadded = additionalData + UByteArray(16 - additionalData.size % 16) { 0U }
-            processPolyBytes(poly1305, additionalDataPadded)
+        if (associatedData.isNotEmpty()) {
+            val associatedDataPadded = associatedData + UByteArray(16 - associatedData.size % 16) { 0U }
+            processPolyBytes(poly1305, associatedDataPadded)
         }
         block[0] = data[0]
          ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, block, 1U).copyInto(block)// get the keystream xored with zeroes, but also decrypteg tag marker
@@ -137,7 +137,7 @@ class XChaCha20Poly1305Pure(val key: UByteArray, val nonce: UByteArray) {
         val ciphertext = data.sliceArray(1 until data.size - 16)
         processPolyBytes(poly1305, ciphertext + UByteArray(((16U + ciphertext.size.toUInt() - block.size.toUInt()) % 16U).toInt()) { 0U } )
         val plaintext = ChaCha20Pure.xorWithKeystream(calcKey, calcNonce, ciphertext, 2U)
-        val finalMac = additionalData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
+        val finalMac = associatedData.size.toULong().toLittleEndianUByteArray() + (ciphertext.size + 64).toULong().toLittleEndianUByteArray()
         processPolyBytes(poly1305, finalMac)
         val mac = poly1305.finalizeMac(polyBuffer.sliceArray(0 until polyBufferByteCounter))
         val expectedMac = data.sliceArray(data.size - 16 until data.size)
