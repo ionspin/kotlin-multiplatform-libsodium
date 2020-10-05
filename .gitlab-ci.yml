@@ -14,7 +14,7 @@ variables:
 
 simpleCheck:
   stage: prepare
-  script: ./gradlew tasks
+  script: echo PREPARE
   tags:
     - linuxX64
 
@@ -23,7 +23,6 @@ buildLinux:
   when: manual
   allow_failure: false
   script:
-    - echo TEST_PULL_REQUEST_LINUX
     - ./linuxBuild.sh
   tags:
     - linuxX64
