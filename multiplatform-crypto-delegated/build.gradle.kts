@@ -61,7 +61,7 @@ kotlin {
         js {
             browser {
                 testTask {
-                    isRunningInTravis {
+                    isRunningInGitlabCi {
                         enabled = false //Until I sort out testing on travis
                     }
                     useKarma {

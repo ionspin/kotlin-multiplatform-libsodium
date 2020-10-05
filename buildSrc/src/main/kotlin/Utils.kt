@@ -13,7 +13,7 @@ import java.io.File
  */
 fun isInIdea() = System.getProperty("idea.active") == "true"
 
-fun isInTravis() = System.getenv("TRAVIS") == "true"
+fun isInGitlabCi() = System.getenv("GITLAB_CI") == "true"
 
 fun getProjectPath() : String {
     val path = System.getProperty("PROJECT_PATH")
@@ -49,8 +49,8 @@ fun KotlinMultiplatformExtension.isNotRunningInIdea(block: KotlinMultiplatformEx
     }
 }
 
-fun KotlinMultiplatformExtension.isRunningInTravis(block: KotlinMultiplatformExtension.() -> Unit) {
-    if (isInTravis()) {
+fun KotlinMultiplatformExtension.isRunningInGitlabCi(block: KotlinMultiplatformExtension.() -> Unit) {
+    if (isInGitlabCi()) {
         block(this)
     }
 }
