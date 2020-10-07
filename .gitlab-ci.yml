@@ -31,7 +31,6 @@ buildMac:
   when: manual
   allow_failure: false
   script:
-    - env
     - ./macBuild.sh
   tags:
     - macos
