@@ -57,19 +57,20 @@ version = ReleaseInfo.version
 
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
-
-android {
-    compileSdkVersion(29)
-    defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(29)
-        versionCode = 1
-        versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+rootRunningOnLinuxx86_64 {
+    android {
+        compileSdkVersion(29)
+        defaultConfig {
+            minSdkVersion(24)
+            targetSdkVersion(29)
+            versionCode = 1
+            versionName = "1.0"
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            getByName("release") {
+                isMinifyEnabled = false
+            }
         }
     }
 }
