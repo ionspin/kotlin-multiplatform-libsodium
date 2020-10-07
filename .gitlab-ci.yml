@@ -31,7 +31,7 @@ buildMac:
   when: manual
   allow_failure: false
   script:
-    - echo TEST_PULL_REQUEST_MAC
+    - env
     - ./macBuild.sh
   tags:
     - macos
