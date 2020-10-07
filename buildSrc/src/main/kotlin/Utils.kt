@@ -37,11 +37,7 @@ fun getHostArchitecture(): String {
     return resolvedArch
 }
 
-fun rootRunningOnLinuxx86_64(block: () -> Unit) {
-    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
-        block()
-    }
-}
+
 
 fun KotlinMultiplatformExtension.isRunningInIdea(block: KotlinMultiplatformExtension.() -> Unit) {
     if (isInIdea()) {
