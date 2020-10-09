@@ -57,7 +57,6 @@ version = ReleaseInfo.version
 
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
-
 android {
     compileSdkVersion(29)
     defaultConfig {
@@ -73,6 +72,7 @@ android {
         }
     }
 }
+
 
 
 kotlin {

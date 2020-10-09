@@ -37,6 +37,8 @@ fun getHostArchitecture(): String {
     return resolvedArch
 }
 
+
+
 fun KotlinMultiplatformExtension.isRunningInIdea(block: KotlinMultiplatformExtension.() -> Unit) {
     if (isInIdea()) {
         block(this)

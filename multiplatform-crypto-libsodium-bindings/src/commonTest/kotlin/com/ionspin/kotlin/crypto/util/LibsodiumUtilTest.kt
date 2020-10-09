@@ -78,7 +78,9 @@ class LibsodiumUtilTest {
             val input = ubyteArrayOf(1U, 2U)
             val blocksize = 2
             val padded = LibsodiumUtil.pad(input, blocksize)
+            val expected = ubyteArrayOf(1U, 2U, 0x80U, 0x00U)
             println(padded.hexColumsPrint())
+            assertTrue { padded.contentEquals(expected) }
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
             println(unpadded.hexColumsPrint())
 
@@ -94,7 +96,9 @@ class LibsodiumUtilTest {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 6U)
             val blocksize = 4
             val padded = LibsodiumUtil.pad(input, blocksize)
+            val expected = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 6U, 0x80U, 0x00U)
             println(padded.hexColumsPrint())
+            assertTrue { padded.contentEquals(expected) }
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
             println(unpadded.hexColumsPrint())
 

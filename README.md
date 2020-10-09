@@ -138,6 +138,7 @@ Currently supported native platforms:
 - Complete the bindings list
 - Samples
 - Android testing 
+- Fix browser testing, both locally and in CI/CD
 
 
 
