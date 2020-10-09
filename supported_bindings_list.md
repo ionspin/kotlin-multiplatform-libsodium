@@ -254,10 +254,10 @@
 | crypto_kdf_blake2b_BYTES_MIN | |   
 | crypto_kdf_blake2b_CONTEXTBYTES | |    
 | crypto_kdf_blake2b_KEYBYTES | |    
-| crypto_kx_PUBLICKEYBYTES | |   
-| crypto_kx_SECRETKEYBYTES | |   
-| crypto_kx_SEEDBYTES | |    
-| crypto_kx_SESSIONKEYBYTES | |  
+| crypto_kx_PUBLICKEYBYTES | :heavy_check_mark: |   
+| crypto_kx_SECRETKEYBYTES | :heavy_check_mark: |   
+| crypto_kx_SEEDBYTES | :heavy_check_mark: |    
+| crypto_kx_SESSIONKEYBYTES | :heavy_check_mark: |  
 | crypto_onetimeauth_BYTES | |   
 | crypto_onetimeauth_KEYBYTES | |    
 | crypto_onetimeauth_poly1305_BYTES | |  

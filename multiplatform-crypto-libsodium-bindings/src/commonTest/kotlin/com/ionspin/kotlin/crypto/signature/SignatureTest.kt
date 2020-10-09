@@ -40,6 +40,9 @@ class SignatureTest {
             assertFailsWith(InvalidSignatureException::class) {
                 val tamperedSignature = signature.copyOf()
                 tamperedSignature[crypto_sign_BYTES - 1] = 0U
+                tamperedSignature[1] = 0U
+                tamperedSignature[15] = 0U
+                tamperedSignature[33] = 0U
                 Signature.verifyDetached(tamperedSignature, message, keys.publicKey)
             }
         }

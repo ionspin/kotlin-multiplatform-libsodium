@@ -216,6 +216,12 @@ interface JsSodiumInterface {
 
     // ---- Utils end ----
 
+    // ---- Key exchange ----
+    fun crypto_kx_client_session_keys(clientPublicKey: Uint8Array, clientSecretKey: Uint8Array, serverPublicKey: Uint8Array) : dynamic
+    fun crypto_kx_keypair() : dynamic
+    fun crypto_kx_seed_keypair(seed: Uint8Array) : dynamic
+    fun crypto_kx_server_session_keys(serverPublicKey: Uint8Array, serverSecretKey: Uint8Array, clientPublicKey: Uint8Array) : dynamic
+
 
 
 
