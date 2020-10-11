@@ -79,10 +79,10 @@
 | crypto_hash_sha512_update | :heavy_check_mark: |  
 | crypto_kdf_derive_from_key | :heavy_check_mark: | 
 | crypto_kdf_keygen | :heavy_check_mark: |  
-| crypto_kx_client_session_keys | |  
-| crypto_kx_keypair | |  
-| crypto_kx_seed_keypair | | 
-| crypto_kx_server_session_keys | |  
+| crypto_kx_client_session_keys | :heavy_check_mark: |  
+| crypto_kx_keypair | :heavy_check_mark: |  
+| crypto_kx_seed_keypair | :heavy_check_mark: | 
+| crypto_kx_server_session_keys | :heavy_check_mark: |  
 | crypto_onetimeauth | not present in LazySodium | 
 | crypto_onetimeauth_final | not present in LazySodium |   
 | crypto_onetimeauth_init | not present in LazySodium |    
@@ -99,8 +99,8 @@
 | crypto_pwhash_str_verify | :heavy_check_mark: |   
 | crypto_scalarmult | |  
 | crypto_scalarmult_base | | 
-| crypto_scalarmult_ristretto255 | | 
-| crypto_scalarmult_ristretto255_base | |    
+| crypto_scalarmult_ristretto255 | not present in LazySodium | 
+| crypto_scalarmult_ristretto255_base | not present in LazySodium |    
 | crypto_secretbox_detached | :heavy_check_mark: |  
 | crypto_secretbox_easy | :heavy_check_mark: |  
 | crypto_secretbox_keygen | :heavy_check_mark: |    
@@ -135,7 +135,7 @@
 | crypto_stream_chacha20_keygen | |  
 | crypto_stream_chacha20_xor | | 
 | crypto_stream_chacha20_xor_ic | |  
-| crypto_stream_keygen | |   
+| crypto_stream_keygen | Other XSalsa20 primitives are not available, so I'm leaving this out as well|   
 | crypto_stream_xchacha20_keygen | not present in LazySodium Android | 
 | crypto_stream_xchacha20_xor | not present in LazySodium Android|    
 | crypto_stream_xchacha20_xor_ic | not present in LazySodium Android | 
