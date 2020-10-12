@@ -1,3 +1,10 @@
+# Supported functions and constants Libsodium wrapper
+
+Here is a list of supported functions and constants, This list is extracted from the libsodium.js library as which is misleading, as the comparison should be done from the 
+native libsodium library. 
+
+## Functions
+
 |Function name| Implemented |
 |-------------|-------------|
 | add | |
@@ -79,10 +86,10 @@
 | crypto_hash_sha512_update | :heavy_check_mark: |  
 | crypto_kdf_derive_from_key | :heavy_check_mark: | 
 | crypto_kdf_keygen | :heavy_check_mark: |  
-| crypto_kx_client_session_keys | |  
-| crypto_kx_keypair | |  
-| crypto_kx_seed_keypair | | 
-| crypto_kx_server_session_keys | |  
+| crypto_kx_client_session_keys | :heavy_check_mark: |  
+| crypto_kx_keypair | :heavy_check_mark: |  
+| crypto_kx_seed_keypair | :heavy_check_mark: | 
+| crypto_kx_server_session_keys | :heavy_check_mark: |  
 | crypto_onetimeauth | not present in LazySodium | 
 | crypto_onetimeauth_final | not present in LazySodium |   
 | crypto_onetimeauth_init | not present in LazySodium |    
@@ -99,8 +106,8 @@
 | crypto_pwhash_str_verify | :heavy_check_mark: |   
 | crypto_scalarmult | |  
 | crypto_scalarmult_base | | 
-| crypto_scalarmult_ristretto255 | | 
-| crypto_scalarmult_ristretto255_base | |    
+| crypto_scalarmult_ristretto255 | not present in LazySodium | 
+| crypto_scalarmult_ristretto255_base | not present in LazySodium |    
 | crypto_secretbox_detached | :heavy_check_mark: |  
 | crypto_secretbox_easy | :heavy_check_mark: |  
 | crypto_secretbox_keygen | :heavy_check_mark: |    
@@ -129,13 +136,13 @@
 | crypto_sign_seed_keypair | :heavy_check_mark: |   
 | crypto_sign_update | :heavy_check_mark: | 
 | crypto_sign_verify_detached | :heavy_check_mark: |    
-| crypto_stream_chacha20 | | 
-| crypto_stream_chacha20_ietf_xor | |    
-| crypto_stream_chacha20_ietf_xor_ic | | 
-| crypto_stream_chacha20_keygen | |  
-| crypto_stream_chacha20_xor | | 
-| crypto_stream_chacha20_xor_ic | |  
-| crypto_stream_keygen | |   
+| crypto_stream_chacha20 | :heavy_check_mark: | 
+| crypto_stream_chacha20_ietf_xor | :heavy_check_mark: |    
+| crypto_stream_chacha20_ietf_xor_ic | :heavy_check_mark: | 
+| crypto_stream_chacha20_keygen | :heavy_check_mark: |  
+| crypto_stream_chacha20_xor | :heavy_check_mark: | 
+| crypto_stream_chacha20_xor_ic | :heavy_check_mark: |  
+| crypto_stream_keygen | Other XSalsa20 primitives are not available, so I'm leaving this out as well|   
 | crypto_stream_xchacha20_keygen | not present in LazySodium Android | 
 | crypto_stream_xchacha20_xor | not present in LazySodium Android|    
 | crypto_stream_xchacha20_xor_ic | not present in LazySodium Android | 
@@ -146,6 +153,9 @@
 | randombytes_stir | not present in LazySodium |   
 | randombytes_uniform | :heavy_check_mark: |    
 | sodium_version_string | |  
+
+## Constants
+| Constant name| Implemented |
 | SODIUM_LIBRARY_VERSION_MAJOR | |   
 | SODIUM_LIBRARY_VERSION_MINOR | |   
 | crypto_aead_chacha20poly1305_ABYTES | |    
@@ -351,12 +361,12 @@
 | crypto_stream_chacha20_IETF_KEYBYTES | |   
 | crypto_stream_chacha20_IETF_MESSAGEBYTES_MAX | |   
 | crypto_stream_chacha20_IETF_NONCEBYTES | | 
-| crypto_stream_chacha20_KEYBYTES | |    
+| crypto_stream_chacha20_KEYBYTES | stream_chacha20|    
 | crypto_stream_chacha20_MESSAGEBYTES_MAX | |    
-| crypto_stream_chacha20_NONCEBYTES | |  
-| crypto_stream_chacha20_ietf_KEYBYTES | |   
+| crypto_stream_chacha20_NONCEBYTES | stream_chacha20|  
+| crypto_stream_chacha20_ietf_KEYBYTES | stream_chacha20|   
 | crypto_stream_chacha20_ietf_MESSAGEBYTES_MAX | |   
-| crypto_stream_chacha20_ietf_NONCEBYTES | | 
+| crypto_stream_chacha20_ietf_NONCEBYTES | stream_chacha20| 
 | crypto_stream_salsa2012_KEYBYTES | |   
 | crypto_stream_salsa2012_MESSAGEBYTES_MAX | |   
 | crypto_stream_salsa2012_NONCEBYTES | | 
