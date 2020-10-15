@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.scalarmult
 
+import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -29,22 +30,24 @@ class ScalarMultiplicationTest {
 
     @Test
     fun testScalarMultiplication() {
-        val alicePublicKey = ScalarMultiplication.scalarMultiplicationBase(aliceSecretKey)
-        assertTrue {
-            alicePublicKey.toHexString().equals(expectedAlicePublicKeyString)
+        LibsodiumInitializer.initializeWithCallback {
+            val alicePublicKey = ScalarMultiplication.scalarMultiplicationBase(aliceSecretKey)
+            assertTrue {
+                alicePublicKey.toHexString().equals(expectedAlicePublicKeyString)
+            }
+            val bobPublickKey = ScalarMultiplication.scalarMultiplicationBase(bobSecretKey)
+            assertTrue {
+                bobPublickKey.toHexString().equals(expectedBobPublickKeyString)
+            }
+            val aliceToBobSecret = ScalarMultiplication.scalarMultiplication(aliceSecretKey, bobPublickKey)
+            val bobToAliceSecret = ScalarMultiplication.scalarMultiplication(bobSecretKey, alicePublicKey)
+            assertTrue {
+                aliceToBobSecret.toHexString().equals(expectedSharedSecretString)
+            }
+            assertTrue {
+                bobToAliceSecret.toHexString().equals(expectedSharedSecretString)
+            }
+            println(aliceToBobSecret.toHexString())
         }
-        val bobPublickKey = ScalarMultiplication.scalarMultiplicationBase(bobSecretKey)
-        assertTrue {
-            bobPublickKey.toHexString().equals(expectedBobPublickKeyString)
-        }
-        val aliceToBobSecret = ScalarMultiplication.scalarMultiplication(aliceSecretKey, bobPublickKey)
-        val bobToAliceSecret = ScalarMultiplication.scalarMultiplication(bobSecretKey, alicePublicKey)
-        assertTrue {
-            aliceToBobSecret.toHexString().equals(expectedSharedSecretString)
-        }
-        assertTrue {
-            bobToAliceSecret.toHexString().equals(expectedSharedSecretString)
-        }
-        println(aliceToBobSecret.toHexString())
     }
 }
