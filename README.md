@@ -8,7 +8,7 @@
 This repository contains two cryptography related projects:
 
 1. Libsodium bindings for Kotiln Multiplatform
-2. Pure/Delegated kotlin multiplatform crypto library written from scratch in pure form. [Link to project readme](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/multiplatform-crypto-api/README.md)
+2. Pure/Delegated kotlin multiplatform crypto library written from scratch in pure kotlin/delegated to libsodium. [Link to project readme](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/multiplatform-crypto-api/README.md)
 
 This readme represents the libsodium bindings project
 
@@ -18,7 +18,7 @@ Libsodium bindings project uses libsodium c sources, libsodium.js as well as Laz
 
 ## Installation
 
-The libsodium binding library is not published yet as it is still missing several features, you can track the 
+The libsodium binding library is not published yet, once the sample showing the basic usage is ready, the library will be published. You can track the implementation 
 [progress here](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
 
 
