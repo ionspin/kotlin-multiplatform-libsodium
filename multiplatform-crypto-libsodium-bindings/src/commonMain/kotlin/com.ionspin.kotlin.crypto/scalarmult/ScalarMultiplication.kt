@@ -1,4 +1,4 @@
-package com.ionspin.kotlin.crypto.scalarmut
+package com.ionspin.kotlin.crypto.scalarmult
 
 /**
  * Created by Ugljesa Jovanovic

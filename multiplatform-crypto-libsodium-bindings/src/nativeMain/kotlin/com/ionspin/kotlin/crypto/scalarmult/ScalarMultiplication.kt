@@ -1,4 +1,4 @@
-package com.ionspin.kotlin.crypto.scalarmut
+package com.ionspin.kotlin.crypto.scalarmult
 
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.pin
