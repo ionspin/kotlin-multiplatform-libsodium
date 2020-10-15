@@ -144,7 +144,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
-                implementation(project(":multiplatform-crypto-delegated"))
+                implementation(project(":multiplatform-crypto-libsodium-bindings"))
             }
         }
         val commonTest by getting {

@@ -156,6 +156,7 @@ native libsodium library.
 
 ## Constants
 | Constant name| Implemented |
+|-------------|-------------|
 | SODIUM_LIBRARY_VERSION_MAJOR | |   
 | SODIUM_LIBRARY_VERSION_MINOR | |   
 | crypto_aead_chacha20poly1305_ABYTES | |    
