@@ -104,8 +104,8 @@ native libsodium library.
 | crypto_pwhash_str | :heavy_check_mark: |  
 | crypto_pwhash_str_needs_rehash | :heavy_check_mark: | 
 | crypto_pwhash_str_verify | :heavy_check_mark: |   
-| crypto_scalarmult | |  
-| crypto_scalarmult_base | | 
+| crypto_scalarmult | :heavy_check_mark: |  
+| crypto_scalarmult_base | :heavy_check_mark: | 
 | crypto_scalarmult_ristretto255 | not present in LazySodium | 
 | crypto_scalarmult_ristretto255_base | not present in LazySodium |    
 | crypto_secretbox_detached | :heavy_check_mark: |  
@@ -156,6 +156,7 @@ native libsodium library.
 
 ## Constants
 | Constant name| Implemented |
+|-------------|-------------|
 | SODIUM_LIBRARY_VERSION_MAJOR | |   
 | SODIUM_LIBRARY_VERSION_MINOR | |   
 | crypto_aead_chacha20poly1305_ABYTES | |    
@@ -311,8 +312,8 @@ native libsodium library.
 | crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_SENSITIVE | |  
 | crypto_pwhash_scryptsalsa208sha256_SALTBYTES | |   
 | crypto_pwhash_scryptsalsa208sha256_STRBYTES | |    
-| crypto_scalarmult_BYTES | |    
-| crypto_scalarmult_SCALARBYTES | |  
+| crypto_scalarmult_BYTES | :heavy_check_mark: |    
+| crypto_scalarmult_SCALARBYTES | :heavy_check_mark: |  
 | crypto_scalarmult_curve25519_BYTES | :heavy_check_mark: | 
 | crypto_scalarmult_curve25519_SCALARBYTES | |   
 | crypto_scalarmult_ed25519_BYTES | |    
