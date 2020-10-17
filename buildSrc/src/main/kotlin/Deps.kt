@@ -30,6 +30,13 @@ object Versions {
 
     val kotlinPoet = "1.6.0"
 
+    val sharedModule = "0.1.0-SNAPSHOT"
+
+    val ktor = "1.3.2"
+
+    val timber = "4.7.1"
+
+
 
 }
 
@@ -52,6 +59,8 @@ object Deps {
         val kotlinBigNum = "com.ionspin.kotlin:bignum:${Versions.kotlinBigNumVersion}"
 
         val apiProject = ":multiplatform-crypto-api"
+
+        val sharedModule = "com.ionspin.kotlin.crypto.sample:shared:${Versions.sharedModule}"
     }
 
     object Js {
@@ -100,6 +109,15 @@ object Deps {
 
     }
 
+    object Android {
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinCoroutines}"
+        val ktorClientOkHttp = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
+        val ktorClient = "io.ktor:ktor-client-android:${Versions.ktor}"
+        val ktorClientSerialization = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
+        val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.kotlinSerialization}"
+        val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    }
+
 }
 
 
@@ -113,5 +131,8 @@ object PluginsDeps {
     val taskTree = "com.dorongold.task-tree"
     val androidLibrary = "com.android.library"
     val kotlinAndroidExtensions = "kotlin-android-extensions"
+    val androidApplication = "com.android.application"
+    val kotlinAndroid = "kotlin-android"
+    val kapt = "kotlin-kapt"
 }
 
