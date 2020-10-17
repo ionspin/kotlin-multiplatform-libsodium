@@ -24,6 +24,8 @@ class SignatureTest {
             assertFailsWith(InvalidSignatureException::class) {
                 val tamperedMessage = signedMessage.copyOf()
                 tamperedMessage[crypto_sign_BYTES + 1] = 0U
+                tamperedMessage[crypto_sign_BYTES + 2] = 0U
+                tamperedMessage[crypto_sign_BYTES + 3] = 0U
                 Signature.open(tamperedMessage, keys.publicKey)
             }
         }
@@ -65,6 +67,8 @@ class SignatureTest {
             assertFailsWith(InvalidSignatureException::class) {
                 val tamperedSignature = signature.copyOf()
                 tamperedSignature[crypto_sign_BYTES - 1] = 0U
+                tamperedSignature[crypto_sign_BYTES - 2] = 0U
+                tamperedSignature[crypto_sign_BYTES - 3] = 0U
                 Signature.finalVerify(verificationState, tamperedSignature, keys.publicKey)
             }
         }
