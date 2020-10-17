@@ -17,24 +17,20 @@
 object Versions {
     val kotlinCoroutines = "1.3.9"
     val kotlin = "1.4.10"
-    val kotlinSerialization = "1.0.0-RC"
+    val kotlinSerialization = "1.0.0"
+    val kotlinSerializationPlugin = "1.4.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "1.4.0-rc"
     val taskTreePlugin = "1.5"
-
     val kotlinBigNumVersion = "0.2.2"
-
     val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.5.0"
-
     val kotlinPoet = "1.6.0"
-
     val sharedModule = "0.1.0-SNAPSHOT"
-
     val ktor = "1.3.2"
-
     val timber = "4.7.1"
+    val kodeinVersion = "7.1.0"
 
 
 
@@ -52,7 +48,7 @@ object Deps {
         val test = "test-common"
         val testAnnotation = "test-annotations-common"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.kotlinCoroutines}"
-        val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.kotlinSerialization}"
+        val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinSerialization}"
         val atomicfu = "com.ionspin.kotlin.atomicfu:atomicfu:${Versions.atomicfu}"
 
 
@@ -61,6 +57,8 @@ object Deps {
         val apiProject = ":multiplatform-crypto-api"
 
         val sharedModule = "com.ionspin.kotlin.crypto.sample:shared:${Versions.sharedModule}"
+
+        val kodein = "org.kodein.di:kodein-di:${Versions.kodeinVersion}"
     }
 
     object Js {
@@ -146,7 +144,7 @@ object Deps {
 
 
 object PluginsDeps {
-    val kotlinSerializationPlugin = "kotlinx-serialization"
+    val kotlinSerializationPlugin = "plugin.serialization"
     val multiplatform = "multiplatform"
     val node = "com.github.node-gradle.node"
     val mavenPublish = "maven-publish"

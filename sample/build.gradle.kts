@@ -27,6 +27,7 @@ plugins {
     id(PluginsDeps.kotlinAndroidExtensions)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
+    kotlin(PluginsDeps.kotlinSerializationPlugin) version Versions.kotlinSerializationPlugin
 
 }
 org.jetbrains.kotlin.gradle.targets.js.npm.NpmResolverPlugin.apply(project)
@@ -91,12 +92,7 @@ kotlin {
         // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
         // so konanc can't build klib because getrandom missing will cause sodium_misuse()
         // so 32bit will be only available from non-delegated flavor
-//        linuxArm32Hfp() {
-//            binaries {
-//                executable {
-//                }
-//            }
-//        }
+
         linuxArm64() {
             binaries {
                 executable {
@@ -172,6 +168,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
+                implementation(Deps.Common.serialization)
                 implementation(project(":multiplatform-crypto-libsodium-bindings"))
             }
         }
@@ -242,10 +239,7 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
                     implementation(Deps.Js.coroutines)
-//                    implementation(Deps.Js.serialization)
-//                    implementation(Deps.Js.ktorClient)
-//                    implementation(Deps.Js.ktorClientSerialization)
-//                    implementation(Deps.Js.ktorClientWebSockets)
+
                     // React
                     implementation(Deps.Js.React.react)
                     implementation(Deps.Js.React.reactDom)
@@ -256,12 +250,7 @@ kotlin {
                     implementation(Deps.Js.React.styled)
                     implementation(npm(Deps.Js.Npm.styledComponentsPair.first, Deps.Js.Npm.styledComponentsPair.second))
                     implementation(npm(Deps.Js.Npm.inlineStylePrefixesPair.first, Deps.Js.Npm.inlineStylePrefixesPair.second))
-                    // Webpack ktor missing deps
-//                    implementation(npm("text-encoding", "0.7.0"))
-//                    implementation(npm("abort-controller", "3.0.0"))
-//                    implementation(npm("bufferutil", "4.0.1"))
-//                    implementation(npm("utf-8-validate", "5.0.2"))
-//                    implementation(npm("fs"))
+
                 }
             }
             val jsTest by getting {
@@ -275,12 +264,7 @@ kotlin {
             val linuxTest by getting {
                 dependsOn(nativeTest)
             }
-//            val linuxArm32HfpMain by getting {
-//                dependsOn(nativeMain)
-//            }
-//            val linuxArm32HfpTest by getting {
-//                dependsOn(nativeTest)
-//            }
+
             val linuxArm64Main by getting {
                 dependsOn(nativeMain)
             }
