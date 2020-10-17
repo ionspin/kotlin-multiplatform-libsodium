@@ -25,9 +25,11 @@ plugins {
     id(PluginsDeps.kapt)
     id(PluginsDeps.androidApplication)
     id(PluginsDeps.kotlinAndroidExtensions)
-    id (PluginsDeps.mavenPublish)
-    id (PluginsDeps.signing)
+    id(PluginsDeps.mavenPublish)
+    id(PluginsDeps.signing)
+
 }
+org.jetbrains.kotlin.gradle.targets.js.npm.NpmResolverPlugin.apply(project)
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -56,6 +58,9 @@ kotlin {
         jvm()
         js {
             browser {
+                webpackTask {
+
+                }
                 testTask {
                     enabled = false //Until I sort out testing on travis
                     useKarma {
@@ -64,21 +69,21 @@ kotlin {
                 }
             }
             nodejs {
+
                 testTask {
                     useMocha() {
                         timeout = "10s"
                     }
                 }
             }
+            binaries.executable()
 
         }
 
         android()
 
         linuxX64("linux") {
-
             binaries {
-
                 executable {
                 }
             }
@@ -236,6 +241,27 @@ kotlin {
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
+                    implementation(Deps.Js.coroutines)
+//                    implementation(Deps.Js.serialization)
+//                    implementation(Deps.Js.ktorClient)
+//                    implementation(Deps.Js.ktorClientSerialization)
+//                    implementation(Deps.Js.ktorClientWebSockets)
+                    // React
+                    implementation(Deps.Js.React.react)
+                    implementation(Deps.Js.React.reactDom)
+                    implementation(npm(Deps.Js.Npm.reactPair.first, Deps.Js.Npm.reactPair.second))
+                    implementation(npm(Deps.Js.Npm.reactDomPair.first, Deps.Js.Npm.reactDomPair.second))
+
+                    // Styled
+                    implementation(Deps.Js.React.styled)
+                    implementation(npm(Deps.Js.Npm.styledComponentsPair.first, Deps.Js.Npm.styledComponentsPair.second))
+                    implementation(npm(Deps.Js.Npm.inlineStylePrefixesPair.first, Deps.Js.Npm.inlineStylePrefixesPair.second))
+                    // Webpack ktor missing deps
+//                    implementation(npm("text-encoding", "0.7.0"))
+//                    implementation(npm("abort-controller", "3.0.0"))
+//                    implementation(npm("bufferutil", "4.0.1"))
+//                    implementation(npm("utf-8-validate", "5.0.2"))
+//                    implementation(npm("fs"))
                 }
             }
             val jsTest by getting {
@@ -445,6 +471,61 @@ tasks {
         }
     }
 
+}
+
+if (getHostOsName() == "macos") {
+
+    val packForXcode by tasks.creating(Sync::class) {
+        val targetDir = File(buildDir, "xcode-frameworks")
+
+        // / selecting the right configuration for the iOS
+        // / framework depending on the environment
+        // / variables set by Xcode build
+        val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
+        val framework = kotlin.targets
+            .getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("ios")
+            .binaries.getFramework(mode)
+        inputs.property("mode", mode)
+        dependsOn(framework.linkTask)
+
+        from({ framework.outputDirectory })
+        into(targetDir)
+
+        // / generate a helpful ./gradlew wrapper with embedded Java path
+        doLast {
+            val gradlew = File(targetDir, "gradlew")
+            gradlew.writeText(
+                "#!/bin/bash\n" +
+                        "export 'JAVA_HOME=${System.getProperty("java.home")}'\n" +
+                        "cd '${rootProject.rootDir}'\n" +
+                        "./gradlew \$@\n"
+            )
+            gradlew.setExecutable(true)
+        }
+    }
+
+    tasks.getByName("build").dependsOn(packForXcode)
+}
+
+fun org.jetbrains.kotlin.gradle.plugin.mpp.Executable.windowsResources(rcFileName: String) {
+    val taskName = linkTaskName.replaceFirst("link", "windres")
+    val inFile = compilation.defaultSourceSet.resources.sourceDirectories.singleFile.resolve(rcFileName)
+    val outFile = buildDir.resolve("processedResources/$taskName.res")
+
+    val windresTask = tasks.create<Exec>(taskName) {
+        val konanUserDir = System.getenv("KONAN_DATA_DIR") ?: "${System.getProperty("user.home")}/.konan"
+        val konanLlvmDir = "$konanUserDir/dependencies/msys2-mingw-w64-x86_64-clang-llvm-lld-compiler_rt-8.0.1/bin"
+
+        inputs.file(inFile)
+        outputs.file(outFile)
+        commandLine("$konanLlvmDir/windres", inFile, "-D_${buildType.name}", "-O", "coff", "-o", outFile)
+        environment("PATH", "$konanLlvmDir;${System.getenv("PATH")}")
+
+        dependsOn(compilation.compileKotlinTask)
+    }
+
+    linkTask.dependsOn(windresTask)
+    linkerOpts(outFile.toString())
 }
 
 

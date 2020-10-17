@@ -23,7 +23,7 @@ object Versions {
     val dokkaPlugin = "1.4.0-rc"
     val taskTreePlugin = "1.5"
 
-    val kotlinBigNumVersion = "0.1.6-1.4.0-rc-SNAPSHOT"
+    val kotlinBigNumVersion = "0.2.2"
 
     val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.5.0"
@@ -64,15 +64,39 @@ object Deps {
     }
 
     object Js {
+
+        object JsVersions {
+            val react = "16.13.1-pre.124-kotlin-1.4.10"
+            val reactNpm = "16.13.1"
+            val styled = "5.2.0-pre.124-kotlin-1.4.10"
+            val styledNpm = "1.0.0"
+
+        }
+
         val stdLib = "stdlib-js"
         val test = "test-js"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.kotlinSerialization}"
 
+        val ktorClient = "io.ktor:ktor-client-js:${Versions.ktor}"
+        val ktorClientSerialization = "io.ktor:ktor-client-serialization-js:${Versions.ktor}"
+        val ktorClientWebSockets = "io.ktor:ktor-client-websockets-js:${Versions.ktor}"
+
+        object React {
+            val react = "org.jetbrains:kotlin-react:${JsVersions.react}"
+            val reactDom = "org.jetbrains:kotlin-react-dom:${JsVersions.react}"
+            val styled = "org.jetbrains:kotlin-styled:${JsVersions.styled}"
+
+        }
+
         object Npm {
             val libsodium = Pair("libsodium-wrappers-sumo", "0.7.8")
             //val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "file:${getProjectPath()}/multiplatform-crypto-delegated/libsodium-wrappers-sumo-0.7.6.tgz")
             val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.8")
+            val reactPair = Pair("react", JsVersions.reactNpm)
+            val reactDomPair = Pair("react-dom", JsVersions.reactNpm)
+            val styledComponentsPair = Pair("styled-components", "5.2.0")
+            val inlineStylePrefixesPair = Pair("inline-style-prefixer", "6.0.0")
         }
 
     }
