@@ -179,33 +179,6 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
-
-            dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
-                implementation("androidx.appcompat:appcompat:1.2.0")
-                implementation("androidx.core:core-ktx:1.3.2")
-                implementation("androidx.constraintlayout:constraintlayout:2.0.2")
-                implementation("com.google.android.material:material:1.3.0-alpha03")
-//                implementation("androidx.ui:ui-tooling:$composeDevVersion")
-//                implementation("androidx.ui:ui-layout:$composeDevVersion")
-//                implementation("androidx.ui:ui-material:$composeDevVersion")
-//                implementation("androidx.ui:ui-foundation:$composeDevVersion")
-//                implementation("androidx.ui:ui-framework:$composeDevVersion")
-                implementation(Deps.Android.coroutines)
-                implementation(Deps.Android.timber)
-//                implementation("androidx.compose:compose-runtime:$composeDevVersion")
-            }
-        }
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin(Deps.Jvm.test))
-                implementation(kotlin(Deps.Jvm.testJUnit))
-                implementation(Deps.Jvm.coroutinesTest)
-                implementation(kotlin(Deps.Jvm.reflection))
-                implementation(Deps.Jvm.coroutinesCore)
-            }
-        }
 
 
         val nativeMain by creating {
@@ -258,6 +231,36 @@ kotlin {
                     implementation(kotlin(Deps.Js.test))
                 }
             }
+
+            val androidMain by getting {
+
+                dependencies {
+                    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
+                    implementation("androidx.appcompat:appcompat:1.2.0")
+                    implementation("androidx.core:core-ktx:1.3.2")
+                    implementation("androidx.constraintlayout:constraintlayout:2.0.2")
+                    implementation("com.google.android.material:material:1.3.0-alpha03")
+//                implementation("androidx.ui:ui-tooling:$composeDevVersion")
+//                implementation("androidx.ui:ui-layout:$composeDevVersion")
+//                implementation("androidx.ui:ui-material:$composeDevVersion")
+//                implementation("androidx.ui:ui-foundation:$composeDevVersion")
+//                implementation("androidx.ui:ui-framework:$composeDevVersion")
+                    implementation(Deps.Android.coroutines)
+                    implementation(Deps.Android.timber)
+//                implementation("androidx.compose:compose-runtime:$composeDevVersion")
+                }
+            }
+            val androidTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation(Deps.Jvm.coroutinesTest)
+                    implementation(kotlin(Deps.Jvm.reflection))
+                    implementation(Deps.Jvm.coroutinesCore)
+                }
+            }
+
+            
             val linuxMain by getting {
                 dependsOn(nativeMain)
             }
