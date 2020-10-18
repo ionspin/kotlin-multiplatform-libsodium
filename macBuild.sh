@@ -5,12 +5,11 @@ set -e
 #now let's build linux deps
 cd sodiumWrapper
 ./makeMacosX86-64.sh
-./makeIos.sh
-./makeTvos.sh
-./makeWatchos.sh
+./makeIosWatchosTvos.sh
 #now we can do the delegated build
 cd ..
 ./gradlew multiplatform-crypto-delegated:build
-#and finally pure build
+#pure build
 ./gradlew multiplatform-crypto:build
+#libsodium bindings
 set +e
