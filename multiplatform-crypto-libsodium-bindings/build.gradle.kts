@@ -53,7 +53,7 @@ repositories {
 
 }
 group = ReleaseInfo.group
-version = ReleaseInfo.version
+version = ReleaseInfo.bindingsVersion
 
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")

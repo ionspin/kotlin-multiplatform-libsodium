@@ -27,7 +27,7 @@ object Versions {
     val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.5.0"
     val kotlinPoet = "1.6.0"
-    val sharedModule = "0.1.0-SNAPSHOT"
+    val libsodiumBindings = "0.1.1-SNAPSHOT"
     val ktor = "1.3.2"
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
@@ -39,6 +39,7 @@ object Versions {
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
     val version = "0.1.0-SNAPSHOT"
+    val bindingsVersion = "0.1.1-SNAPSHOT"
 }
 
 object Deps {
@@ -56,7 +57,7 @@ object Deps {
 
         val apiProject = ":multiplatform-crypto-api"
 
-        val libsodiumModule = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:${Versions.sharedModule}"
+        val libsodiumBindings = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:${Versions.libsodiumBindings}"
 
         val kodein = "org.kodein.di:kodein-di:${Versions.kodeinVersion}"
     }

@@ -120,7 +120,7 @@ kotlin {
         ) {
             binaries.framework {
                 baseName = "LibsodiumBindings"
-                export(Deps.Common.libsodiumModule)
+                export(Deps.Common.libsodiumBindings)
             }
         }
         val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
@@ -160,7 +160,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
                 implementation(Deps.Common.serialization)
-                api(Deps.Common.libsodiumModule)
+                api(Deps.Common.libsodiumBindings)
             }
         }
         val commonTest by getting {
