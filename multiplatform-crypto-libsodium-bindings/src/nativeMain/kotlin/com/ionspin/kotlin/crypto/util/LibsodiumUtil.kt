@@ -60,15 +60,15 @@ actual object LibsodiumUtil {
     actual fun unpad(paddedData: UByteArray, blocksize: Int) : UByteArray {
         val paddedDataCopy = paddedData.copyOf()
         val paddedDataCopyPinned = paddedDataCopy.pin()
-        var newSize = ULongArray(1) { 0UL }
-        val newSizePinned = newSize.pin()
+        var newSizeULong = ULongArray(1) { 0UL }
+        val newSizePinned = newSizeULong.pin()
         sodium_unpad(
-            newSizePinned.addressOf(0),
+            newSizePinned.addressOf(0) as kotlinx.cinterop.CValuesRef<platform.posix.size_tVar>, // TODO Find a better solution for this!
             paddedDataCopyPinned.toPtr(),
             paddedData.size.convert(),
             blocksize.convert()
         )
-        val unpaddedSize = newSize[0]
+        val unpaddedSize = newSizeULong[0]
         if (unpaddedSize > Int.MAX_VALUE.toULong()) {
             throw RuntimeException("Unsupported array size (larger than Integer max value) $unpaddedSize")
         }
