@@ -108,8 +108,12 @@ kotlin {
         val watchosArm32Target = watchosArm32()
         val watchosX86Target = watchosX86()
 
+        configure(listOf(macosX64Target)) {
+            binaries.executable {}
+        }
+
         configure(listOf(
-            iosX64Target, iosArm64Target, iosArm32Target, macosX64Target,
+            iosX64Target, iosArm64Target, iosArm32Target,
             tvosX64Target, tvosArm64Target, watchosArm64Target,
             watchosArm32Target, watchosX86Target)
         ) {
@@ -118,6 +122,7 @@ kotlin {
             }
         }
         val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
+        println("Mode $mode")
         // Create a task to build a fat framework.
         tasks.create("packForXcode", FatFrameworkTask::class) {
             // The fat framework must have the same base name as the initial frameworks.
@@ -128,13 +133,7 @@ kotlin {
             from(
                 iosX64Target.binaries.getFramework(mode),
                 iosArm64Target.binaries.getFramework(mode),
-                iosArm32Target.binaries.getFramework(mode),
-                macosX64Target.binaries.getFramework(mode),
-                tvosX64Target.binaries.getFramework(mode),
-                tvosArm64Target.binaries.getFramework(mode),
-                watchosArm64Target.binaries.getFramework(mode),
-                watchosArm32Target.binaries.getFramework(mode),
-                watchosX86Target.binaries.getFramework(mode)
+                iosArm32Target.binaries.getFramework(mode)
             )
         }
     }
@@ -436,40 +435,6 @@ tasks {
 
 }
 
-if (getHostOsName() == "macos") {
-
-    val packForXcode by tasks.creating(Sync::class) {
-        val targetDir = File(buildDir, "xcode-frameworks")
-
-        // / selecting the right configuration for the iOS
-        // / framework depending on the environment
-        // / variables set by Xcode build
-        val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
-        val framework = kotlin.targets
-            .getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("ios")
-            .binaries.getFramework(mode)
-        inputs.property("mode", mode)
-        dependsOn(framework.linkTask)
-
-        from({ framework.outputDirectory })
-        into(targetDir)
-
-        // / generate a helpful ./gradlew wrapper with embedded Java path
-        doLast {
-            val gradlew = File(targetDir, "gradlew")
-            gradlew.writeText(
-                "#!/bin/bash\n" +
-                        "export 'JAVA_HOME=${System.getProperty("java.home")}'\n" +
-                        "cd '${rootProject.rootDir}'\n" +
-                        "./gradlew \$@\n"
-            )
-            gradlew.setExecutable(true)
-        }
-    }
-
-    tasks.getByName("build").dependsOn(packForXcode)
-}
-
 fun org.jetbrains.kotlin.gradle.plugin.mpp.Executable.windowsResources(rcFileName: String) {
     val taskName = linkTaskName.replaceFirst("link", "windres")
     val inFile = compilation.defaultSourceSet.resources.sourceDirectories.singleFile.resolve(rcFileName)
@@ -492,28 +457,7 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.Executable.windowsResources(rcFileNam
 }
 
 
-/*
-// Create and configure the targets.
-    val ios32 = iosArm32("ios32")
-    val ios64 = iosArm64("ios64")
-    configure(listOf(ios32, ios64)) {
-        binaries.framework {
-            baseName = "my_framework"
-        }
-    }
-    // Create a task to build a fat framework.
-    tasks.create("debugFatFramework", FatFrameworkTask::class) {
-        // The fat framework must have the same base name as the initial frameworks.
-        baseName = "my_framework"
-        // The default destination directory is '<build directory>/fat-framework'.
-        destinationDir = buildDir.resolve("fat-framework/debug")
-        // Specify the frameworks to be merged.
-        from(
-                ios32.binaries.getFramework("DEBUG"),
-                ios64.binaries.getFramework("DEBUG")
-        )
-    }
- */
+
 
 
 
