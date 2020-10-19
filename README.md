@@ -135,10 +135,10 @@ Currently supported native platforms:
 
 ### TODO:
 - Copy/adapt code documentation, currently only some functions have documentation that is a copy-paste from libsodium website
-- Complete the bindings list
-- Samples
+- Replace LazySodium with direct JNA calls, and add build scripts for required libraries if missing
 - Android testing 
 - Fix browser testing, both locally and in CI/CD
+- LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 
 
 

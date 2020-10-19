@@ -17,14 +17,15 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
     id(PluginsDeps.kapt)
-//    id(PluginsDeps.androidApplication)
-//    id(PluginsDeps.kotlinAndroidExtensions)
+    id(PluginsDeps.androidApplication)
+    id(PluginsDeps.kotlinAndroidExtensions)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     kotlin(PluginsDeps.kotlinSerializationPlugin) version Versions.kotlinSerializationPlugin
@@ -35,12 +36,7 @@ org.jetbrains.kotlin.gradle.targets.js.npm.NpmResolverPlugin.apply(project)
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
 
-val sonatypePassword : String? by project
 
-val sonatypeUsername : String? by project
-
-val sonatypePasswordEnv : String? = System.getenv()["SONATYPE_PASSWORD"]
-val sonatypeUsernameEnv : String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
@@ -55,6 +51,8 @@ val ideaActive = System.getProperty("idea.active") == "true"
 
 kotlin {
     val hostOsName = getHostOsName()
+
+    android()
     runningOnLinuxx86_64 {
         jvm()
         js {
@@ -81,7 +79,6 @@ kotlin {
 
         }
 
-//        android()
 
         linuxX64("linux") {
             binaries {
@@ -89,9 +86,7 @@ kotlin {
                 }
             }
         }
-        // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
-        // so konanc can't build klib because getrandom missing will cause sodium_misuse()
-        // so 32bit will be only available from non-delegated flavor
+
 
         linuxArm64() {
             binaries {
@@ -103,51 +98,44 @@ kotlin {
     }
 
     runningOnMacos {
-        iosX64() {
-            binaries {
-                framework {
+        val iosX64Target = iosX64()
+        val iosArm64Target = iosArm64()
+        val iosArm32Target = iosArm32()
+        val macosX64Target = macosX64()
+        val tvosX64Target = tvosX64()
+        val tvosArm64Target = tvosArm64()
+        val watchosArm64Target = watchosArm64()
+        val watchosArm32Target = watchosArm32()
+        val watchosX86Target = watchosX86()
 
-                }
+        configure(listOf(
+            iosX64Target, iosArm64Target, iosArm32Target, macosX64Target,
+            tvosX64Target, tvosArm64Target, watchosArm64Target,
+            watchosArm32Target, watchosX86Target)
+        ) {
+            binaries.framework {
+                baseName = "sample"
             }
         }
-        iosArm64() {
-            binaries {
-                framework {
-
-                }
-            }
-        }
-
-        iosArm32() {
-            binaries {
-                framework {
-
-                }
-            }
-        }
-        macosX64() {
-            binaries {
-                executable {
-
-                }
-            }
-        }
-
-        // select iOS target platform depending on the Xcode environment variables
-        val iOSTarget: (String, org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.() -> Unit) -> org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget =
-            if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
-                ::iosArm64
-            else
-                ::iosX64
-
-        iOSTarget("ios") {
-            binaries {
-                framework {
-                    baseName = "LibsodiumBindingsSampleApplication"
-                    export(Deps.Common.sharedModule)
-                    freeCompilerArgs += ("-Xobjc-generics")
-                }
-            }
+        val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
+        // Create a task to build a fat framework.
+        tasks.create("packForXcode", FatFrameworkTask::class) {
+            // The fat framework must have the same base name as the initial frameworks.
+            baseName = "sample"
+            // The default destination directory is '<build directory>/fat-framework'.
+            destinationDir = File(buildDir, "xcode-frameworks")
+            // Specify the frameworks to be merged.
+            from(
+                iosX64Target.binaries.getFramework(mode),
+                iosArm64Target.binaries.getFramework(mode),
+                iosArm32Target.binaries.getFramework(mode),
+                macosX64Target.binaries.getFramework(mode),
+                tvosX64Target.binaries.getFramework(mode),
+                tvosArm64Target.binaries.getFramework(mode),
+                watchosArm64Target.binaries.getFramework(mode),
+                watchosArm32Target.binaries.getFramework(mode),
+                watchosX86Target.binaries.getFramework(mode)
+            )
         }
     }
     runningOnWindows {
@@ -161,6 +149,8 @@ kotlin {
     }
 
     println(targets.names)
+
+
 
     sourceSets {
         val commonMain by getting {
@@ -176,6 +166,34 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
+            }
+        }
+
+        val androidMain by getting {
+
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
+                implementation("androidx.appcompat:appcompat:1.2.0")
+                implementation("androidx.core:core-ktx:1.3.2")
+                implementation("androidx.constraintlayout:constraintlayout:2.0.2")
+                implementation("com.google.android.material:material:1.3.0-alpha03")
+//                implementation("androidx.ui:ui-tooling:$composeDevVersion")
+//                implementation("androidx.ui:ui-layout:$composeDevVersion")
+//                implementation("androidx.ui:ui-material:$composeDevVersion")
+//                implementation("androidx.ui:ui-foundation:$composeDevVersion")
+//                implementation("androidx.ui:ui-framework:$composeDevVersion")
+                implementation(Deps.Android.coroutines)
+                implementation(Deps.Android.timber)
+//                implementation("androidx.compose:compose-runtime:$composeDevVersion")
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin(Deps.Jvm.test))
+                implementation(kotlin(Deps.Jvm.testJUnit))
+                implementation(Deps.Jvm.coroutinesTest)
+                implementation(kotlin(Deps.Jvm.reflection))
+                implementation(Deps.Jvm.coroutinesCore)
             }
         }
 
@@ -232,35 +250,6 @@ kotlin {
                 }
             }
 
-//            val androidMain by getting {
-//
-//                dependencies {
-//                    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
-//                    implementation("androidx.appcompat:appcompat:1.2.0")
-//                    implementation("androidx.core:core-ktx:1.3.2")
-//                    implementation("androidx.constraintlayout:constraintlayout:2.0.2")
-//                    implementation("com.google.android.material:material:1.3.0-alpha03")
-////                implementation("androidx.ui:ui-tooling:$composeDevVersion")
-////                implementation("androidx.ui:ui-layout:$composeDevVersion")
-////                implementation("androidx.ui:ui-material:$composeDevVersion")
-////                implementation("androidx.ui:ui-foundation:$composeDevVersion")
-////                implementation("androidx.ui:ui-framework:$composeDevVersion")
-//                    implementation(Deps.Android.coroutines)
-//                    implementation(Deps.Android.timber)
-////                implementation("androidx.compose:compose-runtime:$composeDevVersion")
-//                }
-//            }
-//            val androidTest by getting {
-//                dependencies {
-//                    implementation(kotlin(Deps.Jvm.test))
-//                    implementation(kotlin(Deps.Jvm.testJUnit))
-//                    implementation(Deps.Jvm.coroutinesTest)
-//                    implementation(kotlin(Deps.Jvm.reflection))
-//                    implementation(Deps.Jvm.coroutinesCore)
-//                }
-//            }
-
-            
             val linuxMain by getting {
                 dependsOn(nativeMain)
             }
@@ -329,81 +318,81 @@ kotlin {
 
 }
 
-//android {
-//    compileSdkVersion(29)
-//    defaultConfig {
-//        applicationId = "com.ionspin.kotlin.crypto.sample"
-//        minSdkVersion(21)
-//        targetSdkVersion(29)
-//        versionCode = 1
-//        versionName = "1.0"
-//        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+android {
+    compileSdkVersion(29)
+    defaultConfig {
+        applicationId = "com.ionspin.kotlin.crypto.sample"
+        minSdkVersion(21)
+        targetSdkVersion(29)
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+    }
+    sourceSets {
+        val main by getting
+        main.manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        main.java.srcDirs("src/androidMain/kotlin")
+        main.res.srcDirs("src/androidMain/res")
+    }
+    packagingOptions {
+        exclude("META-INF/library_release.kotlin_module")
+        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
+        exclude("META-INF/ktor-http.kotlin_module")
+        exclude("META-INF/ktor-utils.kotlin_module")
+        exclude("META-INF/ktor-io.kotlin_module")
+        exclude("META-INF/ktor-*")
+    }
+    compileOptions {
+        setSourceCompatibility(JavaVersion.VERSION_1_8)
+        setTargetCompatibility(JavaVersion.VERSION_1_8)
+    }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
+//    buildFeatures {
+//        // Enables Jetpack Compose for this module
+//        this.compose = true
 //    }
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = false
-//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "0.1.0-dev05"
+//    }
+
+    // Magic for compose dev08, but it doesn't work with serialization plugin because of IR. Leave here for future reference.
+//    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
+//        .configureEach {
+//            println("Task: $this")
+//            if (this.name.contains("Android")) {
+//                println("Setting plugins: $this")
+//                this.kotlinOptions.freeCompilerArgs += listOf(
+//                    "-P",
+//                    "plugin:androidx.compose.plugins.idea:enabled=true"
+//                )
+//                this.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
+//                this.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
+//            }
 //        }
-//    }
-//    sourceSets {
-//        val main by getting
-//        main.manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//        main.java.srcDirs("src/androidMain/kotlin")
-//        main.res.srcDirs("src/androidMain/res")
-//    }
-//    packagingOptions {
-//        exclude("META-INF/library_release.kotlin_module")
-//        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
-//        exclude("META-INF/ktor-http.kotlin_module")
-//        exclude("META-INF/ktor-utils.kotlin_module")
-//        exclude("META-INF/ktor-io.kotlin_module")
-//        exclude("META-INF/ktor-*")
-//    }
-//    compileOptions {
-//        setSourceCompatibility(JavaVersion.VERSION_1_8)
-//        setTargetCompatibility(JavaVersion.VERSION_1_8)
-//    }
-//    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-//        kotlinOptions {
-//            jvmTarget = "1.8"
+//    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
+//        .forEach { compile ->
+//            compile.kotlinOptions.freeCompilerArgs += listOf(
+//                "-P",
+//                "plugin:androidx.compose.plugins.idea:enabled=true"
+//            )
+//            compile.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
+//            compile.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
+//            println("Compile: $compile")
+//            println("Compiler free args ${compile.kotlinOptions.freeCompilerArgs}")
 //        }
-//    }
-//
-////    buildFeatures {
-////        // Enables Jetpack Compose for this module
-////        this.compose = true
-////    }
-//
-////    composeOptions {
-////        kotlinCompilerExtensionVersion = "0.1.0-dev05"
-////    }
-//
-//    // Magic for compose dev08, but it doesn't work with serialization plugin because of IR. Leave here for future reference.
-////    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
-////        .configureEach {
-////            println("Task: $this")
-////            if (this.name.contains("Android")) {
-////                println("Setting plugins: $this")
-////                this.kotlinOptions.freeCompilerArgs += listOf(
-////                    "-P",
-////                    "plugin:androidx.compose.plugins.idea:enabled=true"
-////                )
-////                this.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
-////                this.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
-////            }
-////        }
-////    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
-////        .forEach { compile ->
-////            compile.kotlinOptions.freeCompilerArgs += listOf(
-////                "-P",
-////                "plugin:androidx.compose.plugins.idea:enabled=true"
-////            )
-////            compile.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
-////            compile.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
-////            println("Compile: $compile")
-////            println("Compiler free args ${compile.kotlinOptions.freeCompilerArgs}")
-////        }
-//}
+}
 
 tasks {
 
@@ -432,20 +421,7 @@ tasks {
             }
         }
 
-//        val legacyjsNodeTest by getting(KotlinJsTest::class) {
-//
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                showStandardStreams = true
-//            }
-//        }
 
-//        val jsIrBrowserTest by getting(KotlinJsTest::class) {
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                 showStandardStreams = true
-//            }
-//        }
     }
 
     if (getHostOsName() == "windows") {
