@@ -145,106 +145,102 @@ kotlin {
         println("Configuring Linux Arm 32 targets")
 
     }
-
-    runningOnMacos {
-        println("Configuring macos targets")
-        iosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        iosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        iosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        macosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
-                )
-            }
-        }
-        tvosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        tvosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosX86() {
-            binaries {
-                framework {
-                    optimized = true
-                }
+    println("Configuring macos targets")
+    iosX64() {
+        binaries {
+            framework {
+                optimized = true
             }
         }
     }
-    runningOnWindows {
-        println("Configuring Mingw targets")
-        mingwX64() {
-            binaries {
-                staticLib {
-                    optimized = true
-                }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
-                )
+    iosArm64() {
+        binaries {
+            framework {
+                optimized = true
             }
         }
     }
+
+    iosArm32() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    macosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+        compilations.getByName("main") {
+            val libsodiumCinterop by cinterops.creating {
+                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
+            }
+            kotlinOptions.freeCompilerArgs = listOf(
+                "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
+            )
+        }
+    }
+    tvosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    tvosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosArm32() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosX86() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    println("Configuring Mingw targets")
+    mingwX64() {
+        binaries {
+            staticLib {
+                optimized = true
+            }
+        }
+        compilations.getByName("main") {
+            val libsodiumCinterop by cinterops.creating {
+                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
+            }
+            kotlinOptions.freeCompilerArgs = listOf(
+                "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
+            )
+        }
+    }
+
 
     println(targets.names)
 
