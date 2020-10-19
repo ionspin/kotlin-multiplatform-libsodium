@@ -23,8 +23,8 @@ import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 plugins {
     kotlin(PluginsDeps.multiplatform)
     id(PluginsDeps.kapt)
-    id(PluginsDeps.androidApplication)
-    id(PluginsDeps.kotlinAndroidExtensions)
+//    id(PluginsDeps.androidApplication)
+//    id(PluginsDeps.kotlinAndroidExtensions)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     kotlin(PluginsDeps.kotlinSerializationPlugin) version Versions.kotlinSerializationPlugin
@@ -81,7 +81,7 @@ kotlin {
 
         }
 
-        android()
+//        android()
 
         linuxX64("linux") {
             binaries {
@@ -232,33 +232,33 @@ kotlin {
                 }
             }
 
-            val androidMain by getting {
-
-                dependencies {
-                    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
-                    implementation("androidx.appcompat:appcompat:1.2.0")
-                    implementation("androidx.core:core-ktx:1.3.2")
-                    implementation("androidx.constraintlayout:constraintlayout:2.0.2")
-                    implementation("com.google.android.material:material:1.3.0-alpha03")
-//                implementation("androidx.ui:ui-tooling:$composeDevVersion")
-//                implementation("androidx.ui:ui-layout:$composeDevVersion")
-//                implementation("androidx.ui:ui-material:$composeDevVersion")
-//                implementation("androidx.ui:ui-foundation:$composeDevVersion")
-//                implementation("androidx.ui:ui-framework:$composeDevVersion")
-                    implementation(Deps.Android.coroutines)
-                    implementation(Deps.Android.timber)
-//                implementation("androidx.compose:compose-runtime:$composeDevVersion")
-                }
-            }
-            val androidTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(Deps.Jvm.coroutinesTest)
-                    implementation(kotlin(Deps.Jvm.reflection))
-                    implementation(Deps.Jvm.coroutinesCore)
-                }
-            }
+//            val androidMain by getting {
+//
+//                dependencies {
+//                    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
+//                    implementation("androidx.appcompat:appcompat:1.2.0")
+//                    implementation("androidx.core:core-ktx:1.3.2")
+//                    implementation("androidx.constraintlayout:constraintlayout:2.0.2")
+//                    implementation("com.google.android.material:material:1.3.0-alpha03")
+////                implementation("androidx.ui:ui-tooling:$composeDevVersion")
+////                implementation("androidx.ui:ui-layout:$composeDevVersion")
+////                implementation("androidx.ui:ui-material:$composeDevVersion")
+////                implementation("androidx.ui:ui-foundation:$composeDevVersion")
+////                implementation("androidx.ui:ui-framework:$composeDevVersion")
+//                    implementation(Deps.Android.coroutines)
+//                    implementation(Deps.Android.timber)
+////                implementation("androidx.compose:compose-runtime:$composeDevVersion")
+//                }
+//            }
+//            val androidTest by getting {
+//                dependencies {
+//                    implementation(kotlin(Deps.Jvm.test))
+//                    implementation(kotlin(Deps.Jvm.testJUnit))
+//                    implementation(Deps.Jvm.coroutinesTest)
+//                    implementation(kotlin(Deps.Jvm.reflection))
+//                    implementation(Deps.Jvm.coroutinesCore)
+//                }
+//            }
 
             
             val linuxMain by getting {
@@ -329,81 +329,81 @@ kotlin {
 
 }
 
-android {
-    compileSdkVersion(29)
-    defaultConfig {
-        applicationId = "com.ionspin.kotlin.crypto.sample"
-        minSdkVersion(21)
-        targetSdkVersion(29)
-        versionCode = 1
-        versionName = "1.0"
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-    }
-    sourceSets {
-        val main by getting
-        main.manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        main.java.srcDirs("src/androidMain/kotlin")
-        main.res.srcDirs("src/androidMain/res")
-    }
-    packagingOptions {
-        exclude("META-INF/library_release.kotlin_module")
-        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
-        exclude("META-INF/ktor-http.kotlin_module")
-        exclude("META-INF/ktor-utils.kotlin_module")
-        exclude("META-INF/ktor-io.kotlin_module")
-        exclude("META-INF/ktor-*")
-    }
-    compileOptions {
-        setSourceCompatibility(JavaVersion.VERSION_1_8)
-        setTargetCompatibility(JavaVersion.VERSION_1_8)
-    }
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-
-//    buildFeatures {
-//        // Enables Jetpack Compose for this module
-//        this.compose = true
+//android {
+//    compileSdkVersion(29)
+//    defaultConfig {
+//        applicationId = "com.ionspin.kotlin.crypto.sample"
+//        minSdkVersion(21)
+//        targetSdkVersion(29)
+//        versionCode = 1
+//        versionName = "1.0"
+//        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 //    }
-
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "0.1.0-dev05"
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = false
+//            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+//        }
 //    }
-
-    // Magic for compose dev08, but it doesn't work with serialization plugin because of IR. Leave here for future reference.
-//    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
-//        .configureEach {
-//            println("Task: $this")
-//            if (this.name.contains("Android")) {
-//                println("Setting plugins: $this")
-//                this.kotlinOptions.freeCompilerArgs += listOf(
-//                    "-P",
-//                    "plugin:androidx.compose.plugins.idea:enabled=true"
-//                )
-//                this.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
-//                this.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
-//            }
+//    sourceSets {
+//        val main by getting
+//        main.manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//        main.java.srcDirs("src/androidMain/kotlin")
+//        main.res.srcDirs("src/androidMain/res")
+//    }
+//    packagingOptions {
+//        exclude("META-INF/library_release.kotlin_module")
+//        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
+//        exclude("META-INF/ktor-http.kotlin_module")
+//        exclude("META-INF/ktor-utils.kotlin_module")
+//        exclude("META-INF/ktor-io.kotlin_module")
+//        exclude("META-INF/ktor-*")
+//    }
+//    compileOptions {
+//        setSourceCompatibility(JavaVersion.VERSION_1_8)
+//        setTargetCompatibility(JavaVersion.VERSION_1_8)
+//    }
+//    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+//        kotlinOptions {
+//            jvmTarget = "1.8"
 //        }
-//    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
-//        .forEach { compile ->
-//            compile.kotlinOptions.freeCompilerArgs += listOf(
-//                "-P",
-//                "plugin:androidx.compose.plugins.idea:enabled=true"
-//            )
-//            compile.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
-//            compile.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
-//            println("Compile: $compile")
-//            println("Compiler free args ${compile.kotlinOptions.freeCompilerArgs}")
-//        }
-}
+//    }
+//
+////    buildFeatures {
+////        // Enables Jetpack Compose for this module
+////        this.compose = true
+////    }
+//
+////    composeOptions {
+////        kotlinCompilerExtensionVersion = "0.1.0-dev05"
+////    }
+//
+//    // Magic for compose dev08, but it doesn't work with serialization plugin because of IR. Leave here for future reference.
+////    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
+////        .configureEach {
+////            println("Task: $this")
+////            if (this.name.contains("Android")) {
+////                println("Setting plugins: $this")
+////                this.kotlinOptions.freeCompilerArgs += listOf(
+////                    "-P",
+////                    "plugin:androidx.compose.plugins.idea:enabled=true"
+////                )
+////                this.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
+////                this.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
+////            }
+////        }
+////    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
+////        .forEach { compile ->
+////            compile.kotlinOptions.freeCompilerArgs += listOf(
+////                "-P",
+////                "plugin:androidx.compose.plugins.idea:enabled=true"
+////            )
+////            compile.kotlinOptions.freeCompilerArgs += "-Xplugin=${project.rootDir}/compose-compiler-0.1.0-dev08.jar"
+////            compile.kotlinOptions.freeCompilerArgs += "-Xuse-ir"
+////            println("Compile: $compile")
+////            println("Compiler free args ${compile.kotlinOptions.freeCompilerArgs}")
+////        }
+//}
 
 tasks {
 
@@ -516,7 +516,28 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.Executable.windowsResources(rcFileNam
 }
 
 
-
+/*
+// Create and configure the targets.
+    val ios32 = iosArm32("ios32")
+    val ios64 = iosArm64("ios64")
+    configure(listOf(ios32, ios64)) {
+        binaries.framework {
+            baseName = "my_framework"
+        }
+    }
+    // Create a task to build a fat framework.
+    tasks.create("debugFatFramework", FatFrameworkTask::class) {
+        // The fat framework must have the same base name as the initial frameworks.
+        baseName = "my_framework"
+        // The default destination directory is '<build directory>/fat-framework'.
+        destinationDir = buildDir.resolve("fat-framework/debug")
+        // Specify the frameworks to be merged.
+        from(
+                ios32.binaries.getFramework("DEBUG"),
+                ios64.binaries.getFramework("DEBUG")
+        )
+    }
+ */
 
 
 

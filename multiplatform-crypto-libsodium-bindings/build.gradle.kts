@@ -77,10 +77,10 @@ android {
 
 kotlin {
     val hostOsName = getHostOsName()
+    android()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
         jvm()
-        android()
         js {
             browser {
                 testTask {
@@ -440,7 +440,27 @@ kotlin {
             }
         }
 
+            val androidMain by getting {
+                isNotRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+                }
+                isRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific")
+                }
+                dependencies {
+                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
+                    implementation("net.java.dev.jna:jna:5.5.0@aar")
+                }
+            }
 
+            val androidTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation("androidx.test:runner:1.2.0")
+                    implementation("androidx.test:rules:1.2.0")
+                }
+            }
 
 
         runningOnLinuxx86_64 {
@@ -464,27 +484,7 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
-            val androidMain by getting {
-                isNotRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
-                }
-                isRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific")
-                }
-                dependencies {
-                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
-                    implementation("net.java.dev.jna:jna:5.5.0@aar")
-                }
-            }
 
-            val androidTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation("androidx.test:runner:1.2.0")
-                    implementation("androidx.test:rules:1.2.0")
-                }
-            }
 
             val jsMain by getting {
                 dependencies {
