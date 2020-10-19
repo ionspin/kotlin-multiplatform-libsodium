@@ -128,7 +128,7 @@ kotlin {
         // Create a task to build a fat framework.
         tasks.create("packForXcode", FatFrameworkTask::class) {
             // The fat framework must have the same base name as the initial frameworks.
-            baseName = "sample"
+            baseName = "LibsodiumBindings"
             // The default destination directory is '<build directory>/fat-framework'.
             destinationDir = File(buildDir, "xcode-frameworks")
             // Specify the frameworks to be merged.
