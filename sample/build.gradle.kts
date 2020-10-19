@@ -42,6 +42,7 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://dl.bintray.com/terl/lazysodium-maven")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 
 }
 group = "com.ionspin.kotlin"
@@ -118,7 +119,8 @@ kotlin {
             watchosArm32Target, watchosX86Target)
         ) {
             binaries.framework {
-                baseName = "sample"
+                baseName = "LibsodiumBindings"
+                export(Deps.Common.libsodiumModule)
             }
         }
         val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
@@ -158,7 +160,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
                 implementation(Deps.Common.serialization)
-                implementation(project(":multiplatform-crypto-libsodium-bindings"))
+                api(Deps.Common.libsodiumModule)
             }
         }
         val commonTest by getting {

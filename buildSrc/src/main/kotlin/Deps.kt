@@ -56,7 +56,7 @@ object Deps {
 
         val apiProject = ":multiplatform-crypto-api"
 
-        val sharedModule = "com.ionspin.kotlin.crypto.sample:shared:${Versions.sharedModule}"
+        val libsodiumModule = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:${Versions.sharedModule}"
 
         val kodein = "org.kodein.di:kodein-di:${Versions.kodeinVersion}"
     }
