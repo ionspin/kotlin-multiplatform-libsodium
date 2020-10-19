@@ -1,13 +1,17 @@
 import SwiftUI
-import sample
+import LibsodiumBindings
 
 
 struct ContentView: View {
     var body: some View {
         
-        Text("Hello, World!")
+        Text("Hello, World! \(Sample.init().hashSomething())")
         
     }
+}
+
+func test() {
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
