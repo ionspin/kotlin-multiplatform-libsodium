@@ -135,16 +135,16 @@ kotlin {
             binaries.executable {}
         }
 
-        configure(listOf(
-            iosX64Target, iosArm64Target, iosArm32Target,
-            tvosX64Target, tvosArm64Target, watchosArm64Target,
-            watchosArm32Target, watchosX86Target)
-        ) {
-            binaries.framework {
-                baseName = "LibsodiumBindings"
-                export(Deps.Common.libsodiumBindings)
-            }
-        }
+//        configure(listOf(
+//            iosX64Target, iosArm64Target, iosArm32Target,
+//            tvosX64Target, tvosArm64Target, watchosArm64Target,
+//            watchosArm32Target, watchosX86Target)
+//        ) {
+//            binaries.framework {
+//                baseName = "LibsodiumBindings"
+//                export(Deps.Common.libsodiumBindings)
+//            }
+//        }
         val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
         println("Mode $mode")
         // Create a task to build a fat framework.
