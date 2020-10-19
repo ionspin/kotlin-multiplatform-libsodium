@@ -126,7 +126,7 @@ actual object LibsodiumUtil {
             data,
             data.length.convert(),
             null,
-            binLenPinned.addressOf(0),
+            binLenPinned.addressOf(0) as kotlinx.cinterop.CValuesRef<platform.posix.size_tVar>, // TODO Find a better solution for this!
             null,
             variant.value
 
