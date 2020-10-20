@@ -1,0 +1,15 @@
+set -e
+#!/bin/sh
+./gradlew multiplatform-crypto-delegated:publishMacosX64PublicationToSnapshotRepository
+
+./gradlew multiplatform-crypto-delegated:publishIosArm32PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishIosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishIosX64PublicationToSnapshotRepository
+
+./gradlew multiplatform-crypto-delegated:publishWatchosArm32PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishWatchosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishWatchosX86PublicationToSnapshotRepository
+
+./gradlew multiplatform-crypto-delegated:publishTvosArm64PublicationToSnapshotRepository \
+multiplatform-crypto-delegated:publishTvosX64PublicationToSnapshotRepository
+set +e

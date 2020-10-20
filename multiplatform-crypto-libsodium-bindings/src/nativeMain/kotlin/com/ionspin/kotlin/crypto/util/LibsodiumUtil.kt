@@ -12,6 +12,7 @@ import libsodium.sodium_memcmp
 import libsodium.sodium_memzero
 import libsodium.sodium_pad
 import libsodium.sodium_unpad
+import platform.posix.size_tVar
 
 /**
  * Created by Ugljesa Jovanovic

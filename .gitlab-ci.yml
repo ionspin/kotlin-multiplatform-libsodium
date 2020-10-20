@@ -17,6 +17,7 @@ simpleCheck:
   script: echo PREPARE
   tags:
     - linuxX64
+# ---- Linux builds ----
 
 buildLinux:
   stage: build
@@ -26,6 +27,21 @@ buildLinux:
     - ./linuxBuild.sh
   tags:
     - linuxX64
+linuxPublishToSnapshot:
+  script:
+    - ./linuxBuild.sh
+    - ./linuxBuildAndPublish.sh
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - allow_failure: false
+  needs:
+    - job: buildLinux
+  tags:
+    - linuxX64
+
+
+# ---- Mac builds ----
+
 buildMac:
   stage: build
   when: manual
@@ -34,11 +50,40 @@ buildMac:
     - ./macBuild.sh
   tags:
     - macos
+
+macPublishToSnapshot:
+  script:
+    - ./macBuild.sh
+    - ./macBuildAndPublishSnapshot-bindings.sh
+    - ./macBuildAndPublishSnapshot-delegated.sh
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - allow_failure: false
+  needs:
+    - job: buildMac
+  tags:
+    - macos
+
+# ---- Windows builds ----
+
 buildWindows:
   stage: build
   when: manual
   allow_failure: false
-  script: echo TEST_PULL_REQUEST_WIN
+  script:
+    - ./windowsBuild-delegated.sh
+    - ./windowsBuild-pure.sh
   tags:
     - windowsX64
 
+windowsPublishToSnapshot:
+  script:
+    - ./windowsBuildAndPublish-delegated.sh
+    - ./windowsBuildAndPublish-pure.sh
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - allow_failure: false
+  needs:
+    - job: buildWindows
+  tags:
+    - windowsX64
