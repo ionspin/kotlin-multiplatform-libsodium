@@ -81,8 +81,8 @@ buildWindows:
 windowsPublishToSnapshot:
   stage: deploy
   script:
-    - ./windowsBuildAndPublish-delegated.sh
-    - ./windowsBuildAndPublish-pure.sh
+    - C:\msys64\msys2_shell.cmd -msys -here windowsBuildAndPublish-delegated.sh
+    - C:\msys64\msys2_shell.cmd -msys -here windowsBuildAndPublish-pure.sh
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
     - allow_failure: false

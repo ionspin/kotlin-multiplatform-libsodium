@@ -226,7 +226,9 @@ class XChaCha20Poly1305Test {
             expected.contentEquals(result) && decrypted.contentEquals(data)
         }
         val messedUpTag = result.copyOf()
+        messedUpTag[messedUpTag.size - 3] = 0U
         messedUpTag[messedUpTag.size - 2] = 0U
+        messedUpTag[messedUpTag.size - 1] = 0U
         assertFails {
             val decryptorForWrongTag = XChaCha20Poly1305Delegated(key, state, header, true)
             val plaintext = decryptorForWrongTag.decrypt(messedUpTag)
