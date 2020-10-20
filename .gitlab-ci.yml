@@ -73,16 +73,16 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
-    - C:\msys64\usr\bin\bash -lc  windowsBuild-delegated.sh
-    - C:\msys64\usr\bin\bash -lc windowsBuild-pure.sh
+    - ./windowsBuild-delegated.sh
+    - ./windowsBuild-pure.sh
   tags:
     - windowsX64
 
 windowsPublishToSnapshot:
   stage: deploy
   script:
-    - C:\msys64\usr\bin\bash -lc windowsBuildAndPublish-delegated.sh
-    - C:\msys64\usr\bin\bash -lc  windowsBuildAndPublish-pure.sh
+    - ./windowsBuildAndPublish-delegated.sh
+    - ./windowsBuildAndPublish-pure.sh
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
     - allow_failure: false
