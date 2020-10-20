@@ -73,8 +73,9 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
-    - ./windowsBuild-delegated.sh
-    - ./windowsBuild-pure.sh
+    - C:\msys64\usr\bin\pacman --noconfirm -Syyuu --ask 20
+    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-pure.sh"
   tags:
     - windowsX64
 
