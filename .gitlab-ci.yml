@@ -73,8 +73,8 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
-    - ./windowsBuild-delegated.sh
-    - ./windowsBuild-pure.sh
+    - C:\msys64\msys2_shell.cmd -msys -here windowsBuild-delegated.sh
+    - C:\msys64\msys2_shell.cmd -msys -here windowsBuild-pure.sh
   tags:
     - windowsX64
 
