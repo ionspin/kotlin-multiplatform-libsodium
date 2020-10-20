@@ -28,6 +28,7 @@ buildLinux:
   tags:
     - linuxX64
 linuxPublishToSnapshot:
+  stage: deploy
   script:
     - ./linuxBuild.sh
     - ./linuxBuildAndPublish.sh
@@ -52,6 +53,7 @@ buildMac:
     - macos
 
 macPublishToSnapshot:
+  stage: deploy
   script:
     - ./macBuild.sh
     - ./macBuildAndPublishSnapshot-bindings.sh
@@ -77,6 +79,7 @@ buildWindows:
     - windowsX64
 
 windowsPublishToSnapshot:
+  stage: deploy
   script:
     - ./windowsBuildAndPublish-delegated.sh
     - ./windowsBuildAndPublish-pure.sh
