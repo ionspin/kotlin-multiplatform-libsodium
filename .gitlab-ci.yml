@@ -79,8 +79,9 @@ buildWindows:
     - C:\msys64\usr\bin\bash -lc "pwd"
     - "dir env:"
     - echo "$PWD"
-    - C:\msys64\usr\bin\bash -lc "cd $CI_PROJECT_DIR; bash -x ./windowsBuild-delegated.sh"
-    - C:\msys64\usr\bin\bash -lc "cd $CI_PROJECT_DIR; bash -x ./windowsBuild-pure.sh"
+    - $env:CHERE_INVOKING = 'yes'
+    - C:\msys64\usr\bin\bash -lc windowsBuild-delegated.sh
+    - C:\msys64\usr\bin\bash -lc windowsBuild-pure.sh
   tags:
     - windowsX64
 
