@@ -144,7 +144,14 @@ Currently supported native platforms:
 
 
 
+#### Notes for Gitlab runners:
+- At the moment all runners need to have android sdk 
+#### Mac:
 
+#### Windows:
+- Needs android sdk
+- Git needs long file path enabled
+- msys2 needs to be installed and `pacman update` executed
 
 
 

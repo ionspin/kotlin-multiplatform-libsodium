@@ -32,11 +32,8 @@ linuxPublishToSnapshot:
   script:
     - ./linuxBuild.sh
     - ./linuxBuildAndPublish.sh
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    - allow_failure: false
-  needs:
-    - job: buildLinux
+  only:
+    - master
   tags:
     - linuxX64
 
@@ -58,11 +55,8 @@ macPublishToSnapshot:
     - ./macBuild.sh
     - ./macBuildAndPublishSnapshot-bindings.sh
     - ./macBuildAndPublishSnapshot-delegated.sh
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    - allow_failure: false
-  needs:
-    - job: buildMac
+  only:
+    - master
   tags:
     - macos
 
@@ -85,10 +79,7 @@ windowsPublishToSnapshot:
     - $env:CHERE_INVOKING = 'yes'
     - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-delegated.sh"
     - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-pure.sh"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    - allow_failure: false
-  needs:
-    - job: buildWindows
+  only:
+    - master
   tags:
     - windowsX64
