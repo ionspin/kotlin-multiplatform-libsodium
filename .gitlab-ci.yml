@@ -75,12 +75,12 @@ buildWindows:
   script:
     - $env:PROJECT_DIR_TMP="$PWD"
     - echo "$PWD"
-    - echo "$PROJECT_DIR"
+    - echo "$$env:PROJECT_DIR_TMP"
     - echo "--------- bash ---------"
     - C:\msys64\usr\bin\bash -lc "env"
     - C:\msys64\usr\bin\bash -lc "pwd"
     - "dir env:"
-    - cd $PROJECT_DIR
+    - cd $env:PROJECT_DIR_TMP
     - echo "---- CD ----"
     - echo "$PWD"
     - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-delegated.sh"
