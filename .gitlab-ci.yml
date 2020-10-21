@@ -86,6 +86,7 @@ buildWindows:
 windowsPublishToSnapshot:
   stage: deploy
   script:
+    - echo "Deploy---"
 #    - ./windowsBuildAndPublish-delegated.sh
 #    - ./windowsBuildAndPublish-pure.sh
   rules:
