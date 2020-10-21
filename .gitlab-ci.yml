@@ -73,8 +73,11 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
+    - echo "$PWD"
+    - echo "--------- bash ---------"
     - C:\msys64\usr\bin\bash -lc "env"
     - C:\msys64\usr\bin\bash -lc "pwd"
+    - dir env:
 #    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-delegated.sh"
 #    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-pure.sh"
   tags:
