@@ -86,8 +86,8 @@ buildWindows:
 windowsPublishToSnapshot:
   stage: deploy
   script:
-    - ./windowsBuildAndPublish-delegated.sh
-    - ./windowsBuildAndPublish-pure.sh
+#    - ./windowsBuildAndPublish-delegated.sh
+#    - ./windowsBuildAndPublish-pure.sh
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
     - allow_failure: false
