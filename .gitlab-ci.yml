@@ -73,15 +73,7 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
-    - echo "$PWD"
-    - echo "--------- bash ---------"
-    - C:\msys64\usr\bin\bash -lc "env"
-    - C:\msys64\usr\bin\bash -lc "pwd"
-    - "dir env:"
-    - echo "$PWD"
     - $env:CHERE_INVOKING = 'yes'
-    - C:\msys64\usr\bin\bash -lc "pwd"
-    - C:\msys64\usr\bin\bash -lc "ls"
     - C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
     - C:\msys64\usr\bin\bash -lc "./windowsBuild-pure.sh"
   tags:
@@ -90,9 +82,9 @@ buildWindows:
 windowsPublishToSnapshot:
   stage: deploy
   script:
-    - echo "Deploy---"
-#    - ./windowsBuildAndPublish-delegated.sh
-#    - ./windowsBuildAndPublish-pure.sh
+    - $env:CHERE_INVOKING = 'yes'
+    - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-pure.sh"
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
     - allow_failure: false
