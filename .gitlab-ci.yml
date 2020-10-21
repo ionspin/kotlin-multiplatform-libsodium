@@ -80,10 +80,10 @@ buildWindows:
     - "dir env:"
     - echo "$PWD"
     - $env:CHERE_INVOKING = 'yes'
-    - C:\msys64\usr\bin\bash -lc pwd
-    - C:\msys64\usr\bin\bash -lc ls
-    - C:\msys64\usr\bin\bash -lc windowsBuild-delegated.sh
-    - C:\msys64\usr\bin\bash -lc windowsBuild-pure.sh
+    - C:\msys64\usr\bin\bash -lc "pwd"
+    - C:\msys64\usr\bin\bash -lc "ls"
+    - C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "./windowsBuild-pure.sh"
   tags:
     - windowsX64
 
