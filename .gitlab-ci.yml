@@ -73,13 +73,18 @@ buildWindows:
   when: manual
   allow_failure: false
   script:
+    - $env:PROJECT_DIR_TMP="$PWD"
     - echo "$PWD"
+    - echo "$PROJECT_DIR"
     - echo "--------- bash ---------"
     - C:\msys64\usr\bin\bash -lc "env"
     - C:\msys64\usr\bin\bash -lc "pwd"
     - "dir env:"
-#    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-delegated.sh"
-#    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-pure.sh"
+    - cd $PROJECT_DIR
+    - echo "---- CD ----"
+    - echo "$PWD"
+    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "bash -x ./windowsBuild-pure.sh"
   tags:
     - windowsX64
 
