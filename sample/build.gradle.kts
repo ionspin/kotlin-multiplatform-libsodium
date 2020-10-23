@@ -52,7 +52,13 @@ val ideaActive = System.getProperty("idea.active") == "true"
 
 kotlin {
     val hostOsName = getHostOsName()
-
+    if (ideaActive) {
+        when (hostOsName) {
+            "linux" -> linuxX64("native")
+            "macos" -> macosX64("native")
+            "windows" -> mingwX64("native")
+        }
+    }
     android()
     runningOnLinuxx86_64 {
         jvm()
@@ -88,13 +94,13 @@ kotlin {
             }
         }
 
-
-        linuxArm64() {
-            binaries {
-                executable {
-                }
-            }
-        }
+        //Disable for now as libui doesnt support arm64
+//        linuxArm64() {
+//            binaries {
+//                executable {
+//                }
+//            }
+//        }
 
     }
 
@@ -222,16 +228,53 @@ kotlin {
 
 
 
-        val nativeMain by creating {
-            dependsOn(commonMain)
-            dependencies {
+//        val nativeMain by creating {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation(Deps.Desktop.libui)
+//            }
+//        }
+//
+//        val nativeTest by creating {
+//            dependsOn(commonTest)
+//            dependencies {
+//            }
+//        }
+
+        val nativeMain = if (ideaActive) {
+            val nativeMain by getting {
+                dependsOn(commonMain)
+                dependencies {
+                    implementation(Deps.Desktop.libui)
+                }
             }
+            nativeMain
+        } else {
+            val nativeMain by creating {
+                dependsOn(commonMain)
+                dependencies {
+                    implementation(Deps.Desktop.libui)
+                }
+            }
+            nativeMain
         }
 
-        val nativeTest by creating {
-            dependsOn(commonTest)
-            dependencies {
+        val nativeTest = if (ideaActive) {
+            val nativeTest by getting {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
             }
+            nativeTest
+        } else {
+            val nativeTest by creating {
+                dependsOn(commonTest)
+                dependencies {
+                    implementation(Deps.Native.coroutines)
+                }
+            }
+            nativeTest
         }
 
         runningOnLinuxx86_64 {
@@ -280,12 +323,12 @@ kotlin {
                 dependsOn(nativeTest)
             }
 
-            val linuxArm64Main by getting {
-                dependsOn(nativeMain)
-            }
-            val linuxArm64Test by getting {
-                dependsOn(nativeTest)
-            }
+//            val linuxArm64Main by getting {
+//                dependsOn(nativeMain)
+//            }
+//            val linuxArm64Test by getting {
+//                dependsOn(nativeTest)
+//            }
         }
 
         runningOnMacos {

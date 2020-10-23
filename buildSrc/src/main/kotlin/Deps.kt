@@ -141,6 +141,10 @@ object Deps {
         val timber = "com.jakewharton.timber:timber:${Versions.timber}"
     }
 
+    object Desktop {
+        val libui = "com.github.msink:libui:0.1.8"
+    }
+
 }
 
 
