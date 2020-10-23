@@ -17,7 +17,9 @@
 
 
 plugins {
+    `java-gradle-plugin`
     `kotlin-dsl`
+    `kotlin-dsl-precompiled-script-plugins`
 }
 
 repositories {
@@ -29,8 +31,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0-rc")
-    implementation("com.android.tools.build:gradle:4.0.1")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+    implementation("com.android.tools.build:gradle:4.0.2")
 }
 
 System.setProperty("PROJECT_PATH", project.projectDir.parentFile.toString())

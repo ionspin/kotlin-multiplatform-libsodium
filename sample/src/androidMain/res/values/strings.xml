@@ -1,0 +1,7 @@
+<!--
+  ~ Copyright (c) 2020 Ugljesa Jovanovic (ugljesa.jovanovic@ionspin.com)
+  -->
+
+<resources>
+    <string name="app_name">Lbsodium Bindings Sample</string>
+</resources>

@@ -40,6 +40,8 @@ class SecretBoxTest {
             assertFailsWith(SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey::class) {
                 val tamperedTag = encrypted.copyOf()
                 tamperedTag[2] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 SecretBox.openEasy(tamperedTag, nonce, key)
             }
         }
@@ -73,6 +75,8 @@ class SecretBoxTest {
             assertFailsWith(SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey::class) {
                 val tamperedTag = encrypted.tag.copyOf()
                 tamperedTag[2] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 SecretBox.openDetached(encrypted.data, tamperedTag, nonce, key)
             }
         }

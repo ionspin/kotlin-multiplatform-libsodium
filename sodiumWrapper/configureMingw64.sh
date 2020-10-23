@@ -2,7 +2,7 @@
 ## and then borrowed and slightly modified from https://github.com/datkt/sodium/configure
 ## borrowed from https://github.com/sodium-friends/sodium-native/blob/master/configure
 PREFIX="${PREFIX:-$PWD/static-mingw-x86-64}"
-KONAN="${KONAN:-$HOME/.konan}"
+KONAN="C:/Windows/System32/config/systemprofile/.konan"
 ARCH=${ARCH:-$(uname -m)}
 echo $PREFIX
 echo $KONAN

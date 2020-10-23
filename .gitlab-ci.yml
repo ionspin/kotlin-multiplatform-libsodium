@@ -17,6 +17,7 @@ simpleCheck:
   script: echo PREPARE
   tags:
     - linuxX64
+# ---- Linux builds ----
 
 buildLinux:
   stage: build
@@ -26,6 +27,19 @@ buildLinux:
     - ./linuxBuild.sh
   tags:
     - linuxX64
+linuxPublishToSnapshot:
+  stage: deploy
+  script:
+    - ./linuxBuild.sh
+    - ./linuxBuildAndPublish.sh
+  only:
+    - master
+  tags:
+    - linuxX64
+
+
+# ---- Mac builds ----
+
 buildMac:
   stage: build
   when: manual
@@ -34,11 +48,38 @@ buildMac:
     - ./macBuild.sh
   tags:
     - macos
+
+macPublishToSnapshot:
+  stage: deploy
+  script:
+    - ./macBuild.sh
+    - ./macBuildAndPublishSnapshot-bindings.sh
+    - ./macBuildAndPublishSnapshot-delegated.sh
+  only:
+    - master
+  tags:
+    - macos
+
+# ---- Windows builds ----
+
 buildWindows:
   stage: build
   when: manual
   allow_failure: false
-  script: echo TEST_PULL_REQUEST_WIN
+  script:
+    - $env:CHERE_INVOKING = 'yes'
+    - C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "./windowsBuild-pure.sh"
   tags:
     - windowsX64
 
+windowsPublishToSnapshot:
+  stage: deploy
+  script:
+    - $env:CHERE_INVOKING = 'yes'
+    - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-delegated.sh"
+    - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-pure.sh"
+  only:
+    - master
+  tags:
+    - windowsX64

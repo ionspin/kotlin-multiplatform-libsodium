@@ -32,3 +32,6 @@ build/
 /sodiumWrapper/static-tvos/
 /sodiumWrapper/static-watchos/
 /kotlin-multiplatform-libsodium-generator/out/
+/sodiumWrapper/static-ios-simulators/
+/sodiumWrapper/static-tvos-simulators/
+/sodiumWrapper/static-watchos-simulators/

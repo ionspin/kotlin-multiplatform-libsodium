@@ -1,5 +1,6 @@
 import com.ionspin.kotlin.crypto.sample.Sample
 
-fun main() {
+fun main() : Unit {
     Sample.runSample()
+    ui()
 }

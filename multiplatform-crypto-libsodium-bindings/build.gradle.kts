@@ -53,14 +53,14 @@ repositories {
 
 }
 group = ReleaseInfo.group
-version = ReleaseInfo.version
+version = ReleaseInfo.bindingsVersion
 
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
 android {
     compileSdkVersion(29)
     defaultConfig {
-        minSdkVersion(24)
+        minSdkVersion(21)
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -77,10 +77,10 @@ android {
 
 kotlin {
     val hostOsName = getHostOsName()
+    android()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
         jvm()
-        android()
         js {
             browser {
                 testTask {
@@ -145,106 +145,102 @@ kotlin {
         println("Configuring Linux Arm 32 targets")
 
     }
-
-    runningOnMacos {
-        println("Configuring macos targets")
-        iosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        iosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        iosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        macosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
-                )
-            }
-        }
-        tvosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        tvosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosX86() {
-            binaries {
-                framework {
-                    optimized = true
-                }
+    println("Configuring macos targets")
+    iosX64() {
+        binaries {
+            framework {
+                optimized = true
             }
         }
     }
-    runningOnWindows {
-        println("Configuring Mingw targets")
-        mingwX64() {
-            binaries {
-                staticLib {
-                    optimized = true
-                }
-            }
-            compilations.getByName("main") {
-                val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
-                }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
-                )
+    iosArm64() {
+        binaries {
+            framework {
+                optimized = true
             }
         }
     }
+
+    iosArm32() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    macosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+        compilations.getByName("main") {
+            val libsodiumCinterop by cinterops.creating {
+                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
+            }
+            kotlinOptions.freeCompilerArgs = listOf(
+                "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
+            )
+        }
+    }
+    tvosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    tvosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosArm32() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    watchosX86() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    println("Configuring Mingw targets")
+    mingwX64() {
+        binaries {
+            staticLib {
+                optimized = true
+            }
+        }
+        compilations.getByName("main") {
+            val libsodiumCinterop by cinterops.creating {
+                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
+            }
+            kotlinOptions.freeCompilerArgs = listOf(
+                "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
+            )
+        }
+    }
+
 
     println(targets.names)
 
@@ -301,22 +297,28 @@ kotlin {
         val macos64Bit = setOf(
             "macosX64"
         )
-        val ios64Bit = setOf(
-            "iosArm64", "iosX64"
+        val iosArm = setOf(
+            "iosArm64", "iosArm32"
         )
-        val ios32Bit = setOf(
-            "iosArm32"
+        val iosSimulator = setOf(
+            "iosX64"
         )
         val mingw64Bit = setOf(
             "mingwX64"
         )
 
-        val tvos64Bit = setOf(
-            "tvosArm64", "tvosX64"
+        val tvosArm = setOf(
+            "tvosArm64"
+        )
+        val tvosSimulator = setOf(
+            "tvosX64"
         )
 
-        val watchos32Bit = setOf(
-            "watchosX86", "watchosArm32", "watchosArm64"
+        val watchosArm = setOf(
+            "watchosArm32", "watchosArm64"
+        )
+        val watchosSimulator = setOf(
+            "watchosX86"
         )
 
         targets.withType<KotlinNativeTarget> {
@@ -327,12 +329,12 @@ kotlin {
                     defaultSourceSet.dependsOn(nativeMain)
                 }
                 if (linuxArm64Bit.contains(this@withType.name)) {
-                        defaultSourceSet.dependsOn(
-                            createWorkaroundNativeMainSourceSet(
-                                this@withType.name,
-                                nativeDependencies
-                            )
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
                         )
+                    )
 
                     compilations.getByName("main") {
                         val libsodiumCinterop by cinterops.creating {
@@ -351,7 +353,7 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                 }
                 //All ioses share the same static library
-                if (ios64Bit.contains(this@withType.name)) {
+                if (iosArm.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
@@ -363,19 +365,19 @@ kotlin {
                     )
                 }
 
-                if (ios32Bit.contains(this@withType.name)) {
+                if (iosSimulator.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/include")
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios-simulators/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios-simulators/lib/libsodium.a"
                     )
                 }
 
-                if (tvos64Bit.contains(this@withType.name)) {
+                if (tvosArm.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
@@ -387,7 +389,19 @@ kotlin {
                     )
                 }
 
-                if (watchos32Bit.contains(this@withType.name)) {
+                if (tvosSimulator.contains(this@withType.name)) {
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting ios cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-tvos-simulators/include")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-tvos-simulators/lib/libsodium.a"
+                    )
+                }
+
+                if (watchosArm.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
@@ -396,6 +410,18 @@ kotlin {
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
                         "-include-binary", "${project.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
+                    )
+                }
+
+                if (watchosSimulator.contains(this@withType.name)) {
+                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting ios cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-watchos-simulators/include")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
                     )
                 }
 
@@ -410,7 +436,27 @@ kotlin {
             }
         }
 
+            val androidMain by getting {
+                isNotRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+                }
+                isRunningInIdea {
+                    kotlin.srcDirs("src/androidSpecific")
+                }
+                dependencies {
+                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
+                    implementation("net.java.dev.jna:jna:5.5.0@aar")
+                }
+            }
 
+            val androidTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Jvm.test))
+                    implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation("androidx.test:runner:1.2.0")
+                    implementation("androidx.test:rules:1.2.0")
+                }
+            }
 
 
         runningOnLinuxx86_64 {
@@ -434,27 +480,7 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
-            val androidMain by getting {
-                isNotRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
-                }
-                isRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific")
-                }
-                dependencies {
-                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
-                    implementation("net.java.dev.jna:jna:5.5.0@aar")
-                }
-            }
 
-            val androidTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation("androidx.test:runner:1.2.0")
-                    implementation("androidx.test:rules:1.2.0")
-                }
-            }
 
             val jsMain by getting {
                 dependencies {

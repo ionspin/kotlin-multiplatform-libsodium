@@ -49,6 +49,7 @@ val ideaActive = System.getProperty("idea.active") == "true"
 
 kotlin {
     val hostOsName = getHostOsName()
+    val bla =1
     runningOnLinuxx86_64 {
         jvm()
         js {

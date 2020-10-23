@@ -53,6 +53,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.xChaCha20Poly1305IetfDecrypt(
                     tamperedTag,
                     associatedData,
@@ -105,6 +107,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.tag.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.xChaCha20Poly1305IetfDecryptDetached(
                     encrypted.data,
                     tamperedTag,
@@ -156,6 +160,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.chaCha20Poly1305IetfDecrypt(
                     tamperedTag,
                     associatedData,
@@ -207,6 +213,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.tag.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.chaCha20Poly1305IetfDecryptDetached(
                     encrypted.data,
                     tamperedTag,
@@ -257,6 +265,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.chaCha20Poly1305Decrypt(
                     tamperedTag,
                     associatedData,
@@ -307,6 +317,8 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
             assertFailsWith(AeadCorrupedOrTamperedDataException::class) {
                 val tamperedTag = encrypted.tag.copyOf()
                 tamperedTag[3] = 0U
+                tamperedTag[1] = 0U
+                tamperedTag[0] = 0U
                 AuthenticatedEncryptionWithAssociatedData.chaCha20Poly1305DecryptDetached(
                     encrypted.data,
                     tamperedTag,
