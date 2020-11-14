@@ -19,6 +19,40 @@ data class BoxEncryptedDataAndTag(val ciphertext: UByteArray, val tag: UByteArra
 
 class BoxCorruptedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
 
+/**
+ * Authenticated encryption (crypto_box_* API)
+ *
+ * Using public-key authenticated encryption, Bob can encrypt a confidential message specifically for Alice, using Alice's public key.
+ * Using Bob's public key, Alice can compute a shared secret key. Using Alice's public key and his secret key,
+ * Bob can compute the exact same shared secret key. That shared secret key can be used to verify that the encrypted
+ * message was not tampered with, before eventually decrypting it.
+ * Alice only needs Bob's public key, the nonce and the ciphertext. Bob should never ever share his secret key,
+ * even with Alice.
+ * And in order to send messages to Alice, Bob only needs Alice's public key. Alice should never ever share her secret
+ * key either, even with Bob.
+ * Alice can reply to Bob using the same system, without having to generate a distinct key pair.
+ * The nonce doesn't have to be confidential, but it should be used with just one invocation of crypto_box_easy() for a
+ * particular pair of public and secret keys.
+ * One easy way to generate a nonce is to use randombytes_buf(), considering the size of the nonces the risk of any
+ * random collisions is negligible. For some applications, if you wish to use nonces to detect missing messages or to
+ * ignore replayed messages, it is also acceptable to use a simple incrementing counter as a nonce. A better alternative
+ * is to use the crypto_secretstream() API.
+ * When doing so you must ensure that the same value can never be re-used (for example you may have multiple threads
+ * or even hosts generating messages using the same key pairs).
+ * As stated above, senders can decrypt their own messages, and compute a valid authentication tag for any messages
+ * encrypted with a given shared secret key. This is generally not an issue for online protocols. If this is not
+ * acceptable, check out the Sealed Boxes section, as well as the Key Exchange section in this documentation.
+ *
+ *
+ * Sealed boxes (crypto_box_seal_* API)
+ *
+ * Sealed boxes are designed to anonymously send messages to a recipient given its public key.
+ * Only the recipient can decrypt these messages, using its private key. While the recipient can verify the integrity
+ * of the message, it cannot verify the identity of the sender.
+ * A message is encrypted using an ephemeral key pair, whose secret part is destroyed right after the encryption process.
+ * Without knowing the secret key used for a given message, the sender cannot decrypt its own message later.
+ * And without additional data, a message cannot be correlated with the identity of its sender.
+ */
 expect object Box {
     /**
      * The crypto_box_keypair() function randomly generates a secret key and a corresponding public key.

@@ -108,6 +108,7 @@ And here is the usage sample
 
 The functions are mapped from libsodium to kotiln objects, so `crypto_secretstream_xchacha20poly1305_init_push` becomes
 `SecretStream.xChaCha20Poly1305InitPush`
+![Alt text](./doc/res/libsodium_api_mapping.svg)
 
 At the moment you should refer to original libsodium documentation for instructions on how to use the library
 
@@ -139,6 +140,7 @@ Currently supported native platforms:
 - Android testing 
 - Fix browser testing, both locally and in CI/CD
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
+- Complete exposing libsodium constants
 
 
 
