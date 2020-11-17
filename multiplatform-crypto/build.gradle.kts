@@ -18,6 +18,7 @@
 @file:Suppress("UnstableApiUsage")
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.dokka.Platform
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -401,9 +402,9 @@ tasks {
     dokkaJavadoc {
         println("Dokka !")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
+            named("commonMain") {
+                displayName.set("common")
+                platform.set(Platform.common)
             }
         }
 

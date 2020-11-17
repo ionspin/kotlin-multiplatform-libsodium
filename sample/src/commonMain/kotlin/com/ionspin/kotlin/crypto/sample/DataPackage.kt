@@ -33,4 +33,4 @@ data class HexadecimalStringData(val content: String) : DataPackage {
     }
 }
 
-data class FileData(val filePath: )
+//data class FileData(val filePath: )

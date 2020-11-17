@@ -20,6 +20,7 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.dokka.Platform
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -593,9 +594,9 @@ tasks {
     dokkaJavadoc {
         println("Dokka !")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
+            named("commonMain") {
+                displayName.set("common")
+                platform.set(Platform.common)
             }
         }
 
@@ -605,9 +606,18 @@ tasks {
     dokkaHtml {
         println("Dokka Html!")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
+            named("commonMain") {
+//                displayName.set("common")
+//                platform.set(Platform.common)
+                moduleDisplayName.set("Kotlin Multiplatform Libsodium Bindings")
+                includes.from("src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
+                displayName.set("Kotlin multiplatform")
+            }
+            configureEach {
+                if (name != "commonMain") {
+                    suppress.set(true)
+                }
             }
         }
     }
