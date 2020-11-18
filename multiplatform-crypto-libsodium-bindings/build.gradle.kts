@@ -610,7 +610,9 @@ tasks {
 //                displayName.set("common")
 //                platform.set(Platform.common)
                 moduleDisplayName.set("Kotlin Multiplatform Libsodium Bindings")
-                includes.from("src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
+                includes.from(
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
                 displayName.set("Kotlin multiplatform")
             }

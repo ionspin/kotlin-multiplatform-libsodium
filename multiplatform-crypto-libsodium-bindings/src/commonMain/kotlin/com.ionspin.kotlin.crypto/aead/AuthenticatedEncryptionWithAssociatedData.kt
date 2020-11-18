@@ -95,7 +95,7 @@ expect object AuthenticatedEncryptionWithAssociatedData {
 
     /**
      * Encrypt the message and return encrypted data and tag using xChaChaPoly1305 (192 bit nonce) as
-     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag])
      *
      * @param message message to encrypt
      * @param associatedData associated data the won't be encrypted, but will be authenticated
@@ -165,7 +165,7 @@ expect object AuthenticatedEncryptionWithAssociatedData {
     ): UByteArray
     /**
      * Encrypt the message and return encrypted data and tag using ChaChaPoly1305-IETF (96 bit nonce) as
-     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag])
      *
      * @param message message to encrypt
      * @param associatedData associated data the won't be encrypted, but will be authenticated
@@ -235,7 +235,7 @@ expect object AuthenticatedEncryptionWithAssociatedData {
     ): UByteArray
     /**
      * Encrypt the message and return encrypted data and tag using ChaChaPoly1305 (64 bit nonce) as
-     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag])
      *
      * @param message message to encrypt
      * @param associatedData associated data the won't be encrypted, but will be authenticated
