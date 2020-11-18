@@ -19,18 +19,32 @@ val crypto_auth_hmacsha256_BYTES = 32
 val crypto_auth_hmacsha512_KEYBYTES = 32
 val crypto_auth_hmacsha512_BYTES = 64
 
+/**
+ * Authentication is a process of generating authentication data (tag) for a certain message. Its purpose is to assure
+ * that the data hasn't been corrupted or tampered with during the transport.
+ *
+ * We support 3 variants:
+ * - without suffix - HMAC-SHA512-256 (HMAC SHA512 with just the first 256 bits used)
+ * - *HmacSha256 - HMAC-SHA256
+ * - *HmacSha512 - HMAC-SHA512
+ *
+ * Each variant supports three operations:
+ * - keygen - generate appropriate key for MAC function
+ * - auth - generate the authentication data (tag/mac)
+ * - verify - verify that the authenticatoin data (tag/mac) is correct
+ */
 expect object Auth {
 
     fun authKeygen() : UByteArray
     fun auth(message: UByteArray, key: UByteArray) : UByteArray
-    fun authVerify(mac: UByteArray, message: UByteArray, key: UByteArray) : Boolean
+    fun authVerify(tag: UByteArray, message: UByteArray, key: UByteArray) : Boolean
 
     fun authHmacSha256Keygen() : UByteArray
     fun authHmacSha256(message: UByteArray, key: UByteArray) : UByteArray
-    fun authHmacSha256Verify(mac: UByteArray, message: UByteArray, key: UByteArray) : Boolean
+    fun authHmacSha256Verify(tag: UByteArray, message: UByteArray, key: UByteArray) : Boolean
 
     fun authHmacSha512Keygen() : UByteArray
     fun authHmacSha512(message: UByteArray, key: UByteArray) : UByteArray
-    fun authHmacSha512Verify(mac: UByteArray, message: UByteArray, key: UByteArray) : Boolean
+    fun authHmacSha512Verify(tag: UByteArray, message: UByteArray, key: UByteArray) : Boolean
 
 }

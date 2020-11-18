@@ -30,13 +30,15 @@ data class AeadEncryptedDataAndTag(val data: UByteArray, val tag: UByteArray)
 /**
  * An exception thrown when tag generated from received data and key doesn't match the received tag
  */
-class AeadCorrupedOrTamperedDataException() : RuntimeException("Tag (authentication data) validation failed. Data is corrupted or tampered with.")
+class AeadCorrupedOrTamperedDataException() :
+    RuntimeException("Tag (authentication data) validation failed. Data is corrupted or tampered with.")
 
 /**
- * This is a form of symmetric encryption, that assures both confidentiality and authenticity of the data.
+ * This is a form of symmetric encryption, that assures both confidentiality and authenticity of the data to be encrypted as well
+as associated data that will not be encrypted.
  *
  * Offered here are three implementations of (x)ChaCha20-Poly1305 construction:
- * - ChaCha20Poly1305 - uses 64bit nonce
+ * - ChaCha20Poly1305 - uses 64bit nonce, safe to encrypt
  * - ChaCha20Poly1305-IETF - uses 96bit nonce (standardised by [RFC8439](https://tools.ietf.org/html/rfc8439)
  * - XChaCha20Poly1305 - uses 192bit nonce - recommended choice
  *
@@ -51,9 +53,21 @@ class AeadCorrupedOrTamperedDataException() : RuntimeException("Tag (authenticat
  *
  * Combined mode returns encrypted data and tag as one UByteArray, while detached mode returns them as separate UByteArrays.
  * To be kotlin idiomatic we are returning detached tag and encrypted data inside a wrapper data class [AeadEncryptedDataAndTag]
+ *
+ * Also provided are key generation convenience functions for each variant. (Which is in practice the same, since the keys
+ * same length for each variant)
  */
 expect object AuthenticatedEncryptionWithAssociatedData {
     // X - Ietf
+    /**
+     * Encrypt the message and return encrypted data and tag using xChaChaPoly1305 (192 bit nonce)
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag (in that order)
+     */
     fun xChaCha20Poly1305IetfEncrypt(
         message: UByteArray,
         associatedData: UByteArray,
@@ -61,13 +75,34 @@ expect object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray
 
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using xChaChaPoly1305 (192 bit nonce)
+     *
+     * @param ciphertextAndTag message to decrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun xChaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray
 
+    /**
+     * Encrypt the message and return encrypted data and tag using xChaChaPoly1305 (192 bit nonce) as
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag wrapped inside [AeadEncryptedDataAndTag] data class instance
+     */
     fun xChaCha20Poly1305IetfEncryptDetached(
         message: UByteArray,
         associatedData: UByteArray,
@@ -75,6 +110,18 @@ expect object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): AeadEncryptedDataAndTag
 
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using xChaChaPoly1305 (192 bit nonce)
+     *
+     * @param ciphertext message to decrypt
+     * @param tag authenticatoin data (tag)
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun xChaCha20Poly1305IetfDecryptDetached(
         ciphertext: UByteArray,
         tag: UByteArray,
@@ -84,21 +131,48 @@ expect object AuthenticatedEncryptionWithAssociatedData {
     ): UByteArray
 
     // Ietf
-
+    /**
+     * Encrypt the message and return encrypted data and tag using ChaChaPoly1305-IETF (96 bit nonce)
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag (in that order)
+     */
     fun chaCha20Poly1305IetfEncrypt(
         message: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray
-
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using ChaChaPoly1305-IETF (96 bit nonce)
+     *
+     * @param ciphertextAndTag message to decrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun chaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray
-
+    /**
+     * Encrypt the message and return encrypted data and tag using ChaChaPoly1305-IETF (96 bit nonce) as
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag wrapped inside [AeadEncryptedDataAndTag] data class instance
+     */
     fun chaCha20Poly1305IetfEncryptDetached(
         message: UByteArray,
         associatedData: UByteArray,
@@ -106,6 +180,18 @@ expect object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): AeadEncryptedDataAndTag
 
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using xChaChaPoly1305 (96 bit nonce)
+     *
+     * @param ciphertext message to decrypt
+     * @param tag authenticatoin data (tag)
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun chaCha20Poly1305IetfDecryptDetached(
         ciphertext: UByteArray,
         tag: UByteArray,
@@ -115,28 +201,66 @@ expect object AuthenticatedEncryptionWithAssociatedData {
     ): UByteArray
 
     // Original chacha20poly1305
-
+    /**
+     * Encrypt the message and return encrypted data and tag using ChaChaPoly1305 (64 bit nonce)
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag (in that order)
+     */
     fun chaCha20Poly1305Encrypt(
         message: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray
-
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using ChaChaPoly1305 (64 bit nonce)
+     *
+     * @param ciphertextAndTag message to decrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun chaCha20Poly1305Decrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray
-
+    /**
+     * Encrypt the message and return encrypted data and tag using ChaChaPoly1305 (64 bit nonce) as
+     * separate arrays (but wrapped inside [AeadEncryptedDataAndTag]
+     *
+     * @param message message to encrypt
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a **unique** nonce
+     * @param key secret key
+     * @return encrypted data and tag wrapped inside [AeadEncryptedDataAndTag] data class instance
+     */
     fun chaCha20Poly1305EncryptDetached(
         message: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): AeadEncryptedDataAndTag
-
+    /**
+     * Check if authentication data (tag) is correct, then decrypt the message and return decrypted data.
+     * Using xChaChaPoly1305 (64 bit nonce)
+     *
+     * @param ciphertext message to decrypt
+     * @param tag authenticatoin data (tag)
+     * @param associatedData associated data the won't be encrypted, but will be authenticated
+     * @param nonce a nonce used to encrypt the message
+     * @param key secret key
+     * @return decrypted data
+     * @throws AeadCorrupedOrTamperedDataException if authentication data (tag) cannot be verified
+     */
     fun chaCha20Poly1305DecryptDetached(
         ciphertext: UByteArray,
         tag: UByteArray,
@@ -145,9 +269,20 @@ expect object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray
 
-
-    fun xChaCha20Poly1305IetfKeygen() : UByteArray
-    fun chaCha20Poly1305IetfKeygen() : UByteArray
-    fun chaCha20Poly1305Keygen() : UByteArray
+    /**
+     * Generate a random 32byte key for use with xChaCha20Poly1305
+     * @return secret key
+     */
+    fun xChaCha20Poly1305IetfKeygen(): UByteArray
+    /**
+     * Generate a random 32 byte key for use with ChaCha20Poly1305-IETF
+     * @return secret key
+     */
+    fun chaCha20Poly1305IetfKeygen(): UByteArray
+    /**
+     * Generate a random 32 byte key for use with ChaCha20Poly1305
+     * @return secret key
+     */
+    fun chaCha20Poly1305Keygen(): UByteArray
 
 }

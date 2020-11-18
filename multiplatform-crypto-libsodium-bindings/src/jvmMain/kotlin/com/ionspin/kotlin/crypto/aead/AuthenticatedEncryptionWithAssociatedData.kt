@@ -29,18 +29,18 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun xChaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray {
-        val message = UByteArray(ciphertext.size - crypto_aead_xchacha20poly1305_ietf_ABYTES)
+        val message = UByteArray(ciphertextAndTag.size - crypto_aead_xchacha20poly1305_ietf_ABYTES)
         val validationResult = sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
             message.asByteArray(),
             null,
             null,
-            ciphertext.asByteArray(),
-            ciphertext.size.toLong(),
+            ciphertextAndTag.asByteArray(),
+            ciphertextAndTag.size.toLong(),
             associatedData.asByteArray(),
             associatedData.size.toLong(),
             nonce.asByteArray(),
@@ -122,18 +122,18 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun chaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray {
-        val message = UByteArray(ciphertext.size - crypto_aead_chacha20poly1305_ietf_ABYTES)
+        val message = UByteArray(ciphertextAndTag.size - crypto_aead_chacha20poly1305_ietf_ABYTES)
         val validationResult = sodium.crypto_aead_chacha20poly1305_ietf_decrypt(
             message.asByteArray(),
             null,
             null,
-            ciphertext.asByteArray(),
-            ciphertext.size.toLong(),
+            ciphertextAndTag.asByteArray(),
+            ciphertextAndTag.size.toLong(),
             associatedData.asByteArray(),
             associatedData.size.toLong(),
             nonce.asByteArray(),
@@ -215,18 +215,18 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun chaCha20Poly1305Decrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
     ): UByteArray {
-        val message = UByteArray(ciphertext.size - crypto_aead_chacha20poly1305_ABYTES)
+        val message = UByteArray(ciphertextAndTag.size - crypto_aead_chacha20poly1305_ABYTES)
         val validationResult = sodium.crypto_aead_chacha20poly1305_decrypt(
             message.asByteArray(),
             null,
             null,
-            ciphertext.asByteArray(),
-            ciphertext.size.toLong(),
+            ciphertextAndTag.asByteArray(),
+            ciphertextAndTag.size.toLong(),
             associatedData.asByteArray(),
             associatedData.size.toLong(),
             nonce.asByteArray(),
