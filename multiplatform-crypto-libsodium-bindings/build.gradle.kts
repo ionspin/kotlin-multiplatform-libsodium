@@ -613,6 +613,7 @@ tasks {
                 includes.from(
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/box/Box.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
                 displayName.set("Kotlin multiplatform")
             }
