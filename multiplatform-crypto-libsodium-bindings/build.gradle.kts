@@ -20,6 +20,7 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.dokka.Platform
 
 plugins {
@@ -628,6 +629,9 @@ tasks {
         val jvmTest by getting(Test::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
+                exceptionFormat = TestExceptionFormat.FULL
+                showStandardStreams = true
+                showStackTraces = true
             }
         }
 
@@ -635,14 +639,18 @@ tasks {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
+                exceptionFormat = TestExceptionFormat.FULL
                 showStandardStreams = true
+                showStackTraces = true
             }
         }
 
         val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-//                showStandardStreams = true
+                exceptionFormat = TestExceptionFormat.FULL
+                showStandardStreams = true
+                showStackTraces = true
             }
         }
 
