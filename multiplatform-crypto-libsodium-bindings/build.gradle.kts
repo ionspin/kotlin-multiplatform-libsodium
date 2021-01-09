@@ -28,10 +28,10 @@ plugins {
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     id(PluginsDeps.node) version Versions.nodePlugin
-    id(PluginsDeps.dokka)
     id(PluginsDeps.taskTree) version Versions.taskTreePlugin
     id(PluginsDeps.androidLibrary)
     id(PluginsDeps.kotlinAndroidExtensions)
+    id(PluginsDeps.dokka)
 
 }
 
@@ -595,9 +595,9 @@ tasks {
     dokkaJavadoc {
         println("Dokka !")
         dokkaSourceSets {
-            named("commonMain") {
-                displayName.set("common")
-                platform.set(Platform.common)
+            named("jvmMain") {
+                displayName.set("jvm")
+                platform.set(Platform.jvm)
             }
         }
 
@@ -610,11 +610,12 @@ tasks {
             named("commonMain") {
 //                displayName.set("common")
 //                platform.set(Platform.common)
-                moduleDisplayName.set("Kotlin Multiplatform Libsodium Bindings")
+                moduleName.set("Kotlin Multiplatform Libsodium Bindings")
                 includes.from(
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/box/Box.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/generichash/GenericHash.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
                 displayName.set("Kotlin multiplatform")
             }
