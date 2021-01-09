@@ -15,11 +15,9 @@ fi
 ./makeLinuxArm64.sh
 #now we can do the delegated build
 cd ..
-./gradlew multiplatform-crypto-delegated:build
 #build libsodium bindings
 ./gradlew multiplatform-crypto-libsodium-bindings:build
-#and finally pure build
-./gradlew multiplatform-crypto:build
+
 ./gradlew publishJvmPublicationToSnapshotRepository publishJsPublicationToSnapshotRepository \
 publishKotlinMultiplatformPublicationToSnapshotRepository publishLinuxX64PublicationToSnapshotRepository \
 publishLinuxArm64PublicationToSnapshotRepository publishMetadataPublicationToSnapshotRepository

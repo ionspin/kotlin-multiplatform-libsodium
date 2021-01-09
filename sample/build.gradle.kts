@@ -19,6 +19,7 @@
 
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
@@ -68,21 +69,20 @@ kotlin {
 
                 }
                 testTask {
-                    enabled = false //Until I sort out testing on travis
                     useKarma {
                         useChrome()
                     }
                 }
             }
             nodejs {
-
                 testTask {
                     useMocha() {
                         timeout = "10s"
                     }
                 }
             }
-            binaries.executable()
+
+//            binaries.executable()
 
         }
 
@@ -476,7 +476,9 @@ tasks {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-                // showStandardStreams = true
+                exceptionFormat = TestExceptionFormat.FULL
+                showStandardStreams = true
+                showStackTraces = true
             }
         }
 

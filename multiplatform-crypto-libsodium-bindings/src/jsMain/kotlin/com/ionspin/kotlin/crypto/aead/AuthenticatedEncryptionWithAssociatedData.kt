@@ -26,7 +26,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun xChaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
@@ -34,7 +34,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         try {
             return getSodium().crypto_aead_xchacha20poly1305_ietf_decrypt(
                 null,
-                ciphertext.toUInt8Array(),
+                ciphertextAndTag.toUInt8Array(),
                 associatedData.toUInt8Array(),
                 nonce.toUInt8Array(),
                 key.toUInt8Array()
@@ -100,7 +100,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun chaCha20Poly1305IetfDecrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
@@ -108,7 +108,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         try {
             return getSodium().crypto_aead_chacha20poly1305_ietf_decrypt(
                 null,
-                ciphertext.toUInt8Array(),
+                ciphertextAndTag.toUInt8Array(),
                 associatedData.toUInt8Array(),
                 nonce.toUInt8Array(),
                 key.toUInt8Array()
@@ -174,7 +174,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     }
 
     actual fun chaCha20Poly1305Decrypt(
-        ciphertext: UByteArray,
+        ciphertextAndTag: UByteArray,
         associatedData: UByteArray,
         nonce: UByteArray,
         key: UByteArray
@@ -182,7 +182,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         try {
             return getSodium().crypto_aead_chacha20poly1305_decrypt(
                 null,
-                ciphertext.toUInt8Array(),
+                ciphertextAndTag.toUInt8Array(),
                 associatedData.toUInt8Array(),
                 nonce.toUInt8Array(),
                 key.toUInt8Array()

@@ -20,9 +20,9 @@ actual object Auth {
         return mac
     }
 
-    actual fun authVerify(mac: UByteArray, message: UByteArray, key: UByteArray): Boolean {
+    actual fun authVerify(tag: UByteArray, message: UByteArray, key: UByteArray): Boolean {
         return sodium.crypto_auth_verify(
-            mac.asByteArray(),
+            tag.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
@@ -47,12 +47,12 @@ actual object Auth {
     }
 
     actual fun authHmacSha256Verify(
-        mac: UByteArray,
+        tag: UByteArray,
         message: UByteArray,
         key: UByteArray
     ): Boolean {
         return sodium.crypto_auth_hmacsha256_verify(
-            mac.asByteArray(),
+            tag.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
@@ -77,12 +77,12 @@ actual object Auth {
     }
 
     actual fun authHmacSha512Verify(
-        mac: UByteArray,
+        tag: UByteArray,
         message: UByteArray,
         key: UByteArray
     ): Boolean {
         return sodium.crypto_auth_hmacsha512_verify(
-            mac.asByteArray(),
+            tag.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()

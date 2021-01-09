@@ -15,13 +15,13 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.3.9"
-    val kotlin = "1.4.10"
-    val kotlinSerialization = "1.0.0"
+    val kotlinCoroutines = "1.4.1"
+    val kotlin = "1.4.20"
+    val kotlinSerialization = "1.0.1"
     val kotlinSerializationPlugin = "1.4.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "1.4.0-rc"
+    val dokkaPlugin = "1.4.0"
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.2"
     val lazySodium = "4.3.1-SNAPSHOT"

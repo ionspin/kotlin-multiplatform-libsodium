@@ -12,7 +12,6 @@ make -j4 -C libsodium install
 echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
-./gradlew --no-daemon multiplatform-crypto-delegated:build || exit 1
 #and then libsodium bindings
 ./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:build || exit 1
 exit 0

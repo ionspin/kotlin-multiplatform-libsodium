@@ -43,8 +43,8 @@ actual object Auth {
         return mac
     }
 
-    actual fun authVerify(mac: UByteArray, message: UByteArray, key: UByteArray): Boolean {
-        val macPinned = mac.pin()
+    actual fun authVerify(tag: UByteArray, message: UByteArray, key: UByteArray): Boolean {
+        val macPinned = tag.pin()
         val messagePinned = message.pin()
         val keyPinned = key.pin()
         val verify = crypto_auth_verify(
@@ -90,11 +90,11 @@ actual object Auth {
     }
 
     actual fun authHmacSha256Verify(
-        mac: UByteArray,
+        tag: UByteArray,
         message: UByteArray,
         key: UByteArray
     ): Boolean {
-        val macPinned = mac.pin()
+        val macPinned = tag.pin()
         val messagePinned = message.pin()
         val keyPinned = key.pin()
 
@@ -141,11 +141,11 @@ actual object Auth {
     }
 
     actual fun authHmacSha512Verify(
-        mac: UByteArray,
+        tag: UByteArray,
         message: UByteArray,
         key: UByteArray
     ): Boolean {
-        val macPinned = mac.pin()
+        val macPinned = tag.pin()
         val messagePinned = message.pin()
         val keyPinned = key.pin()
 

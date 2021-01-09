@@ -19,6 +19,9 @@ data class BoxEncryptedDataAndTag(val ciphertext: UByteArray, val tag: UByteArra
 
 class BoxCorruptedOrTamperedDataException() : RuntimeException("MAC validation failed. Data is corrupted or tampered with.")
 
+/**
+ * Box API uses public-key (asymmetric) encryption to
+ */
 expect object Box {
     /**
      * The crypto_box_keypair() function randomly generates a secret key and a corresponding public key.

@@ -20,6 +20,8 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.dokka.Platform
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -593,18 +595,43 @@ tasks {
     dokkaJavadoc {
         println("Dokka !")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
+            named("commonMain") {
+                displayName.set("common")
+                platform.set(Platform.common)
             }
         }
 
 
     }
+
+    dokkaHtml {
+        println("Dokka Html!")
+        dokkaSourceSets {
+            named("commonMain") {
+//                displayName.set("common")
+//                platform.set(Platform.common)
+                moduleDisplayName.set("Kotlin Multiplatform Libsodium Bindings")
+                includes.from(
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/box/Box.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
+                displayName.set("Kotlin multiplatform")
+            }
+            configureEach {
+                if (name != "commonMain") {
+                    suppress.set(true)
+                }
+            }
+        }
+    }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
+                exceptionFormat = TestExceptionFormat.FULL
+                showStandardStreams = true
+                showStackTraces = true
             }
         }
 
@@ -612,14 +639,18 @@ tasks {
 
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
+                exceptionFormat = TestExceptionFormat.FULL
                 showStandardStreams = true
+                showStackTraces = true
             }
         }
 
         val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-//                showStandardStreams = true
+                exceptionFormat = TestExceptionFormat.FULL
+                showStandardStreams = true
+                showStackTraces = true
             }
         }
 

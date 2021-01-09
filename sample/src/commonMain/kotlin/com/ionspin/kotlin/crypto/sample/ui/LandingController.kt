@@ -7,4 +7,5 @@ package com.ionspin.kotlin.crypto.sample.ui
  */
 class LandingController {
 
+
 }

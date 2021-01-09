@@ -1,5 +1,5 @@
 
-[![pipeline status](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-crypto-ci/badges/master/pipeline.svg)](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-crypto-ci/-/commits/master)
+[![pipeline status](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/badges/master/pipeline.svg)](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/-/commits/master)
 
 ![Danger: Experimental](https://camo.githubusercontent.com/275bc882f21b154b5537b9c123a171a30de9e6aa/68747470733a2f2f7261772e6769746875622e636f6d2f63727970746f7370686572652f63727970746f7370686572652f6d61737465722f696d616765732f6578706572696d656e74616c2e706e67)
 
@@ -108,6 +108,7 @@ And here is the usage sample
 
 The functions are mapped from libsodium to kotiln objects, so `crypto_secretstream_xchacha20poly1305_init_push` becomes
 `SecretStream.xChaCha20Poly1305InitPush`
+![Alt text](./doc/res/libsodium_api_mapping.svg)
 
 At the moment you should refer to original libsodium documentation for instructions on how to use the library
 
@@ -139,6 +140,7 @@ Currently supported native platforms:
 - Android testing 
 - Fix browser testing, both locally and in CI/CD
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
+- Complete exposing libsodium constants
 
 
 

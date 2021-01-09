@@ -7,9 +7,6 @@ cd sodiumWrapper
 ./makeWatchos.sh
 #now we can do the delegated build of ios and macos libraries
 cd ..
-./gradlew multiplatform-crypto-delegated:publishWatchosArm32PublicationToSnapshotRepository \
-multiplatform-crypto-delegated:publishWatchosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-delegated:publishWatchosX86PublicationToSnapshotRepository
 
 ./gradlew multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotRepository \

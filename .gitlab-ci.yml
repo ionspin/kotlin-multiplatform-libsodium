@@ -54,7 +54,6 @@ macPublishToSnapshot:
   script:
     - ./macBuild.sh
     - ./macBuildAndPublishSnapshot-bindings.sh
-    - ./macBuildAndPublishSnapshot-delegated.sh
   only:
     - master
   tags:
@@ -69,7 +68,6 @@ buildWindows:
   script:
     - $env:CHERE_INVOKING = 'yes'
     - C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
-    - C:\msys64\usr\bin\bash -lc "./windowsBuild-pure.sh"
   tags:
     - windowsX64
 
@@ -78,7 +76,6 @@ windowsPublishToSnapshot:
   script:
     - $env:CHERE_INVOKING = 'yes'
     - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-delegated.sh"
-    - C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-pure.sh"
   only:
     - master
   tags:

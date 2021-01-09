@@ -1,6 +1,0 @@
-headers = sodium.h
-headerFilter = sodium.h sodium/**
-#staticLibraries = libsodium.a
-#libraryPaths = sodiumWrapper/lib
-#compilerOpts = -I./sodiumWrapper/include
-linkerOpts =
