@@ -5,14 +5,16 @@
 Public key encryption is a system that relies on a pair of keys to establish secure communication.
 
 A simplified overview of communication between Bob and Alice using public-key encryption:
-- Key exchange
+#### Key exchange
 1. Alice creates 2 keys, one public, one private (public key is actually calculated from the private key)
 1. Bob creates 2 keys, one public, one private
 1. Alice sends her **public** key to Bob
 1. Bob does the same and sends his **public** key to Alice
-- Encryption 
 
-Alice wants to establish a secure communication channel with Bob, they already changed public keys in previous steps.
+#### Encryption 
+
+Alice wants to establish a secure communication channel with Bob, they already exchanged public keys in previous steps.
+
 1. Alice uses Bobs **private** key to encrypt a *secret value* (Usually just a key for symmetric encryption)
 1. Alice sends encrypted data to Bob
 1. Bob is the only one who has the matching private key, and can decrypt the data
