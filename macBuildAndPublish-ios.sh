@@ -8,9 +8,6 @@ cd sodiumWrapper
 ./makeIos.sh
 #now we can do the delegated build of ios and macos libraries
 cd ..
-./gradlew multiplatform-crypto-delegated:publishIosArm32PublicationToSnapshotRepository \
-multiplatform-crypto-delegated:publishIosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-delegated:publishIosX64PublicationToSnapshotRepository
 
 ./gradlew multiplatform-crypto-libsodium-bindings:publishIosArm32PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository \

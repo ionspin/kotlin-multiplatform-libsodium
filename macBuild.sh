@@ -8,9 +8,6 @@ cd sodiumWrapper
 ./makeIosWatchosTvos.sh
 #now we can do the delegated build
 cd ..
-./gradlew multiplatform-crypto-delegated:build
-#pure build
-./gradlew multiplatform-crypto:build
 #libsodium bindings
 ./gradlew multiplatform-crypto-libsodium-bindings:build
 set +e
