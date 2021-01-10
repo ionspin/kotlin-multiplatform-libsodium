@@ -584,25 +584,7 @@ tasks.whenTaskAdded {
 }
 
 tasks {
-
-
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-
-    dokkaJavadoc {
-        println("Dokka !")
-        dokkaSourceSets {
-            named("jvmMain") {
-                displayName.set("jvm")
-                platform.set(Platform.jvm)
-            }
-        }
-
-
-    }
+    
 
     dokkaHtml {
         println("Dokka Html!")
