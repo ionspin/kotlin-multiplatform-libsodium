@@ -584,7 +584,7 @@ tasks.whenTaskAdded {
 }
 
 tasks {
-    
+
 
     dokkaHtml {
         println("Dokka Html!")
@@ -676,7 +676,6 @@ signing {
 
 publishing {
     publications.withType(MavenPublication::class) {
-        artifact(tasks["javadocJar"])
         pom {
             name.set("Kotlin Multiplatform Crypto")
             description.set("Kotlin Multiplatform Crypto library")
