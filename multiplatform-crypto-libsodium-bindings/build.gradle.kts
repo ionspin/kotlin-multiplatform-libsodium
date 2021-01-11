@@ -28,10 +28,10 @@ plugins {
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     id(PluginsDeps.node) version Versions.nodePlugin
-    id(PluginsDeps.dokka)
     id(PluginsDeps.taskTree) version Versions.taskTreePlugin
     id(PluginsDeps.androidLibrary)
     id(PluginsDeps.kotlinAndroidExtensions)
+    id(PluginsDeps.dokka)
 
 }
 
@@ -586,35 +586,18 @@ tasks.whenTaskAdded {
 tasks {
 
 
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-
-    dokkaJavadoc {
-        println("Dokka !")
-        dokkaSourceSets {
-            named("commonMain") {
-                displayName.set("common")
-                platform.set(Platform.common)
-            }
-        }
-
-
-    }
-
     dokkaHtml {
         println("Dokka Html!")
         dokkaSourceSets {
             named("commonMain") {
 //                displayName.set("common")
 //                platform.set(Platform.common)
-                moduleDisplayName.set("Kotlin Multiplatform Libsodium Bindings")
+                moduleName.set("Kotlin Multiplatform Libsodium Bindings")
                 includes.from(
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/box/Box.md",
+                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/generichash/GenericHash.md",
                     "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
                 displayName.set("Kotlin multiplatform")
             }
@@ -693,7 +676,6 @@ signing {
 
 publishing {
     publications.withType(MavenPublication::class) {
-        artifact(tasks["javadocJar"])
         pom {
             name.set("Kotlin Multiplatform Crypto")
             description.set("Kotlin Multiplatform Crypto library")

@@ -14,5 +14,6 @@ echo "completed libsodium build"
 cd ..
 #and then libsodium bindings
 ./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:build || exit 1
+echo "Script completed"
 exit 0
 

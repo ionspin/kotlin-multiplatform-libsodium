@@ -34,7 +34,7 @@ pluginManagement {
     }
 }
 enableFeaturePreview("GRADLE_METADATA")
-rootProject.name = "KotlinMultiplatformCrypto"
+rootProject.name = "KotlinMultiplatformLibsodium"
 include("multiplatform-crypto-api")
 include("multiplatform-crypto-libsodium-bindings")
 include("sample")

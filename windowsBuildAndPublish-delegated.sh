@@ -14,5 +14,6 @@ echo "completed libsodium build"
 cd ..
 ./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:build || exit 1
 ./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:publishMingwX64PublicationToSnapshotRepository || exit 1
+echo "Script completed"
 exit 0
 

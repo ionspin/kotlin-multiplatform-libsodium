@@ -3,15 +3,6 @@
 
 ![Danger: Experimental](https://camo.githubusercontent.com/275bc882f21b154b5537b9c123a171a30de9e6aa/68747470733a2f2f7261772e6769746875622e636f6d2f63727970746f7370686572652f63727970746f7370686572652f6d61737465722f696d616765732f6578706572696d656e74616c2e706e67)
 
-# Kotlin Multiplatform Crypto Library
-
-This repository contains two cryptography related projects:
-
-1. Libsodium bindings for Kotiln Multiplatform
-2. Pure/Delegated kotlin multiplatform crypto library written from scratch in pure kotlin/delegated to libsodium. [Link to project readme](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/multiplatform-crypto-api/README.md)
-
-This readme represents the libsodium bindings project
-
 # Libsodium bindings for Kotiln Multiplatform
 
 Libsodium bindings project uses libsodium c sources, libsodium.js as well as LazySodium Java and Android to provide a kotlin multiplatform wrapper library for libsodium.
@@ -116,22 +107,22 @@ At the moment you should refer to original libsodium documentation for instructi
 
 Currently supported native platforms:
 
-|Platform|Pure variant| Delegated variant|
-|--------|------------|------------------|
-|Linux X86 64|          :heavy_check_mark: | :heavy_check_mark: |
-|Linux Arm 64|          :heavy_check_mark: | :heavy_check_mark: |
-|Linux Arm 32|          :heavy_check_mark: | :x: |
-|macOS X86 64|          :heavy_check_mark: | :heavy_check_mark: |
-|iOS x86 64 |           :heavy_check_mark: | :heavy_check_mark: |
-|iOS Arm 64 |           :heavy_check_mark: | :heavy_check_mark: |
-|iOS Arm 32 |           :heavy_check_mark: | :heavy_check_mark: |
-|watchOS X86 32 |       :heavy_check_mark: | :heavy_check_mark: |
-|watchOS Arm 64(_32) |  :heavy_check_mark: | :heavy_check_mark: |
-|watchos Arm 32 |       :heavy_check_mark: | :heavy_check_mark: |
-|tvOS X86 64 |          :heavy_check_mark: | :heavy_check_mark: |
-|tvOS Arm 64 |          :heavy_check_mark: | :heavy_check_mark: |
-|minGW X86 64|          :heavy_check_mark: | :heavy_check_mark: |
-|minGW X86 32|          :x:                | :x: | 
+|Platform| Supported |
+|--------|------------------|
+|Linux X86 64|          :heavy_check_mark: |
+|Linux Arm 64|          :heavy_check_mark: |
+|Linux Arm 32|          :x: |
+|macOS X86 64|          :heavy_check_mark: |
+|iOS x86 64 |           :heavy_check_mark: |
+|iOS Arm 64 |           :heavy_check_mark: |
+|iOS Arm 32 |           :heavy_check_mark: |
+|watchOS X86 32 |       :heavy_check_mark: |
+|watchOS Arm 64(_32) |  :heavy_check_mark: |
+|watchos Arm 32 |       :heavy_check_mark: |
+|tvOS X86 64 |          :heavy_check_mark: |
+|tvOS Arm 64 |          :heavy_check_mark: |
+|minGW X86 64|          :heavy_check_mark: |
+|minGW X86 32|          :x: | 
 
 
 ### TODO:
@@ -142,7 +133,20 @@ Currently supported native platforms:
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 - Complete exposing libsodium constants
 
+### Known issues:
+- Using LazySodium self built variant to fix some of the bugs present in LazySodium, but **Android** is using directly
+  LazySodium release which has not been updated (latest version is 4.2.0), this means that randombytes_random, basetobin and
+  base64tohex functions are not working on Android, as well as problems with sodium_pad:
+  
+    https://github.com/terl/lazysodium-java/issues/83
+  
+    https://github.com/terl/lazysodium-java/issues/85
 
+    https://github.com/terl/lazysodium-java/issues/86
+
+    Also it is not clear where are the precompiled libraries in LazySodium coming from
+  
+    This will be handled by providing a new JNA libsodium wrapper library
 
 
 
