@@ -16,7 +16,7 @@
 
 object Versions {
     val kotlinCoroutines = "1.4.2"
-    val kotlin = "1.4.20"
+    val kotlin = "1.4.21"
     val kotlinSerialization = "1.0.1"
     val kotlinSerializationPlugin = "1.4.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
