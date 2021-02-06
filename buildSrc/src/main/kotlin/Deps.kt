@@ -23,7 +23,7 @@ object Versions {
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "1.4.20"
     val taskTreePlugin = "1.5"
-    val kotlinBigNumVersion = "0.2.7"
+    val kotlinBigNumVersion = "0.2.8-SNAPSHOT"
     val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.5.0"
     val kotlinPoet = "1.6.0"
