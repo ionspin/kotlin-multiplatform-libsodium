@@ -37,5 +37,5 @@ enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "KotlinMultiplatformLibsodium"
 include("multiplatform-crypto-api")
 include("multiplatform-crypto-libsodium-bindings")
-include("sample")
+//include("sample")
 
