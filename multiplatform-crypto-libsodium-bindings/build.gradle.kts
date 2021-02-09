@@ -86,11 +86,8 @@ kotlin {
         js(IR) {
             browser {
                 testTask {
-                    isRunningInGitlabCi {
-                        enabled = false //Until I sort out testing on travis
-                    }
                     useKarma {
-                        useChrome()
+                        useChromeHeadless()
                     }
                 }
             }
