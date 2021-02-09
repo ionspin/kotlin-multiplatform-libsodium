@@ -5,6 +5,7 @@ import com.ionspin.kotlin.crypto.shortinputhash.ShortHash
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -16,7 +17,7 @@ import kotlin.test.assertTrue
 class ShortHashTest {
 
     @Test
-    fun testShortHash() {
+    fun testShortHash() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val expected = "00e5d509c14e81bb".hexStringToUByteArray()
             val input = "Libsodium test"
@@ -30,7 +31,7 @@ class ShortHashTest {
     }
 
     @Test
-    fun testKeygen() {
+    fun testKeygen() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             assertTrue {
                 val key = ShortHash.shortHashKeygen()

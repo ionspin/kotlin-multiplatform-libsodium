@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.kdf
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertFalse
@@ -11,7 +12,7 @@ import kotlin.test.assertTrue
  */
 class KdfTest {
     @Test
-    fun testKdf() {
+    fun testKdf() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val masterKey = Kdf.keygen()
             val subkey1 = Kdf.deriveFromKey(1, crypto_kdf_BYTES_MAX, "test1234", masterKey)

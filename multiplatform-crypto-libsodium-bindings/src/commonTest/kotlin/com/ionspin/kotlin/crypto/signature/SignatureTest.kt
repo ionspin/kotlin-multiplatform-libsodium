@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.signature
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -12,7 +13,7 @@ import kotlin.test.assertTrue
 class SignatureTest {
 
     @Test
-    fun testSignAndVerify() {
+    fun testSignAndVerify() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val keys = Signature.keypair()
             val message = "Some text that will be signed".encodeToUByteArray()
@@ -33,7 +34,7 @@ class SignatureTest {
     }
 
     @Test
-    fun testDetachedSignAndVerify() {
+    fun testDetachedSignAndVerify() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val keys = Signature.keypair()
             val message = "Some text that will be signed".encodeToUByteArray()
@@ -51,7 +52,7 @@ class SignatureTest {
     }
 
     @Test
-    fun testMultipart() {
+    fun testMultipart() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val keys = Signature.keypair()
             val message1 = "Some text that ".encodeToUByteArray()

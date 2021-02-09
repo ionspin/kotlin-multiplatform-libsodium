@@ -5,6 +5,7 @@ import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import com.ionspin.kotlin.crypto.util.runTest
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -17,6 +18,7 @@ class HashTest {
     //Not present in Lazy sodium
 //    @Test
 //    fun hashTest() {
+//        = runTest {
 //        LibsodiumInitializer.initializeWithCallback {
 //            val input = ("Input for various hash functions").encodeToUByteArray()
 //            val expected = ("34fcbcdcfe9e6aa3e6d5a64649afcfafb449c4b8435a65e5e7b7c2b6af3b04da350acee" +

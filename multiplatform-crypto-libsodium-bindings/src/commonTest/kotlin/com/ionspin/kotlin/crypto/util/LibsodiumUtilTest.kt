@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.util
 import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import kotlin.math.exp
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ import kotlin.test.assertTrue
 
 class LibsodiumUtilTest {
     @Test
-    fun testMemzero() {
+    fun testMemzero() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U)
             LibsodiumUtil.memzero(input)
@@ -26,7 +27,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testMemcmp() {
+    fun testMemcmp() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U)
             val input2 = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U)
@@ -41,7 +42,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testPadding() {
+    fun testPadding() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U)
             val blocksize = 16
@@ -57,7 +58,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testPaddingChars() {
+    fun testPaddingChars() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = charArrayOf('a', 'b', 'c', 'd').map { it.toByte().toUByte() }.toUByteArray()
             val blocksize = 4
@@ -73,7 +74,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testPaddingAligned() {
+    fun testPaddingAligned() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U)
             val blocksize = 2
@@ -91,7 +92,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testPaddingMultiblock() {
+    fun testPaddingMultiblock() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 6U)
             val blocksize = 4
@@ -109,7 +110,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testToBase64() {
+    fun testToBase64() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U)
             val expected = "AQIDBAUgQID_"
@@ -128,7 +129,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun testToBase64Unaligned() {
+    fun testToBase64Unaligned() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U, 128U)
             val expected = "AQIDBAUgQID_gA"
@@ -147,7 +148,7 @@ class LibsodiumUtilTest {
     }
 
     @Test
-    fun toHex() {
+    fun toHex() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U, 128U)
             val hex = LibsodiumUtil.toHex(input)

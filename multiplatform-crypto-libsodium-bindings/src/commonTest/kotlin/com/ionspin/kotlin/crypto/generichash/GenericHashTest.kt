@@ -5,6 +5,7 @@ import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.testBlocking
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.test.BeforeTest
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -17,7 +18,7 @@ class GenericHashTest {
 
 
     @Test
-    fun testGenericHash() {
+    fun testGenericHash() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val inputString = "1234567890"
             val inputStringBuilder = StringBuilder()
@@ -46,7 +47,7 @@ class GenericHashTest {
     }
 
     @Test
-    fun testGenericHashMultipart() {
+    fun testGenericHashMultipart() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val updates = 14
             val input = "1234567890"

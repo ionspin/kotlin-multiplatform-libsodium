@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.secretbox
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ import kotlin.test.assertTrue
 class SecretBoxTest {
 
     @Test
-    fun secretBoxTestEasy() {
+    fun secretBoxTestEasy() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -50,7 +51,7 @@ class SecretBoxTest {
     }
 
     @Test
-    fun secretBoxTestDetached() {
+    fun secretBoxTestDetached() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()

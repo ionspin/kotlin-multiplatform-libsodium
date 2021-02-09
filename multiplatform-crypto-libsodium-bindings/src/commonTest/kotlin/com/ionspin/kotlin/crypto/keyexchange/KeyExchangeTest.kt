@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.keyexchange
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -12,7 +13,7 @@ import kotlin.test.assertTrue
  */
 class KeyExchangeTest {
     @Test
-    fun testKeyExchange() {
+    fun testKeyExchange() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val keypairClient = KeyExchange.keypair()
             val keypairServer = KeyExchange.keypair()
@@ -40,7 +41,7 @@ class KeyExchangeTest {
     }
 
     @Test
-    fun testKeyExchangeSeeded() {
+    fun testKeyExchangeSeeded() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val seed = UByteArray(crypto_kx_SEEDBYTES) { 7U }
             val keypairClient = KeyExchange.seedKeypair(seed)

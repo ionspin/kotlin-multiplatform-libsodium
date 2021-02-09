@@ -11,7 +11,7 @@ import kotlin.browser.window
 
 fun main() {
     val runningOnNode = jsTypeOf(window) == "undefined"
-    if (!runningOnNode) {
+    if (!runningOnNode) = runTest {
         LibsodiumInitializer.initializeWithCallback {
             render(document.getElementById("root")) {
                 app {
@@ -19,7 +19,7 @@ fun main() {
                 }
             }
         }
-    } else {
+    } else = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val hash = Hash.sha512("123".encodeToUByteArray())
             println("Hash (SHA512) of 123: ${hash.toHexString()}")

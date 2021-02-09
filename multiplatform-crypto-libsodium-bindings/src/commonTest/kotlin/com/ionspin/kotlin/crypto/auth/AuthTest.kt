@@ -4,6 +4,7 @@ import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.hexStringToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ import kotlin.test.assertTrue
  */
 class AuthTest {
     @Test
-    fun testAuth() {
+    fun testAuth() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("I wonder if it would be possible" +
                     " to get some lyrics in these tests").encodeToUByteArray()
@@ -41,7 +42,7 @@ class AuthTest {
     }
 
     @Test
-    fun testAuthHmacSha256() {
+    fun testAuthHmacSha256() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("I wonder if it would be possible" +
                     " to get some lyrics in these tests").encodeToUByteArray()
@@ -66,7 +67,7 @@ class AuthTest {
     }
 
     @Test
-    fun testAuthHmacSha512() {
+    fun testAuthHmacSha512() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("I wonder if it would be possible" +
                     " to get some lyrics in these tests").encodeToUByteArray()
@@ -93,7 +94,7 @@ class AuthTest {
     }
 
     @Test
-    fun simpleKeygenTest() {
+    fun simpleKeygenTest() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val authKey = Auth.authKeygen()
             assertTrue { authKey.size == crypto_auth_KEYBYTES }
