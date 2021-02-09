@@ -16,6 +16,7 @@
 
 package com.ionspin.kotlin.crypto.util
 
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -34,5 +35,7 @@ fun testBlocking(block : suspend () -> Unit) {
     }
     block.startCoroutine(continuation)
 }
+
+expect fun runTest(block: suspend (scope : CoroutineScope) -> Unit)
 
 
