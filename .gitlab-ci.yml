@@ -3,9 +3,6 @@ stages:
   - build
   - deploy
 
-variables:
-  CHROME_BIN: "chromium"
-
 workflow:
   rules:
     - if: $CI_EXTERNAL_PULL_REQUEST_IID
@@ -14,6 +11,7 @@ workflow:
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  CHROME_BIN: "chromium"
 
 simpleCheck:
   stage: prepare
