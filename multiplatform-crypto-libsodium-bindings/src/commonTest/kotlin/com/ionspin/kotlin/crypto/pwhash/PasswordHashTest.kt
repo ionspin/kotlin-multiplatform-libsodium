@@ -4,6 +4,7 @@ import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.random.Random
 import kotlin.random.nextUBytes
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -14,7 +15,7 @@ import kotlin.test.assertTrue
  */
 class PasswordHashTest {
     @Test
-    fun testPasswordHash() {
+    fun testPasswordHash() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val randomBytes = Random(0).nextUBytes(crypto_pwhash_SALTBYTES)
             val password = "correct horse battery staple"
@@ -35,8 +36,7 @@ class PasswordHashTest {
     }
 
     @Test
-    fun testPasswordHashForStorage() {
-
+    fun testPasswordHashForStorage() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val password = "correct horse battery staple"
             val hashedPassword = PasswordHash.str(

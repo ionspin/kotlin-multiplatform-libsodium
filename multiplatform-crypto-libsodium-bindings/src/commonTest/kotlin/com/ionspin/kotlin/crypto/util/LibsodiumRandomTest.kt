@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.util
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -13,7 +14,7 @@ import kotlin.test.assertTrue
 class LibsodiumRandomTest {
 
     @Test
-    fun testRandom() {
+    fun testRandom()= runTest {
         //This is just a sanity test, it should fail on occasion though, with probability of 1/2^32
         LibsodiumInitializer.initializeWithCallback {
             val random = LibsodiumRandom.random()
@@ -23,7 +24,7 @@ class LibsodiumRandomTest {
     }
 
     @Test
-    fun testRandomUniform() {
+    fun testRandomUniform() = runTest {
         //This is just a sanity test, it should fail on occasion though, with probability of 1/2^31
         LibsodiumInitializer.initializeWithCallback {
             val random = LibsodiumRandom.uniform(UInt.MAX_VALUE / 2U)
@@ -32,7 +33,7 @@ class LibsodiumRandomTest {
     }
 
     @Test
-    fun testRandomBuffer() {
+    fun testRandomBuffer() = runTest {
         //This is just a sanity test, it should fail on occasion though, with probability of 1/2^52
         LibsodiumInitializer.initializeWithCallback {
             val result = LibsodiumRandom.buf(20)
@@ -42,7 +43,7 @@ class LibsodiumRandomTest {
     }
 
     @Test
-    fun testRandomBufferDeterministic() {
+    fun testRandomBufferDeterministic() = runTest {
         //This is just a sanity test, it should fail on occasion though, with probability of 1/2^52
         LibsodiumInitializer.initializeWithCallback {
             val seed = UByteArray(randombytes_SEEDBYTES) { 1U }

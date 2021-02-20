@@ -18,7 +18,8 @@ The libsodium binding library is not published yet, once the sample showing the 
 Before using the wrapper you need to initialize the underlying libsodium library. You can use either a callback or coroutines approach
 
 ```
-    LibsodiumInitializer.initializeWithCallback {
+    = runTest {
+        LibsodiumInitializer.initializeWithCallback {
         // Libsodium initialized
     }
 ```

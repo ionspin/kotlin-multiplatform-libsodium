@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.aead
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -13,7 +14,7 @@ import kotlin.test.assertTrue
  */
 class AuthenticatedEncryptionWithAssociatedDataTest {
     @Test
-    fun testXChaCha20Poly1305Ieft() {
+    fun testXChaCha20Poly1305Ieft() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -66,7 +67,7 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
     }
 
     @Test
-    fun testXChaCha20Poly1305IeftDetached() {
+    fun testXChaCha20Poly1305IeftDetached() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -121,7 +122,7 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
     }
 
     @Test
-    fun testChaCha20Poly1305Ieft() {
+    fun testChaCha20Poly1305Ieft() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -173,7 +174,7 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
     }
 
     @Test
-    fun testChaCha20Poly1305IeftDetached() {
+    fun testChaCha20Poly1305IeftDetached() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -227,7 +228,7 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
     }
 
     @Test
-    fun testChaCha20Poly1305() {
+    fun testChaCha20Poly1305() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()
@@ -278,7 +279,7 @@ class AuthenticatedEncryptionWithAssociatedDataTest {
     }
 
     @Test
-    fun testChaCha20Poly1305Detached() {
+    fun testChaCha20Poly1305Detached() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = ("Ladies and Gentlemen of the class of '99: If I could offer you " +
                     "only one tip for the future, sunscreen would be it.").encodeToUByteArray()

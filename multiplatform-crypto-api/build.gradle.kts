@@ -44,7 +44,7 @@ kotlin {
     val hostOsName = getHostOsName()
     runningOnLinuxx86_64 {
         jvm()
-        js {
+        js() {
            browser {
                 testTask {
                     enabled = false //Until I sort out testing on travis
@@ -284,12 +284,12 @@ tasks {
             }
         }
 
-        val jsNodeTest by getting(KotlinJsTest::class) {
-            testLogging {
-                events("PASSED", "FAILED", "SKIPPED")
-                showStandardStreams = true
-            }
-        }
+//        val jsNodeTest by getting(KotlinJsTest::class) {
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
 
 //        val legacyjsNodeTest by getting(KotlinJsTest::class) {
 //

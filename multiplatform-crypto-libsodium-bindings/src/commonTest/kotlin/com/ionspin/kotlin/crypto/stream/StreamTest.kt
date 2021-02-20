@@ -7,6 +7,7 @@ import com.ionspin.kotlin.crypto.util.randombytes_SEEDBYTES
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlin.random.Random
 import kotlin.random.nextUBytes
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -20,7 +21,7 @@ class StreamTest {
     val seed = UByteArray(randombytes_SEEDBYTES) { 0U }
 
     @Test
-    fun testChaCha20Stream() {
+    fun testChaCha20Stream() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "This is a cha cha message".encodeToUByteArray()
             val nonce = LibsodiumRandom.bufDeterministic(crypto_stream_chacha20_NONCEBYTES, seed)
@@ -47,7 +48,7 @@ class StreamTest {
     }
 
     @Test
-    fun testChaCha20IetfStream() {
+    fun testChaCha20IetfStream() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "This is a cha cha message".encodeToUByteArray()
             val nonce = LibsodiumRandom.bufDeterministic(crypto_stream_chacha20_ietf_NONCEBYTES, seed)

@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.scalarmult
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.toHexString
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -29,7 +30,7 @@ class ScalarMultiplicationTest {
     val expectedSharedSecretString = "4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742"
 
     @Test
-    fun testScalarMultiplication() {
+    fun testScalarMultiplication() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val alicePublicKey = ScalarMultiplication.scalarMultiplicationBase(aliceSecretKey)
             assertTrue {

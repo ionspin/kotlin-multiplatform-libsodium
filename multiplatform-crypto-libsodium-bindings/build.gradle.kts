@@ -83,14 +83,11 @@ kotlin {
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
         jvm()
-        js {
+        js(IR) {
             browser {
                 testTask {
-                    isRunningInGitlabCi {
-                        enabled = false //Until I sort out testing on travis
-                    }
                     useKarma {
-                        useChrome()
+                        useChromeHeadless()
                     }
                 }
             }
@@ -258,6 +255,7 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
                 implementation(kotlin(Deps.Common.testAnnotation))
+                implementation(Deps.Common.coroutines)
             }
         }
 
@@ -627,7 +625,6 @@ tasks {
                 showStackTraces = true
             }
         }
-
         val jsNodeTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
@@ -653,6 +650,20 @@ tasks {
                  showStandardStreams = true
             }
         }
+
+//        val jsLegacyBrowserTest by getting(KotlinJsTest::class) {
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
+//
+//        val jsIrBrowserTest by getting(KotlinJsTest::class) {
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
     }
 
     if (getHostOsName() == "windows") {

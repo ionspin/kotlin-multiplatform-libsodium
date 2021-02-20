@@ -48,7 +48,7 @@ object Deps {
         val stdLib = "stdlib-common"
         val test = "test-common"
         val testAnnotation = "test-annotations-common"
-        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.kotlinCoroutines}"
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinSerialization}"
         val atomicfu = "com.ionspin.kotlin.atomicfu:atomicfu:${Versions.atomicfu}"
 

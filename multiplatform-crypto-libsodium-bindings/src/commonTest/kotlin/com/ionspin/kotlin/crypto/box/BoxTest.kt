@@ -4,6 +4,7 @@ import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import kotlin.random.Random
 import kotlin.random.nextUBytes
+import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ import kotlin.test.assertTrue
  */
 class BoxTest {
     @Test
-    fun keypairTest() {
+    fun keypairTest() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val keypair = Box.keypair()
             assertTrue {
@@ -28,7 +29,7 @@ class BoxTest {
     }
 
     @Test
-    fun testBoxEasy() {
+    fun testBoxEasy() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "Message message message".encodeToUByteArray()
             val senderKeypair = Box.keypair()
@@ -49,7 +50,7 @@ class BoxTest {
     }
 
     @Test
-    fun testBoxEasyDetached() {
+    fun testBoxEasyDetached() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "Message message message".encodeToUByteArray()
             val senderKeypair = Box.keypair()
@@ -82,7 +83,7 @@ class BoxTest {
     }
 
     @Test
-    fun testBeforeNonceAndMessage() {
+    fun testBeforeNonceAndMessage() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "Message message message".encodeToUByteArray()
             val senderKeypair = Box.keypair()
@@ -109,7 +110,7 @@ class BoxTest {
     }
 
     @Test
-    fun testSeal() {
+    fun testSeal() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val message = "Message message message".encodeToUByteArray()
             val recipientKeypair = Box.keypair()
