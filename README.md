@@ -128,27 +128,10 @@ Currently supported native platforms:
 
 ### TODO:
 - Copy/adapt code documentation, currently only some functions have documentation that is a copy-paste from libsodium website
-- Replace LazySodium with direct JNA calls, and add build scripts for required libraries if missing
 - Android testing 
 - Fix browser testing, both locally and in CI/CD
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 - Complete exposing libsodium constants
-
-### Known issues:
-- Using LazySodium self built variant to fix some of the bugs present in LazySodium, but **Android** is using directly
-  LazySodium release which has not been updated (latest version is 4.2.0), this means that randombytes_random, basetobin and
-  base64tohex functions are not working on Android, as well as problems with sodium_pad:
-  
-    https://github.com/terl/lazysodium-java/issues/83
-  
-    https://github.com/terl/lazysodium-java/issues/85
-
-    https://github.com/terl/lazysodium-java/issues/86
-
-    Also it is not clear where are the precompiled libraries in LazySodium coming from
-  
-    This will be handled by providing a new JNA libsodium wrapper library
-
 
 
 #### Notes for Gitlab runners:

@@ -468,6 +468,8 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
 
+                    implementation(Deps.Jvm.resourceLoader)
+
                     //lazysodium
                     implementation(Deps.Jvm.Delegated.lazysodium)
                     implementation(Deps.Jvm.Delegated.jna)
@@ -676,6 +678,13 @@ tasks {
         }
     }
 
+}
+
+allprojects {
+    tasks.withType(JavaCompile::class) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
 }
 
 

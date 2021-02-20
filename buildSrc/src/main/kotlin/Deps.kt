@@ -32,6 +32,8 @@ object Versions {
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
 
+    val resourceLoader = "1.3.10"
+
 
 
 }
@@ -39,7 +41,7 @@ object Versions {
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
     val version = "0.1.0-SNAPSHOT"
-    val bindingsVersion = "0.1.1-SNAPSHOT"
+    val bindingsVersion = "0.8.0-SNAPSHOT"
 }
 
 object Deps {
@@ -111,6 +113,8 @@ object Deps {
         val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutines}"
 
         val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoet}"
+
+        val resourceLoader = "co.libly:resource-loader:${Versions.resourceLoader}"
 
         object Delegated {
             // Temporary until reported lazysodium issues are fixed. My snapshot build with
