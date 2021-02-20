@@ -27,7 +27,7 @@ object JniTest {
                 FileLoader.get().load("dynamic-linux-x86-64-libsodium.so", Any::class.java)
             }
             Platform.isWindows() -> {
-                FileLoader.get().load("dynamic-mingw-x86-64-libsodium.dll.a", Any::class.java)
+                FileLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", Any::class.java)
             }
             Platform.isAndroid() -> {
                 File("/home/ionspin/Projects/Future/kotlin-multiplatform-libsodium/multiplatform-crypto-libsodium-bindings/src/jvmMain/resources/dynamic-linux-x86-64-libsodium.so")
