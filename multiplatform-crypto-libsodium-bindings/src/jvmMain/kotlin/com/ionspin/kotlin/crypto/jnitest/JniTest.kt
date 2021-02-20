@@ -17,8 +17,7 @@ import kotlin.test.assertEquals
  */
 object JniTest {
 
-
-    init {
+    fun work() {
         val libraryFile = when {
             Platform.isMac() -> {
                 FileLoader.get().load("dynamic-macos-x86-64.dylib", Any::class.java)
@@ -44,10 +43,6 @@ object JniTest {
 
         println("Loaded ${loaded.sodium_version_string()}")
         assertEquals("1.0.18", version)
-
-    }
-
-    fun work() {
 
     }
 }
