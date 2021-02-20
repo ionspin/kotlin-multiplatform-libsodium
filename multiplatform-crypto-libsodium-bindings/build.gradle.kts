@@ -80,9 +80,10 @@ android {
 kotlin {
     val hostOsName = getHostOsName()
     android()
+    jvm()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
-        jvm()
+
         js(IR) {
             browser {
                 testTask {
@@ -458,30 +459,30 @@ kotlin {
                 }
             }
 
+        val jvmMain by getting {
+            kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
+            dependencies {
+                implementation(kotlin(Deps.Jvm.stdLib))
+                implementation(kotlin(Deps.Jvm.test))
+                implementation(kotlin(Deps.Jvm.testJUnit))
 
+                implementation(Deps.Jvm.resourceLoader)
+
+                //lazysodium
+                implementation(Deps.Jvm.Delegated.lazysodium)
+                implementation(Deps.Jvm.Delegated.jna)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin(Deps.Jvm.test))
+                implementation(kotlin(Deps.Jvm.testJUnit))
+                implementation(kotlin(Deps.Jvm.reflection))
+            }
+        }
         runningOnLinuxx86_64 {
             println("Configuring Linux 64 Bit source sets")
-            val jvmMain by getting {
-                kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.stdLib))
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
 
-                    implementation(Deps.Jvm.resourceLoader)
-
-                    //lazysodium
-                    implementation(Deps.Jvm.Delegated.lazysodium)
-                    implementation(Deps.Jvm.Delegated.jna)
-                }
-            }
-            val jvmTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(kotlin(Deps.Jvm.reflection))
-                }
-            }
 
 
             val jsMain by getting {
