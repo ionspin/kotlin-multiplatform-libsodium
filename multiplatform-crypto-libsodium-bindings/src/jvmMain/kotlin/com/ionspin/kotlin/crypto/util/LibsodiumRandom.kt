@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.util
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 /**
  * Created by Ugljesa Jovanovic
@@ -13,7 +14,7 @@ actual object LibsodiumRandom {
      */
     actual fun buf(size: Int): UByteArray {
         val result = ByteArray(size)
-        sodium.randombytes_buf(result, size)
+        sodiumJna.randombytes_buf(result, size)
         return result.asUByteArray()
     }
 

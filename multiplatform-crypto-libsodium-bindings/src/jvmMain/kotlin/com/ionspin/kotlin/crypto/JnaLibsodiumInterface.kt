@@ -1,66 +1,165 @@
 package com.ionspin.kotlin.crypto
 
 import com.sun.jna.Library
+import com.sun.jna.NativeLong
+import com.sun.jna.Structure
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 21-Feb-2021
  */
+class Hash256State : Structure() {
+    override fun getFieldOrder(): List<String> = listOf("state", "count", "buf")
+    @JvmField
+    val state = IntArray(8)
+    @JvmField
+    var count: Long = 0
+    @JvmField
+    val buf = ByteArray(64)
+}
+
+class Hash512State : Structure() {
+    override fun getFieldOrder(): List<String> = listOf("state", "count", "buf")
+    @JvmField
+    val state = IntArray(8)
+    @JvmField
+    var count: LongArray = LongArray(2)
+    @JvmField
+    val buf = ByteArray(128)
+}
+
+class Blake2bState: Structure() {
+    override fun getFieldOrder(): List<String> = listOf("opaque")
+    @JvmField
+    val opaque = ByteArray(384)
+}
+
 interface JnaLibsodiumInterface : Library {
-    fun sodium_version_string() : String
+    fun sodium_version_string(): String
 
-    fun randombytes_buf(buffer: ByteArray, bufferSize : Int)
+    fun randombytes_buf(buffer: ByteArray, bufferSize: Int)
 
-//    fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array
-//
-//    fun crypto_hash_sha256(message: Uint8Array): Uint8Array
-//
-//    fun crypto_hash_sha512(message: Uint8Array): Uint8Array
+    //    int crypto_generichash(unsigned char *out, size_t outlen,
+    //    const unsigned char *in, unsigned long long inlen,
+    //    const unsigned char *key, size_t keylen)
+    fun crypto_generichash(
+        out: ByteArray,
+        outlen: Int,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray,
+        keylen: Int
+    )
+
+    //    int crypto_hash_sha256(unsigned char *out, const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_hash_sha256(out: ByteArray, input: ByteArray, inputLength: Long)
+
+    //    int crypto_hash_sha512(unsigned char *out, const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_hash_sha512(out: ByteArray, input: ByteArray, inputLength: Long)
 //
 //    // ---- Generic hash ---- // Updateable
 //
-//    fun crypto_generichash_init(key : Uint8Array, hashLength: Int) : dynamic
-//
-//    fun crypto_generichash_update(state: dynamic, inputMessage: Uint8Array)
-//
-//    fun crypto_generichash_final(state: dynamic, hashLength: Int) : Uint8Array
-//
-//    fun crypto_generichash_keygen() : Uint8Array
-//
+
+    //    int crypto_generichash_init(crypto_generichash_state *state,
+    //    const unsigned char *key,
+    //    const size_t keylen, const size_t outlen)
+    //    Output cant be larger than 64 so no need to use Long to represent size_t here
+    fun crypto_generichash_init(state: Blake2bState, key: ByteArray, keylen: Int, outlen: Int)
+
+    //    int crypto_generichash_update(crypto_generichash_state *state,
+    //    const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_generichash_update(state: Blake2bState, inputMessage: ByteArray, inputLength: Long)
+
+    //    int crypto_generichash_final(crypto_generichash_state *state,
+    //    unsigned char *out, const size_t outlen)
+    //    Output cant be larger than 64 so no need to use Long to represent size_t here
+    fun crypto_generichash_final(state: Blake2bState, out: ByteArray, hashLength: Int)
+
+    //    void crypto_generichash_keygen(unsigned char k[crypto_generichash_KEYBYTES])
+    fun crypto_generichash_keygen(key: ByteArray)
+
+    fun crypto_generichash_statebytes(): Int
+
+    //
 //    // ---- Generic hash end ---- // Updateable
 //
 //    // ---- Blake2b ----
-//
-//    fun crypto_generichash_blake2b(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array
-//
-//    fun crypto_generichash_blake2b_init(key : Uint8Array, hashLength: Int) : dynamic
-//
-//    fun crypto_generichash_blake2b_update(state: dynamic, inputMessage: Uint8Array)
-//
-//    fun crypto_generichash_blake2b_final(state: dynamic, hashLength: Int) : Uint8Array
-//
-//    fun crypto_generichash_blake2b_keygen() : Uint8Array
+    //    int crypto_generichash_blake2b(unsigned char *out, size_t outlen,
+    //    const unsigned char *in,
+    //    unsigned long long inlen,
+    //    const unsigned char *key, size_t keylen)
+    //    Output cant be larger than 64 so no need to use Long to represent size_t here
+    fun crypto_generichash_blake2b(
+        out: ByteArray,
+        outlen: Int,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray,
+        keylen: Int
+    )
+
+    //    int crypto_generichash_blake2b_init(crypto_generichash_blake2b_state *state,
+    //    const unsigned char *key,
+    //    const size_t keylen, const size_t outlen)
+    fun crypto_generichash_blake2b_init(kstate: ByteArray, key: ByteArray, keylen: Int, outlen: Int)
+
+    //    int crypto_generichash_blake2b_update(crypto_generichash_blake2b_state *state,
+    //    const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_generichash_blake2b_update(state: ByteArray, inputMessage: ByteArray, inputLength: Long)
+
+    //    int crypto_generichash_blake2b_final(crypto_generichash_blake2b_state *state,
+    //    unsigned char *out,
+    //    const size_t outlen)
+    fun crypto_generichash_blake2b_final(state: ByteArray, out: ByteArray, hashLength: Int)
+
+    //    void crypto_generichash_blake2b_keygen(unsigned char k[crypto_generichash_blake2b_KEYBYTES])
+    fun crypto_generichash_blake2b_keygen(key: ByteArray)
 //
 //    // ---- Blake2b end ----
 //
 //    // ---- Short hash ----
-//    fun crypto_shorthash(data : Uint8Array, key: Uint8Array) : Uint8Array
 //
-//    fun crypto_shorthash_keygen() : Uint8Array
-//    // ---- Short hash end ----
+
+    //    int crypto_shorthash(unsigned char *out, const unsigned char *in,
+    //    unsigned long long inlen, const unsigned char *k)
+    fun crypto_shorthash(out: ByteArray, input: ByteArray, inlen: Long, key: ByteArray)
+
+    //    void crypto_shorthash_keygen(unsigned char k[crypto_shorthash_KEYBYTES])
+    fun crypto_shorthash_keygen(key: ByteArray)
+
 //
-//    fun crypto_hash_sha256_init() : dynamic
+// ---- Short hash end ----
 //
-//    fun crypto_hash_sha256_update(state: dynamic, message: Uint8Array)
-//
-//    fun crypto_hash_sha256_final(state: dynamic): Uint8Array
-//
-//    fun crypto_hash_sha512_init() : dynamic
-//
-//    fun crypto_hash_sha512_update(state: dynamic, message: Uint8Array)
-//
-//    fun crypto_hash_sha512_final(state: dynamic): Uint8Array
+
+    //    int crypto_hash_sha256_init(crypto_hash_sha256_state *state)
+    fun crypto_hash_sha256_init(state: Hash256State)
+
+    //    int crypto_hash_sha256_update(crypto_hash_sha256_state *state,
+    //    const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_hash_sha256_update(state: Hash256State, input: ByteArray, inlen: Long)
+
+    //    int crypto_hash_sha256_final(crypto_hash_sha256_state *state,
+    //    unsigned char *out)
+    fun crypto_hash_sha256_final(state: Hash256State, out: ByteArray)
+
+
+    //    int crypto_hash_sha512_init(crypto_hash_sha512_state *state)
+    fun crypto_hash_sha512_init(state: Hash512State)
+
+    //    int crypto_hash_sha512_update(crypto_hash_sha512_state *state,
+    //    const unsigned char *in,
+    //    unsigned long long inlen)
+    fun crypto_hash_sha512_update(state: Hash512State, input: ByteArray, inlen: Long)
+
+    //    int crypto_hash_sha512_final(crypto_hash_sha512_state *state,
+    //    unsigned char *out)
+    fun crypto_hash_sha512_final(state: Hash512State, out: ByteArray)
 //
 //    //XChaCha20Poly1305 - also in bindings
 //    //fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
