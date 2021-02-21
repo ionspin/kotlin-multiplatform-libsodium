@@ -73,6 +73,9 @@ android {
             isMinifyEnabled = false
         }
     }
+    sourceSets.getByName("main") {
+        jniLibs.srcDir("libs")
+    }
 }
 
 
@@ -447,6 +450,9 @@ kotlin {
                 dependencies {
                     implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
                     implementation("net.java.dev.jna:jna:5.5.0@aar")
+                    implementation(Deps.Jvm.resourceLoader) {
+                        exclude("net.java.dev.jna", "jna")
+                    }
                 }
             }
 

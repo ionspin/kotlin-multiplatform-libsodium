@@ -63,7 +63,7 @@ kotlin {
     android()
     runningOnLinuxx86_64 {
         jvm()
-        js {
+        js(IR) {
             browser {
                 webpackTask {
 
@@ -188,7 +188,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.kotlinBigNum)
                 implementation(Deps.Common.serialization)
-                api(Deps.Common.libsodiumBindings)
+                api(project(":multiplatform-crypto-libsodium-bindings"))
             }
         }
         val commonTest by getting {

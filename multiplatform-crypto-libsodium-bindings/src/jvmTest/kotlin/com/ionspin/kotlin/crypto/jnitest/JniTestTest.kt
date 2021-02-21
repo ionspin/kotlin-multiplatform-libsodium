@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.jnitest
 
 import org.junit.Test
+import kotlin.test.assertEquals
 
 /**
  * Created by Ugljesa Jovanovic
@@ -11,6 +12,7 @@ class JniTestTest {
 
     @Test
     fun testJniTest() {
-        JniTest.work()
+        val result = JniTest.work()
+        assertEquals("1.0.18", result)
     }
 }

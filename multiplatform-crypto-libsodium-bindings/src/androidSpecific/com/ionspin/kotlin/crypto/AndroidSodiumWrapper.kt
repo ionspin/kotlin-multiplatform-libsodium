@@ -1,7 +1,8 @@
 package com.ionspin.kotlin.crypto
 
-import com.goterl.lazycode.lazysodium.LazySodiumAndroid
 import com.goterl.lazycode.lazysodium.SodiumAndroid
+import com.ionspin.kotlin.crypto.jnitest.SodiumVersion
+import com.sun.jna.Native
 
 
 /**

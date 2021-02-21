@@ -7,11 +7,12 @@ import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
 import react.dom.render
 import kotlinx.browser.document
-import kotlin.browser.window
+import kotlinx.browser.window
+
 
 fun main() {
     val runningOnNode = jsTypeOf(window) == "undefined"
-    if (!runningOnNode) = runTest {
+//    if (!runningOnNode) = runTest {
         LibsodiumInitializer.initializeWithCallback {
             render(document.getElementById("root")) {
                 app {
@@ -19,10 +20,10 @@ fun main() {
                 }
             }
         }
-    } else = runTest {
-        LibsodiumInitializer.initializeWithCallback {
-            val hash = Hash.sha512("123".encodeToUByteArray())
-            println("Hash (SHA512) of 123: ${hash.toHexString()}")
-        }
-    }
+//    } else = runTest {
+//        LibsodiumInitializer.initializeWithCallback {
+//            val hash = Hash.sha512("123".encodeToUByteArray())
+//            println("Hash (SHA512) of 123: ${hash.toHexString()}")
+//        }
+//    }
 }
