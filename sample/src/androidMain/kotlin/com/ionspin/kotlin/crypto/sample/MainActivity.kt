@@ -6,8 +6,9 @@ package com.ionspin.kotlin.crypto.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.TmpAccessor
 import com.ionspin.kotlin.crypto.hash.Hash
-import com.ionspin.kotlin.crypto.jnitest.JniTest
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val hash = Hash.sha512("123".encodeToUByteArray())
-        helloWorldTextView.setText("Hash (SHA512) of 123: ${hash.toHexString()} \nSodium version: ${JniTest.work()}")
+        helloWorldTextView.setText("Hash (SHA512) of 123: ${hash.toHexString()} \nSodium version: ${TmpAccessor.getVersion()}")
 
 
     }

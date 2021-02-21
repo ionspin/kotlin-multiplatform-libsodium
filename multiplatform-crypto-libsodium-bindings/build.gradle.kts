@@ -445,7 +445,7 @@ kotlin {
                     kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 isRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific")
+                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 dependencies {
                     implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
