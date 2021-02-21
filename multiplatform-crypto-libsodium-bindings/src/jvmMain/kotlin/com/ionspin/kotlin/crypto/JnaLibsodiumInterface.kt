@@ -564,19 +564,66 @@ interface JnaLibsodiumInterface : Library {
     // ---- Secret stream end -----
 //
 //    // ---- SecretBox ----
-//    fun crypto_secretbox_detached(message: Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_secretbox_easy(message: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_secretbox_keygen() : Uint8Array
-//    fun crypto_secretbox_open_detached(ciphertext : Uint8Array, tag : Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_secretbox_open_easy(ciphertext : Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
-//
-//
-//    // ---- SecretBox End ----
-//
-//
-//    // ---- AEAD ----
 
-//
+    //    int crypto_secretbox_detached(
+    //    unsigned char *c, unsigned char *mac,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_secretbox_detached(
+        ciphertext: ByteArray,
+        mac: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_secretbox_easy(
+    //    unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen, const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_secretbox_easy(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    void crypto_secretbox_keygen(unsigned char k[crypto_secretbox_KEYBYTES])
+    fun crypto_secretbox_keygen(key: ByteArray)
+
+    //    int crypto_secretbox_open_detached(
+    //    unsigned char *m,
+    //    const unsigned char *c,
+    //    const unsigned char *mac,
+    //    unsigned long long clen,
+    //    const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_secretbox_open_detached(
+        message: ByteArray,
+        ciphertext: ByteArray,
+        mac: ByteArray,
+        ciphertextLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+    //    int crypto_secretbox_open_easy(
+    //    unsigned char *m, const unsigned char *c,
+    //    unsigned long long clen, const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_secretbox_open_easy(
+        message: ByteArray,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+//    // ---- SecretBox End ----
+
 //    // ---- Auth ----
 //
 //    fun crypto_auth(message: Uint8Array, key: Uint8Array) : Uint8Array
