@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.aead
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object AuthenticatedEncryptionWithAssociatedData {
 
@@ -14,7 +14,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_aead_xchacha20poly1305_ietf_ABYTES)
-        sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
+        sodiumJna.crypto_aead_xchacha20poly1305_ietf_encrypt(
             ciphertext.asByteArray(),
             null,
             message.asByteArray(),
@@ -35,7 +35,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertextAndTag.size - crypto_aead_xchacha20poly1305_ietf_ABYTES)
-        val validationResult = sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
+        val validationResult = sodiumJna.crypto_aead_xchacha20poly1305_ietf_decrypt(
             message.asByteArray(),
             null,
             null,
@@ -60,7 +60,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     ): AeadEncryptedDataAndTag {
         val ciphertext = UByteArray(message.size)
         val authenticationTag = UByteArray(crypto_aead_xchacha20poly1305_ietf_ABYTES)
-        sodium.crypto_aead_xchacha20poly1305_ietf_encrypt_detached(
+        sodiumJna.crypto_aead_xchacha20poly1305_ietf_encrypt_detached(
             ciphertext.asByteArray(),
             authenticationTag.asByteArray(),
             null,
@@ -83,7 +83,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertext.size)
-        val validationResult = sodium.crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
+        val validationResult = sodiumJna.crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
             message.asByteArray(),
             null,
             ciphertext.asByteArray(),
@@ -107,7 +107,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_aead_chacha20poly1305_ietf_ABYTES)
-        sodium.crypto_aead_chacha20poly1305_ietf_encrypt(
+        sodiumJna.crypto_aead_chacha20poly1305_ietf_encrypt(
             ciphertext.asByteArray(),
             null,
             message.asByteArray(),
@@ -128,7 +128,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertextAndTag.size - crypto_aead_chacha20poly1305_ietf_ABYTES)
-        val validationResult = sodium.crypto_aead_chacha20poly1305_ietf_decrypt(
+        val validationResult = sodiumJna.crypto_aead_chacha20poly1305_ietf_decrypt(
             message.asByteArray(),
             null,
             null,
@@ -153,7 +153,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     ): AeadEncryptedDataAndTag {
         val ciphertext = UByteArray(message.size)
         val authenticationTag = UByteArray(crypto_aead_chacha20poly1305_ietf_ABYTES)
-        sodium.crypto_aead_chacha20poly1305_ietf_encrypt_detached(
+        sodiumJna.crypto_aead_chacha20poly1305_ietf_encrypt_detached(
             ciphertext.asByteArray(),
             authenticationTag.asByteArray(),
             null,
@@ -176,7 +176,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertext.size)
-        val validationResult = sodium.crypto_aead_chacha20poly1305_ietf_decrypt_detached(
+        val validationResult = sodiumJna.crypto_aead_chacha20poly1305_ietf_decrypt_detached(
             message.asByteArray(),
             null,
             ciphertext.asByteArray(),
@@ -200,7 +200,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_aead_chacha20poly1305_ABYTES)
-        sodium.crypto_aead_chacha20poly1305_encrypt(
+        sodiumJna.crypto_aead_chacha20poly1305_encrypt(
             ciphertext.asByteArray(),
             null,
             message.asByteArray(),
@@ -221,7 +221,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertextAndTag.size - crypto_aead_chacha20poly1305_ABYTES)
-        val validationResult = sodium.crypto_aead_chacha20poly1305_decrypt(
+        val validationResult = sodiumJna.crypto_aead_chacha20poly1305_decrypt(
             message.asByteArray(),
             null,
             null,
@@ -246,7 +246,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
     ): AeadEncryptedDataAndTag {
         val ciphertext = UByteArray(message.size)
         val authenticationTag = UByteArray(crypto_aead_chacha20poly1305_ABYTES)
-        sodium.crypto_aead_chacha20poly1305_encrypt_detached(
+        sodiumJna.crypto_aead_chacha20poly1305_encrypt_detached(
             ciphertext.asByteArray(),
             authenticationTag.asByteArray(),
             null,
@@ -269,7 +269,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         key: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertext.size)
-        val validationResult = sodium.crypto_aead_chacha20poly1305_decrypt_detached(
+        val validationResult = sodiumJna.crypto_aead_chacha20poly1305_decrypt_detached(
             message.asByteArray(),
             null,
             ciphertext.asByteArray(),
@@ -288,19 +288,19 @@ actual object AuthenticatedEncryptionWithAssociatedData {
 
     actual fun xChaCha20Poly1305IetfKeygen(): UByteArray {
         val generatedKey = UByteArray(crypto_aead_xchacha20poly1305_ietf_KEYBYTES)
-        sodium.crypto_aead_xchacha20poly1305_ietf_keygen(generatedKey.asByteArray())
+        sodiumJna.crypto_aead_xchacha20poly1305_ietf_keygen(generatedKey.asByteArray())
         return generatedKey
     }
 
     actual fun chaCha20Poly1305IetfKeygen(): UByteArray {
         val generatedKey = UByteArray(crypto_aead_chacha20poly1305_ietf_KEYBYTES)
-        sodium.crypto_aead_chacha20poly1305_ietf_keygen(generatedKey.asByteArray())
+        sodiumJna.crypto_aead_chacha20poly1305_ietf_keygen(generatedKey.asByteArray())
         return generatedKey
     }
 
     actual fun chaCha20Poly1305Keygen(): UByteArray {
         val generatedKey = UByteArray(crypto_aead_chacha20poly1305_KEYBYTES)
-        sodium.crypto_aead_chacha20poly1305_keygen(generatedKey.asByteArray())
+        sodiumJna.crypto_aead_chacha20poly1305_keygen(generatedKey.asByteArray())
         return generatedKey
     }
 

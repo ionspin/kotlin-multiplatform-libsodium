@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto
 
 import com.sun.jna.Library
-import com.sun.jna.NativeLong
 import com.sun.jna.Structure
 
 /**
@@ -11,28 +10,54 @@ import com.sun.jna.Structure
  */
 class Hash256State : Structure() {
     override fun getFieldOrder(): List<String> = listOf("state", "count", "buf")
+
     @JvmField
     val state = IntArray(8)
+
     @JvmField
     var count: Long = 0
+
     @JvmField
     val buf = ByteArray(64)
 }
 
 class Hash512State : Structure() {
     override fun getFieldOrder(): List<String> = listOf("state", "count", "buf")
+
     @JvmField
     val state = IntArray(8)
+
     @JvmField
     var count: LongArray = LongArray(2)
+
     @JvmField
     val buf = ByteArray(128)
 }
 
-class Blake2bState: Structure() {
+class Blake2bState : Structure() {
     override fun getFieldOrder(): List<String> = listOf("opaque")
+
     @JvmField
     val opaque = ByteArray(384)
+}
+
+
+//      typedef struct crypto_secretstream_xchacha20poly1305_state {
+//          unsigned char k[crypto_stream_chacha20_ietf_KEYBYTES];
+//          unsigned char nonce[crypto_stream_chacha20_ietf_NONCEBYTES];
+//          unsigned char _pad[8];
+//      } crypto_secretstream_xchacha20poly1305_state;
+class SecretStreamXChaCha20Poly1305State : Structure() {
+    override fun getFieldOrder(): List<String> = listOf("k", "nonce", "_pad")
+
+    @JvmField
+    val k = ByteArray(32)
+
+    @JvmField
+    val nonce = ByteArray(12)
+
+    @JvmField
+    val _pad = ByteArray(8)
 }
 
 interface JnaLibsodiumInterface : Library {
@@ -50,15 +75,15 @@ interface JnaLibsodiumInterface : Library {
         inputLength: Long,
         key: ByteArray,
         keylen: Int
-    )
+    ): Int
 
     //    int crypto_hash_sha256(unsigned char *out, const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_hash_sha256(out: ByteArray, input: ByteArray, inputLength: Long)
+    fun crypto_hash_sha256(out: ByteArray, input: ByteArray, inputLength: Long): Int
 
     //    int crypto_hash_sha512(unsigned char *out, const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_hash_sha512(out: ByteArray, input: ByteArray, inputLength: Long)
+    fun crypto_hash_sha512(out: ByteArray, input: ByteArray, inputLength: Long): Int
 //
 //    // ---- Generic hash ---- // Updateable
 //
@@ -67,17 +92,17 @@ interface JnaLibsodiumInterface : Library {
     //    const unsigned char *key,
     //    const size_t keylen, const size_t outlen)
     //    Output cant be larger than 64 so no need to use Long to represent size_t here
-    fun crypto_generichash_init(state: Blake2bState, key: ByteArray, keylen: Int, outlen: Int)
+    fun crypto_generichash_init(state: Blake2bState, key: ByteArray, keylen: Int, outlen: Int): Int
 
     //    int crypto_generichash_update(crypto_generichash_state *state,
     //    const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_generichash_update(state: Blake2bState, inputMessage: ByteArray, inputLength: Long)
+    fun crypto_generichash_update(state: Blake2bState, inputMessage: ByteArray, inputLength: Long): Int
 
     //    int crypto_generichash_final(crypto_generichash_state *state,
     //    unsigned char *out, const size_t outlen)
     //    Output cant be larger than 64 so no need to use Long to represent size_t here
-    fun crypto_generichash_final(state: Blake2bState, out: ByteArray, hashLength: Int)
+    fun crypto_generichash_final(state: Blake2bState, out: ByteArray, hashLength: Int): Int
 
     //    void crypto_generichash_keygen(unsigned char k[crypto_generichash_KEYBYTES])
     fun crypto_generichash_keygen(key: ByteArray)
@@ -100,22 +125,22 @@ interface JnaLibsodiumInterface : Library {
         inputLength: Long,
         key: ByteArray,
         keylen: Int
-    )
+    ): Int
 
     //    int crypto_generichash_blake2b_init(crypto_generichash_blake2b_state *state,
     //    const unsigned char *key,
     //    const size_t keylen, const size_t outlen)
-    fun crypto_generichash_blake2b_init(kstate: ByteArray, key: ByteArray, keylen: Int, outlen: Int)
+    fun crypto_generichash_blake2b_init(kstate: ByteArray, key: ByteArray, keylen: Int, outlen: Int): Int
 
     //    int crypto_generichash_blake2b_update(crypto_generichash_blake2b_state *state,
     //    const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_generichash_blake2b_update(state: ByteArray, inputMessage: ByteArray, inputLength: Long)
+    fun crypto_generichash_blake2b_update(state: ByteArray, inputMessage: ByteArray, inputLength: Long): Int
 
     //    int crypto_generichash_blake2b_final(crypto_generichash_blake2b_state *state,
     //    unsigned char *out,
     //    const size_t outlen)
-    fun crypto_generichash_blake2b_final(state: ByteArray, out: ByteArray, hashLength: Int)
+    fun crypto_generichash_blake2b_final(state: ByteArray, out: ByteArray, hashLength: Int): Int
 
     //    void crypto_generichash_blake2b_keygen(unsigned char k[crypto_generichash_blake2b_KEYBYTES])
     fun crypto_generichash_blake2b_keygen(key: ByteArray)
@@ -127,56 +152,416 @@ interface JnaLibsodiumInterface : Library {
 
     //    int crypto_shorthash(unsigned char *out, const unsigned char *in,
     //    unsigned long long inlen, const unsigned char *k)
-    fun crypto_shorthash(out: ByteArray, input: ByteArray, inlen: Long, key: ByteArray)
+    fun crypto_shorthash(out: ByteArray, input: ByteArray, inlen: Long, key: ByteArray): Int
 
     //    void crypto_shorthash_keygen(unsigned char k[crypto_shorthash_KEYBYTES])
-    fun crypto_shorthash_keygen(key: ByteArray)
+    fun crypto_shorthash_keygen(key: ByteArray): Int
 
 //
 // ---- Short hash end ----
 //
 
     //    int crypto_hash_sha256_init(crypto_hash_sha256_state *state)
-    fun crypto_hash_sha256_init(state: Hash256State)
+    fun crypto_hash_sha256_init(state: Hash256State): Int
 
     //    int crypto_hash_sha256_update(crypto_hash_sha256_state *state,
     //    const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_hash_sha256_update(state: Hash256State, input: ByteArray, inlen: Long)
+    fun crypto_hash_sha256_update(state: Hash256State, input: ByteArray, inlen: Long): Int
 
     //    int crypto_hash_sha256_final(crypto_hash_sha256_state *state,
     //    unsigned char *out)
-    fun crypto_hash_sha256_final(state: Hash256State, out: ByteArray)
+    fun crypto_hash_sha256_final(state: Hash256State, out: ByteArray): Int
 
 
     //    int crypto_hash_sha512_init(crypto_hash_sha512_state *state)
-    fun crypto_hash_sha512_init(state: Hash512State)
+    fun crypto_hash_sha512_init(state: Hash512State): Int
 
     //    int crypto_hash_sha512_update(crypto_hash_sha512_state *state,
     //    const unsigned char *in,
     //    unsigned long long inlen)
-    fun crypto_hash_sha512_update(state: Hash512State, input: ByteArray, inlen: Long)
+    fun crypto_hash_sha512_update(state: Hash512State, input: ByteArray, inlen: Long): Int
 
     //    int crypto_hash_sha512_final(crypto_hash_sha512_state *state,
     //    unsigned char *out)
-    fun crypto_hash_sha512_final(state: Hash512State, out: ByteArray)
-//
-//    //XChaCha20Poly1305 - also in bindings
-//    //fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, secretNonce: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-//    //fun crypto_aead_xchacha20poly1305_ietf_decrypt(secretNonce: Uint8Array, ciphertext: Uint8Array, associatedData: Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-//
-//    //XChaCha20Poly1305
-//    //encrypt
-//    fun crypto_secretstream_xchacha20poly1305_init_push(key: Uint8Array) : dynamic
-//    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, associatedData: Uint8Array, tag: UByte) : Uint8Array
-//
-//    //decrypt
-//    fun crypto_secretstream_xchacha20poly1305_init_pull(header: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_secretstream_xchacha20poly1305_pull(state: dynamic, ciphertext: Uint8Array, associatedData: Uint8Array) : dynamic
-//
-//    //keygen and rekey
-//    fun crypto_secretstream_xchacha20poly1305_keygen() : Uint8Array
-//    fun crypto_secretstream_xchacha20poly1305_rekey(state: dynamic)
+    fun crypto_hash_sha512_final(state: Hash512State, out: ByteArray): Int
+
+
+    //
+    // --------------------- AEAD
+    //
+
+    //
+    //    XChaCha20Poly1305Ietf
+    //
+
+    //    int crypto_aead_xchacha20poly1305_ietf_encrypt(
+    //    unsigned char *c,
+    //    unsigned long long *clen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k
+    //    )
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt(
+        ciphertext: ByteArray,
+        ciphertextLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_xchacha20poly1305_ietf_decrypt(
+    //    unsigned char *m,
+    //    unsigned long long *mlen_p,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_xchacha20poly1305_ietf_decrypt(
+        message: ByteArray,
+        messageLength: LongArray?,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_xchacha20poly1305_ietf_encrypt_detached(
+    //    unsigned char *c,
+    //    unsigned char *mac,
+    //    unsigned long long *maclen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_xchacha20poly1305_ietf_encrypt_detached(
+        ciphertext: ByteArray,
+        mac: ByteArray,
+        maclen: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
+    //    unsigned char *m,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *mac,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
+        message: ByteArray,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        mac: ByteArray,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    void crypto_aead_xchacha20poly1305_ietf_keygen(unsigned char k[crypto_aead_xchacha20poly1305_ietf_KEYBYTES])
+    fun crypto_aead_xchacha20poly1305_ietf_keygen(key: ByteArray)
+
+    //
+    //    ChaCha20Poly1305Ietf
+    //
+
+    //    int crypto_aead_chacha20poly1305_ietf_encrypt(
+    //    unsigned char *c,
+    //    unsigned long long *clen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k
+    //    )
+    fun crypto_aead_chacha20poly1305_ietf_encrypt(
+        ciphertext: ByteArray,
+        ciphertextLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    )
+
+    //    int crypto_aead_chacha20poly1305_ietf_decrypt(
+    //    unsigned char *m,
+    //    unsigned long long *mlen_p,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_ietf_decrypt(
+        message: ByteArray,
+        messageLength: LongArray?,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_chacha20poly1305_ietf_encrypt_detached(
+    //    unsigned char *c,
+    //    unsigned char *mac,
+    //    unsigned long long *maclen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_ietf_encrypt_detached(
+        ciphertext: ByteArray,
+        mac: ByteArray,
+        maclen: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_chacha20poly1305_ietf_decrypt_detached(
+    //    unsigned char *m,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *mac,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_ietf_decrypt_detached(
+        message: ByteArray,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        mac: ByteArray,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    void crypto_aead_chacha20poly1305_ietf_keygen(unsigned char k[crypto_aead_xchacha20poly1305_ietf_KEYBYTES])
+    fun crypto_aead_chacha20poly1305_ietf_keygen(key: ByteArray)
+
+    //
+    //    ChaCha20Poly1305
+    //
+
+    //
+    //    //decrypt
+    //    int crypto_aead_xchacha20poly1305_encrypt(
+    //    unsigned char *c,
+    //    unsigned long long *clen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k
+    //    )
+    fun crypto_aead_chacha20poly1305_encrypt(
+        ciphertext: ByteArray,
+        ciphertextLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_xchacha20poly1305_decrypt(unsigned char *m,
+    //    unsigned long long *mlen_p,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_decrypt(
+        message: ByteArray,
+        messageLength: LongArray?,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_chacha20poly1305_encrypt_detached(
+    //    unsigned char *c,
+    //    unsigned char *mac,
+    //    unsigned long long *maclen_p,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *nsec,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_encrypt_detached(
+        ciphertext: ByteArray,
+        mac: ByteArray,
+        maclen: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        nsec: ByteArray?,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_aead_chacha20poly1305_decrypt_detached(
+    //    unsigned char *m,
+    //    unsigned char *nsec,
+    //    const unsigned char *c,
+    //    unsigned long long clen,
+    //    const unsigned char *mac,
+    //    const unsigned char *ad,
+    //    unsigned long long adlen,
+    //    const unsigned char *npub,
+    //    const unsigned char *k)
+    fun crypto_aead_chacha20poly1305_decrypt_detached(
+        message: ByteArray,
+        nsec: ByteArray?,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        mac: ByteArray,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        npub: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    void crypto_aead_chacha20poly1305_keygen(unsigned char k[crypto_aead_xchacha20poly1305_ietf_KEYBYTES])
+    fun crypto_aead_chacha20poly1305_keygen(key: ByteArray)
+
+
+    // ---- AEAD end ----
+
+    // ---- Secret stream -----
+
+    //    crypto_secretstream_xchacha20poly1305_headerbytes
+    fun crypto_secretstream_xchacha20poly1305_headerbytes() : Int
+
+    //encrypt
+
+    //    int crypto_secretstream_xchacha20poly1305_init_push
+    //    (crypto_secretstream_xchacha20poly1305_state *state,
+    //    unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES],
+    //    const unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    fun crypto_secretstream_xchacha20poly1305_init_push(
+        state: SecretStreamXChaCha20Poly1305State,
+        header: ByteArray,
+        key: ByteArray
+    ): Int
+
+    //    int crypto_secretstream_xchacha20poly1305_push
+    //    (crypto_secretstream_xchacha20poly1305_state *state,
+    //    unsigned char *c, unsigned long long *clen_p,
+    //    const unsigned char *m, unsigned long long mlen,
+    //    const unsigned char *ad, unsigned long long adlen, unsigned char tag)
+    fun crypto_secretstream_xchacha20poly1305_push(
+        state: SecretStreamXChaCha20Poly1305State,
+        ciphertext: ByteArray,
+        ciphertextLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long,
+        tag: Byte
+    ): Int
+
+    //  decrypt
+
+    //    int crypto_secretstream_xchacha20poly1305_init_pull
+    //    (crypto_secretstream_xchacha20poly1305_state *state,
+    //    const unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES],
+    //    const unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    fun crypto_secretstream_xchacha20poly1305_init_pull(
+        state: SecretStreamXChaCha20Poly1305State,
+        header: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_secretstream_xchacha20poly1305_pull
+    //    (crypto_secretstream_xchacha20poly1305_state *state,
+    //    unsigned char *m, unsigned long long *mlen_p, unsigned char *tag_p,
+    //    const unsigned char *c, unsigned long long clen,
+    //    const unsigned char *ad, unsigned long long adlen)
+    fun crypto_secretstream_xchacha20poly1305_pull(
+        state: SecretStreamXChaCha20Poly1305State,
+        message: ByteArray,
+        messageLength: LongArray?,
+        tagAddress: ByteArray,
+        ciphertext: ByteArray,
+        ciphertextLength: Long,
+        additionalData: ByteArray,
+        additionalDataLength: Long
+    ) : Int
+
+    //keygen and rekey
+
+    //    void crypto_secretstream_xchacha20poly1305_keygen
+    //    (unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    fun crypto_secretstream_xchacha20poly1305_keygen(key : ByteArray)
+
+    //    void crypto_secretstream_xchacha20poly1305_rekey
+    //    (crypto_secretstream_xchacha20poly1305_state *state)
+    fun crypto_secretstream_xchacha20poly1305_rekey(state: SecretStreamXChaCha20Poly1305State)
+
+
+    // ---- Secret stream end -----
 //
 //    // ---- SecretBox ----
 //    fun crypto_secretbox_detached(message: Uint8Array, nonce: Uint8Array, key: Uint8Array) : dynamic
@@ -190,23 +575,7 @@ interface JnaLibsodiumInterface : Library {
 //
 //
 //    // ---- AEAD ----
-//    fun crypto_aead_chacha20poly1305_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_chacha20poly1305_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
-//    fun crypto_aead_chacha20poly1305_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_chacha20poly1305_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_aead_chacha20poly1305_ietf_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_chacha20poly1305_ietf_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
-//    fun crypto_aead_chacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_chacha20poly1305_ietf_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_aead_chacha20poly1305_ietf_keygen() : Uint8Array
-//    fun crypto_aead_chacha20poly1305_keygen() : Uint8Array
-//    fun crypto_aead_xchacha20poly1305_ietf_decrypt(nsec : Uint8Array?, ciphertext: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_xchacha20poly1305_ietf_decrypt_detached(nsec: Uint8Array?, ciphertext: Uint8Array, mac: Uint8Array, associatedData: Uint8Array, npub: Uint8Array, key: Uint8Array): Uint8Array
-//    fun crypto_aead_xchacha20poly1305_ietf_encrypt(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_aead_xchacha20poly1305_ietf_encrypt_detached(message: Uint8Array, associatedData: Uint8Array, nsec: Uint8Array?, npub: Uint8Array, key: Uint8Array) : dynamic
-//    fun crypto_aead_xchacha20poly1305_ietf_keygen(): Uint8Array
-//
-//    // ---- AEAD end ----
+
 //
 //    // ---- Auth ----
 //

@@ -1,15 +1,16 @@
 package com.ionspin.kotlin.crypto.secretstream
 
 import com.goterl.lazycode.lazysodium.interfaces.SecretStream
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.SecretStreamXChaCha20Poly1305State
 
-actual typealias SecretStreamState = SecretStream.State
+actual typealias SecretStreamState = SecretStreamXChaCha20Poly1305State
 
 actual object SecretStream {
     actual fun xChaCha20Poly1305InitPush(key: UByteArray): SecretStreamStateAndHeader {
         val state = SecretStreamState()
-        val header = UByteArray(sodium.crypto_secretstream_xchacha20poly1305_headerbytes())
-        sodium.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
+        val header = UByteArray(sodiumJna.crypto_secretstream_xchacha20poly1305_headerbytes())
+        sodiumJna.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
         return SecretStreamStateAndHeader(state, header)
     }
 
@@ -20,7 +21,7 @@ actual object SecretStream {
         tag: UByte
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_secretstream_xchacha20poly1305_ABYTES)
-        sodium.crypto_secretstream_xchacha20poly1305_push(
+        sodiumJna.crypto_secretstream_xchacha20poly1305_push(
             state,
             ciphertext.asByteArray(),
             null,
@@ -38,7 +39,7 @@ actual object SecretStream {
         header: UByteArray
     ): SecretStreamStateAndHeader {
         val state = SecretStreamState()
-        sodium.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(), key.asByteArray())
+        sodiumJna.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(), key.asByteArray())
         return SecretStreamStateAndHeader(state, header)
     }
 
@@ -49,7 +50,7 @@ actual object SecretStream {
     ): DecryptedDataAndTag {
         val result = UByteArray(ciphertext.size - crypto_secretstream_xchacha20poly1305_ABYTES)
         val tagArray = UByteArray(1) { 0U }
-        val validationResult = sodium.crypto_secretstream_xchacha20poly1305_pull(
+        val validationResult = sodiumJna.crypto_secretstream_xchacha20poly1305_pull(
             state,
             result.asByteArray(),
             null,
@@ -67,12 +68,12 @@ actual object SecretStream {
 
     actual fun xChaCha20Poly1305Keygen(): UByteArray {
         val generatedKey = UByteArray(crypto_secretstream_xchacha20poly1305_KEYBYTES)
-        sodium.crypto_secretstream_xchacha20poly1305_keygen(generatedKey.asByteArray())
+        sodiumJna.crypto_secretstream_xchacha20poly1305_keygen(generatedKey.asByteArray())
         return generatedKey
     }
 
     actual fun xChaCha20Poly1305Rekey(state: SecretStreamState) {
-        sodium.crypto_secretstream_xchacha20poly1305_rekey(state)
+        sodiumJna.crypto_secretstream_xchacha20poly1305_rekey(state)
     }
 
 }
