@@ -72,7 +72,7 @@ interface JnaLibsodiumInterface : Library {
     fun sodium_memzero(array: ByteArray, len: Int)
 
     //    int sodium_memcmp(const void * const b1_, const void * const b2_, size_t len)
-    fun sodium_memcmp(b1 : ByteArray, b2 : ByteArray, len: Int) : Int
+    fun sodium_memcmp(b1: ByteArray, b2: ByteArray, len: Int): Int
 
     //    char *sodium_bin2hex(char * const hex, const size_t hex_maxlen,
     //    const unsigned char * const bin, const size_t bin_len)
@@ -80,8 +80,8 @@ interface JnaLibsodiumInterface : Library {
         hex: ByteArray,
         hexMaxlen: Int,
         bin: ByteArray,
-        binLen : Int
-    ) : String
+        binLen: Int
+    ): String
 
     //    int sodium_hex2bin(
     //    unsigned char * const bin, const size_t bin_maxlen,
@@ -96,17 +96,17 @@ interface JnaLibsodiumInterface : Library {
         ignore: ByteArray?,
         binLen: Pointer,
         hexEnd: Pointer?
-    ) : Int
+    ): Int
 
     //    int sodium_pad(size_t *padded_buflen_p, unsigned char *buf,
     //    size_t unpadded_buflen, size_t blocksize, size_t max_buflen)
     fun sodium_pad(
-        paddedBufferLength : Pointer,
+        paddedBufferLength: Pointer,
         buffer: ByteArray,
-        unpaddedBufferLength : Int,
+        unpaddedBufferLength: Int,
         blockSize: Int,
         maxBufferLength: Int
-    ) : Int
+    ): Int
 
     //    int sodium_unpad(size_t *unpadded_buflen_p, const unsigned char *buf,
     //    size_t padded_buflen, size_t blocksize)
@@ -127,7 +127,7 @@ interface JnaLibsodiumInterface : Library {
         bin: ByteArray,
         binLength: Int,
         variant: Int
-    ) : Int
+    ): Int
 
     //    int sodium_base642bin(
     //    unsigned char * const bin, const size_t bin_maxlen,
@@ -135,7 +135,7 @@ interface JnaLibsodiumInterface : Library {
     //    const char * const ignore, size_t * const bin_len,
     //    const char ** const b64_end, const int variant)
     fun sodium_base642bin(
-        bin : ByteArray,
+        bin: ByteArray,
         binMaxLength: Int,
         base64: ByteArray,
         base64Length: Int,
@@ -143,9 +143,10 @@ interface JnaLibsodiumInterface : Library {
         binLength: Pointer,
         base64End: Pointer?,
         variant: Int
-    ) : Int
+    ): Int
+
     //    size_t sodium_base64_encoded_len(const size_t bin_len, const int variant)
-    fun sodium_base64_encoded_len(binLength: Int, variant: Int) : Int
+    fun sodium_base64_encoded_len(binLength: Int, variant: Int): Int
 
     // --- Utils end ----
 
@@ -576,7 +577,7 @@ interface JnaLibsodiumInterface : Library {
     // ---- Secret stream -----
 
     //    crypto_secretstream_xchacha20poly1305_headerbytes
-    fun crypto_secretstream_xchacha20poly1305_headerbytes() : Int
+    fun crypto_secretstream_xchacha20poly1305_headerbytes(): Int
 
     //encrypt
 
@@ -616,7 +617,7 @@ interface JnaLibsodiumInterface : Library {
         state: SecretStreamXChaCha20Poly1305State,
         header: ByteArray,
         key: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_secretstream_xchacha20poly1305_pull
     //    (crypto_secretstream_xchacha20poly1305_state *state,
@@ -632,13 +633,13 @@ interface JnaLibsodiumInterface : Library {
         ciphertextLength: Long,
         additionalData: ByteArray,
         additionalDataLength: Long
-    ) : Int
+    ): Int
 
     //keygen and rekey
 
     //    void crypto_secretstream_xchacha20poly1305_keygen
     //    (unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES])
-    fun crypto_secretstream_xchacha20poly1305_keygen(key : ByteArray)
+    fun crypto_secretstream_xchacha20poly1305_keygen(key: ByteArray)
 
     //    void crypto_secretstream_xchacha20poly1305_rekey
     //    (crypto_secretstream_xchacha20poly1305_state *state)
@@ -662,7 +663,7 @@ interface JnaLibsodiumInterface : Library {
         messageLength: Long,
         nonce: ByteArray,
         key: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_secretbox_easy(
     //    unsigned char *c, const unsigned char *m,
@@ -674,7 +675,7 @@ interface JnaLibsodiumInterface : Library {
         messageLength: Long,
         nonce: ByteArray,
         key: ByteArray
-    ) : Int
+    ): Int
 
     //    void crypto_secretbox_keygen(unsigned char k[crypto_secretbox_KEYBYTES])
     fun crypto_secretbox_keygen(key: ByteArray)
@@ -693,7 +694,8 @@ interface JnaLibsodiumInterface : Library {
         ciphertextLength: Long,
         nonce: ByteArray,
         key: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_secretbox_open_easy(
     //    unsigned char *m, const unsigned char *c,
     //    unsigned long long clen, const unsigned char *n,
@@ -704,21 +706,70 @@ interface JnaLibsodiumInterface : Library {
         ciphertextLength: Long,
         nonce: ByteArray,
         key: ByteArray
-    ) : Int
+    ): Int
 
-//    // ---- SecretBox End ----
+    // ---- SecretBox End ----
 
-//    // ---- Auth ----
-//
-//    fun crypto_auth(message: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_auth_keygen() : Uint8Array
-//    fun crypto_auth_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
-//    fun crypto_auth_hmacsha256(message: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_auth_hmacsha256_keygen() : Uint8Array
-//    fun crypto_auth_hmacsha256_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
-//    fun crypto_auth_hmacsha512(message: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_auth_hmacsha512_keygen() : Uint8Array
-//    fun crypto_auth_hmacsha512_verify(tag: Uint8Array, message: Uint8Array, key: Uint8Array) : Boolean
+    // ---- Auth ----
+
+    //    int crypto_auth(unsigned char *out, const unsigned char *in,
+    //    unsigned long long inlen, const unsigned char *k)
+    fun crypto_auth(
+        out: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
+
+    //    void crypto_auth_keygen(unsigned char k[crypto_auth_KEYBYTES])
+    fun crypto_auth_keygen(key: ByteArray)
+
+    //    int crypto_auth_verify(const unsigned char *h, const unsigned char *in,
+    //    unsigned long long inlen, const unsigned char *k)
+    fun crypto_auth_verify(
+        hash: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha256(
+        out: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha256_keygen(key: ByteArray)
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha256_verify(
+        hash: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha512(
+        out: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha512_keygen(key: ByteArray)
+
+    //Same params as general variant
+    fun crypto_auth_hmacsha512_verify(
+        hash: ByteArray,
+        input: ByteArray,
+        inputLength: Long,
+        key: ByteArray
+    ): Int
 //
 //    // ---- Auth end ----
 //
