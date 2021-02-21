@@ -126,6 +126,12 @@ Currently supported native platforms:
 |minGW X86 32|          :x: | 
 
 
+### Where do the compiled libraries used by JVM and Android come from
+Android .so files come from running dist-build scripts in libsodium which you can find in the libsodium submodule
+Java Linux Arm/X86_64 and Mac so and dylib are the same as produced by multiplatform builds, also based on the same submodule commit
+Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.18-stable-msvc.zip
+
+
 ### TODO:
 - Copy/adapt code documentation, currently only some functions have documentation that is a copy-paste from libsodium website
 - Android testing 

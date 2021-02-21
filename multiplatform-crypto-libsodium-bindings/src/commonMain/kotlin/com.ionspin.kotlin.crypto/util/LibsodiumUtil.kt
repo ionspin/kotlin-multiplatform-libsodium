@@ -10,6 +10,9 @@ enum class Base64Variants(val value: Int) {
     ORIGINAL(1), ORIGINAL_NO_PADDING(3), URLSAFE(5), URLSAFE_NO_PADDING(7)
 }
 
+class ConversionException() : RuntimeException("Conversion failed")
+class PaddingException() : RuntimeException("Padding failed")
+
 expect object LibsodiumUtil {
 
     fun memcmp(first: UByteArray, second: UByteArray) : Boolean

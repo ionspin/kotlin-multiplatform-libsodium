@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto
 
 import com.sun.jna.Library
+import com.sun.jna.Pointer
 import com.sun.jna.Structure
 
 /**
@@ -61,9 +62,92 @@ class SecretStreamXChaCha20Poly1305State : Structure() {
 }
 
 interface JnaLibsodiumInterface : Library {
+
+    // ---- Utils ----
     fun sodium_version_string(): String
 
     fun randombytes_buf(buffer: ByteArray, bufferSize: Int)
+
+    //    void sodium_memzero(void * const pnt, const size_t len);
+    fun sodium_memzero(array: ByteArray, len: Int)
+
+    //    int sodium_memcmp(const void * const b1_, const void * const b2_, size_t len)
+    fun sodium_memcmp(b1 : ByteArray, b2 : ByteArray, len: Int) : Int
+
+    //    char *sodium_bin2hex(char * const hex, const size_t hex_maxlen,
+    //    const unsigned char * const bin, const size_t bin_len)
+    fun sodium_bin2hex(
+        hex: ByteArray,
+        hexMaxlen: Int,
+        bin: ByteArray,
+        binLen : Int
+    ) : String
+
+    //    int sodium_hex2bin(
+    //    unsigned char * const bin, const size_t bin_maxlen,
+    //    const char * const hex, const size_t hex_len,
+    //    const char * const ignore, size_t * const bin_len,
+    //    const char ** const hex_end)
+    fun sodium_hex2bin(
+        bin: ByteArray,
+        binMaxLength: Int,
+        hex: ByteArray,
+        hexLen: Int,
+        ignore: ByteArray?,
+        binLen: Pointer,
+        hexEnd: Pointer?
+    ) : Int
+
+    //    int sodium_pad(size_t *padded_buflen_p, unsigned char *buf,
+    //    size_t unpadded_buflen, size_t blocksize, size_t max_buflen)
+    fun sodium_pad(
+        paddedBufferLength : Pointer,
+        buffer: ByteArray,
+        unpaddedBufferLength : Int,
+        blockSize: Int,
+        maxBufferLength: Int
+    ) : Int
+
+    //    int sodium_unpad(size_t *unpadded_buflen_p, const unsigned char *buf,
+    //    size_t padded_buflen, size_t blocksize)
+    fun sodium_unpad(
+        unpaddedBufferLength: Pointer,
+        buffer: ByteArray,
+        paddedBufferLength: Int,
+        blockSize: Int
+    )
+
+
+    //    char *sodium_bin2base64(char * const b64, const size_t b64_maxlen,
+    //    const unsigned char * const bin, const size_t bin_len,
+    //    const int variant)
+    fun sodium_bin2base64(
+        base64: ByteArray,
+        base64MaxLength: Int,
+        bin: ByteArray,
+        binLength: Int,
+        variant: Int
+    ) : Int
+
+    //    int sodium_base642bin(
+    //    unsigned char * const bin, const size_t bin_maxlen,
+    //    const char * const b64, const size_t b64_len,
+    //    const char * const ignore, size_t * const bin_len,
+    //    const char ** const b64_end, const int variant)
+    fun sodium_base642bin(
+        bin : ByteArray,
+        binMaxLength: Int,
+        base64: ByteArray,
+        base64Length: Int,
+        ignore: ByteArray?,
+        binLength: Pointer,
+        base64End: Pointer?,
+        variant: Int
+    ) : Int
+    //    size_t sodium_base64_encoded_len(const size_t bin_len, const int variant)
+    fun sodium_base64_encoded_len(binLength: Int, variant: Int) : Int
+
+    // --- Utils end ----
 
     //    int crypto_generichash(unsigned char *out, size_t outlen,
     //    const unsigned char *in, unsigned long long inlen,
