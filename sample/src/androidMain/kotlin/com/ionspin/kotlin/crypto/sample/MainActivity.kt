@@ -32,9 +32,11 @@ class MainActivity : AppCompatActivity() {
         val senderKeypair = Box.keypair()
         val recipientKeypair = Box.keypair()
         val messageNonce = Random(0).nextUBytes(crypto_box_NONCEBYTES)
-        val encrypted = Box.easy(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
-        val decrypted = Box.openEasy(encrypted, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
         val builder = StringBuilder()
+        val encrypted = Box.easy(message, messageNonce, recipientKeypair.publicKey, senderKeypair.secretKey)
+        builder.appendLine("Encrypted: ${encrypted.toHexString()}")
+        val decrypted = Box.openEasy(encrypted, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
+
         builder.appendLine("Decrypted: ${decrypted.decodeFromUByteArray()}")
         try {
             val tampered = encrypted.copyOf()
