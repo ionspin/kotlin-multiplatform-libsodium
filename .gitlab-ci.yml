@@ -12,6 +12,7 @@ workflow:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   CHROME_BIN: "chromium"
+  ANDROID_SDK_ROOT: "/android-sdk"
 
 simpleCheck:
   stage: prepare

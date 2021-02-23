@@ -153,70 +153,70 @@ actual object Stream {
         return result
     }
 
-    actual fun xChacha20Keygen(): UByteArray {
-        val result = UByteArray(crypto_stream_xchacha20_KEYBYTES)
-        val resultPinned = result.pin()
-
-        crypto_stream_xchacha20_keygen(resultPinned.toPtr())
-
-        resultPinned.unpin()
-
-        return result
-    }
-
-    actual fun xChacha20Xor(
-        message: UByteArray,
-        nonce: UByteArray,
-        key: UByteArray
-    ): UByteArray {
-        val result = UByteArray(message.size)
-        val messagePinned = message.pin()
-        val resultPinned = result.pin()
-        val noncePinned = nonce.pin()
-        val keyPinned = key.pin()
-
-        crypto_stream_xchacha20_xor(
-            resultPinned.toPtr(),
-            messagePinned.toPtr(),
-            message.size.convert(),
-            noncePinned.toPtr(),
-            keyPinned.toPtr()
-        )
-
-        messagePinned.unpin()
-        resultPinned.unpin()
-        noncePinned.unpin()
-        keyPinned.unpin()
-
-        return result
-    }
-
-    actual fun xChacha20XorIc(
-        message: UByteArray,
-        nonce: UByteArray,
-        initialCounter: ULong,
-        key: UByteArray
-    ): UByteArray {
-        val result = UByteArray(message.size)
-        val messagePinned = message.pin()
-        val resultPinned = result.pin()
-        val noncePinned = nonce.pin()
-        val keyPinned = key.pin()
-
-        crypto_stream_xchacha20_xor_ic(
-            resultPinned.toPtr(),
-            messagePinned.toPtr(),
-            message.size.convert(),
-            noncePinned.toPtr(),
-            initialCounter.convert(),
-            keyPinned.toPtr()
-        )
-
-        messagePinned.unpin()
-        resultPinned.unpin()
-        noncePinned.unpin()
-        keyPinned.unpin()
-
-        return result
-    }
+//    actual fun xChacha20Keygen(): UByteArray {
+//        val result = UByteArray(crypto_stream_xchacha20_KEYBYTES)
+//        val resultPinned = result.pin()
+//
+//        crypto_stream_xchacha20_keygen(resultPinned.toPtr())
+//
+//        resultPinned.unpin()
+//
+//        return result
+//    }
+//
+//    actual fun xChacha20Xor(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = UByteArray(message.size)
+//        val messagePinned = message.pin()
+//        val resultPinned = result.pin()
+//        val noncePinned = nonce.pin()
+//        val keyPinned = key.pin()
+//
+//        crypto_stream_xchacha20_xor(
+//            resultPinned.toPtr(),
+//            messagePinned.toPtr(),
+//            message.size.convert(),
+//            noncePinned.toPtr(),
+//            keyPinned.toPtr()
+//        )
+//
+//        messagePinned.unpin()
+//        resultPinned.unpin()
+//        noncePinned.unpin()
+//        keyPinned.unpin()
+//
+//        return result
+//    }
+//
+//    actual fun xChacha20XorIc(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        initialCounter: ULong,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = UByteArray(message.size)
+//        val messagePinned = message.pin()
+//        val resultPinned = result.pin()
+//        val noncePinned = nonce.pin()
+//        val keyPinned = key.pin()
+//
+//        crypto_stream_xchacha20_xor_ic(
+//            resultPinned.toPtr(),
+//            messagePinned.toPtr(),
+//            message.size.convert(),
+//            noncePinned.toPtr(),
+//            initialCounter.convert(),
+//            keyPinned.toPtr()
+//        )
+//
+//        messagePinned.unpin()
+//        resultPinned.unpin()
+//        noncePinned.unpin()
+//        keyPinned.unpin()
+//
+//        return result
+//    }
 }

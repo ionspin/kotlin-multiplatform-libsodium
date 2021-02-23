@@ -96,49 +96,49 @@ actual object Stream {
         return result
     }
 
-    actual fun xChacha20Keygen(): UByteArray {
-        val result = UByteArray(crypto_stream_chacha20_KEYBYTES)
-
-        sodiumJna.crypto_stream_xchacha20_keygen(result.asByteArray())
-
-        return result
-    }
-
-    actual fun xChacha20Xor(
-        message: UByteArray,
-        nonce: UByteArray,
-        key: UByteArray
-    ): UByteArray {
-        val result = UByteArray(message.size)
-
-        sodiumJna.crypto_stream_xchacha20_xor(
-            result.asByteArray(),
-            message.asByteArray(),
-            message.size.toLong(),
-            nonce.asByteArray(),
-            key.asByteArray()
-        )
-
-        return result
-    }
-
-    actual fun xChacha20XorIc(
-        message: UByteArray,
-        nonce: UByteArray,
-        initialCounter: ULong,
-        key: UByteArray
-    ): UByteArray {
-        val result = UByteArray(message.size)
-
-        sodiumJna.crypto_stream_xchacha20_xor_ic(
-            result.asByteArray(),
-            message.asByteArray(),
-            message.size.toLong(),
-            nonce.asByteArray(),
-            initialCounter.toLong(),
-            key.asByteArray()
-        )
-
-        return result
-    }
+//    actual fun xChacha20Keygen(): UByteArray {
+//        val result = UByteArray(crypto_stream_chacha20_KEYBYTES)
+//
+//        sodiumJna.crypto_stream_xchacha20_keygen(result.asByteArray())
+//
+//        return result
+//    }
+//
+//    actual fun xChacha20Xor(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = UByteArray(message.size)
+//
+//        sodiumJna.crypto_stream_xchacha20_xor(
+//            result.asByteArray(),
+//            message.asByteArray(),
+//            message.size.toLong(),
+//            nonce.asByteArray(),
+//            key.asByteArray()
+//        )
+//
+//        return result
+//    }
+//
+//    actual fun xChacha20XorIc(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        initialCounter: ULong,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = UByteArray(message.size)
+//
+//        sodiumJna.crypto_stream_xchacha20_xor_ic(
+//            result.asByteArray(),
+//            message.asByteArray(),
+//            message.size.toLong(),
+//            nonce.asByteArray(),
+//            initialCounter.toLong(),
+//            key.asByteArray()
+//        )
+//
+//        return result
+//    }
 }
