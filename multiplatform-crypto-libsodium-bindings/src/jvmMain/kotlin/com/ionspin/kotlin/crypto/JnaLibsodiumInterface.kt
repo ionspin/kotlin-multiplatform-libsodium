@@ -78,6 +78,22 @@ interface JnaLibsodiumInterface : Library {
 
     fun randombytes_buf(buffer: ByteArray, bufferSize: Int)
 
+    //    void randombytes_buf_deterministic(void * const buf, const size_t size,
+    //    const unsigned char seed[randombytes_SEEDBYTES])
+    fun randombytes_buf_deterministic(
+        buffer: ByteArray,
+        size: Int,
+        seed: ByteArray
+    )
+
+    //    uint32_t randombytes_random(void)
+    fun randombytes_random() : Long
+
+    //    uint32_t randombytes_uniform(const uint32_t upper_bound);
+    fun randombytes_uniform(
+        upperBound: Long
+    ) : Long
+
     //    void sodium_memzero(void * const pnt, const size_t len);
     fun sodium_memzero(array: ByteArray, len: Int)
 
@@ -917,7 +933,8 @@ interface JnaLibsodiumInterface : Library {
         message: ByteArray,
         messageLength: Long,
         secretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_open(
     //    unsigned char *m, unsigned long long *mlen_p,
     //    const unsigned char *sm, unsigned long long smlen,
@@ -928,7 +945,8 @@ interface JnaLibsodiumInterface : Library {
         signedMessage: ByteArray,
         signedMessageLength: Long,
         publicKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_detached(
     //    unsigned char *sig, unsigned long long *siglen_p,
     //    const unsigned char *m, unsigned long long mlen,
@@ -939,7 +957,8 @@ interface JnaLibsodiumInterface : Library {
         message: ByteArray,
         messageLength: Long,
         secretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_verify_detached(
     //    const unsigned char *sig,
     //    const unsigned char *m,
@@ -950,33 +969,36 @@ interface JnaLibsodiumInterface : Library {
         message: ByteArray,
         messageLength: Long,
         publicKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_ed25519_pk_to_curve25519(
     //    unsigned char *curve25519_pk,
     //    const unsigned char *ed25519_pk)
     fun crypto_sign_ed25519_pk_to_curve25519(
         curve25519PublicKey: ByteArray,
         ed25519PublicKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_sign_ed25519_sk_to_curve25519(unsigned char *curve25519_sk,
     //    const unsigned char *ed25519_sk)
     fun crypto_sign_ed25519_sk_to_curve25519(
         curve25519SecretKey: ByteArray,
         ed25519SecretKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_sign_ed25519_sk_to_pk(unsigned char *pk, const unsigned char *sk)
     fun crypto_sign_ed25519_sk_to_pk(
         ed25519PublicKey: ByteArray,
         ed25519SecretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_ed25519_sk_to_seed(unsigned char *seed,
     //    const unsigned char *sk)
     fun crypto_sign_ed25519_sk_to_seed(
         seed: ByteArray,
         ed25519SecretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_init(crypto_sign_state *state);
     fun crypto_sign_init(state: Ed25519SignatureState)
 
@@ -986,7 +1008,8 @@ interface JnaLibsodiumInterface : Library {
         state: Ed25519SignatureState,
         message: ByteArray,
         messageLength: Long
-    ) : Int
+    ): Int
+
     //    int crypto_sign_final_create(crypto_sign_state *state, unsigned char *sig,
     //    unsigned long long *siglen_p,
     //    const unsigned char *sk)
@@ -995,78 +1018,261 @@ interface JnaLibsodiumInterface : Library {
         signature: ByteArray,
         signatureLength: LongArray?,
         secretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_final_verify(crypto_sign_state *state, const unsigned char *sig,
     //    const unsigned char *pk)
     fun crypto_sign_final_verify(
         state: Ed25519SignatureState,
         signature: ByteArray,
         publicKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_sign_keypair(unsigned char *pk, unsigned char *sk)
     fun crypto_sign_keypair(
         publicKey: ByteArray, secretKey: ByteArray
     )
+
     //    int crypto_sign_seed_keypair(unsigned char *pk, unsigned char *sk,
     //    const unsigned char *seed)
     fun crypto_sign_seed_keypair(
         publicKey: ByteArray,
         secretKey: ByteArray,
         seed: ByteArray
-    ) : Int
+    ): Int
 
 
-
-
-
-//
-//
 //    // ---- Sign end ----
 //
 //
+
+
 //    // ---- KDF ----
 //
-//    fun crypto_kdf_derive_from_key(subkey_len: UInt, subkeyId : UInt, ctx: String, key: Uint8Array) : Uint8Array
-//    fun crypto_kdf_keygen() : Uint8Array
+
+    //    int crypto_kdf_derive_from_key(unsigned char *subkey, size_t subkey_len,
+    //    uint64_t subkey_id,
+    //    const char ctx[crypto_kdf_CONTEXTBYTES],
+    //    const unsigned char key[crypto_kdf_KEYBYTES])
+    fun crypto_kdf_derive_from_key(
+        subkey: ByteArray,
+        subkeyLength: Int,
+        subkeyId: Long,
+        context: ByteArray,
+        key: ByteArray
+    )
+
+    //    void crypto_kdf_keygen(unsigned char k[crypto_kdf_KEYBYTES])
+    fun crypto_kdf_keygen(
+        key: ByteArray
+    )
 //
 //    // ---- KDF end -----
 //
-//    // ---- Password hashing ----
+
+
+    //    // ---- Password hashing ----
 //
-//    fun crypto_pwhash(keyLength : UInt, password : Uint8Array, salt: Uint8Array, opsLimit: UInt, memLimit: UInt, algorithm: UInt) : Uint8Array
-//    fun crypto_pwhash_str(password: Uint8Array, opsLimit: UInt, memLimit: UInt) : String
-//    fun crypto_pwhash_str_needs_rehash(hashedPassword: String, opsLimit: UInt, memLimit: UInt) : Boolean
-//    fun crypto_pwhash_str_verify(hashedPassword: String, password: Uint8Array) : Boolean
-//
+    //    int crypto_pwhash(unsigned char * const out, unsigned long long outlen,
+    //    const char * const passwd, unsigned long long passwdlen,
+    //    const unsigned char * const salt,
+    //    unsigned long long opslimit, size_t memlimit, int alg)
+    fun crypto_pwhash(
+        output: ByteArray,
+        outputLength: Long,
+        password: String,
+        passwordLength: Long,
+        salt: ByteArray,
+        opslimit: Long,
+        memlimit: Long,
+        algorithm : Int
+    ) : Int
+
+    //    int crypto_pwhash_str(char out[crypto_pwhash_STRBYTES],
+    //    const char * const passwd, unsigned long long passwdlen,
+    //    unsigned long long opslimit, size_t memlimit)
+    fun crypto_pwhash_str(
+        output: ByteArray,
+        password: String,
+        passwordLength: Long,
+        opslimit: Long,
+        memlimit: Long
+    ) : Int
+
+    //    int crypto_pwhash_str_needs_rehash(const char str[crypto_pwhash_STRBYTES],
+    //    unsigned long long opslimit, size_t memlimit)
+    fun crypto_pwhash_str_needs_rehash(
+        output: ByteArray,
+        opslimit: Long,
+        memlimit: Long
+    ) : Int
+    //    int crypto_pwhash_str_verify(const char str[crypto_pwhash_STRBYTES],
+    //    const char * const passwd,
+    //    unsigned long long passwdlen)
+    fun crypto_pwhash_str_verify(
+        hash: ByteArray,
+        password: String,
+        passwordLength: Long
+    ) : Int
+
 //
 //    // ---- Password hashing end ----
 //
 
-//
-//    //  ---- > ---- Random ---- < -----
-//
-//    fun randombytes_buf(length: UInt) : Uint8Array
-//    fun randombytes_buf_deterministic(length: UInt, seed : Uint8Array) : Uint8Array
-//    fun randombytes_random() : UInt
-//    fun randombytes_uniform(upper_bound: UInt) : UInt
-//
-//    // ---- Utils end ----
-//
+
+
 //    // ---- Key exchange ----
-//    fun crypto_kx_client_session_keys(clientPublicKey: Uint8Array, clientSecretKey: Uint8Array, serverPublicKey: Uint8Array) : dynamic
-//    fun crypto_kx_keypair() : dynamic
-//    fun crypto_kx_seed_keypair(seed: Uint8Array) : dynamic
-//    fun crypto_kx_server_session_keys(serverPublicKey: Uint8Array, serverSecretKey: Uint8Array, clientPublicKey: Uint8Array) : dynamic
+
+
+    //    int crypto_kx_keypair(unsigned char pk[crypto_kx_PUBLICKEYBYTES],
+    //    unsigned char sk[crypto_kx_SECRETKEYBYTES])
+    fun crypto_kx_keypair(
+        publicKey: ByteArray,
+        secretKey: ByteArray
+    )
+
+
+    //    int crypto_kx_seed_keypair(unsigned char pk[crypto_kx_PUBLICKEYBYTES],
+    //    unsigned char sk[crypto_kx_SECRETKEYBYTES],
+    //    const unsigned char seed[crypto_kx_SEEDBYTES])
+    fun crypto_kx_seed_keypair(
+        publicKey: ByteArray,
+        secretKey: ByteArray,
+        seed: ByteArray
+    )
+    //    int crypto_kx_client_session_keys(unsigned char rx[crypto_kx_SESSIONKEYBYTES],
+    //    unsigned char tx[crypto_kx_SESSIONKEYBYTES],
+    //    const unsigned char client_pk[crypto_kx_PUBLICKEYBYTES],
+    //    const unsigned char client_sk[crypto_kx_SECRETKEYBYTES],
+    //    const unsigned char server_pk[crypto_kx_PUBLICKEYBYTES])
+    fun crypto_kx_client_session_keys(
+        receiveKey : ByteArray,
+        sendKey: ByteArray,
+        clientPublicKey: ByteArray,
+        clientSecretKey: ByteArray,
+        serverPublicKey: ByteArray
+    )
+    //    int crypto_kx_server_session_keys(unsigned char rx[crypto_kx_SESSIONKEYBYTES],
+    //    unsigned char tx[crypto_kx_SESSIONKEYBYTES],
+    //    const unsigned char server_pk[crypto_kx_PUBLICKEYBYTES],
+    //    const unsigned char server_sk[crypto_kx_SECRETKEYBYTES],
+    //    const unsigned char client_pk[crypto_kx_PUBLICKEYBYTES])
+    fun crypto_kx_server_session_keys(
+        receiveKey: ByteArray,
+        sendKey: ByteArray,
+        serverPublicKey: ByteArray,
+        serverSecretKey: ByteArray,
+        clientPublicKey: ByteArray
+    )
+
 //
 //    // ---- Key exchange end ----
 //
 //    // -- Stream ----
-//    fun crypto_stream_chacha20(outLength: UInt, key: Uint8Array, nonce: Uint8Array) : Uint8Array
-//    fun crypto_stream_chacha20_ietf_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_stream_chacha20_ietf_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
-//    fun crypto_stream_chacha20_keygen() : Uint8Array
-//    fun crypto_stream_chacha20_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
-//    fun crypto_stream_chacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
+
+    //    int crypto_stream_chacha20(unsigned char *c, unsigned long long clen,
+    //    const unsigned char *n, const unsigned char *k)
+    fun crypto_stream_chacha20(
+        stream: ByteArray,
+        streamLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+    //    int crypto_stream_chacha20_xor(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen, const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_stream_chacha20_xor(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+    //    int crypto_stream_chacha20_xor_ic(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *n, uint64_t ic,
+    //    const unsigned char *k)
+    fun crypto_stream_chacha20_xor_ic(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        initialCounter : Long,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_stream_chacha20_ietf(unsigned char *c, unsigned long long clen,
+    //    const unsigned char *n, const unsigned char *k)
+    fun crypto_stream_chacha20_ietf(
+        stream: ByteArray,
+        streamLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_stream_chacha20_ietf_xor(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen, const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_stream_chacha20_ietf_xor(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_stream_chacha20_ietf_xor_ic(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *n, uint32_t ic,
+    //    const unsigned char *k)
+    fun crypto_stream_chacha20_ietf_xor_ic(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        initialCounter : Long,
+        key: ByteArray
+    ) : Int
+
+    //    void crypto_stream_chacha20_keygen(unsigned char k[crypto_stream_chacha20_KEYBYTES])
+    fun crypto_stream_chacha20_keygen(key: ByteArray)
+
+    //    int crypto_stream_xchacha20(unsigned char *c, unsigned long long clen,
+    //    const unsigned char *n, const unsigned char *k)
+    fun crypto_stream_xchacha20(
+        stream: ByteArray,
+        streamLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_stream_xchacha20_xor(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen, const unsigned char *n,
+    //    const unsigned char *k)
+    fun crypto_stream_xchacha20_xor(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        key: ByteArray
+    ) : Int
+
+    //    int crypto_stream_xchacha20_xor_ic(unsigned char *c, const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *n, uint64_t ic,
+    //    const unsigned char *k)
+    fun crypto_stream_xchacha20_xor_ic(
+        ciphertext: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        nonce: ByteArray,
+        initialCounter : Long,
+        key: ByteArray
+    ) : Int
+    //    void crypto_stream_xchacha20_keygen(unsigned char k[crypto_stream_xchacha20_KEYBYTES])
+    fun crypto_stream_xchacha20_keygen(key: ByteArray)
+
+
 //
 //    // ---- Stream end ----
 //

@@ -143,9 +143,9 @@ native libsodium library.
 | crypto_stream_chacha20_xor | :heavy_check_mark: | 
 | crypto_stream_chacha20_xor_ic | :heavy_check_mark: |  
 | crypto_stream_keygen | Other XSalsa20 primitives are not available, so I'm leaving this out as well|   
-| crypto_stream_xchacha20_keygen | not present in LazySodium Android | 
-| crypto_stream_xchacha20_xor | not present in LazySodium Android|    
-| crypto_stream_xchacha20_xor_ic | not present in LazySodium Android | 
+| crypto_stream_xchacha20_keygen | :heavy_check_mark: | 
+| crypto_stream_xchacha20_xor | :heavy_check_mark: |    
+| crypto_stream_xchacha20_xor_ic | :heavy_check_mark: | 
 | randombytes_buf | :heavy_check_mark: |    
 | randombytes_buf_deterministic | :heavy_check_mark: |  
 | randombytes_close | not present in LazySodium |  
