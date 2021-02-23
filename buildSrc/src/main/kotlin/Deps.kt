@@ -25,7 +25,7 @@ object Versions {
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.8-SNAPSHOT"
     val lazySodium = "4.3.1-SNAPSHOT"
-    val jna = "5.5.0"
+    val jna = "5.7.0"
     val kotlinPoet = "1.6.0"
     val libsodiumBindings = "0.1.1-SNAPSHOT"
     val ktor = "1.3.2"
@@ -33,6 +33,7 @@ object Versions {
     val kodeinVersion = "7.1.0"
 
     val resourceLoader = "1.3.10"
+
 
 
 
@@ -143,6 +144,7 @@ object Deps {
         val ktorClientSerialization = "io.ktor:ktor-client-serialization-jvm:${Versions.ktor}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.kotlinSerialization}"
         val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+        val jna = "net.java.dev.jna:jna:${Versions.jna}@aar"
     }
 
     object Desktop {

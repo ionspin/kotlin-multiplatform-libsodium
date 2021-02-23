@@ -26,7 +26,7 @@ class Hash512State : Structure() {
     override fun getFieldOrder(): List<String> = listOf("state", "count", "buf")
 
     @JvmField
-    val state = IntArray(8)
+    val state = LongArray(8)
 
     @JvmField
     var count: LongArray = LongArray(2)
