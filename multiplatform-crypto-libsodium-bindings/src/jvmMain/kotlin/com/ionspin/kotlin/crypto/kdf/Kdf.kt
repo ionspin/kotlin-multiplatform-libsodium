@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.kdf
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object Kdf {
     /**
@@ -26,7 +26,7 @@ actual object Kdf {
         val subkey = UByteArray(subkeyLength)
         val contextEncoded = context.encodeToByteArray()
 
-        sodium.crypto_kdf_derive_from_key(
+        sodiumJna.crypto_kdf_derive_from_key(
             subkey.asByteArray(),
             subkeyLength,
             subkeyId.toLong(),
@@ -42,7 +42,7 @@ actual object Kdf {
      */
     actual fun keygen(): UByteArray {
         val masterKey = UByteArray(crypto_kdf_KEYBYTES)
-        sodium.crypto_kdf_keygen(masterKey.asByteArray())
+        sodiumJna.crypto_kdf_keygen(masterKey.asByteArray())
         return masterKey
     }
 

@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.scalarmult
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object ScalarMultiplication {
     /**
@@ -18,7 +18,7 @@ actual object ScalarMultiplication {
     actual fun scalarMultiplication(secretKeyN: UByteArray, publicKeyP: UByteArray): UByteArray {
         val result = UByteArray(crypto_scalarmult_BYTES)
 
-        sodium.crypto_scalarmult(result.asByteArray(), secretKeyN.asByteArray(), publicKeyP.asByteArray())
+        sodiumJna.crypto_scalarmult(result.asByteArray(), secretKeyN.asByteArray(), publicKeyP.asByteArray())
 
 
         return result
@@ -35,7 +35,7 @@ actual object ScalarMultiplication {
     ): UByteArray {
         val result = UByteArray(crypto_scalarmult_BYTES)
 
-        sodium.crypto_scalarmult_base(result.asByteArray(), secretKeyN.asByteArray())
+        sodiumJna.crypto_scalarmult_base(result.asByteArray(), secretKeyN.asByteArray())
 
         return result
     }

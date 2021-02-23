@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.secretstream
 
-import com.goterl.lazycode.lazysodium.interfaces.SecretStream
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.ionspin.kotlin.crypto.SecretStreamXChaCha20Poly1305State
 

@@ -35,8 +35,6 @@ actual object LibsodiumRandom {
      * The randombytes_random() function returns an unpredictable value between 0 and 0xffffffff (included).
      */
     actual fun random(): UInt {
-        //Broken in lazysodium-java https://github.com/terl/lazysodium-java/issues/86
-        //Using temporary forked and fixed build until pull request is accepted in original repo
         return sodiumJna.randombytes_random().toUInt()
     }
 

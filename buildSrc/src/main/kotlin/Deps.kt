@@ -24,7 +24,6 @@ object Versions {
     val dokkaPlugin = "1.4.20"
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.8-SNAPSHOT"
-    val lazySodium = "4.3.1-SNAPSHOT"
     val jna = "5.7.0"
     val kotlinPoet = "1.6.0"
     val libsodiumBindings = "0.1.1-SNAPSHOT"
@@ -118,10 +117,6 @@ object Deps {
         val resourceLoader = "co.libly:resource-loader:${Versions.resourceLoader}"
 
         object Delegated {
-            // Temporary until reported lazysodium issues are fixed. My snapshot build with
-            // And cause I registered com.ionspin.kotlin as maven central package root now I have to use
-            // that even though this is pure java library. :)
-            val lazysodium = "com.ionspin.kotlin:lazysodium-java:${Versions.lazySodium}"
             val jna = "net.java.dev.jna:jna:${Versions.jna}"
         }
     }

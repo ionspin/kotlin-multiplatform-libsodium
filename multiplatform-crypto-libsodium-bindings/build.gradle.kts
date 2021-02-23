@@ -48,7 +48,6 @@ val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 repositories {
     mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/terl/lazysodium-maven")
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
@@ -74,7 +73,7 @@ android {
         }
     }
     sourceSets.getByName("main") {
-        jniLibs.srcDir("libs")
+//        jniLibs.srcDir("src/androidMain/libs")
     }
 }
 
@@ -442,13 +441,12 @@ kotlin {
 
             val androidMain by getting {
                 isNotRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+                    kotlin.srcDirs("src/androidMain", "src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 isRunningInIdea {
                     kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 dependencies {
-                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
                     implementation("net.java.dev.jna:jna:5.5.0@aar")
                     implementation(Deps.Jvm.resourceLoader) {
                         exclude("net.java.dev.jna", "jna")
@@ -474,9 +472,9 @@ kotlin {
 
                 implementation(Deps.Jvm.resourceLoader)
 
-                //lazysodium
-                implementation(Deps.Jvm.Delegated.lazysodium)
                 implementation(Deps.Jvm.Delegated.jna)
+
+                implementation("org.slf4j:slf4j-api:1.7.30")
             }
         }
         val jvmTest by getting {

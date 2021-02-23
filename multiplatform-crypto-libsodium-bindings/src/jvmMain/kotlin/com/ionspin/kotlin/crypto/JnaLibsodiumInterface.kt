@@ -1278,8 +1278,11 @@ interface JnaLibsodiumInterface : Library {
 //
 //    // ---- Scalar multiplication ----
 //
-//    fun crypto_scalarmult(privateKey: Uint8Array, publicKey: Uint8Array) : Uint8Array
-//    fun crypto_scalarmult_base(privateKey: Uint8Array) : Uint8Array
+    //    int crypto_scalarmult(unsigned char *q, const unsigned char *n,
+    //    const unsigned char *p)
+    fun crypto_scalarmult(q: ByteArray, n: ByteArray, p: ByteArray)
+    //    int crypto_scalarmult_base(unsigned char *q, const unsigned char *n)
+    fun crypto_scalarmult_base(q: ByteArray, b: ByteArray)
 //
 //    // ---- Scalar multiplication end ----
 }
