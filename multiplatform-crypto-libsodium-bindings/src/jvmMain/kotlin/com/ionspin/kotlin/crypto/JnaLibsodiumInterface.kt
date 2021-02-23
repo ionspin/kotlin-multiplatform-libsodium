@@ -42,6 +42,16 @@ class Blake2bState : Structure() {
     val opaque = ByteArray(384)
 }
 
+//typedef struct crypto_sign_ed25519ph_state {
+//    crypto_hash_sha512_state hs;
+//} crypto_sign_ed25519ph_state;
+class Ed25519SignatureState : Structure() {
+    override fun getFieldOrder() = listOf("hs")
+
+    @JvmField
+    var hs: Hash512State = Hash512State()
+}
+
 
 //      typedef struct crypto_secretstream_xchacha20poly1305_state {
 //          unsigned char k[crypto_stream_chacha20_ietf_KEYBYTES];
@@ -785,7 +795,7 @@ interface JnaLibsodiumInterface : Library {
         publicKey: ByteArray,
         secretKey: ByteArray,
         seed: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_easy(unsigned char *c, const unsigned char *m,
     //    unsigned long long mlen, const unsigned char *n,
@@ -797,7 +807,7 @@ interface JnaLibsodiumInterface : Library {
         nonce: ByteArray,
         recipientPublicKey: ByteArray,
         senderSecretKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_open_easy(unsigned char *m, const unsigned char *c,
     //    unsigned long long clen, const unsigned char *n,
@@ -809,7 +819,7 @@ interface JnaLibsodiumInterface : Library {
         nonce: ByteArray,
         senderPublickKey: ByteArray,
         recipientSecretKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_detached(unsigned char *c, unsigned char *mac,
     //    const unsigned char *m, unsigned long long mlen,
@@ -823,7 +833,7 @@ interface JnaLibsodiumInterface : Library {
         nonce: ByteArray,
         recipientPublicKey: ByteArray,
         senderSecretKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_open_detached(
     //    unsigned char *m, const unsigned char *c,
@@ -840,7 +850,7 @@ interface JnaLibsodiumInterface : Library {
         nonce: ByteArray,
         senderPublickKey: ByteArray,
         recipientSecretKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_beforenm(unsigned char *k, const unsigned char *pk,
     //    const unsigned char *sk)
@@ -848,7 +858,8 @@ interface JnaLibsodiumInterface : Library {
         sessionKey: ByteArray,
         publicKey: ByteArray,
         secretKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_box_easy_afternm(unsigned char *c, const unsigned char *m,
     //    unsigned long long mlen, const unsigned char *n,
     //    const unsigned char *k)
@@ -858,7 +869,7 @@ interface JnaLibsodiumInterface : Library {
         messageLength: Long,
         nonce: ByteArray,
         sessionKey: ByteArray
-    ) : Int
+    ): Int
 
     //    int crypto_box_open_easy_afternm(unsigned char *m, const unsigned char *c,
     //    unsigned long long clen, const unsigned char *n,
@@ -869,7 +880,8 @@ interface JnaLibsodiumInterface : Library {
         ciphertextLength: Long,
         nonce: ByteArray,
         sessionKey: ByteArray
-    ) : Int
+    ): Int
+
     //    int crypto_box_seal(unsigned char *c, const unsigned char *m,
     //    unsigned long long mlen, const unsigned char *pk)
     fun crypto_box_seal(
@@ -877,7 +889,7 @@ interface JnaLibsodiumInterface : Library {
         message: ByteArray,
         messageLength: Long,
         recipientPublicKey: ByteArray
-    ) : Int
+    ): Int
 
 
     //    int crypto_box_seal_open(unsigned char *m, const unsigned char *c,
@@ -889,25 +901,124 @@ interface JnaLibsodiumInterface : Library {
         ciphertextLength: Long,
         senderPublickKey: ByteArray,
         recipientSecretKey: ByteArray
-    ) : Int
+    ): Int
 //
 //    // ---- Box end ----
 //
 //    // ---- Sign start ----
-//    fun crypto_sign(message: Uint8Array, secretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_detached(message: Uint8Array, secretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_ed25519_pk_to_curve25519(ed25519PublicKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_ed25519_sk_to_curve25519(ed25519SecretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_ed25519_sk_to_pk(ed25519SecretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_ed25519_sk_to_seed(ed25519SecretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_final_create(state: dynamic, secretKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_final_verify(state: dynamic, signature: Uint8Array, publicKey: Uint8Array) : Boolean
-//    fun crypto_sign_init() : dynamic
-//    fun crypto_sign_keypair() : dynamic
-//    fun crypto_sign_open(signedMessage: Uint8Array, publicKey: Uint8Array) : Uint8Array
-//    fun crypto_sign_seed_keypair(seed: Uint8Array) : dynamic
-//    fun crypto_sign_update(state: dynamic, message: Uint8Array)
-//    fun crypto_sign_verify_detached(signature: Uint8Array, message: Uint8Array, publicKey: Uint8Array) : Boolean
+
+    //    int crypto_sign(
+    //    unsigned char *sm, unsigned long long *smlen_p,
+    //    const unsigned char *m, unsigned long long mlen,
+    //    const unsigned char *sk)
+    fun crypto_sign(
+        signedMessage: ByteArray,
+        signedMessageLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        secretKey: ByteArray
+    ) : Int
+    //    int crypto_sign_open(
+    //    unsigned char *m, unsigned long long *mlen_p,
+    //    const unsigned char *sm, unsigned long long smlen,
+    //    const unsigned char *pk)
+    fun crypto_sign_open(
+        message: ByteArray,
+        messageLength: LongArray?,
+        signedMessage: ByteArray,
+        signedMessageLength: Long,
+        publicKey: ByteArray
+    ) : Int
+    //    int crypto_sign_detached(
+    //    unsigned char *sig, unsigned long long *siglen_p,
+    //    const unsigned char *m, unsigned long long mlen,
+    //    const unsigned char *sk)
+    fun crypto_sign_detached(
+        signature: ByteArray,
+        signatureLength: LongArray?,
+        message: ByteArray,
+        messageLength: Long,
+        secretKey: ByteArray
+    ) : Int
+    //    int crypto_sign_verify_detached(
+    //    const unsigned char *sig,
+    //    const unsigned char *m,
+    //    unsigned long long mlen,
+    //    const unsigned char *pk)
+    fun crypto_sign_verify_detached(
+        signature: ByteArray,
+        message: ByteArray,
+        messageLength: Long,
+        publicKey: ByteArray
+    ) : Int
+    //    int crypto_sign_ed25519_pk_to_curve25519(
+    //    unsigned char *curve25519_pk,
+    //    const unsigned char *ed25519_pk)
+    fun crypto_sign_ed25519_pk_to_curve25519(
+        curve25519PublicKey: ByteArray,
+        ed25519PublicKey: ByteArray
+    ) : Int
+
+    //    int crypto_sign_ed25519_sk_to_curve25519(unsigned char *curve25519_sk,
+    //    const unsigned char *ed25519_sk)
+    fun crypto_sign_ed25519_sk_to_curve25519(
+        curve25519SecretKey: ByteArray,
+        ed25519SecretKey: ByteArray
+    ) : Int
+
+    //    int crypto_sign_ed25519_sk_to_pk(unsigned char *pk, const unsigned char *sk)
+    fun crypto_sign_ed25519_sk_to_pk(
+        ed25519PublicKey: ByteArray,
+        ed25519SecretKey: ByteArray
+    ) : Int
+    //    int crypto_sign_ed25519_sk_to_seed(unsigned char *seed,
+    //    const unsigned char *sk)
+    fun crypto_sign_ed25519_sk_to_seed(
+        seed: ByteArray,
+        ed25519SecretKey: ByteArray
+    ) : Int
+    //    int crypto_sign_init(crypto_sign_state *state);
+    fun crypto_sign_init(state: Ed25519SignatureState)
+
+    //    int crypto_sign_update(crypto_sign_state *state,
+    //    const unsigned char *m, unsigned long long mlen)
+    fun crypto_sign_update(
+        state: Ed25519SignatureState,
+        message: ByteArray,
+        messageLength: Long
+    ) : Int
+    //    int crypto_sign_final_create(crypto_sign_state *state, unsigned char *sig,
+    //    unsigned long long *siglen_p,
+    //    const unsigned char *sk)
+    fun crypto_sign_final_create(
+        state: Ed25519SignatureState,
+        signature: ByteArray,
+        signatureLength: LongArray?,
+        secretKey: ByteArray
+    ) : Int
+    //    int crypto_sign_final_verify(crypto_sign_state *state, const unsigned char *sig,
+    //    const unsigned char *pk)
+    fun crypto_sign_final_verify(
+        state: Ed25519SignatureState,
+        signature: ByteArray,
+        publicKey: ByteArray
+    ) : Int
+    //    int crypto_sign_keypair(unsigned char *pk, unsigned char *sk)
+    fun crypto_sign_keypair(
+        publicKey: ByteArray, secretKey: ByteArray
+    )
+    //    int crypto_sign_seed_keypair(unsigned char *pk, unsigned char *sk,
+    //    const unsigned char *seed)
+    fun crypto_sign_seed_keypair(
+        publicKey: ByteArray,
+        secretKey: ByteArray,
+        seed: ByteArray
+    ) : Int
+
+
+
+
+
 //
 //
 //    // ---- Sign end ----
@@ -930,18 +1041,7 @@ interface JnaLibsodiumInterface : Library {
 //
 //    // ---- Password hashing end ----
 //
-//    // ---- Utils ----
-//
-//    fun memcmp(first: Uint8Array, second: Uint8Array) : Boolean
-//    fun memzero(data: Uint8Array)
-//    fun pad(data : Uint8Array, blocksize: Int) : Uint8Array
-//    fun unpad(data: Uint8Array, blocksize: Int) : Uint8Array
-//    fun to_base64(data: Uint8Array, variant: Int) : String
-//    fun to_hex(data: Uint8Array) : String
-//    fun to_string(data: Uint8Array) : String
-//    fun from_base64(data: String, variant: Int): Uint8Array
-//    fun from_hex(data : String): Uint8Array
-//    fun from_string(data : String): Uint8Array
+
 //
 //    //  ---- > ---- Random ---- < -----
 //
