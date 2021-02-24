@@ -48,7 +48,6 @@ val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 repositories {
     mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/terl/lazysodium-maven")
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
@@ -73,6 +72,9 @@ android {
             isMinifyEnabled = false
         }
     }
+    sourceSets.getByName("main") {
+//        jniLibs.srcDir("src/androidMain/libs")
+    }
 }
 
 
@@ -80,9 +82,10 @@ android {
 kotlin {
     val hostOsName = getHostOsName()
     android()
+    jvm()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
-        jvm()
+
         js(IR) {
             browser {
                 testTask {
@@ -438,14 +441,16 @@ kotlin {
 
             val androidMain by getting {
                 isNotRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+                    kotlin.srcDirs("src/androidMain", "src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 isRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific")
+                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
                 }
                 dependencies {
-                    implementation("com.goterl.lazycode:lazysodium-android:4.2.0@aar")
                     implementation("net.java.dev.jna:jna:5.5.0@aar")
+                    implementation(Deps.Jvm.resourceLoader) {
+                        exclude("net.java.dev.jna", "jna")
+                    }
                 }
             }
 
@@ -458,28 +463,30 @@ kotlin {
                 }
             }
 
+        val jvmMain by getting {
+            kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
+            dependencies {
+                implementation(kotlin(Deps.Jvm.stdLib))
+                implementation(kotlin(Deps.Jvm.test))
+                implementation(kotlin(Deps.Jvm.testJUnit))
 
+                implementation(Deps.Jvm.resourceLoader)
+
+                implementation(Deps.Jvm.Delegated.jna)
+
+                implementation("org.slf4j:slf4j-api:1.7.30")
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin(Deps.Jvm.test))
+                implementation(kotlin(Deps.Jvm.testJUnit))
+                implementation(kotlin(Deps.Jvm.reflection))
+            }
+        }
         runningOnLinuxx86_64 {
             println("Configuring Linux 64 Bit source sets")
-            val jvmMain by getting {
-                kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.stdLib))
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
 
-                    //lazysodium
-                    implementation(Deps.Jvm.Delegated.lazysodium)
-                    implementation(Deps.Jvm.Delegated.jna)
-                }
-            }
-            val jvmTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation(kotlin(Deps.Jvm.reflection))
-                }
-            }
 
 
             val jsMain by getting {
@@ -676,6 +683,13 @@ tasks {
         }
     }
 
+}
+
+allprojects {
+    tasks.withType(JavaCompile::class) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
 }
 
 

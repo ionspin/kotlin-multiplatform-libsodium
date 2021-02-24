@@ -232,6 +232,10 @@ interface JsSodiumInterface {
     fun crypto_stream_chacha20_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
     fun crypto_stream_chacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
 
+    fun crypto_stream_xchacha20_keygen() : Uint8Array
+    fun crypto_stream_xchacha20_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
+    fun crypto_stream_xchacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
+
     // ---- Stream end ----
 
     // ---- Scalar multiplication ----

@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.pwhash
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.sun.jna.NativeLong
 
 actual object PasswordHash {
@@ -10,7 +10,7 @@ actual object PasswordHash {
      * PASSWD_MIN and crypto_pwhash_PASSWD_MAX. outlen should be at least crypto_pwhash_BYTES_MIN = 16 (128 bits) and
      * at most crypto_pwhash_BYTES_MAX.
      *
-     * See https://libsodium.gitbook.io/doc/password_hashing/default_phf for more details
+     * See https://libsodiumJna.gitbook.io/doc/password_hashing/default_phf for more details
      */
     actual fun pwhash(
         outputLength: Int,
@@ -22,14 +22,14 @@ actual object PasswordHash {
     ): UByteArray {
         val hashedPassword = UByteArray(outputLength)
 
-        sodium.crypto_pwhash(
+        sodiumJna.crypto_pwhash(
             hashedPassword.asByteArray(),
             outputLength.toLong(),
-            password.encodeToByteArray(),
+            password,
             password.length.toLong(),
             salt.asByteArray(),
             opsLimit.toLong(),
-            NativeLong(memLimit.toLong()),
+            memLimit.toLong(),
             algorithm
         )
 
@@ -48,12 +48,12 @@ actual object PasswordHash {
      */
     actual fun str(password: String, opslimit: ULong, memlimit: Int): UByteArray {
         val output = ByteArray(crypto_pwhash_STRBYTES)
-        sodium.crypto_pwhash_str(
+        sodiumJna.crypto_pwhash_str(
             output,
-            password.encodeToByteArray(),
+            password,
             password.length.toLong(),
             opslimit.toLong(),
-            NativeLong(memlimit.toLong())
+            memlimit.toLong()
         )
         return output.asUByteArray()
     }
@@ -69,10 +69,10 @@ actual object PasswordHash {
         opslimit: ULong,
         memlimit: Int
     ): Int {
-        return sodium.crypto_pwhash_str_needs_rehash(
+        return sodiumJna.crypto_pwhash_str_needs_rehash(
             passwordHash.asByteArray(),
             opslimit.toLong(),
-            NativeLong(memlimit.toLong())
+            memlimit.toLong()
         )
     }
 
@@ -82,9 +82,9 @@ actual object PasswordHash {
      * It returns 0 if the verification succeeds, and -1 on error.
      */
     actual fun strVerify(passwordHash: UByteArray, password: String): Boolean {
-        val result = sodium.crypto_pwhash_str_verify(
+        val result = sodiumJna.crypto_pwhash_str_verify(
             passwordHash.asByteArray(),
-            password.encodeToByteArray(),
+            password,
             password.length.toLong()
         )
 

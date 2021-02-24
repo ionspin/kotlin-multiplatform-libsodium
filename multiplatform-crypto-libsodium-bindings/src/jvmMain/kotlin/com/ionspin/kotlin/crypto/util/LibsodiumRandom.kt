@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.util
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 /**
  * Created by Ugljesa Jovanovic
@@ -13,7 +13,7 @@ actual object LibsodiumRandom {
      */
     actual fun buf(size: Int): UByteArray {
         val result = ByteArray(size)
-        sodium.randombytes_buf(result, size)
+        sodiumJna.randombytes_buf(result, size)
         return result.asUByteArray()
     }
 
@@ -27,7 +27,7 @@ actual object LibsodiumRandom {
      */
     actual fun bufDeterministic(size: Int, seed: UByteArray): UByteArray {
         val result = ByteArray(size)
-        sodium.randombytes_buf_deterministic(result, size, seed.asByteArray())
+        sodiumJna.randombytes_buf_deterministic(result, size, seed.asByteArray())
         return result.asUByteArray()
     }
 
@@ -35,9 +35,7 @@ actual object LibsodiumRandom {
      * The randombytes_random() function returns an unpredictable value between 0 and 0xffffffff (included).
      */
     actual fun random(): UInt {
-        //Broken in lazysodium-java https://github.com/terl/lazysodium-java/issues/86
-        //Using temporary forked and fixed build until pull request is accepted in original repo
-        return sodium.randombytes_random().toUInt()
+        return sodiumJna.randombytes_random().toUInt()
     }
 
 
@@ -48,9 +46,7 @@ actual object LibsodiumRandom {
      * upper_bound is not a power of 2. Note that an upper_bound < 2 leaves only a single element to be chosen, namely 0
      */
     actual fun uniform(upperBound: UInt): UInt {
-        //Broken in lazysodium-java https://github.com/terl/lazysodium-java/issues/86
-        //Using temporary fixed build until pull request is accepted
-        return sodium.randombytes_uniform(upperBound.toInt()).toUInt()
+        return sodiumJna.randombytes_uniform(upperBound.toLong()).toUInt()
     }
 
 }

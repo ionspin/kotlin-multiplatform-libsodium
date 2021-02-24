@@ -1,13 +1,13 @@
 package com.ionspin.kotlin.crypto.keyexchange
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object KeyExchange {
     actual fun clientSessionKeys(clientPublicKey: UByteArray, clientSecretKey: UByteArray, serverPublicKey: UByteArray) : KeyExchangeSessionKeyPair {
         val receiveKey = UByteArray(crypto_kx_SESSIONKEYBYTES)
         val sendKey = UByteArray(crypto_kx_SESSIONKEYBYTES)
 
-        sodium.crypto_kx_client_session_keys(
+        sodiumJna.crypto_kx_client_session_keys(
             receiveKey.asByteArray(),
             sendKey.asByteArray(),
             clientPublicKey.asByteArray(),
@@ -25,7 +25,7 @@ actual object KeyExchange {
         val secretKey = UByteArray(crypto_kx_SECRETKEYBYTES)
 
 
-        sodium.crypto_kx_keypair(publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_kx_keypair(publicKey.asByteArray(), secretKey.asByteArray())
 
 
         return KeyExchangeKeyPair(publicKey, secretKey)
@@ -35,7 +35,7 @@ actual object KeyExchange {
         val publicKey = UByteArray(crypto_kx_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_kx_SECRETKEYBYTES)
 
-        sodium.crypto_kx_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
+        sodiumJna.crypto_kx_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
 
         return KeyExchangeKeyPair(publicKey, secretKey)
     }
@@ -44,7 +44,7 @@ actual object KeyExchange {
         val receiveKey = UByteArray(crypto_kx_SESSIONKEYBYTES)
         val sendKey = UByteArray(crypto_kx_SESSIONKEYBYTES)
 
-        sodium.crypto_kx_server_session_keys(
+        sodiumJna.crypto_kx_server_session_keys(
             receiveKey.asByteArray(),
             sendKey.asByteArray(),
             serverPublicKey.asByteArray(),

@@ -5,12 +5,26 @@
 
 # Libsodium bindings for Kotiln Multiplatform
 
-Libsodium bindings project uses libsodium c sources, libsodium.js as well as LazySodium Java and Android to provide a kotlin multiplatform wrapper library for libsodium.
+Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium.
 
 ## Installation
 
-The libsodium binding library is not published yet, once the sample showing the basic usage is ready, the library will be published. You can track the implementation 
-[progress here](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
+#### Gradle
+```kotlin
+implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.0")
+```
+
+#### Snapshot builds
+```kotlin
+repositories {
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+}
+implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.1-SNAPSHOT ")
+
+```
+
 
 
 ## Usage
@@ -18,8 +32,7 @@ The libsodium binding library is not published yet, once the sample showing the 
 Before using the wrapper you need to initialize the underlying libsodium library. You can use either a callback or coroutines approach
 
 ```
-    = runTest {
-        LibsodiumInitializer.initializeWithCallback {
+    LibsodiumInitializer.initializeWithCallback {
         // Libsodium initialized
     }
 ```
@@ -125,30 +138,19 @@ Currently supported native platforms:
 |minGW X86 64|          :heavy_check_mark: |
 |minGW X86 32|          :x: | 
 
+[List of supported bindings](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
+### Where do the compiled libraries used by JVM and Android come from
+Android .so files come from running dist-build scripts in libsodium which you can find in the libsodium submodule
+Java Linux Arm/X86_64 and Mac so and dylib are the same as produced by multiplatform builds, also based on the same submodule commit
+Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.18-stable-msvc.zip
+
 
 ### TODO:
 - Copy/adapt code documentation, currently only some functions have documentation that is a copy-paste from libsodium website
-- Replace LazySodium with direct JNA calls, and add build scripts for required libraries if missing
 - Android testing 
 - Fix browser testing, both locally and in CI/CD
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 - Complete exposing libsodium constants
-
-### Known issues:
-- Using LazySodium self built variant to fix some of the bugs present in LazySodium, but **Android** is using directly
-  LazySodium release which has not been updated (latest version is 4.2.0), this means that randombytes_random, basetobin and
-  base64tohex functions are not working on Android, as well as problems with sodium_pad:
-  
-    https://github.com/terl/lazysodium-java/issues/83
-  
-    https://github.com/terl/lazysodium-java/issues/85
-
-    https://github.com/terl/lazysodium-java/issues/86
-
-    Also it is not clear where are the precompiled libraries in LazySodium coming from
-  
-    This will be handled by providing a new JNA libsodium wrapper library
-
 
 
 #### Notes for Gitlab runners:

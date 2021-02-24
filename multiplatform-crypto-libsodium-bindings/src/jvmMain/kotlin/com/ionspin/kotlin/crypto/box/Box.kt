@@ -1,6 +1,6 @@
 package com.ionspin.kotlin.crypto.box
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodium
+import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object Box {
     /**
@@ -11,7 +11,7 @@ actual object Box {
     actual fun keypair(): BoxKeyPair {
         val publicKey = UByteArray(crypto_box_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
-        sodium.crypto_box_keypair(publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_box_keypair(publicKey.asByteArray(), secretKey.asByteArray())
         return BoxKeyPair(publicKey, secretKey)
     }
 
@@ -21,7 +21,7 @@ actual object Box {
     actual fun seedKeypair(seed: UByteArray): BoxKeyPair {
         val publicKey = UByteArray(crypto_box_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
-        sodium.crypto_box_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
+        sodiumJna.crypto_box_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
         return BoxKeyPair(publicKey, secretKey)
     }
 
@@ -39,7 +39,7 @@ actual object Box {
         sendersSecretKey: UByteArray
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_box_MACBYTES)
-        sodium.crypto_box_easy(
+        sodiumJna.crypto_box_easy(
             ciphertext.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
@@ -64,7 +64,7 @@ actual object Box {
         recipientsSecretKey: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_MACBYTES)
-        val validationResult = sodium.crypto_box_open_easy(
+        val validationResult = sodiumJna.crypto_box_open_easy(
             message.asByteArray(),
             ciphertext.asByteArray(),
             ciphertext.size.toLong(),
@@ -85,7 +85,7 @@ actual object Box {
      */
     actual fun beforeNM(publicKey: UByteArray, secretKey: UByteArray): UByteArray {
         val sessionKey = UByteArray(crypto_box_BEFORENMBYTES)
-        sodium.crypto_box_beforenm(sessionKey.asByteArray(), publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_box_beforenm(sessionKey.asByteArray(), publicKey.asByteArray(), secretKey.asByteArray())
         return sessionKey
     }
 
@@ -99,7 +99,7 @@ actual object Box {
     ): UByteArray {
         val ciphertext = UByteArray(message.size + crypto_box_MACBYTES)
 
-        sodium.crypto_box_easy_afternm(
+        sodiumJna.crypto_box_easy_afternm(
             ciphertext.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
@@ -119,7 +119,7 @@ actual object Box {
         precomputedKey: UByteArray
     ): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_MACBYTES)
-        val validationResult = sodium.crypto_box_open_easy_afternm(
+        val validationResult = sodiumJna.crypto_box_open_easy_afternm(
             message.asByteArray(),
             ciphertext.asByteArray(),
             ciphertext.size.toLong(),
@@ -149,7 +149,7 @@ actual object Box {
         val ciphertext = UByteArray(message.size)
         val tag = UByteArray(crypto_box_MACBYTES)
 
-        sodium.crypto_box_detached(
+        sodiumJna.crypto_box_detached(
             ciphertext.asByteArray(),
             tag.asByteArray(),
             message.asByteArray(),
@@ -177,7 +177,7 @@ actual object Box {
     ): UByteArray {
         val message = UByteArray(ciphertext.size)
 
-        val validationResult = sodium.crypto_box_open_detached(
+        val validationResult = sodiumJna.crypto_box_open_detached(
             message.asByteArray(),
             ciphertext.asByteArray(),
             tag.asByteArray(),
@@ -196,7 +196,7 @@ actual object Box {
 
     actual fun seal(message: UByteArray, recipientsPublicKey: UByteArray): UByteArray {
         val ciphertextWithPublicKey = UByteArray(message.size + crypto_box_SEALBYTES)
-        sodium.crypto_box_seal(
+        sodiumJna.crypto_box_seal(
             ciphertextWithPublicKey.asByteArray(),
             message.asByteArray(),
             message.size.toLong(),
@@ -207,7 +207,7 @@ actual object Box {
 
     actual fun sealOpen(ciphertext: UByteArray, recipientsPublicKey: UByteArray, recipientsSecretKey: UByteArray): UByteArray {
         val message = UByteArray(ciphertext.size - crypto_box_SEALBYTES)
-        val validationResult = sodium.crypto_box_seal_open(
+        val validationResult = sodiumJna.crypto_box_seal_open(
             message.asByteArray(),
             ciphertext.asByteArray(),
             ciphertext.size.toLong(),

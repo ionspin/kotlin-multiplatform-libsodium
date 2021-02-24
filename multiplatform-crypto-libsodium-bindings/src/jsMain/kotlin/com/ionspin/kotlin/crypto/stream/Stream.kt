@@ -79,4 +79,42 @@ actual object Stream {
 
         return result.toUByteArray()
     }
+
+//    actual fun xChacha20Keygen(): UByteArray {
+//        val result = getSodium().crypto_stream_xchacha20_keygen()
+//
+//        return result.toUByteArray()
+//    }
+//
+//    actual fun xChacha20Xor(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = getSodium().crypto_stream_xchacha20_xor(
+//            message.toUInt8Array(),
+//            nonce.toUInt8Array(),
+//            key.toUInt8Array()
+//        )
+//
+//        return result.toUByteArray()
+//    }
+//
+//    actual fun xChacha20XorIc(
+//        message: UByteArray,
+//        nonce: UByteArray,
+//        initialCounter: ULong,
+//        key: UByteArray
+//    ): UByteArray {
+//        val result = getSodium().crypto_stream_xchacha20_xor_ic(
+//            message.toUInt8Array(),
+//            nonce.toUInt8Array(),
+//            initialCounter.toUInt(),
+//            key.toUInt8Array()
+//        )
+//
+//        return result.toUByteArray()
+//    }
+
+
 }
