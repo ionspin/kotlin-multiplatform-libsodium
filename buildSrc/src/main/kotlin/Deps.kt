@@ -127,7 +127,7 @@ object Deps {
     }
 
     object Native {
-        val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.kotlinSerialization}"
+        val serialization = "org.jetbrains.kotli    nx:kotlinx-serialization-runtime-native:${Versions.kotlinSerialization}"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
 
     }

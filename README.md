@@ -3,9 +3,13 @@
 
 ![Danger: Experimental](https://camo.githubusercontent.com/275bc882f21b154b5537b9c123a171a30de9e6aa/68747470733a2f2f7261772e6769746875622e636f6d2f63727970746f7370686572652f63727970746f7370686572652f6d61737465722f696d616765732f6578706572696d656e74616c2e706e67)
 
-# Libsodium bindings for Kotiln Multiplatform
+# Libsodium bindings for Kotlin Multiplatform
 
 Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium.
+
+## Warning
+While this library is just a wrapper around the well known Libsodium library it still comes with high potential of introducing new
+attack surfaces, bugs and other issues and you shouldn't use it in production until it has been reviewed by community. 
 
 ## Installation
 
@@ -132,7 +136,7 @@ Currently supported native platforms:
 |iOS Arm 32 |           :heavy_check_mark: |
 |watchOS X86 32 |       :heavy_check_mark: |
 |watchOS Arm 64(_32) |  :heavy_check_mark: |
-|watchos Arm 32 |       :heavy_check_mark: |
+|watchOS Arm 32 |       :heavy_check_mark: |
 |tvOS X86 64 |          :heavy_check_mark: |
 |tvOS Arm 64 |          :heavy_check_mark: |
 |minGW X86 64|          :heavy_check_mark: |
@@ -146,16 +150,17 @@ Java Windows dll is from https://download.libsodium.org/libsodium/releases/libso
 
 
 ### TODO:
-- Copy/adapt code documentation, currently only some functions have documentation that is a copy-paste from libsodium website
-- Android testing 
-- Fix browser testing, both locally and in CI/CD
+- Improve documentation
+- Running tests on Android
 - LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 - Complete exposing libsodium constants
+- Find a better way of fetching Konan dependencies than having a dummy project.
 
+### Building
+Clone the git, init the submodule and run `./gradlew build`. Note that current build settings are such that only linux builds `js` target.
 
 #### Notes for Gitlab runners:
-- At the moment all runners need to have android sdk 
-#### Mac:
+- At the moment all runners need to have android sdk present even though not all are building Android build
 
 #### Windows:
 - Needs android sdk
