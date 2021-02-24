@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./gradlew publishAllPublicationsToMavenRepository
+./gradlew publishAllPublicationsToMavenRepository publishAndroidDebugPublicationToMavenRepository publishAndroidReleasePublicationToMavenRepository
 
 
