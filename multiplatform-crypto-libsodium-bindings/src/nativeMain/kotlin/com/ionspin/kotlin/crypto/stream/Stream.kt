@@ -3,16 +3,16 @@ package com.ionspin.kotlin.crypto.stream
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
-import libsodium.crypto_stream_KEYBYTES
 import libsodium.crypto_stream_chacha20
 import libsodium.crypto_stream_chacha20_ietf_xor
 import libsodium.crypto_stream_chacha20_ietf_xor_ic
 import libsodium.crypto_stream_chacha20_keygen
 import libsodium.crypto_stream_chacha20_xor
 import libsodium.crypto_stream_chacha20_xor_ic
-import libsodium.crypto_stream_xchacha20_keygen
-import libsodium.crypto_stream_xchacha20_xor
-import libsodium.crypto_stream_xchacha20_xor_ic
+
+//import libsodium.crypto_stream_xchacha20_keygen
+//import libsodium.crypto_stream_xchacha20_xor
+//import libsodium.crypto_stream_xchacha20_xor_ic
 
 actual object Stream {
     actual fun chacha20(clen: Int, nonce: UByteArray, key: UByteArray): UByteArray {
