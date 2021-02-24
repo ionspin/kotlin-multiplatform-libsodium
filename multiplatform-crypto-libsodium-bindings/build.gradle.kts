@@ -81,7 +81,10 @@ android {
 
 kotlin {
     val hostOsName = getHostOsName()
-    android()
+    android() {
+        publishLibraryVariants("release", "debug")
+    }
+
     jvm()
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
