@@ -21,9 +21,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.1"
 #### Snapshot builds
 ```kotlin
 repositories {
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.2-SNAPSHOT ")
 
