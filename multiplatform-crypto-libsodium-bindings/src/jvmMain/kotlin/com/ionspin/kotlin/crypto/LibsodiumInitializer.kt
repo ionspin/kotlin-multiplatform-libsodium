@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto
 
 import co.libly.resourceloader.FileLoader
+import co.libly.resourceloader.SharedLibraryLoader
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import java.io.File
@@ -15,13 +16,13 @@ actual object LibsodiumInitializer {
     private fun loadLibrary() : JnaLibsodiumInterface {
         val libraryFile = when {
             Platform.isMac() -> {
-                FileLoader.get().load("dynamic-macos-x86-64.dylib", Any::class.java)
+                SharedLibraryLoader.get().load("dynamic-macos-x86-64.dylib", JnaLibsodiumInterface::class.java)
             }
             Platform.isLinux() -> {
-                FileLoader.get().load("dynamic-linux-x86-64-libsodium.so", Any::class.java)
+                SharedLibraryLoader.get().load("dynamic-linux-x86-64-libsodium.so", JnaLibsodiumInterface::class.java)
             }
             Platform.isWindows() -> {
-                FileLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", Any::class.java)
+                SharedLibraryLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", JnaLibsodiumInterface::class.java)
             }
             Platform.isAndroid() -> {
                 when {
