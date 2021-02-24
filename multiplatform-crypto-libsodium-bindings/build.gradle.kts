@@ -591,27 +591,21 @@ tasks.whenTaskAdded {
 tasks {
 
 
-    dokkaHtml {
-        println("Dokka Html!")
+
+    dokkaJavadoc {
+        println("Dokka !")
         dokkaSourceSets {
-            named("commonMain") {
-//                displayName.set("common")
-//                platform.set(Platform.common)
-                moduleName.set("Kotlin Multiplatform Libsodium Bindings")
-                includes.from(
-                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/aead/Aead.md",
-                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/auth/Auth.md",
-                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/box/Box.md",
-                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/generichash/GenericHash.md",
-                    "src/commonMain/kotlin/com.ionspin.kotlin.crypto/CryptoModule.md")
-                displayName.set("Kotlin multiplatform")
-            }
-            configureEach {
-                if (name != "commonMain") {
-                    suppress.set(true)
-                }
+            create("commonMain") {
+                displayName = "common"
+                platform = "common"
             }
         }
+    }
+
+    create<Jar>("javadocJar") {
+        dependsOn(dokkaJavadoc)
+        archiveClassifier.set("javadoc")
+        from(dokkaJavadoc.get().outputDirectory)
     }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
@@ -701,6 +695,7 @@ signing {
 
 publishing {
     publications.withType(MavenPublication::class) {
+        artifact(tasks["javadocJar"])
         pom {
             name.set("Kotlin Multiplatform Crypto")
             description.set("Kotlin Multiplatform Crypto library")

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./gradlew publishAllPublicationsToMavenRepository -x publishKotlinMultiplatformPublicationToMavenRepository -x publishMetadataPublicationToMavenRepository -x publishJvmPublicationToMavenRepository
+

@@ -21,7 +21,7 @@ object Versions {
     val kotlinSerializationPlugin = "1.4.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "1.4.20"
+    val dokkaPlugin = "1.4.0-rc"
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.8-SNAPSHOT"
     val jna = "5.7.0"
@@ -41,7 +41,7 @@ object Versions {
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
     val version = "0.1.0-SNAPSHOT"
-    val bindingsVersion = "0.8.0-SNAPSHOT"
+    val bindingsVersion = "0.8.1-SNAPSHOT"
 }
 
 object Deps {
