@@ -21,10 +21,10 @@ expect object LibsodiumUtil {
     fun pad(unpaddedData : UByteArray, blocksize: Int) : UByteArray
     fun unpad(paddedData: UByteArray, blocksize: Int) : UByteArray
 
-    fun toBase64(data: UByteArray, variant : Base64Variants = Base64Variants.URLSAFE_NO_PADDING) : String
+    fun toBase64(data: UByteArray, variant : Base64Variants = Base64Variants.ORIGINAL) : String
     fun toHex(data: UByteArray) : String
 
-    fun fromBase64(data: String, variant : Base64Variants = Base64Variants.URLSAFE_NO_PADDING) : UByteArray
+    fun fromBase64(data: String, variant : Base64Variants = Base64Variants.ORIGINAL) : UByteArray
     fun fromHex(data: String) : UByteArray
 
 }
