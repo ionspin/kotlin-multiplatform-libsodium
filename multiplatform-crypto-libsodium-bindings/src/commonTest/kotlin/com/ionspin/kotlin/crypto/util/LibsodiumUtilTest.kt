@@ -1,6 +1,5 @@
 package com.ionspin.kotlin.crypto.util
 
-import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import kotlin.math.exp
 import com.ionspin.kotlin.crypto.util.runTest
@@ -47,9 +46,9 @@ class LibsodiumUtilTest {
             val input = ubyteArrayOf(1U, 2U)
             val blocksize = 16
             val padded = LibsodiumUtil.pad(input, blocksize)
-            println(padded.hexColumsPrint())
+            println(padded.hexColumnsPrint())
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
-            println(unpadded.hexColumsPrint())
+            println(unpadded.hexColumnsPrint())
 
             assertTrue {
                 input.contentEquals(unpadded)
@@ -63,9 +62,9 @@ class LibsodiumUtilTest {
             val input = charArrayOf('a', 'b', 'c', 'd').map { it.toByte().toUByte() }.toUByteArray()
             val blocksize = 4
             val padded = LibsodiumUtil.pad(input, blocksize)
-            println(padded.hexColumsPrint())
+            println(padded.hexColumnsPrint())
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
-            println(unpadded.hexColumsPrint())
+            println(unpadded.hexColumnsPrint())
 
             assertTrue {
                 input.contentEquals(unpadded)
@@ -80,10 +79,10 @@ class LibsodiumUtilTest {
             val blocksize = 2
             val padded = LibsodiumUtil.pad(input, blocksize)
             val expected = ubyteArrayOf(1U, 2U, 0x80U, 0x00U)
-            println(padded.hexColumsPrint())
+            println(padded.hexColumnsPrint())
             assertTrue { padded.contentEquals(expected) }
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
-            println(unpadded.hexColumsPrint())
+            println(unpadded.hexColumnsPrint())
 
             assertTrue {
                 input.contentEquals(unpadded)
@@ -98,10 +97,10 @@ class LibsodiumUtilTest {
             val blocksize = 4
             val padded = LibsodiumUtil.pad(input, blocksize)
             val expected = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 6U, 0x80U, 0x00U)
-            println(padded.hexColumsPrint())
+            println(padded.hexColumnsPrint())
             assertTrue { padded.contentEquals(expected) }
             val unpadded = LibsodiumUtil.unpad(padded, blocksize)
-            println(unpadded.hexColumsPrint())
+            println(unpadded.hexColumnsPrint())
 
             assertTrue {
                 input.contentEquals(unpadded)
@@ -114,13 +113,13 @@ class LibsodiumUtilTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U)
             val expected = "AQIDBAUgQID_"
-            val output = LibsodiumUtil.toBase64(input)
+            val output = LibsodiumUtil.toBase64(input, Base64Variants.URLSAFE_NO_PADDING)
             println("Output: |$output|")
             println("Expected|$expected| ")
             assertTrue {
                 output == expected
             }
-            val reconstructed = LibsodiumUtil.fromBase64(output)
+            val reconstructed = LibsodiumUtil.fromBase64(output, Base64Variants.URLSAFE_NO_PADDING)
             println("Reconstructed: ${reconstructed.toHexString()}")
             assertTrue {
                 reconstructed.contentEquals(input)
@@ -133,13 +132,13 @@ class LibsodiumUtilTest {
         LibsodiumInitializer.initializeWithCallback {
             val input = ubyteArrayOf(1U, 2U, 3U, 4U, 5U, 32U, 64U, 128U, 255U, 128U)
             val expected = "AQIDBAUgQID_gA"
-            val output = LibsodiumUtil.toBase64(input)
+            val output = LibsodiumUtil.toBase64(input, Base64Variants.URLSAFE_NO_PADDING)
             println("Output: |$output|")
             println("Expected|$expected| ")
             assertTrue {
                 output == expected
             }
-            val reconstructed = LibsodiumUtil.fromBase64(output)
+            val reconstructed = LibsodiumUtil.fromBase64(output, Base64Variants.URLSAFE_NO_PADDING)
             println("Reconstructed: ${reconstructed.toHexString()}")
             assertTrue {
                 reconstructed.contentEquals(input)

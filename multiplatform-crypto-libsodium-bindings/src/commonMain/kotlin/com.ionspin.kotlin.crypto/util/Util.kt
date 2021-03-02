@@ -26,3 +26,13 @@ fun UByteArray.toHexString() : String {
         }
     }
 }
+
+fun Array<UByte>.hexColumnsPrint(chunk: Int = 16) {
+    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
+    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+}
+
+fun UByteArray.hexColumnsPrint(chunk: Int = 16) {
+    val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
+    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+}
