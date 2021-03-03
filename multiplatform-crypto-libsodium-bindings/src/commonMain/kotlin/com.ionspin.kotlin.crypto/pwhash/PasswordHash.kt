@@ -6,7 +6,7 @@ package com.ionspin.kotlin.crypto.pwhash
 
 
 const val crypto_pwhash_BYTES_MIN = 16U
-const val crypto_pwhash_MEMLIMIT_INTERACTIVE = 67108864U
+const val crypto_pwhash_MEMLIMIT_INTERACTIVE = 67108864
 const val crypto_pwhash_MEMLIMIT_MIN = 8192
 const val crypto_pwhash_MEMLIMIT_MODERATE = 268435456
 const val crypto_pwhash_MEMLIMIT_SENSITIVE = 1073741824
