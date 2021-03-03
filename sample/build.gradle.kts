@@ -186,7 +186,6 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
-                implementation(Deps.Common.kotlinBigNum)
                 implementation(Deps.Common.serialization)
                 api(project(":multiplatform-crypto-libsodium-bindings"))
             }

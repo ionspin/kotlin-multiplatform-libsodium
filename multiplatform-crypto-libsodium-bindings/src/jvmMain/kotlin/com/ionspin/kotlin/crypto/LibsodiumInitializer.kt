@@ -19,7 +19,12 @@ actual object LibsodiumInitializer {
                 SharedLibraryLoader.get().load("dynamic-macos-x86-64.dylib", JnaLibsodiumInterface::class.java)
             }
             Platform.isLinux() -> {
-                SharedLibraryLoader.get().load("dynamic-linux-x86-64-libsodium.so", JnaLibsodiumInterface::class.java)
+                if (Platform.isARM()) {
+                    SharedLibraryLoader.get().load("dynamic-linux-arm64-libsodium.so", JnaLibsodiumInterface::class.java)
+                } else {
+                    SharedLibraryLoader.get()
+                        .load("dynamic-linux-x86-64-libsodium.so", JnaLibsodiumInterface::class.java)
+                }
             }
             Platform.isWindows() -> {
                 SharedLibraryLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", JnaLibsodiumInterface::class.java)

@@ -1,9 +1,8 @@
 package com.ionspin.kotlin.crypto.secretstream
 
-import com.ionspin.kotlin.bignum.integer.util.hexColumsPrint
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
-import com.ionspin.kotlin.crypto.util.testBlocking
+import com.ionspin.kotlin.crypto.util.hexColumnsPrint
 import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -58,19 +57,19 @@ class SecretStreamTest {
                 0x98U, 0x79U, 0x47U, 0xdeU, 0xafU, 0xd8U, 0x78U, 0x0aU,
                 0xcfU, 0x49U
             )
-            message.hexColumsPrint()
+            message.hexColumnsPrint()
             println("---- init enc ----")
             val stateAndHeader = SecretStream.xChaCha20Poly1305InitPush(key)
             println("---- encrypt ----")
             val encrypted =
                 SecretStream.xChaCha20Poly1305Push(stateAndHeader.state, message, ubyteArrayOf(), 0U)
-            encrypted.hexColumsPrint()
+            encrypted.hexColumnsPrint()
             println("---- init dec ----")
             val decryptState = SecretStream.xChaCha20Poly1305InitPull(key, stateAndHeader.header)
             println("---- decrypt ----")
             val decrypted =
                 SecretStream.xChaCha20Poly1305Pull(decryptState.state, encrypted, ubyteArrayOf())
-            decrypted.decryptedData.hexColumsPrint()
+            decrypted.decryptedData.hexColumnsPrint()
             assertTrue {
                 decrypted.decryptedData.contentEquals(message)
             }
