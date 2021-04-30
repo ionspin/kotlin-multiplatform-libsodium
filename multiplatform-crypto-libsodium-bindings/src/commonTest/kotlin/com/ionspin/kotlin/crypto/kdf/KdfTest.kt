@@ -15,15 +15,15 @@ class KdfTest {
     fun testKdf() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             val masterKey = Kdf.keygen()
-            val subkey1 = Kdf.deriveFromKey(1, crypto_kdf_BYTES_MAX, "test1234", masterKey)
-            val subkey2 = Kdf.deriveFromKey(2, crypto_kdf_BYTES_MAX, "test1234", masterKey)
+            val subkey1 = Kdf.deriveFromKey(1U, crypto_kdf_BYTES_MAX, "test1234", masterKey)
+            val subkey2 = Kdf.deriveFromKey(2U, crypto_kdf_BYTES_MAX, "test1234", masterKey)
 
             assertTrue {
                 subkey1.size == crypto_kdf_BYTES_MAX &&
                         subkey2.size == crypto_kdf_BYTES_MAX
             }
 
-            val repeatSubkey1 = Kdf.deriveFromKey(1, crypto_kdf_BYTES_MAX, "test1234", masterKey)
+            val repeatSubkey1 = Kdf.deriveFromKey(1U, crypto_kdf_BYTES_MAX, "test1234", masterKey)
             assertTrue {
                 subkey1.contentEquals(repeatSubkey1)
             }

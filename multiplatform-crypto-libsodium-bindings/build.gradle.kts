@@ -71,6 +71,9 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
     sourceSets.getByName("main") {
 //        jniLibs.srcDir("src/androidMain/libs")
@@ -122,22 +125,23 @@ kotlin {
             }
         }
 
-
-        linuxArm64() {
-            binaries {
-                staticLib {
+        if (ideaActive.not()) {
+            linuxArm64() {
+                binaries {
+                    staticLib {
+                    }
                 }
             }
+            // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
+            // so konanc can't build klib because getrandom missing will cause sodium_misuse()
+            //     ld.lld: error: undefined symbol: explicit_bzero
+            //     >>> referenced by utils.c
+            //     >>>               libsodium_la-utils.o:(sodium_memzero) in archive /tmp/included11051337748775083797/libsodium.a
+            //
+            //     ld.lld: error: undefined symbol: getrandom
+            //     >>> referenced by randombytes_sysrandom.c
+            //     >>>               libsodium_la-randombytes_sysrandom.o:(_randombytes_linux_getrandom) in archive /tmp/included11051337748775083797/libsodium.a
         }
-        // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
-        // so konanc can't build klib because getrandom missing will cause sodium_misuse()
-        //     ld.lld: error: undefined symbol: explicit_bzero
-        //     >>> referenced by utils.c
-        //     >>>               libsodium_la-utils.o:(sodium_memzero) in archive /tmp/included11051337748775083797/libsodium.a
-        //
-        //     ld.lld: error: undefined symbol: getrandom
-        //     >>> referenced by randombytes_sysrandom.c
-        //     >>>               libsodium_la-randombytes_sysrandom.o:(_randombytes_linux_getrandom) in archive /tmp/included11051337748775083797/libsodium.a
 
     }
 
@@ -292,7 +296,11 @@ kotlin {
             "linuxX64"
         )
         val linuxArm64Bit = setOf(
-            "linuxArm64"
+            if (ideaActive.not()) {
+                "linuxArm64"
+            } else {
+                ""
+            }
         )
         val linux32Bit = setOf(
             "" // "linuxArm32Hfp"
@@ -441,29 +449,29 @@ kotlin {
             }
         }
 
-            val androidMain by getting {
-                isNotRunningInIdea {
-                    kotlin.srcDirs("src/androidMain", "src/androidSpecific", "src/jvmMain/kotlin")
-                }
-                isRunningInIdea {
-                    kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
-                }
-                dependencies {
-                    implementation("net.java.dev.jna:jna:5.5.0@aar")
-                    implementation(Deps.Jvm.resourceLoader) {
-                        exclude("net.java.dev.jna", "jna")
-                    }
+        val androidMain by getting {
+            isNotRunningInIdea {
+                kotlin.srcDirs("src/androidMain", "src/androidSpecific", "src/jvmMain/kotlin")
+            }
+            isRunningInIdea {
+                kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
+            }
+            dependencies {
+                implementation("net.java.dev.jna:jna:5.5.0@aar")
+                implementation(Deps.Jvm.resourceLoader) {
+                    exclude("net.java.dev.jna", "jna")
                 }
             }
+        }
 
-            val androidTest by getting {
-                dependencies {
-                    implementation(kotlin(Deps.Jvm.test))
-                    implementation(kotlin(Deps.Jvm.testJUnit))
-                    implementation("androidx.test:runner:1.2.0")
-                    implementation("androidx.test:rules:1.2.0")
-                }
+        val androidTest by getting {
+            dependencies {
+//                    implementation(kotlin(Deps.Jvm.test))
+//                    implementation(kotlin(Deps.Jvm.testJUnit))
+//                    implementation("androidx.test:runner:1.2.0")
+//                    implementation("androidx.test:rules:1.2.0")
             }
+        }
 
         val jvmMain by getting {
             kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
@@ -650,7 +658,7 @@ tasks {
         val jsBrowserTest by getting(KotlinJsTest::class) {
             testLogging {
                 events("PASSED", "FAILED", "SKIPPED")
-                 showStandardStreams = true
+                showStandardStreams = true
             }
         }
 
