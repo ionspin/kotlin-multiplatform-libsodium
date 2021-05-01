@@ -2,6 +2,7 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.8.3-SNAPSHOT
+- Fixed loading but not initializing libsodium on js and jvm
 - Changed subkey id to UInt from Int, limited by JS api
 - Updated libsodium to latest master 710b2d3963347017ba (potentially will be switched to stable branch)
 - Experimentig with sodium_malloc usage instead of pinned UByteArrays

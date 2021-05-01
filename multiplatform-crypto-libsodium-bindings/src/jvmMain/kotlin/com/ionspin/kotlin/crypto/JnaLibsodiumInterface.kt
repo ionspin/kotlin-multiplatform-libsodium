@@ -73,6 +73,12 @@ class SecretStreamXChaCha20Poly1305State : Structure() {
 
 interface JnaLibsodiumInterface : Library {
 
+    // ---- Initialization ---
+
+    fun sodium_init() : Int
+
+    // ---- Initialization end ---
+
     // ---- Utils ----
     fun sodium_version_string(): String
 

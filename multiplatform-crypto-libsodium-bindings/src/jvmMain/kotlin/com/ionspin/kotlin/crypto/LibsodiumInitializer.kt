@@ -55,11 +55,13 @@ actual object LibsodiumInitializer {
     lateinit var sodiumJna : JnaLibsodiumInterface
     actual suspend fun initialize() {
         sodiumJna = loadLibrary()
+        sodiumJna.sodium_init()
         isPlatformInitialized = true
     }
 
     actual fun initializeWithCallback(done: () -> Unit) {
         sodiumJna = loadLibrary()
+        sodiumJna.sodium_init()
         isPlatformInitialized = true
         done()
     }
