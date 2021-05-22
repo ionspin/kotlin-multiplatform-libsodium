@@ -708,7 +708,7 @@ publishing {
         artifact(tasks["javadocJar"])
         pom {
             name.set("Kotlin Multiplatform Crypto")
-            description.set("Kotlin Multiplatform Crypto library")
+            description.set("Kotlin Multiplatform Libsodium Wrapper")
             url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
             licenses {
                 license {
@@ -724,9 +724,9 @@ publishing {
                 }
             }
             scm {
-                url.set("https://github.com/ionspin/kotlin-multiplatform-crypto")
-                connection.set("scm:git:git://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
-                developerConnection.set("scm:git:ssh://git@github.com:ionspin/kotlin-multiplatform-crypto.git")
+                url.set("https://github.com/ionspin/kotlin-multiplatform-libsodium")
+                connection.set("scm:git:git://git@github.com:ionspin/kotlin-multiplatform-libsodium.git")
+                developerConnection.set("scm:git:ssh://git@github.com:ionspin/kotlin-multiplatform-libsodium.git")
 
             }
 
