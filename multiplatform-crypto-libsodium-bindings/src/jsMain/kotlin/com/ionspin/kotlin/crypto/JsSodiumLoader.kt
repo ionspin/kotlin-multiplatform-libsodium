@@ -29,7 +29,6 @@ object JsSodiumLoader {
         setSodiumPointer(promisedSodium)
         sodiumLoaded = true
         continuation.resumeWith(Result.success(Unit))
-        sodiumPointer.sodium_init()
     }
 
     suspend fun load() = suspendCoroutine<Unit> { continuation ->
