@@ -15,10 +15,10 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.4.2"
-    val kotlin = "1.4.30"
+    val kotlinCoroutines = "1.5.0-native-mt"
+    val kotlin = "1.5.10"
     val kotlinSerialization = "1.0.1"
-    val kotlinSerializationPlugin = "1.4.10"
+    val kotlinSerializationPlugin = "1.5.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "1.4.0-rc"
@@ -41,7 +41,7 @@ object Versions {
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
     val version = "0.1.0-SNAPSHOT"
-    val bindingsVersion = "0.8.3-SNAPSHOT"
+    val bindingsVersion = "0.8.4-SNAPSHOT"
 }
 
 object Deps {
