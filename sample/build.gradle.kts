@@ -60,28 +60,28 @@ kotlin {
     android()
     runningOnLinuxx86_64 {
         jvm()
-//        js(IR) {
-//            browser {
-//                webpackTask {
-//
-//                }
-//                testTask {
-//                    useKarma {
-//                        useChrome()
-//                    }
-//                }
-//            }
-//            nodejs {
-//                testTask {
-//                    useMocha() {
-//                        timeout = "10s"
-//                    }
-//                }
-//            }
+        js(IR) {
+            browser {
+                webpackTask {
 
-//            binaries.executable()
+                }
+                testTask {
+                    useKarma {
+                        useChrome()
+                    }
+                }
+            }
+            nodejs {
+                testTask {
+                    useMocha() {
+                        timeout = "10s"
+                    }
+                }
+            }
 
-//        }
+            binaries.executable()
+
+        }
 
 
         linuxX64("linux") {
@@ -284,30 +284,18 @@ kotlin {
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
-//            val jsMain by getting {
-//                dependencies {
-//                    implementation(kotlin(Deps.Js.stdLib))
-//                    implementation(Deps.Js.coroutines)
-//
-//
-//                    // React
-//                    implementation(Deps.Js.React.react)
-//                    implementation(Deps.Js.React.reactDom)
-////                    implementation(npm(Deps.Js.Npm.reactPair.first, Deps.Js.Npm.reactPair.second))
-////                    implementation(npm(Deps.Js.Npm.reactDomPair.first, Deps.Js.Npm.reactDomPair.second))
-//
-//                    // Styled
-//                    implementation(Deps.Js.React.styled)
-////                    implementation(npm(Deps.Js.Npm.styledComponentsPair.first, Deps.Js.Npm.styledComponentsPair.second))
-////                    implementation(npm(Deps.Js.Npm.inlineStylePrefixesPair.first, Deps.Js.Npm.inlineStylePrefixesPair.second))
-//
-//                }
-//            }
-//            val jsTest by getting {
-//                dependencies {
-//                    implementation(kotlin(Deps.Js.test))
-//                }
-//            }
+            val jsMain by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Js.stdLib))
+                    implementation(Deps.Js.coroutines)
+
+                }
+            }
+            val jsTest by getting {
+                dependencies {
+                    implementation(kotlin(Deps.Js.test))
+                }
+            }
 
             val linuxMain by getting {
                 dependsOn(nativeMain)

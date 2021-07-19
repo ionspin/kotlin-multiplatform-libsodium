@@ -83,21 +83,11 @@ object Deps {
         val ktorClientSerialization = "io.ktor:ktor-client-serialization-js:${Versions.ktor}"
         val ktorClientWebSockets = "io.ktor:ktor-client-websockets-js:${Versions.ktor}"
 
-        object React {
-            val react = "org.jetbrains.kotlin-wrappers:kotlin-react:${JsVersions.react}"
-            val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:${JsVersions.react}"
-            val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:${JsVersions.styled}"
-
-        }
-
         object Npm {
-            val libsodium = Pair("libsodium-wrappers-sumo", "0.7.8")
+            val libsodium = Pair("libsodium-wrappers-sumo", "0.7.9")
             //val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "file:${getProjectPath()}/multiplatform-crypto-delegated/libsodium-wrappers-sumo-0.7.6.tgz")
-            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.8")
-            val reactPair = Pair("react", JsVersions.reactNpm)
-            val reactDomPair = Pair("react-dom", JsVersions.reactNpm)
-            val styledComponentsPair = Pair("styled-components", JsVersions.styledNpm)
-            val inlineStylePrefixesPair = Pair("inline-style-prefixer", "6.0.0")
+            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.9")
+
         }
 
     }
