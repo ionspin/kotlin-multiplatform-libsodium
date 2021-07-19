@@ -47,7 +47,6 @@ val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
@@ -89,8 +88,10 @@ kotlin {
     }
 
     jvm()
+    val projectRef = project
     runningOnLinuxx86_64 {
         println("Configuring Linux X86-64 targets")
+
 
         js(IR) {
             browser {
@@ -112,11 +113,11 @@ kotlin {
         linuxX64() {
             compilations.getByName("main") {
                 val libsodiumCinterop by cinterops.creating {
-                    defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                    compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
+                    defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                    compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
                 }
                 kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${project.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
+                    "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
                 )
             }
             binaries {
@@ -185,11 +186,11 @@ kotlin {
         }
         compilations.getByName("main") {
             val libsodiumCinterop by cinterops.creating {
-                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-macos-x86-64/include")
+                defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos-x86-64/include")
             }
             kotlinOptions.freeCompilerArgs = listOf(
-                "-include-binary", "${project.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
+                "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
             )
         }
     }
@@ -241,11 +242,11 @@ kotlin {
         }
         compilations.getByName("main") {
             val libsodiumCinterop by cinterops.creating {
-                defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
+                defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
             }
             kotlinOptions.freeCompilerArgs = listOf(
-                "-include-binary", "${project.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
+                "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
             )
         }
     }
@@ -351,11 +352,11 @@ kotlin {
 
                     compilations.getByName("main") {
                         val libsodiumCinterop by cinterops.creating {
-                            defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                            compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-arm64/include/")
+                            defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                            compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-arm64/include/")
                         }
                         kotlinOptions.freeCompilerArgs = listOf(
-                            "-include-binary", "${project.rootDir}/sodiumWrapper/static-arm64/lib/libsodium.a"
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-arm64/lib/libsodium.a"
                         )
                     }
                 }
@@ -370,11 +371,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
                     )
                 }
 
@@ -382,11 +383,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-ios-simulators/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-ios-simulators/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/lib/libsodium.a"
                     )
                 }
 
@@ -394,11 +395,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-tvos/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-tvos/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos/lib/libsodium.a"
                     )
                 }
 
@@ -406,11 +407,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-tvos-simulators/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-tvos-simulators/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/lib/libsodium.a"
                     )
                 }
 
@@ -418,11 +419,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-watchos/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
                     )
                 }
 
@@ -430,11 +431,11 @@ kotlin {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
-                        defFile(project.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${project.rootDir}/sodiumWrapper/static-watchos-simulators/include")
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${project.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
                     )
                 }
 
@@ -602,21 +603,19 @@ tasks {
 
 
 
-    dokkaJavadoc {
+
+    create<Jar>("javadocJar") {
+        dependsOn(dokkaHtml)
+        archiveClassifier.set("javadoc")
+        from(dokkaHtml.get().outputDirectory)
+    }
+
+    dokkaHtml {
         println("Dokka !")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
-            }
         }
     }
 
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
             testLogging {
@@ -753,18 +752,5 @@ publishing {
     }
 }
 
-//configurations.forEach {
-//
-//    if (it.name == "linuxCompileKlibraries") {
-//        println("Configuration name: ${it.name}")
-//        it.attributes {
-//            this.keySet().forEach { key ->
-//                val attribute = getAttribute(key)
-//                println(" |-- Attribute $key ${attribute}")
-//                attribute(org.jetbrains.kotlin.gradle.plugin.ProjectLocalConfigurations.ATTRIBUTE, "publicZ")
-//            }
-//        }
-//    }
-//}
 
 

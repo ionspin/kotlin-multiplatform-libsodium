@@ -2,6 +2,9 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.8.4-SNAPSHOT
+- Bump to kotlin 1.5.21
+- Libsodium.js bump to 0.7.9
+- Removed bintray/jcenter repositories 
 
 #### 0.8.3 - 28.5.2021
 - Built with kotlin 1.5.10

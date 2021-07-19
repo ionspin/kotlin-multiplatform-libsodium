@@ -17,11 +17,7 @@
 
 pluginManagement {
     repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
-        maven("https://dl.bintray.com/kotlin/kotlin-dev")
-
         mavenCentral()
-
         maven("https://plugins.gradle.org/m2/")
     }
 
@@ -33,7 +29,6 @@ pluginManagement {
         }
     }
 }
-enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "KotlinMultiplatformLibsodium"
 include("multiplatform-crypto-api")
 include("multiplatform-crypto-libsodium-bindings")

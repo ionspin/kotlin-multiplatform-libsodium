@@ -1,7 +1,6 @@
 package com.ionspin.kotlin.crypto
 
-import co.libly.resourceloader.FileLoader
-import co.libly.resourceloader.SharedLibraryLoader
+import com.goterl.resourceloader.SharedLibraryLoader
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import java.io.File

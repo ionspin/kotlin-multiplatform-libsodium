@@ -32,7 +32,6 @@ plugins {
     kotlin(PluginsDeps.kotlinSerializationPlugin) version Versions.kotlinSerializationPlugin
 
 }
-org.jetbrains.kotlin.gradle.targets.js.npm.NpmResolverPlugin.apply(project)
 
 val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -41,8 +40,6 @@ val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven("https://dl.bintray.com/terl/lazysodium-maven")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 
 }
@@ -82,7 +79,7 @@ kotlin {
                 }
             }
 
-//            binaries.executable()
+            binaries.executable()
 
         }
 
@@ -205,11 +202,7 @@ kotlin {
                 implementation("androidx.core:core-ktx:1.3.2")
                 implementation("androidx.constraintlayout:constraintlayout:2.0.2")
                 implementation("com.google.android.material:material:1.3.0-alpha03")
-//                implementation("androidx.ui:ui-tooling:$composeDevVersion")
-//                implementation("androidx.ui:ui-layout:$composeDevVersion")
-//                implementation("androidx.ui:ui-material:$composeDevVersion")
-//                implementation("androidx.ui:ui-foundation:$composeDevVersion")
-//                implementation("androidx.ui:ui-framework:$composeDevVersion")
+
                 implementation(Deps.Android.coroutines)
                 implementation(Deps.Android.timber)
 //                implementation("androidx.compose:compose-runtime:$composeDevVersion")
@@ -244,7 +237,7 @@ kotlin {
             val nativeMain by getting {
                 dependsOn(commonMain)
                 dependencies {
-                    implementation(Deps.Desktop.libui)
+
                 }
             }
             nativeMain
@@ -252,7 +245,7 @@ kotlin {
             val nativeMain by creating {
                 dependsOn(commonMain)
                 dependencies {
-                    implementation(Deps.Desktop.libui)
+
                 }
             }
             nativeMain
@@ -295,17 +288,6 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
                     implementation(Deps.Js.coroutines)
-
-                    // React
-                    implementation(Deps.Js.React.react)
-                    implementation(Deps.Js.React.reactDom)
-                    implementation(npm(Deps.Js.Npm.reactPair.first, Deps.Js.Npm.reactPair.second))
-                    implementation(npm(Deps.Js.Npm.reactDomPair.first, Deps.Js.Npm.reactDomPair.second))
-
-                    // Styled
-                    implementation(Deps.Js.React.styled)
-                    implementation(npm(Deps.Js.Npm.styledComponentsPair.first, Deps.Js.Npm.styledComponentsPair.second))
-                    implementation(npm(Deps.Js.Npm.inlineStylePrefixesPair.first, Deps.Js.Npm.inlineStylePrefixesPair.second))
 
                 }
             }
@@ -481,12 +463,12 @@ tasks {
             }
         }
 
-        val jsNodeTest by getting(KotlinJsTest::class) {
-            testLogging {
-                events("PASSED", "FAILED", "SKIPPED")
-                showStandardStreams = true
-            }
-        }
+//        val jsNodeTest by getting(KotlinJsTest::class) {
+//            testLogging {
+//                events("PASSED", "FAILED", "SKIPPED")
+//                showStandardStreams = true
+//            }
+//        }
 
 
     }

@@ -20,11 +20,8 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven  ("https://kotlin.bintray.com/kotlinx")
-        maven ("https://dl.bintray.com/kotlin/kotlin-eap")
-        maven ("https://dl.bintray.com/kotlin/kotlin-dev")
         gradlePluginPortal()
-        jcenter()
+
     }
 
     dependencies {
@@ -39,10 +36,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven ("https://kotlin.bintray.com/kotlinx")
-        maven ("https://dl.bintray.com/kotlin/kotlin-eap")
-        maven ("https://dl.bintray.com/kotlin/kotlin-dev")
-        jcenter()
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
