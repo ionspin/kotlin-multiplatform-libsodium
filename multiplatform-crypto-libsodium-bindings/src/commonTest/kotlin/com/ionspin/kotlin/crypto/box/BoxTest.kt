@@ -44,6 +44,8 @@ class BoxTest {
             assertFailsWith<BoxCorruptedOrTamperedDataException>() {
                 val tampered = encrypted.copyOf()
                 tampered[1] = 0U
+                tampered[2] = 0U
+                tampered[3] = 0U
                 Box.openEasy(tampered, messageNonce, senderKeypair.publicKey, recipientKeypair.secretKey)
             }
         }
@@ -71,6 +73,8 @@ class BoxTest {
             assertFailsWith<BoxCorruptedOrTamperedDataException>() {
                 val tampered = encrypted.ciphertext.copyOf()
                 tampered[1] = 0U
+                tampered[2] = 0U
+                tampered[3] = 0U
                 Box.openDetached(
                     tampered,
                     encrypted.tag,
@@ -104,6 +108,8 @@ class BoxTest {
             assertFailsWith<BoxCorruptedOrTamperedDataException>() {
                 val tampered = encrypted.copyOf()
                 tampered[1] = 0U
+                tampered[2] = 0U
+                tampered[3] = 0U
                 Box.openEasyAfterNM(tampered, messageNonce, recipientComputedSessionKey)
             }
         }
@@ -124,6 +130,8 @@ class BoxTest {
             assertFailsWith<BoxCorruptedOrTamperedDataException>() {
                 val tampered = sealed.copyOf()
                 tampered[1] = 0U
+                tampered[2] = 0U
+                tampered[3] = 0U
                 Box.sealOpen(tampered, recipientKeypair.publicKey, recipientKeypair.secretKey)
             }
         }
