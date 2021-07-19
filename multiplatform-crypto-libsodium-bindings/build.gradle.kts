@@ -47,7 +47,6 @@ val sonatypeUsernameEnv: String? = System.getenv()["SONATYPE_USERNAME"]
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
@@ -604,21 +603,19 @@ tasks {
 
 
 
-    dokkaJavadoc {
+
+    create<Jar>("javadocJar") {
+        dependsOn(dokkaHtml)
+        archiveClassifier.set("javadoc")
+        from(dokkaHtml.get().outputDirectory)
+    }
+
+    dokkaHtml {
         println("Dokka !")
         dokkaSourceSets {
-            create("commonMain") {
-                displayName = "common"
-                platform = "common"
-            }
         }
     }
 
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
         val jvmTest by getting(Test::class) {
             testLogging {
@@ -755,18 +752,5 @@ publishing {
     }
 }
 
-//configurations.forEach {
-//
-//    if (it.name == "linuxCompileKlibraries") {
-//        println("Configuration name: ${it.name}")
-//        it.attributes {
-//            this.keySet().forEach { key ->
-//                val attribute = getAttribute(key)
-//                println(" |-- Attribute $key ${attribute}")
-//                attribute(org.jetbrains.kotlin.gradle.plugin.ProjectLocalConfigurations.ATTRIBUTE, "publicZ")
-//            }
-//        }
-//    }
-//}
 
 

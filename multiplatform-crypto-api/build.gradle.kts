@@ -30,8 +30,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    jcenter()
-
 }
 group = ReleaseInfo.group
 version = ReleaseInfo.version

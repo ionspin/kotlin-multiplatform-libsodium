@@ -21,7 +21,7 @@ object Versions {
     val kotlinSerializationPlugin = "1.5.10"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "1.4.0-rc"
+    val dokkaPlugin = "1.5.0"
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.8"
     val jna = "5.7.0"
@@ -31,7 +31,7 @@ object Versions {
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
 
-    val resourceLoader = "1.3.10"
+    val resourceLoader = "2.0.1"
 
 
 
@@ -67,10 +67,10 @@ object Deps {
     object Js {
 
         object JsVersions {
-            val react = "16.13.1-pre.124-kotlin-1.4.10"
-            val reactNpm = "16.13.1"
-            val styled = "5.2.0-pre.124-kotlin-1.4.10"
-            val styledNpm = "1.0.0"
+            val react = "17.0.2-pre.218-kotlin-1.5.21"
+            val reactNpm = "17.0.2"
+            val styled = "5.3.0-pre.218-kotlin-1.5.21"
+            val styledNpm = "5.3.0"
 
         }
 
@@ -84,9 +84,9 @@ object Deps {
         val ktorClientWebSockets = "io.ktor:ktor-client-websockets-js:${Versions.ktor}"
 
         object React {
-            val react = "org.jetbrains:kotlin-react:${JsVersions.react}"
-            val reactDom = "org.jetbrains:kotlin-react-dom:${JsVersions.react}"
-            val styled = "org.jetbrains:kotlin-styled:${JsVersions.styled}"
+            val react = "org.jetbrains.kotlin-wrappers:kotlin-react:${JsVersions.react}"
+            val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:${JsVersions.react}"
+            val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:${JsVersions.styled}"
 
         }
 
@@ -96,7 +96,7 @@ object Deps {
             val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.8")
             val reactPair = Pair("react", JsVersions.reactNpm)
             val reactDomPair = Pair("react-dom", JsVersions.reactNpm)
-            val styledComponentsPair = Pair("styled-components", "5.2.0")
+            val styledComponentsPair = Pair("styled-components", JsVersions.styledNpm)
             val inlineStylePrefixesPair = Pair("inline-style-prefixer", "6.0.0")
         }
 
@@ -114,7 +114,7 @@ object Deps {
 
         val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoet}"
 
-        val resourceLoader = "co.libly:resource-loader:${Versions.resourceLoader}"
+        val resourceLoader = "com.goterl:resource-loader:${Versions.resourceLoader}"
 
         object Delegated {
             val jna = "net.java.dev.jna:jna:${Versions.jna}"
