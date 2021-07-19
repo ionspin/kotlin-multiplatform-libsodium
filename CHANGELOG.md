@@ -1,10 +1,12 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.8.4-SNAPSHOT
+#### 0.8.5-SNAPSHOT
+
+#### 0.8.4 - 19.7.2021
 - Bump to kotlin 1.5.21
 - Libsodium.js bump to 0.7.9
-- Removed bintray/jcenter repositories 
+- Removed bintray/jcenter repositories
 
 #### 0.8.3 - 28.5.2021
 - Built with kotlin 1.5.10

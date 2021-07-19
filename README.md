@@ -15,7 +15,7 @@ attack surfaces, bugs and other issues and you shouldn't use it in production un
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.3")
+implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.4")
 ```
 
 #### Snapshot builds
@@ -23,7 +23,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.3"
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.4-SNAPSHOT ")
+implementation("com.ionspin.kotlin:multiplatform-crypto-lisodium-bindings:0.8.5-SNAPSHOT")
 
 ```
 
