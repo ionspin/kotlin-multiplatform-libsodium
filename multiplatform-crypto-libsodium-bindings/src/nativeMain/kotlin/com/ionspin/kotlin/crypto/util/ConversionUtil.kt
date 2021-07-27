@@ -11,4 +11,10 @@ import kotlinx.cinterop.toCPointer
  * ugljesa.jovanovic@ionspin.com
  * on 27-Aug-2020
  */
-fun Pinned<UByteArray>.toPtr() : CPointer<UByteVar>? = addressOf(0)
+fun Pinned<UByteArray>.toPtr() : CPointer<UByteVar>? {
+    return try {
+        addressOf(0)
+    } catch (outOfBounds : ArrayIndexOutOfBoundsException) {
+        null
+    }
+}

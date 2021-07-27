@@ -2,6 +2,7 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.8.5-SNAPSHOT
+- Fix array out of bounds on native when trying to get a pointer to empty array. Return null instead.
 
 #### 0.8.4 - 19.7.2021
 - Bump to kotlin 1.5.21
