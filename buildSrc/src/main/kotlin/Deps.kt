@@ -26,7 +26,7 @@ object Versions {
     val kotlinBigNumVersion = "0.2.8"
     val jna = "5.7.0"
     val kotlinPoet = "1.6.0"
-    val libsodiumBindings = "0.1.1-SNAPSHOT"
+    val sampleLibsodiumBindings = "0.8.5-SNAPSHOT"
     val ktor = "1.3.2"
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
@@ -59,7 +59,7 @@ object Deps {
 
         val apiProject = ":multiplatform-crypto-api"
 
-        val libsodiumBindings = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:${Versions.libsodiumBindings}"
+        val libsodiumBindings = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:${Versions.sampleLibsodiumBindings}"
 
         val kodein = "org.kodein.di:kodein-di:${Versions.kodeinVersion}"
     }
