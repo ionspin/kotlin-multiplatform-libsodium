@@ -156,6 +156,7 @@ kotlin {
 
     }
     println("Configuring macos targets")
+
     iosX64() {
         binaries {
             framework {
@@ -170,7 +171,6 @@ kotlin {
             }
         }
     }
-
     iosArm32() {
         binaries {
             framework {
@@ -178,23 +178,7 @@ kotlin {
             }
         }
     }
-    macosX64() {
-        binaries {
-            framework {
-                optimized = true
-            }
-        }
-        compilations.getByName("main") {
-            val libsodiumCinterop by cinterops.creating {
-                defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos-x86-64/include")
-            }
-            kotlinOptions.freeCompilerArgs = listOf(
-                "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-macos-x86-64/lib/libsodium.a"
-            )
-        }
-    }
-    tvosX64() {
+    iosSimulatorArm64() {
         binaries {
             framework {
                 optimized = true
@@ -202,7 +186,36 @@ kotlin {
         }
     }
 
+    macosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    macosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
+    tvosX64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
     tvosArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+    tvosSimulatorArm64() {
         binaries {
             framework {
                 optimized = true
@@ -217,7 +230,6 @@ kotlin {
             }
         }
     }
-
     watchosArm32() {
         binaries {
             framework {
@@ -225,7 +237,6 @@ kotlin {
             }
         }
     }
-
     watchosX86() {
         binaries {
             framework {
@@ -233,6 +244,14 @@ kotlin {
             }
         }
     }
+    watchosSimulatorArm64() {
+        binaries {
+            framework {
+                optimized = true
+            }
+        }
+    }
+
     println("Configuring Mingw targets")
     mingwX64() {
         binaries {
@@ -309,13 +328,13 @@ kotlin {
 
         //iosArm32, iosArm64, iosX64, macosX64, metadata, tvosArm64, tvosX64, watchosArm32, watchosArm64, watchosX86
         val macos64Bit = setOf(
-            "macosX64"
+            "macosX64", "macosArm64"
         )
         val iosArm = setOf(
             "iosArm64", "iosArm32"
         )
         val iosSimulator = setOf(
-            "iosX64"
+            "iosX64", "iosSimulatorArm64"
         )
         val mingw64Bit = setOf(
             "mingwX64"
@@ -325,14 +344,14 @@ kotlin {
             "tvosArm64"
         )
         val tvosSimulator = setOf(
-            "tvosX64"
+            "tvosX64", "tvosSimulatorArm64"
         )
 
         val watchosArm = setOf(
             "watchosArm32", "watchosArm64"
         )
         val watchosSimulator = setOf(
-            "watchosX86"
+            "watchosX86", "watchosSimulatorArm64"
         )
 
         targets.withType<KotlinNativeTarget> {
@@ -365,6 +384,14 @@ kotlin {
                 }
                 if (macos64Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    println("Setting macos cinterop for $this")
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos/include")
+                    }
+                    kotlinOptions.freeCompilerArgs = listOf(
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-macos/lib/libsodium.a"
+                    )
                 }
                 //All ioses share the same static library
                 if (iosArm.contains(this@withType.name)) {

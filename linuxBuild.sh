@@ -15,6 +15,7 @@ fi
 ./makeLinuxArm64.sh
 #now we can do the delegated build
 cd ..
+# TODO collect static libraries from mac and windows build and include them in jvm resources automatically
 
 #build libsodium bindings
 ./gradlew multiplatform-crypto-libsodium-bindings:build
