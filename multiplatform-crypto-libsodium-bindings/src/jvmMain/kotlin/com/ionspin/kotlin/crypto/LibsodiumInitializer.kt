@@ -15,7 +15,7 @@ actual object LibsodiumInitializer {
     private fun loadLibrary() : JnaLibsodiumInterface {
         val libraryFile = when {
             Platform.isMac() -> {
-                SharedLibraryLoader.get().load("dynamic-macos-x86-64.dylib", JnaLibsodiumInterface::class.java)
+                SharedLibraryLoader.get().load("dynamic-macos.dylib", JnaLibsodiumInterface::class.java)
             }
             Platform.isLinux() -> {
                 if (Platform.isARM()) {

@@ -5,7 +5,7 @@
 
 # Libsodium bindings for Kotlin Multiplatform
 
-Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium.
+Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium. The library is feature complete and usable.
 
 ## Warning
 While this library is just a wrapper around the well known Libsodium library it still comes with high potential of introducing new

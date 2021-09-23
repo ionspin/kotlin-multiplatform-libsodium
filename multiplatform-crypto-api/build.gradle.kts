@@ -32,7 +32,7 @@ repositories {
     mavenCentral()
 }
 group = ReleaseInfo.group
-version = ReleaseInfo.version
+version = "0.1" //Irrelevant
 
 val ideaActive = System.getProperty("idea.active") == "true"
 
@@ -85,103 +85,28 @@ kotlin {
 
     }
 
-    runningOnLinuxArm64 {
-
-    }
-
-    runningOnLinuxArm32 {
-
-    }
-
     runningOnMacos {
-        iosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        iosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-        iosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
+        iosX64()
+        iosArm64()
+        iosArm32()
+        iosSimulatorArm64()
 
-        macosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
+        macosX64()
+        macosArm64()
 
-        tvosX64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
+        tvosX64()
+        tvosArm64()
+        tvosSimulatorArm64()
 
-        tvosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm64() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosArm32() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
-
-        watchosX86() {
-            binaries {
-                framework {
-                    optimized = true
-                }
-            }
-        }
+        watchosArm64()
+        watchosArm32()
+        watchosX86()
+        watchosSimulatorArm64()
 
     }
     runningOnWindows {
-
-        mingwX64() {
-            binaries {
-                staticLib {
-                    optimized = true
-                }
-            }
-        }
-
-        mingwX86() {
-            binaries {
-                staticLib {
-
-                }
-            }
-        }
+        mingwX64()
+        mingwX86()
     }
 
 

@@ -1,4 +1,4 @@
-/*
+ /*
  *    Copyright 2019 Ugljesa Jovanovic
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,6 @@ object Versions {
 
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
-    val version = "0.1.0-SNAPSHOT"
     val bindingsVersion = "0.8.5-SNAPSHOT"
 }
 
