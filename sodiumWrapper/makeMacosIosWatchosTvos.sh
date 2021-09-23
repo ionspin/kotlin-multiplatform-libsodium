@@ -1,3 +1,4 @@
+./configureMacos64.sh
 cd libsodium
 ./dist-build/apple-xcframework.sh
 
