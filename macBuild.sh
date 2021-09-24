@@ -8,5 +8,5 @@ cd sodiumWrapper
 #now we can do the delegated build
 cd ..
 #libsodium bindings
-./gradlew multiplatform-crypto-libsodium-bindings:build
+./gradlew multiplatform-crypto-libsodium-bindings:build -x multiplatform-crypto-libsodium-bindings:iosSimulatorArm64Test -x multiplatform-crypto-libsodium-bindings:tvosSimulatorArm64Test -x multiplatform-crypto-libsodium-bindings:watchosSimulatorArm64Test
 set +e
