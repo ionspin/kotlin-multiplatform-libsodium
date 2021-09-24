@@ -1,4 +1,4 @@
- /*
+/*
  *    Copyright 2019 Ugljesa Jovanovic
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,9 @@
 
 object Versions {
     val kotlinCoroutines = "1.5.2-native-mt"
-    val kotlin = "1.5.31"
+    val kotlin = "1.5.30"
     val kotlinSerialization = "1.3.0-RC"
-    val kotlinSerializationPlugin = "1.5.31"
+    val kotlinSerializationPlugin = "1.5.30"
     val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
     val dokkaPlugin = "1.5.0"
