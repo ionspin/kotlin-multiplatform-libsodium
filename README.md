@@ -5,7 +5,7 @@
 
 # Libsodium bindings for Kotlin Multiplatform
 
-Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium.
+Libsodium bindings project uses libsodium c sources and libsodium.js to provide a kotlin multiplatform wrapper library for libsodium. The library is feature complete and usable.
 
 ## Warning
 While this library is just a wrapper around the well known Libsodium library it still comes with high potential of introducing new
@@ -121,7 +121,7 @@ At the moment you should refer to original libsodium documentation for instructi
 
 ## Supported native platforms
 
-Currently supported native platforms:
+Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 
 |Platform| Supported |
 |--------|------------------|
@@ -129,14 +129,18 @@ Currently supported native platforms:
 |Linux Arm 64|          :heavy_check_mark: |
 |Linux Arm 32|          :x: |
 |macOS X86 64|          :heavy_check_mark: |
+|macOS Arm 64 (Apple Silicon)|          :heavy_check_mark: |
 |iOS x86 64 |           :heavy_check_mark: |
 |iOS Arm 64 |           :heavy_check_mark: |
 |iOS Arm 32 |           :heavy_check_mark: |
+|iOS Simulator Arm 64 (Apple Silicon)|           :heavy_check_mark: |
 |watchOS X86 32 |       :heavy_check_mark: |
 |watchOS Arm 64(_32) |  :heavy_check_mark: |
 |watchOS Arm 32 |       :heavy_check_mark: |
+|watchOS Simulator Arm 64 (Apple Silicon)|  :heavy_check_mark: |
 |tvOS X86 64 |          :heavy_check_mark: |
 |tvOS Arm 64 |          :heavy_check_mark: |
+|tvOS Simulator Arm 64 (Apple Silicon)|          :heavy_check_mark: |
 |minGW X86 64|          :heavy_check_mark: |
 |minGW X86 32|          :x: | 
 
@@ -150,8 +154,8 @@ Java Windows dll is from https://download.libsodium.org/libsodium/releases/libso
 ### TODO:
 - Improve documentation
 - Running tests on Android
-- LobsodiumUtil `unpad` and `fromBase64` native implementations use a nasty hack to support shared native sourceset. The hack either needs to be removed and replaced with another solution or additional safeguards need to be added.
 - Complete exposing libsodium constants
+- Build MSVC so it's binaries are completely equal
 - Find a better way of fetching Konan dependencies than having a dummy project.
 
 ### Building

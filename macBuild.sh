@@ -4,10 +4,9 @@ set -e
 ./gradlew multiplatform-crypto-api:build
 #now let's build linux deps
 cd sodiumWrapper
-./makeMacosX86-64.sh
-./makeIosWatchosTvos.sh
+./makeMacosIosWatchosTvos.sh
 #now we can do the delegated build
 cd ..
 #libsodium bindings
-./gradlew multiplatform-crypto-libsodium-bindings:build
+./gradlew multiplatform-crypto-libsodium-bindings:build -x multiplatform-crypto-libsodium-bindings:iosSimulatorArm64Test -x multiplatform-crypto-libsodium-bindings:tvosSimulatorArm64Test -x multiplatform-crypto-libsodium-bindings:watchosSimulatorArm64Test
 set +e

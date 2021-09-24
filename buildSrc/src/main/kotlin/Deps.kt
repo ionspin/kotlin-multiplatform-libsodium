@@ -40,7 +40,6 @@ object Versions {
 
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
-    val version = "0.1.0-SNAPSHOT"
     val bindingsVersion = "0.8.5-SNAPSHOT"
 }
 
@@ -136,6 +135,12 @@ object Deps {
         val libui = "com.github.msink:libui:0.1.8"
     }
 
+}
+
+object AndroidPluginConfiguration {
+    val sdkVersion = 31
+    val targetVersion = 31
+    val minVersion = 24
 }
 
 
