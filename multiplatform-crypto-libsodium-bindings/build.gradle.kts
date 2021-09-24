@@ -58,10 +58,10 @@ version = ReleaseInfo.bindingsVersion
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(AndroidPluginConfiguration.sdkVersion)
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(29)
+        minSdkVersion(AndroidPluginConfiguration.minVersion)
+        targetSdkVersion(AndroidPluginConfiguration.sdkVersion)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

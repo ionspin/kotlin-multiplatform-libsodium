@@ -137,6 +137,12 @@ object Deps {
 
 }
 
+object AndroidPluginConfiguration {
+    val sdkVersion = 31
+    val targetVersion = 31
+    val minVersion = 24
+}
+
 
 object PluginsDeps {
     val kotlinSerializationPlugin = "plugin.serialization"
