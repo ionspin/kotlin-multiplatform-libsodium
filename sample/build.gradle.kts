@@ -366,11 +366,11 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(AndroidPluginConfiguration.sdkVersion)
     defaultConfig {
         applicationId = "com.ionspin.kotlin.crypto.sample"
-        minSdkVersion(21)
-        targetSdkVersion(29)
+        minSdkVersion(AndroidPluginConfiguration.minVersion)
+        targetSdkVersion(AndroidPluginConfiguration.sdkVersion)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
