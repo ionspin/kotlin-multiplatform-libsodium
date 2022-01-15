@@ -252,21 +252,23 @@ kotlin {
         }
     }
 
-    println("Configuring Mingw targets")
-    mingwX64() {
-        binaries {
-            staticLib {
-                optimized = true
+    if (hostOsName == "windows") {
+        println("Configuring Mingw targets")
+        mingwX64() {
+            binaries {
+                staticLib {
+                    optimized = true
+                }
             }
-        }
-        compilations.getByName("main") {
-            val libsodiumCinterop by cinterops.creating {
-                defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
+            compilations.getByName("main") {
+                val libsodiumCinterop by cinterops.creating {
+                    defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                    compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
+                }
+                kotlinOptions.freeCompilerArgs = listOf(
+                    "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
+                )
             }
-            kotlinOptions.freeCompilerArgs = listOf(
-                "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
-            )
         }
     }
 
