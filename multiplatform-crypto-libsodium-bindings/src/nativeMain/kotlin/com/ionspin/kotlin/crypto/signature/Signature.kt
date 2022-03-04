@@ -207,7 +207,7 @@ actual object Signature {
         val x25519PublicKey = UByteArray(crypto_scalarmult_curve25519_BYTES)
         val x25519PublicKeyPinned = x25519PublicKey.pin()
         val ed25519PublicKeyPinned = ed25519PublicKey.pin()
-        crypto_sign_ed25519_sk_to_curve25519(
+        crypto_sign_ed25519_pk_to_curve25519(
             x25519PublicKeyPinned.toPtr(),
             ed25519PublicKeyPinned.toPtr()
         )

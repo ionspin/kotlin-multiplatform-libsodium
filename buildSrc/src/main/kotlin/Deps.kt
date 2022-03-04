@@ -24,14 +24,13 @@ object Versions {
     val dokkaPlugin = "1.5.0"
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.2.8"
-    val jna = "5.7.0"
+    val jna = "5.10.0"
     val kotlinPoet = "1.6.0"
     val sampleLibsodiumBindings = "0.8.5-SNAPSHOT"
     val ktor = "1.3.2"
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
-
-    val resourceLoader = "2.0.1"
+    val resourceLoader = "2.0.2"
 
 
 

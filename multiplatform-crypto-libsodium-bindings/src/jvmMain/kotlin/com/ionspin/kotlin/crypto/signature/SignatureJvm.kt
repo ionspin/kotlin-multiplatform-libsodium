@@ -159,7 +159,7 @@ actual object Signature {
      */
     actual fun ed25519PkToCurve25519(ed25519PublicKey: UByteArray) : UByteArray {
         val x25519PublicKey = UByteArray(crypto_scalarmult_curve25519_BYTES)
-        sodiumJna.crypto_sign_ed25519_sk_to_curve25519(
+        sodiumJna.crypto_sign_ed25519_pk_to_curve25519(
             x25519PublicKey.asByteArray(),
             ed25519PublicKey.asByteArray()
         )
