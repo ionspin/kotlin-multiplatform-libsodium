@@ -28,6 +28,7 @@ build/
 /sodiumWrapper/static-ios/
 /sodiumWrapper/static-linux-x86-64/
 /sodiumWrapper/static-macos-x86-64/
+/sodiumWrapper/static-macos/
 /sodiumWrapper/static-mingw-x86-64/
 /sodiumWrapper/static-tvos/
 /sodiumWrapper/static-watchos/
