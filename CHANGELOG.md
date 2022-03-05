@@ -1,8 +1,13 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.8.5-SNAPSHOT
+#### 0.8.6-SNAPSHOT
+
+#### 0.8.5 - 5.3.2022
+- Libsodium updated to 7d67f1909bfa6e12254 (2022)
 - Fix array out of bounds on native when trying to get a pointer to empty array. Return null instead.
+- Fixed #20 - calling `crypto_sign_ed25519_sk_to_curve25519` instead of `crypto_sign_ed25519_pk_to_curve25519` in jvm and native implementations
+- Bump to kotlin 1.6.10
 
 #### 0.8.4 - 19.7.2021
 - Bump to kotlin 1.5.21
