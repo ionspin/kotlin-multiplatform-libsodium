@@ -185,6 +185,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.serialization)
                 api(project(":multiplatform-crypto-libsodium-bindings"))
+                implementation(Deps.Common.coroutines)
             }
         }
         val commonTest by getting {
@@ -203,7 +204,6 @@ kotlin {
                 implementation("androidx.constraintlayout:constraintlayout:2.0.2")
                 implementation("com.google.android.material:material:1.3.0-alpha03")
 
-                implementation(Deps.Android.coroutines)
                 implementation(Deps.Android.timber)
 //                implementation("androidx.compose:compose-runtime:$composeDevVersion")
             }
@@ -212,9 +212,7 @@ kotlin {
             dependencies {
                 implementation(kotlin(Deps.Jvm.test))
                 implementation(kotlin(Deps.Jvm.testJUnit))
-                implementation(Deps.Jvm.coroutinesTest)
                 implementation(kotlin(Deps.Jvm.reflection))
-                implementation(Deps.Jvm.coroutinesCore)
             }
         }
 
@@ -255,7 +253,6 @@ kotlin {
             val nativeTest by getting {
                 dependsOn(commonTest)
                 dependencies {
-                    implementation(Deps.Native.coroutines)
                 }
             }
             nativeTest
@@ -263,7 +260,6 @@ kotlin {
             val nativeTest by creating {
                 dependsOn(commonTest)
                 dependencies {
-                    implementation(Deps.Native.coroutines)
                 }
             }
             nativeTest
@@ -281,14 +277,13 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Jvm.test))
                     implementation(kotlin(Deps.Jvm.testJUnit))
+                    implementation(Deps.Jvm.coroutinesTest)
                     implementation(kotlin(Deps.Jvm.reflection))
                 }
             }
             val jsMain by getting {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
-                    implementation(Deps.Js.coroutines)
-
                 }
             }
             val jsTest by getting {

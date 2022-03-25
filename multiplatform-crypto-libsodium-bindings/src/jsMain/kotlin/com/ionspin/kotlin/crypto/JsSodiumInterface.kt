@@ -9,10 +9,10 @@ import org.khronos.webgl.Uint8Array
  * ugljesa.jovanovic@ionspin.com
  * on 27-May-2020
  */
-interface JsSodiumInterface {
+@JsModule("libsodium-wrappers-sumo")
+@JsNonModule
+external object JsSodiumInterface {
 
-    @JsName("sodium_init")
-    fun sodium_init() : Int
 
     @JsName("crypto_generichash")
     fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array

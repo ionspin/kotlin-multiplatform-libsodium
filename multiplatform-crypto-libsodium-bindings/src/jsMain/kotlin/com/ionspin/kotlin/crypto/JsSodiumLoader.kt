@@ -1,11 +1,7 @@
 package ext.libsodium.com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.crypto.getSodiumLoaded
-import com.ionspin.kotlin.crypto.setSodiumPointer
-import com.ionspin.kotlin.crypto.sodiumLoaded
-import com.ionspin.kotlin.crypto.sodiumPointer
+import com.ionspin.kotlin.crypto.*
 import ext.libsodium.*
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -25,18 +21,14 @@ object JsSodiumLoader {
 
     }
 
-    fun storeSodium(promisedSodium: dynamic, continuation: Continuation<Unit>) {
-        setSodiumPointer(promisedSodium)
-        sodiumLoaded = true
-        continuation.resumeWith(Result.success(Unit))
-    }
-
     suspend fun load() = suspendCoroutine<Unit> { continuation ->
-        console.log(getSodiumLoaded())
         if (!getSodiumLoaded()) {
-            val libsodiumModule = js("\$module\$libsodium_wrappers_sumo")
             _libsodiumPromise.then<dynamic> {
-                storeSodium(libsodiumModule, continuation)
+                sodium_init()
+                sodiumLoaded = true
+                continuation.resumeWith(Result.success(Unit))
+            }.catch { e ->
+                continuation.resumeWith(Result.failure(e))
             }
         } else {
             continuation.resumeWith(Result.success(Unit))
@@ -44,12 +36,9 @@ object JsSodiumLoader {
     }
 
     fun loadWithCallback(doneCallback: () -> (Unit)) {
-        console.log(getSodiumLoaded())
         if (!getSodiumLoaded()) {
-            val libsodiumModule = js("\$module\$libsodium_wrappers_sumo")
             _libsodiumPromise.then<dynamic> {
-                setSodiumPointer(libsodiumModule)
-                sodiumPointer.sodium_init()
+                sodium_init()
                 sodiumLoaded = true
                 doneCallback.invoke()
             }

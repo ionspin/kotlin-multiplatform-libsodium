@@ -29,14 +29,13 @@ actual object Stream {
     actual fun chacha20IetfXorIc(
         message: UByteArray,
         nonce: UByteArray,
-        initialCounter: ULong,
+        initialCounter: UInt,
         key: UByteArray
     ): UByteArray {
-
         val result = getSodium().crypto_stream_chacha20_ietf_xor_ic(
             message.toUInt8Array(),
             nonce.toUInt8Array(),
-            initialCounter.toUInt(),
+            initialCounter,
             key.toUInt8Array()
         )
 
@@ -69,6 +68,9 @@ actual object Stream {
         initialCounter: ULong,
         key: UByteArray
     ): UByteArray {
+        if (initialCounter > UInt.MAX_VALUE) {
+            throw RuntimeException("Javascript doesnt support more than ${UInt.MAX_VALUE} for initial counter")
+        }
         val result = getSodium().crypto_stream_chacha20_xor_ic(
             message.toUInt8Array(),
             nonce.toUInt8Array(),

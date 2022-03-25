@@ -64,4 +64,5 @@ class PasswordHashTest {
             //TODO strNeedsRehash -1 case?
         }
     }
+
 }

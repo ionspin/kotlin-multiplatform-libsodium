@@ -60,7 +60,7 @@ actual object Stream {
     actual fun chacha20IetfXorIc(
         message: UByteArray,
         nonce: UByteArray,
-        initialCounter: ULong,
+        initialCounter: UInt,
         key: UByteArray
     ): UByteArray {
         val result = UByteArray(message.size)

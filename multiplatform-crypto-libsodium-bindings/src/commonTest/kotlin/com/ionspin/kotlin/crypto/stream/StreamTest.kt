@@ -5,8 +5,6 @@ import com.ionspin.kotlin.crypto.util.LibsodiumRandom
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.randombytes_SEEDBYTES
 import com.ionspin.kotlin.crypto.util.toHexString
-import kotlin.random.Random
-import kotlin.random.nextUBytes
 import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue

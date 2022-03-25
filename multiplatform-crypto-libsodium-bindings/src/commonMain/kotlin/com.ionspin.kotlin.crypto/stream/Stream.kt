@@ -21,7 +21,7 @@ expect object Stream {
     fun chacha20XorIc(message : UByteArray, nonce: UByteArray, initialCounter: ULong, key: UByteArray) : UByteArray
 
     fun chacha20IetfXor(message : UByteArray, nonce: UByteArray, key: UByteArray) : UByteArray
-    fun chacha20IetfXorIc(message : UByteArray, nonce: UByteArray, initialCounter: ULong, key: UByteArray) : UByteArray
+    fun chacha20IetfXorIc(message: UByteArray, nonce: UByteArray, initialCounter: UInt, key: UByteArray) : UByteArray
 
 //    fun xChacha20Keygen() : UByteArray
 //
