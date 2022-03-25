@@ -1236,7 +1236,7 @@ interface JnaLibsodiumInterface : Library {
         message: ByteArray,
         messageLength: Long,
         nonce: ByteArray,
-        initialCounter : Long,
+        initialCounter : Int,
         key: ByteArray
     ) : Int
 

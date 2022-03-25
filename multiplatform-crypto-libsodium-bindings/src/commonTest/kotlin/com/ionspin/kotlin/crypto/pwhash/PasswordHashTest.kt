@@ -64,4 +64,13 @@ class PasswordHashTest {
             //TODO strNeedsRehash -1 case?
         }
     }
+
+
+    @Test
+    fun testJsNarrowing() = runTest {
+        val someValue = ULong.MAX_VALUE
+        println(someValue)
+        val narrowed = someValue.toInt()
+        println(narrowed)
+    }
 }
