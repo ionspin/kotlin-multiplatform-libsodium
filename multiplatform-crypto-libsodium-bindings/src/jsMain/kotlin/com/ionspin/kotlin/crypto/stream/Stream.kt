@@ -7,7 +7,7 @@ import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 actual object Stream {
     actual fun chacha20(clen: Int, nonce: UByteArray, key: UByteArray): UByteArray {
         //Note, unlike the other ones, here the positions of key and nonce are reversed.
-        val result = getSodium().crypto_stream_chacha20(clen, key.toUInt8Array(), nonce.toUInt8Array())
+        val result = getSodium().crypto_stream_chacha20(clen.toUInt(), key.toUInt8Array(), nonce.toUInt8Array())
 
         return result.toUByteArray()
     }
@@ -35,7 +35,7 @@ actual object Stream {
         val result = getSodium().crypto_stream_chacha20_ietf_xor_ic(
             message.toUInt8Array(),
             nonce.toUInt8Array(),
-            initialCounter.toInt(),
+            initialCounter.toUInt(),
             key.toUInt8Array()
         )
 
@@ -74,7 +74,7 @@ actual object Stream {
         val result = getSodium().crypto_stream_chacha20_xor_ic(
             message.toUInt8Array(),
             nonce.toUInt8Array(),
-            initialCounter.toInt(),
+            initialCounter.toUInt(),
             key.toUInt8Array()
         )
 

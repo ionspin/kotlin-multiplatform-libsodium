@@ -1,13 +1,7 @@
 package ext.libsodium.com.ionspin.kotlin.crypto
 
-import com.ionspin.kotlin.crypto.getSodiumLoaded
-import com.ionspin.kotlin.crypto.sodiumLoaded
-import ext.libsodium._libsodiumPromise
-import ext.libsodium.crypto_generichash
-import ext.libsodium.crypto_hash_sha256
-import ext.libsodium.crypto_hash_sha256_init
-import ext.libsodium.crypto_hash_sha512
-import ext.libsodium.sodium_init
+import com.ionspin.kotlin.crypto.*
+import ext.libsodium.*
 import kotlin.coroutines.suspendCoroutine
 
 /**
