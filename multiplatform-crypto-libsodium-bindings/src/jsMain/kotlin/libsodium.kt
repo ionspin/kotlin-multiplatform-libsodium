@@ -1,4 +1,4 @@
-@file:JsModule("libsodium-wrappers-sumo")
+@file:JsModule("libsodium-sumo")
 @file:JsNonModule
 package ext.libsodium
 
@@ -14,6 +14,9 @@ import kotlin.js.Promise
 
 @JsName("ready")
 external val _libsodiumPromise : Promise<dynamic>
+
+@JsName("_sodium_init")
+external fun sodium_init() : Int
 
 external fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array) : Uint8Array
 
