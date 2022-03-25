@@ -20,7 +20,7 @@ actual object SecretStream {
         tag: UByte
     ): UByteArray {
         return getSodium().crypto_secretstream_xchacha20poly1305_push(
-            state, message.toUInt8Array(), associatedData.toUInt8Array(), tag
+            state, message.toUInt8Array(), associatedData.toUInt8Array(), tag.toByte()
         ).toUByteArray()
     }
 

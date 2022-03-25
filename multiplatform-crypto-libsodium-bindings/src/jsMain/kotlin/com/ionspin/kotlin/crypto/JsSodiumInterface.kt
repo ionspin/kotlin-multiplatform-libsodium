@@ -94,7 +94,7 @@ external object JsSodiumInterface {
     @JsName("crypto_secretstream_xchacha20poly1305_init_push")
     fun crypto_secretstream_xchacha20poly1305_init_push(key: Uint8Array) : dynamic
     @JsName("crypto_secretstream_xchacha20poly1305_push")
-    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, associatedData: Uint8Array, tag: UByte) : Uint8Array
+    fun crypto_secretstream_xchacha20poly1305_push(state: dynamic, message: Uint8Array, associatedData: Uint8Array, tag: Byte) : Uint8Array
 
     //decrypt
     @JsName("crypto_secretstream_xchacha20poly1305_init_pull")
@@ -262,7 +262,7 @@ external object JsSodiumInterface {
     // ---- KDF ----
 
     @JsName("crypto_kdf_derive_from_key")
-    fun crypto_kdf_derive_from_key(subkey_len: UInt, subkeyId : UInt, ctx: String, key: Uint8Array) : Uint8Array
+    fun crypto_kdf_derive_from_key(subkey_len: Int, subkeyId : Int, ctx: String, key: Uint8Array) : Uint8Array
     @JsName("crypto_kdf_keygen")
     fun crypto_kdf_keygen() : Uint8Array
 
@@ -271,11 +271,11 @@ external object JsSodiumInterface {
     // ---- Password hashing ----
 
     @JsName("crypto_pwhash")
-    fun crypto_pwhash(keyLength : UInt, password : Uint8Array, salt: Uint8Array, opsLimit: UInt, memLimit: UInt, algorithm: UInt) : Uint8Array
+    fun crypto_pwhash(keyLength : Int, password : Uint8Array, salt: Uint8Array, opsLimit: Int, memLimit: Int, algorithm: Int) : Uint8Array
     @JsName("crypto_pwhash_str")
-    fun crypto_pwhash_str(password: Uint8Array, opsLimit: UInt, memLimit: UInt) : String
+    fun crypto_pwhash_str(password: Uint8Array, opsLimit: Int, memLimit: Int) : String
     @JsName("crypto_pwhash_str_needs_rehash")
-    fun crypto_pwhash_str_needs_rehash(hashedPassword: String, opsLimit: UInt, memLimit: UInt) : Boolean
+    fun crypto_pwhash_str_needs_rehash(hashedPassword: String, opsLimit: Int, memLimit: Int) : Boolean
     @JsName("crypto_pwhash_str_verify")
     fun crypto_pwhash_str_verify(hashedPassword: String, password: Uint8Array) : Boolean
 
@@ -310,11 +310,11 @@ external object JsSodiumInterface {
     @JsName("randombytes_buf")
     fun randombytes_buf(length: Int) : Uint8Array
     @JsName("randombytes_buf_deterministic")
-    fun randombytes_buf_deterministic(length: UInt, seed : Uint8Array) : Uint8Array
+    fun randombytes_buf_deterministic(length: Int, seed : Uint8Array) : Uint8Array
     @JsName("randombytes_random")
-    fun randombytes_random() : UInt
+    fun randombytes_random() : Int
     @JsName("randombytes_uniform")
-    fun randombytes_uniform(upper_bound: UInt) : UInt
+    fun randombytes_uniform(upper_bound: Int) : Int
 
     // ---- Utils end ----
 
@@ -332,24 +332,24 @@ external object JsSodiumInterface {
 
     // -- Stream ----
     @JsName("crypto_stream_chacha20")
-    fun crypto_stream_chacha20(outLength: UInt, key: Uint8Array, nonce: Uint8Array) : Uint8Array
+    fun crypto_stream_chacha20(outLength: Int, key: Uint8Array, nonce: Uint8Array) : Uint8Array
     @JsName("crypto_stream_chacha20_ietf_xor")
     fun crypto_stream_chacha20_ietf_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
     @JsName("crypto_stream_chacha20_ietf_xor_ic")
-    fun crypto_stream_chacha20_ietf_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
+    fun crypto_stream_chacha20_ietf_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: Int, key: Uint8Array) : Uint8Array
     @JsName("crypto_stream_chacha20_keygen")
     fun crypto_stream_chacha20_keygen() : Uint8Array
     @JsName("crypto_stream_chacha20_xor")
     fun crypto_stream_chacha20_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
     @JsName("crypto_stream_chacha20_xor_ic")
-    fun crypto_stream_chacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
+    fun crypto_stream_chacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: Int, key: Uint8Array) : Uint8Array
 
     @JsName("crypto_stream_xchacha20_keygen")
     fun crypto_stream_xchacha20_keygen() : Uint8Array
     @JsName("crypto_stream_xchacha20_xor")
     fun crypto_stream_xchacha20_xor(message : Uint8Array, nonce: Uint8Array, key: Uint8Array) : Uint8Array
     @JsName("crypto_stream_xchacha20_xor_ic")
-    fun crypto_stream_xchacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: UInt, key: Uint8Array) : Uint8Array
+    fun crypto_stream_xchacha20_xor_ic(message : Uint8Array, nonce: Uint8Array, initialCounter: Int, key: Uint8Array) : Uint8Array
 
     // ---- Stream end ----
 

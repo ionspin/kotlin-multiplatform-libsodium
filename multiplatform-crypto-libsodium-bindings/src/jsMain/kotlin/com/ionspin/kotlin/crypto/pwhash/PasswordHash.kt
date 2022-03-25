@@ -23,12 +23,12 @@ actual object PasswordHash {
         algorithm: Int
     ): UByteArray {
         return getSodium().crypto_pwhash(
-            outputLength.toUInt(),
+            outputLength,
             password.encodeToUByteArray().toUInt8Array(),
             salt.toUInt8Array(),
-            opsLimit.toUInt(),
-            memLimit.toUInt(),
-            algorithm.toUInt()
+            opsLimit.toInt(), // TODO check this narrowing
+            memLimit,
+            algorithm
         ).toUByteArray()
     }
 
@@ -45,8 +45,8 @@ actual object PasswordHash {
     actual fun str(password: String, opslimit: ULong, memlimit: Int): UByteArray {
         return getSodium().crypto_pwhash_str(
             password.encodeToUByteArray().toUInt8Array(),
-            opslimit.toUInt(),
-            memlimit.toUInt()
+            opslimit.toInt(), // TODO check this narrowing
+            memlimit
         ).encodeToUByteArray()
     }
 
@@ -64,8 +64,8 @@ actual object PasswordHash {
         return if (
             getSodium().crypto_pwhash_str_needs_rehash(
                 passwordHash.asByteArray().decodeToString(),
-                opslimit.toUInt(),
-                memlimit.toUInt()
+                opslimit.toInt(), // TODO check this narrowing
+                memlimit
             )
         ) {
             1

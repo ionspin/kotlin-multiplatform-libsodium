@@ -26,14 +26,14 @@ actual object LibsodiumRandom {
      *
      */
     actual fun bufDeterministic(size: Int, seed: UByteArray): UByteArray {
-        return getSodium().randombytes_buf_deterministic(size.toUInt(), seed.toUInt8Array()).toUByteArray()
+        return getSodium().randombytes_buf_deterministic(size, seed.toUInt8Array()).toUByteArray()
     }
 
     /**
      * The randombytes_random() function returns an unpredictable value between 0 and 0xffffffff (included).
      */
     actual fun random(): UInt {
-        return getSodium().randombytes_random()
+        return getSodium().randombytes_random().toUInt()
     }
 
     /**
@@ -42,7 +42,7 @@ actual object LibsodiumRandom {
      * upper_bound is not a power of 2. Note that an upper_bound < 2 leaves only a single element to be chosen, namely 0
      */
     actual fun uniform(upperBound: UInt): UInt {
-        return getSodium().randombytes_uniform(upperBound)
+        return getSodium().randombytes_uniform(upperBound.toInt()).toUInt()
     }
 
 }
