@@ -22,7 +22,6 @@ object JsSodiumLoader {
     }
 
     suspend fun load() = suspendCoroutine<Unit> { continuation ->
-        console.log(getSodiumLoaded())
         if (!getSodiumLoaded()) {
             _libsodiumPromise.then<dynamic> {
                 sodium_init()
@@ -37,7 +36,6 @@ object JsSodiumLoader {
     }
 
     fun loadWithCallback(doneCallback: () -> (Unit)) {
-        console.log(getSodiumLoaded())
         if (!getSodiumLoaded()) {
             _libsodiumPromise.then<dynamic> {
                 sodium_init()

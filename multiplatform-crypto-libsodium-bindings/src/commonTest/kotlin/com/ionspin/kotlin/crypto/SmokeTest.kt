@@ -22,7 +22,7 @@ class SmokeTest {
             val hashResult = GenericHash.genericHash("Hello".encodeToUByteArray(), 64)
             println("Smoke test: ${hashResult.toHexString()}")
             assertTrue {
-                "EF15EAF92D5E335345A3E1D977BC7D8797C3D275717CC1B10AF79C93CDA01AEB2A0C59BC02E2BDF9380FD1B54EB9E1669026930CCC24BD49748E65F9A6B2EE68".toLowerCase() == hashResult.toHexString()
+                "EF15EAF92D5E335345A3E1D977BC7D8797C3D275717CC1B10AF79C93CDA01AEB2A0C59BC02E2BDF9380FD1B54EB9E1669026930CCC24BD49748E65F9A6B2EE68".lowercase() == hashResult.toHexString().lowercase()
             }
 
 

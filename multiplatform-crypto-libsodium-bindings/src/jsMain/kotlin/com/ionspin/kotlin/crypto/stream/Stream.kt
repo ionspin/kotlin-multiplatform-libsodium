@@ -35,7 +35,7 @@ actual object Stream {
         val result = getSodium().crypto_stream_chacha20_ietf_xor_ic(
             message.toUInt8Array(),
             nonce.toUInt8Array(),
-            initialCounter.toUInt(),
+            initialCounter,
             key.toUInt8Array()
         )
 
