@@ -29,12 +29,7 @@ actual object LibsodiumInitializer {
                 SharedLibraryLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", JnaLibsodiumInterface::class.java)
             }
             Platform.isAndroid() -> {
-                when {
-                    Platform.is64Bit() -> {
-                        File("irrelevant")
-                    }
-                    else -> throw RuntimeException("Unsupported platform")
-                }
+                File("irrelevant")
             }
             else -> throw RuntimeException("Unknown platform")
 

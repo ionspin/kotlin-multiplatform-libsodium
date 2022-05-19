@@ -2,8 +2,9 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.8.6-SNAPSHOT
-- Bump to 1.6.20-RC2
-- Fix for #23
+- Bump to 1.6.21
+- Enable initialization on 32bit Android devices
+- Fix for #23 JS libsodium won't initalize
 - API change chacha20IetfXorIc now takes UInt initial counter parameter
 
 #### 0.8.5 - 5.3.2022
