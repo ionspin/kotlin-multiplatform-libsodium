@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./gradlew publishMingwX64PublicationToMavenRepository
+./gradlew --no-daemon publishMingwX64PublicationToMavenRepository
 
 
