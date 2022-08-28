@@ -181,8 +181,8 @@ kotlin {
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+            languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
     }
 
@@ -206,28 +206,6 @@ tasks {
                 // showStandardStreams = true
             }
         }
-
-//        val jsNodeTest by getting(KotlinJsTest::class) {
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                showStandardStreams = true
-//            }
-//        }
-
-//        val legacyjsNodeTest by getting(KotlinJsTest::class) {
-//
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                showStandardStreams = true
-//            }
-//        }
-
-//        val jsIrBrowserTest by getting(KotlinJsTest::class) {
-//            testLogging {
-//                events("PASSED", "FAILED", "SKIPPED")
-//                 showStandardStreams = true
-//            }
-//        }
     }
 
     if (getHostOsName() == "windows") {

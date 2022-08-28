@@ -27,10 +27,8 @@ plugins {
     kotlin(PluginsDeps.multiplatform)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
-    id(PluginsDeps.node) version Versions.nodePlugin
     id(PluginsDeps.taskTree) version Versions.taskTreePlugin
     id(PluginsDeps.androidLibrary)
-    id(PluginsDeps.kotlinAndroidExtensions)
     id(PluginsDeps.dokka)
 
 }
@@ -62,8 +60,6 @@ android {
     defaultConfig {
         minSdkVersion(AndroidPluginConfiguration.minVersion)
         targetSdkVersion(AndroidPluginConfiguration.sdkVersion)
-        versionCode = 1
-        versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -279,7 +275,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin(Deps.Common.stdLib))
-                implementation(kotlin(Deps.Common.test))
             }
         }
         val commonTest by getting {
@@ -487,7 +482,7 @@ kotlin {
                 kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
             }
             dependencies {
-                implementation("net.java.dev.jna:jna:5.5.0@aar")
+                implementation("net.java.dev.jna:jna:5.12.1@aar")
                 implementation(Deps.Jvm.resourceLoader) {
                     exclude("net.java.dev.jna", "jna")
                 }
@@ -496,10 +491,6 @@ kotlin {
 
         val androidTest by getting {
             dependencies {
-//                    implementation(kotlin(Deps.Jvm.test))
-//                    implementation(kotlin(Deps.Jvm.testJUnit))
-//                    implementation("androidx.test:runner:1.2.0")
-//                    implementation("androidx.test:rules:1.2.0")
             }
         }
 
@@ -614,8 +605,8 @@ kotlin {
 
         all {
             languageSettings.enableLanguageFeature("InlineClasses")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+            languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
     }
 
