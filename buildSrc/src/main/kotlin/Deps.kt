@@ -15,15 +15,14 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.6.0-native-mt"
-    val kotlin = "1.6.21"
-    val kotlinSerialization = "1.3.2"
+    val kotlinCoroutines = "1.6.3"
+    val kotlin = "1.7.10"
+    val kotlinSerialization = "1.4.0"
     val kotlinSerializationPlugin = kotlin
-    val atomicfu = "0.14.3-M2-2-SNAPSHOT" //NOTE: my linux arm32 and arm64 build
     val nodePlugin = "1.3.0"
-    val dokkaPlugin = "1.5.0"
+    val dokkaPlugin = kotlin
     val taskTreePlugin = "1.5"
-    val kotlinBigNumVersion = "0.2.8"
+    val kotlinBigNumVersion = "0.3.7"
     val jna = "5.10.0"
     val kotlinPoet = "1.6.0"
     val sampleLibsodiumBindings = "0.8.5-SNAPSHOT"
@@ -50,8 +49,6 @@ object Deps {
         val testAnnotation = "test-annotations-common"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinSerialization}"
-        val atomicfu = "com.ionspin.kotlin.atomicfu:atomicfu:${Versions.atomicfu}"
-
 
         val kotlinBigNum = "com.ionspin.kotlin:bignum:${Versions.kotlinBigNumVersion}"
 

@@ -3,8 +3,8 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.ionspin.kotlin.crypto.sample">
-    <uses-permission android:name="android.permission.INTERNET" />
+          package="com.ionspin.kotlin.crypto.sample">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
             android:name=".LibsodiumBindingsSampleApp"
@@ -16,12 +16,13 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true"> <!-- Just for development -->
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            >
+                  android:exported="true"
+                  android:windowSoftInputMode="adjustPan|adjustResize"
+        >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
     </application>

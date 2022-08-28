@@ -28,8 +28,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20-RC2")
-    implementation("com.android.tools.build:gradle:4.0.2")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+    implementation("com.android.tools.build:gradle:7.2.2")
 }
 
 System.setProperty("PROJECT_PATH", project.projectDir.parentFile.toString())
