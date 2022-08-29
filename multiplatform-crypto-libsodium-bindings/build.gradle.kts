@@ -377,10 +377,20 @@ kotlin {
                     }
                 }
                 if (linux32Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                 }
                 if (macos64Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting macos cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -392,7 +402,12 @@ kotlin {
                 }
                 //All ioses share the same static library
                 if (iosArm.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -404,7 +419,12 @@ kotlin {
                 }
 
                 if (iosSimulator.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -416,7 +436,12 @@ kotlin {
                 }
 
                 if (tvosArm.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -428,7 +453,12 @@ kotlin {
                 }
 
                 if (tvosSimulator.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -440,7 +470,12 @@ kotlin {
                 }
 
                 if (watchosArm.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
@@ -452,17 +487,22 @@ kotlin {
                 }
 
                 if (watchosSimulator.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(createWorkaroundNativeMainSourceSet(this@withType.name, nativeDependencies))
+                    defaultSourceSet.dependsOn(
+                        createWorkaroundNativeMainSourceSet(
+                            this@withType.name,
+                            nativeDependencies
+                        )
+                    )
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
                         compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include")
                     }
                     kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
+                        "-include-binary",
+                        "${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
                     )
                 }
-
 
 
             }
@@ -517,7 +557,6 @@ kotlin {
         }
         runningOnLinuxx86_64 {
             println("Configuring Linux 64 Bit source sets")
-
 
 
             val jsMain by getting {
@@ -614,14 +653,13 @@ kotlin {
 }
 
 tasks.whenTaskAdded {
-    if("DebugUnitTest" in name || "ReleaseUnitTest" in name) {
-        enabled = false // https://youtrack.jetbrains.com/issue/KT-34662 otherwise common tests fail, because we require native android libs to be loaded
+    if ("DebugUnitTest" in name || "ReleaseUnitTest" in name) {
+        enabled =
+            false // https://youtrack.jetbrains.com/issue/KT-34662 otherwise common tests fail, because we require native android libs to be loaded
     }
 }
 
 tasks {
-
-
 
 
     create<Jar>("javadocJar") {
@@ -634,6 +672,7 @@ tasks {
         println("Dokka !")
         dokkaSourceSets {
         }
+
     }
 
     if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
@@ -663,7 +702,6 @@ tasks {
                 showStackTraces = true
             }
         }
-
 
 
 //        val legacyjsNodeTest by getting(KotlinJsTest::class) {

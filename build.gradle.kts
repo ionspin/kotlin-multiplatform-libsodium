@@ -23,11 +23,6 @@ buildscript {
         gradlePluginPortal()
 
     }
-
-    dependencies {
-        classpath ("gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:5.0.0")
-        classpath ("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokkaPlugin}")
-    }
 }
 
 allprojects {

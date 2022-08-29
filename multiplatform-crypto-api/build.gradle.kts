@@ -25,7 +25,6 @@ plugins {
     kotlin(PluginsDeps.multiplatform)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
-    id(PluginsDeps.dokka)
 }
 
 repositories {
