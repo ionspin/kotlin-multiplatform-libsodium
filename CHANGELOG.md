@@ -1,7 +1,13 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.8.6-SNAPSHOT
+#### 0.8.8-SNAPSHOT - Current development snapshot
+
+#### 0.8.7 - 10.9.2022
+- Bump to kotlin 1.7.10
+- Update libsodium to latest stable version
+- Fix for #26 - problems running in test environment on JVM
+#### 0.8.6 - 19.3.2022
 - Bump to 1.6.21
 - Enable initialization on 32bit Android devices
 - Fix for #23 JS libsodium won't initalize
