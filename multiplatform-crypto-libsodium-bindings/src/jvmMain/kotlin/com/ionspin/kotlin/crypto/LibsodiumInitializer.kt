@@ -15,18 +15,18 @@ actual object LibsodiumInitializer {
     private fun loadLibrary() : JnaLibsodiumInterface {
         val libraryFile = when {
             Platform.isMac() -> {
-                SharedLibraryLoader.get().load("dynamic-macos.dylib", JnaLibsodiumInterface::class.java)
+                SharedLibraryLoader.get().load("libdynamic-macos.dylib", JnaLibsodiumInterface::class.java)
             }
             Platform.isLinux() -> {
                 if (Platform.isARM()) {
-                    SharedLibraryLoader.get().load("dynamic-linux-arm64-libsodium.so", JnaLibsodiumInterface::class.java)
+                    SharedLibraryLoader.get().load("libdynamic-linux-arm64-libsodium.so", JnaLibsodiumInterface::class.java)
                 } else {
                     SharedLibraryLoader.get()
-                        .load("dynamic-linux-x86-64-libsodium.so", JnaLibsodiumInterface::class.java)
+                        .load("libdynamic-linux-x86-64-libsodium.so", JnaLibsodiumInterface::class.java)
                 }
             }
             Platform.isWindows() -> {
-                SharedLibraryLoader.get().load("dynamic-msvc-x86-64-libsodium.dll", JnaLibsodiumInterface::class.java)
+                SharedLibraryLoader.get().load("libdynamic-msvc-x86-64-libsodium.dll", JnaLibsodiumInterface::class.java)
             }
             Platform.isAndroid() -> {
                 File("irrelevant")
