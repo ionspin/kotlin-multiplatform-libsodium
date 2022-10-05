@@ -1,5 +1,5 @@
 
-[![pipeline status](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/badges/master/pipeline.svg)](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/-/commits/master)
+[![pipeline status](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/badges/main/pipeline.svg)](https://gitlab.com/ionspin-github-ci/kotlin-multiplatform-libsodium/-/commits/main)
 
 ![Danger: Experimental](https://camo.githubusercontent.com/275bc882f21b154b5537b9c123a171a30de9e6aa/68747470733a2f2f7261772e6769746875622e636f6d2f63727970746f7370686572652f63727970746f7370686572652f6d61737465722f696d616765732f6578706572696d656e74616c2e706e67)
 
