@@ -248,9 +248,10 @@ kotlin {
         }
     }
 
-    if (hostOsName == "windows") {
-        println("Configuring Mingw targets")
-        mingwX64() {
+
+    println("Configuring Mingw targets")
+    mingwX64() {
+        if (hostOsName == "windows") {
             binaries {
                 staticLib {
                     optimized = true
@@ -265,8 +266,35 @@ kotlin {
                     "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
                 )
             }
+        } else {
+            // Disable cross compilation until https://youtrack.jetbrains.com/issue/KT-30498 is supported
+            compilations.all {
+                cinterops.all {
+                    project.tasks[interopProcessingTaskName].enabled = false
+                }
+                compileKotlinTask.enabled = false
+            }
+            binaries.all {
+                linkTask.enabled = false
+            }
+            mavenPublication(
+                Action {
+                    tasks.withType<AbstractPublishToMaven> {
+                        onlyIf {
+                            publication != this@Action
+                        }
+                    }
+                    tasks.withType<GenerateModuleMetadata>() {
+                        onlyIf {
+                            publication.get() != this@Action
+                        }
+                    }
+                }
+            )
         }
+
     }
+
 
 
     println(targets.names)
