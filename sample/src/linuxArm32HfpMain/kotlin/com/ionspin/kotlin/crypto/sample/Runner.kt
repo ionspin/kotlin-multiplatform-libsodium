@@ -1,12 +1,5 @@
-import com.ionspin.kotlin.crypto.hash.blake2b.Blake2bDelegated
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
-
-@ExperimentalTime
+import com.ionspin.kotlin.crypto.sample.Sample
 
 fun main() {
-    println("Test")
-//    Blake
-    val blake = Blake2bDelegated()
-    blake.digest()
+    Sample.runSample()
 }

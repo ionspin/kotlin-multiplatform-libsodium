@@ -184,6 +184,7 @@ kotlin {
                 implementation(kotlin(Deps.Common.stdLib))
                 implementation(kotlin(Deps.Common.test))
                 implementation(Deps.Common.serialization)
+//                api(Deps.Common.libsodiumBindings)
                 api(project(":multiplatform-crypto-libsodium-bindings"))
                 implementation(Deps.Common.coroutines)
             }

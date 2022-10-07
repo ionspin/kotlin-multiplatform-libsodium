@@ -1,5 +1,6 @@
 import com.ionspin.kotlin.crypto.sample.Sample
 
-fun main() : Unit {
-    Sample.runSample()
-}
+// Clashes with platform specific main()
+//fun main() : Unit {
+//    Sample.runSample()
+//}
