@@ -566,8 +566,6 @@ kotlin {
             kotlin.srcDirs("src/jvmSpecific", "src/jvmMain/kotlin")
             dependencies {
                 implementation(kotlin(Deps.Jvm.stdLib))
-                implementation(kotlin(Deps.Jvm.test))
-                implementation(kotlin(Deps.Jvm.testJUnit))
 
                 implementation(Deps.Jvm.resourceLoader)
 
