@@ -1,7 +1,10 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.8.8-SNAPSHOT - Current development snapshot
+#### 0.8.9-SNAPSHOT - Current development snapshot
+
+#### 0.8.8 - 9.10.2022
+- Fix for missing mingw target in published library modules.xml (#29)
 
 #### 0.8.7 - 10.9.2022
 - Bump to kotlin 1.7.10
