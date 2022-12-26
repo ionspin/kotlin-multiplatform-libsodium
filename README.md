@@ -144,7 +144,7 @@ Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 |minGW X86 64|          :heavy_check_mark: |
 |minGW X86 32|          :x: | 
 
-[List of supported bindings](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
+[List of supported bindings (outdated)](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
 ### Where do the compiled libraries used by JVM and Android come from
 Android .so files come from running dist-build scripts in libsodium which you can find in the libsodium submodule
 Java Linux Arm/X86_64 and Mac so and dylib are the same as produced by multiplatform builds, also based on the same submodule commit
