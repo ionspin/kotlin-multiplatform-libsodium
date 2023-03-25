@@ -20,8 +20,8 @@ jobs:
       - name: Setup Android SDK
         uses: amyu/setup-android@v2
       - run:  ./linuxBuild.sh
-  Build-And-Mac:
-    runs-on: [self-hosted, linux, x64]
+  Build-And-Push-Mac:
+    runs-on: [self-hosted, macOS, x64]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,8 +29,8 @@ jobs:
       - name: Setup Android SDK
         uses: amyu/setup-android@v2
       - run:  ./macBuild.sh
-  Build-And-Windows:
-    runs-on: [self-hosted, linux, x64]
+  Build-And-Push-Windows:
+    runs-on: [self-hosted, Windows, x64]
     steps:
       - uses: actions/checkout@v3
         with:
