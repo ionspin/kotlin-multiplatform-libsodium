@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
       - run:  ./linuxBuild.sh
   Build-And-Test-Mac:
     runs-on: macos-latest
