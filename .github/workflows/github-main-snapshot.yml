@@ -6,6 +6,10 @@ on: [push]
 #  push:
 #    branches:
 #      - main
+
+env:
+  CHROME_BIN: "chromium"
+  
 jobs:
   Build-And-Push:
     runs-on: [self-hosted, linux, x64]
