@@ -2,6 +2,10 @@
 name: Build project and push to maven snapshot
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
+#on:
+#  push:
+#    branches:
+#      - main
 jobs:
   Build-And-Push:
     runs-on: [self-hosted, linux, x64]
