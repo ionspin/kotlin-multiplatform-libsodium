@@ -6,9 +6,8 @@ jobs:
   Build-And-Test-Linux:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-              chmod +x ./linuxBuild.sh
-              ./linuxBuild.sh
+      - uses: actions/checkout@v3
+      - run:  ./linuxBuild.sh
   Build-And-Test-Mac:
     runs-on: macos-latest
     steps:
