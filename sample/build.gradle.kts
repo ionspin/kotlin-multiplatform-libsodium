@@ -26,7 +26,6 @@ plugins {
     kotlin(PluginsDeps.multiplatform)
     id(PluginsDeps.kapt)
     id(PluginsDeps.androidApplication)
-    id(PluginsDeps.kotlinAndroidExtensions)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
     kotlin(PluginsDeps.kotlinSerializationPlugin) version Versions.kotlinSerializationPlugin

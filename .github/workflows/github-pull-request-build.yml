@@ -1,0 +1,17 @@
+
+name: Build project and push to maven snapshot
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  Build-And-Test-Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Test"
+  Build-And-Test-Mac:
+    runs-on: macos-latest
+    steps:
+      - run: uname -a
+  Build-And-Test-Windows:
+    runs-on: windows-latest
+    steps:
+      - run: uname -a
