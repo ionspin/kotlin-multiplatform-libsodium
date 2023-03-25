@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - run:  ./macBuild.sh
@@ -40,7 +40,13 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            base-devel
+            git
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - run:  |

@@ -11,7 +11,7 @@ env:
   CHROME_BIN: "chromium"
 
 jobs:
-  Build-And-Push:
+  Build-And-Push-Linux:
     runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v3
@@ -20,3 +20,23 @@ jobs:
       - name: Setup Android SDK
         uses: amyu/setup-android@v2
       - run:  ./linuxBuild.sh
+  Build-And-Mac:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Setup Android SDK
+        uses: amyu/setup-android@v2
+      - run:  ./macBuild.sh
+  Build-And-Windows:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Setup Android SDK
+        uses: amyu/setup-android@v2
+      - run:  |
+              $env:CHERE_INVOKING = 'yes'
+              C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
