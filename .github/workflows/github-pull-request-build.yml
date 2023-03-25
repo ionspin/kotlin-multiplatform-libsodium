@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-      chmod +x ./linuxBuild.sh
-      ./linuxBuild.sh
+              chmod +x ./linuxBuild.sh
+              ./linuxBuild.sh
   Build-And-Test-Mac:
     runs-on: macos-latest
     steps:

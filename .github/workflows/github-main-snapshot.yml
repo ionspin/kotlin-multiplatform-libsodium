@@ -6,4 +6,4 @@ jobs:
   Build-And-Push:
     runs-on: [self-hosted, linux, x64]
     steps:
-      - run: echo "Test"
+      - run: ./linuxBuild.sh
