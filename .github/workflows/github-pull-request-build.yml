@@ -10,45 +10,31 @@ env:
   CHROME_BIN: "chromium"
 jobs:
   Build-And-Test-Linux:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, x64]
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: amyu/setup-android@v2
       - run:  ./linuxBuild.sh
   Build-And-Test-Mac:
-    runs-on: macos-latest
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: amyu/setup-android@v2
       - run:  ./macBuild.sh
   Build-And-Test-Windows:
-    runs-on: windows-latest
+    runs-on: [self-hosted, Windows, x64]
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-      - uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: >-
-            base-devel
-            git
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: amyu/setup-android@v2
       - run:  |
-              $env:CHERE_INVOKING = 'yes'
-              C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
+          $env:CHERE_INVOKING = 'yes'
+          C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
