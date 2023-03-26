@@ -41,7 +41,7 @@ kotlin {
     val hostOsName = getHostOsName()
     runningOnLinuxx86_64 {
         jvm()
-        js() {
+        js(IR) {
            browser {
                 testTask {
                     enabled = false //Until I sort out testing on travis
