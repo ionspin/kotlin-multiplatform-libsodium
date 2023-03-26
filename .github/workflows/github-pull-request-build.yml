@@ -1,6 +1,6 @@
 
-name: Build project and push to maven snapshot
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Build project and run tests
+run-name: ${{ github.actor }} pull request
 on:
   pull_request:
     branches:
