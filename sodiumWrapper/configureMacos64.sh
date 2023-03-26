@@ -11,4 +11,5 @@ cd libsodium
 
 ./autogen.sh -s -f
 
-./configure --prefix=$PREFIX "$@"
+#./configure --prefix=$PREFIX "$@"
+./configure
