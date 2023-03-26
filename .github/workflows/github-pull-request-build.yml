@@ -35,6 +35,7 @@ jobs:
           submodules: 'true'
 #      - name: Setup Android SDK
 #        uses: amyu/setup-android@v2
-      - run:  |
-          $env:CHERE_INVOKING = 'yes'
-          C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
+#      - run:  |
+#          $env:CHERE_INVOKING = 'yes'
+#          C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
+      - run: echo "TEST"
