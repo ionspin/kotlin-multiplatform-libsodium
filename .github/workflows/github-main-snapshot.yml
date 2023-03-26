@@ -1,0 +1,38 @@
+
+name: Build project and push to maven snapshot
+run-name: ${{ github.actor }} after merge
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CHROME_BIN: "chromium"
+
+jobs:
+  Build-And-Push-Linux:
+    runs-on: [self-hosted, Linux, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run:  ./linuxBuildAndPublish.sh
+  Build-And-Push-Mac:
+    runs-on: [self-hosted, macOS, ARM64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run:  |
+              ./macBuild.sh
+              ./macBuildAndPublishSnapshot-bindings.sh
+  Build-And-Push-Windows:
+    runs-on: [self-hosted, Windows, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Build
+        run:  |
+              $env:CHERE_INVOKING = 'yes'
+              C:\msys64\usr\bin\bash -lc "./windowsBuildAndPublish-delegated.sh"

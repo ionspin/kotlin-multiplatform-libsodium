@@ -15,15 +15,15 @@
  */
 
 object Versions {
-    val kotlinCoroutines = "1.6.3"
-    val kotlin = "1.7.20"
-    val kotlinSerialization = "1.4.0"
+    val kotlinCoroutines = "1.7.0-Beta"
+    val kotlin = "1.8.10"
+    val kotlinSerialization = "1.5.0"
     val kotlinSerializationPlugin = kotlin
     val nodePlugin = "1.3.0"
     val dokkaPlugin = kotlin
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.3.7"
-    val jna = "5.10.0"
+    val jna = "5.13.0"
     val kotlinPoet = "1.6.0"
     val sampleLibsodiumBindings = "0.8.8-SNAPSHOT"
     val ktor = "1.3.2"

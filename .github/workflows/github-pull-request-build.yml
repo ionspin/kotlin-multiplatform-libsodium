@@ -1,0 +1,34 @@
+
+name: Build project and run tests
+run-name: ${{ github.actor }} pull request
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  CHROME_BIN: "chromium"
+jobs:
+  Build-And-Test-Linux:
+    runs-on: [self-hosted, Linux, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run:  ./linuxBuild.sh
+  Build-And-Test-Mac:
+    runs-on: [self-hosted, macOS, ARM64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run:  ./macBuild.sh
+  Build-And-Test-Windows:
+    runs-on: [self-hosted, Windows, x64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run:  |
+          $env:CHERE_INVOKING = 'yes'
+          C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
