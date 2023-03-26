@@ -35,9 +35,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-#      - name: Setup Android SDK
-#        uses: amyu/setup-android@v2
-#      - run:  |
-#              $env:CHERE_INVOKING = 'yes'
-#              C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
-      - run: echo "TEST"
+      - name: Setup Android SDK
+        uses: amyu/setup-android@v2
+      - name: Build
+        shell: pwsh
+        run:  |
+              $env:CHERE_INVOKING = 'yes'
+              C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
