@@ -2,6 +2,8 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.8.9-SNAPSHOT - Current development snapshot
+- Update to latest stable build of libsodium
+- Update to kotlin 1.8.10
 
 #### 0.8.8 - 9.10.2022
 - Fix for missing mingw target in published library modules.xml (#29)
