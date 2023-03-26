@@ -32,7 +32,6 @@ jobs:
         with:
           submodules: 'true'
       - name: Build
-        shell: pwsh
         run:  |
               $env:CHERE_INVOKING = 'yes'
               C:\msys64\usr\bin\bash -lc "./windowsBuild-delegated.sh"
