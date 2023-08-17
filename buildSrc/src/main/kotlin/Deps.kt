@@ -16,7 +16,7 @@
 
 object Versions {
     val kotlinCoroutines = "1.7.0-Beta"
-    val kotlin = "1.8.10"
+    val kotlin = "1.9.0"
     val kotlinSerialization = "1.5.0"
     val kotlinSerializationPlugin = kotlin
     val nodePlugin = "1.3.0"

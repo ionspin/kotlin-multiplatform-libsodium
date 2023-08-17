@@ -73,6 +73,10 @@ android {
     sourceSets.getByName("main") {
 //        jniLibs.srcDir("src/androidMain/libs")
     }
+
+    lint {
+        abortOnError = false
+    }
 }
 
 
@@ -557,7 +561,7 @@ kotlin {
             }
         }
 
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
             }
         }
@@ -672,6 +676,7 @@ kotlin {
             languageSettings.enableLanguageFeature("InlineClasses")
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
     }
 

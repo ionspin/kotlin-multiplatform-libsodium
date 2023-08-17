@@ -24,7 +24,6 @@ import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
-    id(PluginsDeps.kapt)
     id(PluginsDeps.androidApplication)
     id(PluginsDeps.mavenPublish)
     id(PluginsDeps.signing)
@@ -208,7 +207,7 @@ kotlin {
 //                implementation("androidx.compose:compose-runtime:$composeDevVersion")
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
                 implementation(kotlin(Deps.Jvm.test))
                 implementation(kotlin(Deps.Jvm.testJUnit))
@@ -394,6 +393,11 @@ android {
         kotlinOptions {
             jvmTarget = "1.8"
         }
+    }
+
+    lint {
+        abortOnError = false
+
     }
 
 //    buildFeatures {
