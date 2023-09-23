@@ -3,14 +3,12 @@ set -e
 ./gradlew multiplatform-crypto-libsodium-bindings:publishMacosX64PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishMacosArm64PublicationToSnapshotRepository
 
-./gradlew multiplatform-crypto-libsodium-bindings:publishIosArm32PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository \
+./gradlew multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishIosX64PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishIosSimulatorArm64PublicationToSnapshotRepository
 
 ./gradlew multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishWatchosX86PublicationToSnapshotRepository \
 multiplatform-crypto-libsodium-bindings:publishWatchosSimulatorArm64PublicationToSnapshotRepository
 
 ./gradlew multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotRepository \

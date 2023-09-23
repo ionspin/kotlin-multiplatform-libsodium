@@ -36,7 +36,7 @@ object Versions {
 
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
-    val bindingsVersion = "0.9.0-SNAPSHOT"
+    val bindingsVersion = "0.9.1-SNAPSHOT"
 }
 
 object Deps {
