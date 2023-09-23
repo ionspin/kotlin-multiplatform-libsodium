@@ -120,26 +120,22 @@ At the moment you should refer to original libsodium documentation for instructi
 
 Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 
-|Platform| Supported |
-|--------|------------------|
-|Linux X86 64|          :heavy_check_mark: |
-|Linux Arm 64|          :heavy_check_mark: |
-|Linux Arm 32|          :x: |
-|macOS X86 64|          :heavy_check_mark: |
-|macOS Arm 64 (Apple Silicon)|          :heavy_check_mark: |
-|iOS x86 64 |           :heavy_check_mark: |
-|iOS Arm 64 |           :heavy_check_mark: |
-|iOS Arm 32 |           :heavy_check_mark: |
-|iOS Simulator Arm 64 (Apple Silicon)|           :heavy_check_mark: |
-|watchOS X86 32 |       :heavy_check_mark: |
-|watchOS Arm 64(_32) |  :heavy_check_mark: |
-|watchOS Arm 32 |       :heavy_check_mark: |
-|watchOS Simulator Arm 64 (Apple Silicon)|  :heavy_check_mark: |
-|tvOS X86 64 |          :heavy_check_mark: |
-|tvOS Arm 64 |          :heavy_check_mark: |
-|tvOS Simulator Arm 64 (Apple Silicon)|          :heavy_check_mark: |
-|minGW X86 64|          :heavy_check_mark: |
-|minGW X86 32|          :x: | 
+|Platform| Supported          |
+|--------|--------------------|
+|Linux X86 64| :heavy_check_mark: |
+|Linux Arm 64| :heavy_check_mark: |
+|macOS X86 64| :heavy_check_mark: |
+|macOS Arm 64 (Apple Silicon)| :heavy_check_mark: |
+|iOS x86 64 | :heavy_check_mark: |
+|iOS Arm 64 | :heavy_check_mark: |
+|iOS Simulator Arm 64 (Apple Silicon)| :heavy_check_mark: |
+|watchOS Arm 64(_32) | :heavy_check_mark: |
+|watchOS Arm 32 | :heavy_check_mark: |
+|watchOS Simulator Arm 64 (Apple Silicon)| :heavy_check_mark: |
+|tvOS X86 64 | :heavy_check_mark: |
+|tvOS Arm 64 | :heavy_check_mark: |
+|tvOS Simulator Arm 64 (Apple Silicon)| :heavy_check_mark: |
+|minGW X86 64| :heavy_check_mark: |
 
 [List of supported bindings (outdated)](https://github.com/ionspin/kotlin-multiplatform-crypto/blob/master/supported_bindings_list.md)
 ### Where do the compiled libraries used by JVM and Android come from

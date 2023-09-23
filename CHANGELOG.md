@@ -1,9 +1,9 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.1-SNAPSHO - current development snapshot
+#### 0.9.1-SNAPSHOT - current development snapshot
 
-#### 0.9.0-SNAPSHOT - 23.9.2023
+#### 0.9.0 - 23.9.2023
 - Breaking changes: 
   - PasswordHash.str now returns String 
   - PasswordHash.strNeedsRehash and PasswordHash.strVerify now take String type for `passwordHash` parameter
