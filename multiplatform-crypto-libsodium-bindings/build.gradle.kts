@@ -331,12 +331,12 @@ kotlin {
             }
         )
 
-        //iosArm32, iosArm64, iosX64, macosX64, metadata, tvosArm64, tvosX64, watchosArm32, watchosArm64, watchosX86
+        //iosArm64, iosX64, macosX64, metadata, tvosArm64, tvosX64, watchosArm32, watchosArm64
         val macos64Bit = setOf(
             "macosX64", "macosArm64"
         )
         val iosArm = setOf(
-            "iosArm64", "iosArm32"
+            "iosArm64",
         )
         val iosSimulator = setOf(
             "iosX64", "iosSimulatorArm64"
@@ -353,7 +353,7 @@ kotlin {
         )
 
         val watchosArm = setOf(
-            "watchosArm64"
+            "watchosArm64", "watchosArm32"
         )
         val watchosSimulator = setOf(
             "watchosSimulatorArm64"
