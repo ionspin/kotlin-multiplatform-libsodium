@@ -55,7 +55,7 @@ kotlin {
             "windows" -> mingwX64("native")
         }
     }
-    android()
+    androidTarget()
     runningOnLinuxx86_64 {
         jvm()
         js(IR) {

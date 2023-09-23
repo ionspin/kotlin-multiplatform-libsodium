@@ -4,7 +4,6 @@ import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
-import kotlinx.cinterop.toCValues
 import libsodium.crypto_pwhash
 import libsodium.crypto_pwhash_str
 import libsodium.crypto_pwhash_str_needs_rehash
@@ -61,7 +60,7 @@ actual object PasswordHash {
      * and other data stores. No extra information has to be stored in order to verify the password.
      * The function returns 0 on success and -1 if it didn't complete successfully.
      */
-    actual fun str(password: String, opslimit: ULong, memlimit: Int): UByteArray {
+    actual fun str(password: String, opslimit: ULong, memlimit: Int): String {
         val output = ByteArray(crypto_pwhash_STRBYTES)
         val outputPinned = output.pin()
         crypto_pwhash_str(
@@ -73,7 +72,7 @@ actual object PasswordHash {
         )
         outputPinned.unpin()
 
-        return output.asUByteArray()
+        return output.decodeToString()
     }
 
     /**
@@ -83,12 +82,12 @@ actual object PasswordHash {
      * It returns -1 on error. If it happens, applications may want to compute a correct hash the next time the user logs in.
      */
     actual fun strNeedsRehash(
-        passwordHash: UByteArray,
+        passwordHash: String,
         opslimit: ULong,
         memlimit: Int
     ): Int {
         val result = crypto_pwhash_str_needs_rehash(
-            passwordHash.asByteArray().toCValues(),
+            passwordHash,
             opslimit,
             memlimit.convert()
         )
@@ -102,9 +101,9 @@ actual object PasswordHash {
      * str has to be zero-terminated.
      * It returns 0 if the verification succeeds, and -1 on error.
      */
-    actual fun strVerify(passwordHash: UByteArray, password: String): Boolean {
+    actual fun strVerify(passwordHash: String, password: String): Boolean {
         val result = crypto_pwhash_str_verify(
-            passwordHash.asByteArray().toCValues(),
+            passwordHash,
             password,
             password.length.convert()
         )

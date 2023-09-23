@@ -56,10 +56,10 @@ version = ReleaseInfo.bindingsVersion
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
 android {
-    compileSdkVersion(AndroidPluginConfiguration.sdkVersion)
+    compileSdk = AndroidPluginConfiguration.sdkVersion
     defaultConfig {
-        minSdkVersion(AndroidPluginConfiguration.minVersion)
-        targetSdkVersion(AndroidPluginConfiguration.sdkVersion)
+        minSdk = AndroidPluginConfiguration.minVersion
+        targetSdk = AndroidPluginConfiguration.sdkVersion
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -83,7 +83,7 @@ android {
 
 kotlin {
     val hostOsName = getHostOsName()
-    android() {
+    androidTarget() {
         publishLibraryVariants("release", "debug")
     }
 
@@ -93,7 +93,7 @@ kotlin {
         println("Configuring Linux X86-64 targets")
 
 
-        js(IR) {
+        js {
             browser {
                 testTask {
                     useKarma {
@@ -133,15 +133,6 @@ kotlin {
                     }
                 }
             }
-            // Linux 32 is using target-sysroot-2-raspberrypi which is missing getrandom and explicit_bzero in stdlib
-            // so konanc can't build klib because getrandom missing will cause sodium_misuse()
-            //     ld.lld: error: undefined symbol: explicit_bzero
-            //     >>> referenced by utils.c
-            //     >>>               libsodium_la-utils.o:(sodium_memzero) in archive /tmp/included11051337748775083797/libsodium.a
-            //
-            //     ld.lld: error: undefined symbol: getrandom
-            //     >>> referenced by randombytes_sysrandom.c
-            //     >>>               libsodium_la-randombytes_sysrandom.o:(_randombytes_linux_getrandom) in archive /tmp/included11051337748775083797/libsodium.a
         }
 
     }
@@ -171,13 +162,7 @@ kotlin {
             }
         }
     }
-    iosArm32() {
-        binaries {
-            framework {
-                optimized = true
-            }
-        }
-    }
+
     iosSimulatorArm64() {
         binaries {
             framework {
@@ -237,13 +222,7 @@ kotlin {
             }
         }
     }
-    watchosX86() {
-        binaries {
-            framework {
-                optimized = true
-            }
-        }
-    }
+
     watchosSimulatorArm64() {
         binaries {
             framework {
@@ -351,9 +330,6 @@ kotlin {
                 ""
             }
         )
-        val linux32Bit = setOf(
-            "" // "linuxArm32Hfp"
-        )
 
         //iosArm32, iosArm64, iosX64, macosX64, metadata, tvosArm64, tvosX64, watchosArm32, watchosArm64, watchosX86
         val macos64Bit = setOf(
@@ -377,10 +353,10 @@ kotlin {
         )
 
         val watchosArm = setOf(
-            "watchosArm32", "watchosArm64"
+            "watchosArm64"
         )
         val watchosSimulator = setOf(
-            "watchosX86", "watchosSimulatorArm64"
+            "watchosSimulatorArm64"
         )
 
         targets.withType<KotlinNativeTarget> {
@@ -408,14 +384,7 @@ kotlin {
                         )
                     }
                 }
-                if (linux32Bit.contains(this@withType.name)) {
-                    defaultSourceSet.dependsOn(
-                        createWorkaroundNativeMainSourceSet(
-                            this@withType.name,
-                            nativeDependencies
-                        )
-                    )
-                }
+
                 if (macos64Bit.contains(this@withType.name)) {
                     defaultSourceSet.dependsOn(
                         createWorkaroundNativeMainSourceSet(
@@ -637,10 +606,6 @@ kotlin {
             }
 
             val tvosArm64Main by getting {
-                dependsOn(commonMain)
-            }
-
-            val watchosX86Main by getting {
                 dependsOn(commonMain)
             }
 

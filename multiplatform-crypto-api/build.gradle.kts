@@ -17,9 +17,7 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
-import org.jetbrains.dokka.Platform
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -74,20 +72,12 @@ kotlin {
             }
         }
 
-        linuxArm32Hfp() {
-            binaries {
-                staticLib {
-                }
-            }
-        }
-
 
     }
 
     runningOnMacos {
         iosX64()
         iosArm64()
-        iosArm32()
         iosSimulatorArm64()
 
         macosX64()
@@ -99,13 +89,11 @@ kotlin {
 
         watchosArm64()
         watchosArm32()
-        watchosX86()
         watchosSimulatorArm64()
 
     }
     runningOnWindows {
         mingwX64()
-        mingwX86()
     }
 
 
