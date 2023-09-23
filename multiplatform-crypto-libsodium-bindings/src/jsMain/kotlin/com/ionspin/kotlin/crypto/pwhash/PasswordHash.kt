@@ -45,7 +45,7 @@ actual object PasswordHash {
      * and other data stores. No extra information has to be stored in order to verify the password.
      * The function returns 0 on success and -1 if it didn't complete successfully.
      */
-    actual fun str(password: String, opslimit: ULong, memlimit: Int): UByteArray {
+    actual fun str(password: String, opslimit: ULong, memlimit: Int): String {
         if (opslimit > UInt.MAX_VALUE) {
             throw RuntimeException("Javascript doesnt support more than ${UInt.MAX_VALUE} for opslimit")
         }
@@ -53,7 +53,7 @@ actual object PasswordHash {
             password.encodeToUByteArray().toUInt8Array(),
             opslimit.toUInt(),
             memlimit.toUInt()
-        ).encodeToUByteArray()
+        )
     }
 
     /**
@@ -63,7 +63,7 @@ actual object PasswordHash {
      * It returns -1 on error. If it happens, applications may want to compute a correct hash the next time the user logs in.
      */
     actual fun strNeedsRehash(
-        passwordHash: UByteArray,
+        passwordHash: String,
         opslimit: ULong,
         memlimit: Int
     ): Int {
@@ -72,7 +72,7 @@ actual object PasswordHash {
         }
         return if (
             getSodium().crypto_pwhash_str_needs_rehash(
-                passwordHash.asByteArray().decodeToString(),
+                passwordHash,
                 opslimit.toUInt(),
                 memlimit.toUInt()
             )
@@ -88,9 +88,9 @@ actual object PasswordHash {
      * str has to be zero-terminated.
      * It returns 0 if the verification succeeds, and -1 on error.
      */
-    actual fun strVerify(passwordHash: UByteArray, password: String): Boolean {
+    actual fun strVerify(passwordHash: String, password: String): Boolean {
         return getSodium().crypto_pwhash_str_verify(
-            passwordHash.asByteArray().decodeToString(),
+            passwordHash,
             password.encodeToUByteArray().toUInt8Array()
         )
     }

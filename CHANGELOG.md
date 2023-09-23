@@ -1,9 +1,26 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.8.9-SNAPSHOT - Current development snapshot
+#### 0.9.1-SNAPSHO - current development snapshot
+
+#### 0.9.0-SNAPSHOT - 23.9.2023
+- Breaking changes: 
+  - PasswordHash.str now returns String 
+  - PasswordHash.strNeedsRehash and PasswordHash.strVerify now take String type for `passwordHash` parameter
+
+- Update to latest stable build of libsodium
+- Update to kotlin 1.9.10
+- Targets deprecated by kotlin 1.9.10 and therefore removed from this library:  
+  - iosArm32
+  - watchosX86
+  - wasm32
+  - mingwX86
+  - linuxArm32Hfp
+
+#### 0.8.9-SNAPSHOT - 26.3.2023
 - Update to latest stable build of libsodium
 - Update to kotlin 1.8.10
+
 
 #### 0.8.8 - 9.10.2022
 - Fix for missing mingw target in published library modules.xml (#29)

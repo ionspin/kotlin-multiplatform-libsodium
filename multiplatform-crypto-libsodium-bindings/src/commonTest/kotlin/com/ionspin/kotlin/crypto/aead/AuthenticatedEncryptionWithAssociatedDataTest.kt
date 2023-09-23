@@ -6,6 +6,7 @@ import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 /**
  * Created by Ugljesa Jovanovic

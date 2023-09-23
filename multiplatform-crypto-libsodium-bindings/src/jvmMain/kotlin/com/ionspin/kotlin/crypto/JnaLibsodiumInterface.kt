@@ -1108,7 +1108,7 @@ interface JnaLibsodiumInterface : Library {
     //    int crypto_pwhash_str_needs_rehash(const char str[crypto_pwhash_STRBYTES],
     //    unsigned long long opslimit, size_t memlimit)
     fun crypto_pwhash_str_needs_rehash(
-        output: ByteArray,
+        output: String,
         opslimit: Long,
         memlimit: Long
     ) : Int
@@ -1116,7 +1116,7 @@ interface JnaLibsodiumInterface : Library {
     //    const char * const passwd,
     //    unsigned long long passwdlen)
     fun crypto_pwhash_str_verify(
-        hash: ByteArray,
+        hash: String,
         password: String,
         passwordLength: Long
     ) : Int

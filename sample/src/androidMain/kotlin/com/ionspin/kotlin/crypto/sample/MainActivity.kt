@@ -6,8 +6,6 @@ package com.ionspin.kotlin.crypto.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
-import com.ionspin.kotlin.crypto.TmpAccessor
 import com.ionspin.kotlin.crypto.box.Box
 import com.ionspin.kotlin.crypto.box.BoxCorruptedOrTamperedDataException
 import com.ionspin.kotlin.crypto.box.crypto_box_NONCEBYTES
@@ -15,7 +13,6 @@ import com.ionspin.kotlin.crypto.hash.Hash
 import com.ionspin.kotlin.crypto.util.decodeFromUByteArray
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
-import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.StringBuilder
 import kotlin.random.Random
 import kotlin.random.nextUBytes
@@ -45,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         } catch (exception : Exception) {
             builder.appendLine("And caught tamper")
         }
-        helloWorldTextView.setText(builder.toString())
+
     }
 
 }

@@ -18,6 +18,6 @@ class JnaLibraryLoaderTest {
         LibsodiumInitializer.initialize()
         val version = sodiumJna.sodium_version_string()
         println("Got loaded sodium version: $version")
-        assertEquals("1.0.18", version)
+        assertEquals("1.0.19", version)
     }
 }

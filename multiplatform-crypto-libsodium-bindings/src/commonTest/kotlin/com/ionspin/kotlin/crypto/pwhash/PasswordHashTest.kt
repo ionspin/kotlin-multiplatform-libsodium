@@ -44,7 +44,7 @@ class PasswordHashTest {
                 crypto_pwhash_OPSLIMIT_MIN,
                 crypto_pwhash_MEMLIMIT_MIN
             )
-            println("Hashed password for storage: ${hashedPassword.toHexString()}")
+            println("Hashed password for storage: ${hashedPassword}")
 
             assertTrue {
                 PasswordHash.strVerify(
