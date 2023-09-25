@@ -3,6 +3,6 @@
   ~ Copyright (c) IonSpin UG Ugljesa Jovanovic 2021-2022
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ionspin.common.client">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ionspin.kotlin.mutliplatform_crypto_libsodium_bindings">
 
 </manifest>
