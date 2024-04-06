@@ -1,4 +1,5 @@
-![Danger: Experimental](https://camo.githubusercontent.com/275bc882f21b154b5537b9c123a171a30de9e6aa/68747470733a2f2f7261772e6769746875622e636f6d2f63727970746f7370686572652f63727970746f7370686572652f6d61737465722f696d616765732f6578706572696d656e74616c2e706e67)
+> [!CAUTION]
+> Experimental library!
 
 # Libsodium bindings for Kotlin Multiplatform
 
@@ -12,7 +13,7 @@ attack surfaces, bugs and other issues and you shouldn't use it in production un
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.0")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.1")
 ```
 
 #### Snapshot builds
@@ -20,7 +21,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.0
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.1-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.2-SNAPSHOT")
 
 ```
 
@@ -97,6 +98,8 @@ those, kotlin API returns a data class wrapping both objects. An example of this
     crypto_secretstream_xchacha20poly1305_init_push(&state, header, key);
 ```
 
+
+
 **kotlin:**
 This is what the response data class definition looks like:
 ```
@@ -109,6 +112,8 @@ And here is the usage sample
     val state = stateAndHeader.state
     val header = stateAndHeader.header 
 ```
+
+If a libsodium call fails, `xChaCha20Poly1305InitPush` function will throw a `GeneralLibsodiumException`.
 
 The functions are mapped from libsodium to kotiln objects, so `crypto_secretstream_xchacha20poly1305_init_push` becomes
 `SecretStream.xChaCha20Poly1305InitPush`
@@ -129,7 +134,6 @@ Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 |iOS x86 64 | :heavy_check_mark: |
 |iOS Arm 64 | :heavy_check_mark: |
 |iOS Simulator Arm 64 (Apple Silicon)| :heavy_check_mark: |
-|watchOS Arm 64(_32) | :heavy_check_mark: |
 |watchOS Arm 32 | :heavy_check_mark: |
 |watchOS Simulator Arm 64 (Apple Silicon)| :heavy_check_mark: |
 |tvOS X86 64 | :heavy_check_mark: |
@@ -141,8 +145,8 @@ Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 ### Where do the compiled libraries used by JVM and Android come from
 Android .so files come from running dist-build scripts in libsodium which you can find in the libsodium submodule
 Java Linux Arm/X86_64 and Mac so and dylib are the same as produced by multiplatform builds, also based on the same submodule commit
-Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.18-stable-msvc.zip
-
+Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.19-stable-msvc.zip
+Javascript is from libsodium-wrappers-sumo npm package version 0.7.13 (https://github.com/jedisct1/libsodium.js)
 
 ### TODO:
 - Improve documentation
@@ -154,7 +158,7 @@ Java Windows dll is from https://download.libsodium.org/libsodium/releases/libso
 ### Building
 Clone the git, init the submodule and run `./gradlew build`. Note that current build settings are such that only linux builds `js` target.
 
-#### Notes for Gitlab runners:
+#### Notes for Github runners:
 - At the moment all runners need to have android sdk present even though not all are building Android build
 
 #### Windows:
