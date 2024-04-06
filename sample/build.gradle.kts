@@ -118,20 +118,12 @@ kotlin {
                 }
             }
         }
-        val iosArm32Target = iosArm32() {
-            binaries {
-                framework {
-                    baseName = "LibsodiumBindings"
-                    export(Deps.Common.libsodiumBindings)
-                }
-            }
-        }
+
         val macosX64Target = macosX64()
         val tvosX64Target = tvosX64()
         val tvosArm64Target = tvosArm64()
         val watchosArm64Target = watchosArm64()
         val watchosArm32Target = watchosArm32()
-        val watchosX86Target = watchosX86()
 
         configure(listOf(macosX64Target)) {
             binaries.executable {}
@@ -159,7 +151,6 @@ kotlin {
             from(
                 iosX64Target.binaries.getFramework(mode),
                 iosArm64Target.binaries.getFramework(mode),
-                iosArm32Target.binaries.getFramework(mode)
             )
         }
     }
@@ -323,12 +314,7 @@ kotlin {
                 dependsOn(nativeTest)
             }
 
-            val iosArm32Main by getting {
-                dependsOn(nativeMain)
-            }
-            val iosArm32Test by getting {
-                dependsOn(nativeTest)
-            }
+
 
             val macosX64Main by getting {
                 dependsOn(nativeMain)
