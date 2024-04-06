@@ -3,6 +3,9 @@
 
 #### 0.9.1-SNAPSHOT - current development snapshot
 - Fix #42, return values from libsodium calls are now checked
+- Bump kotlin to 1.9.23
+- Update to latest libsodium
+- Update latest MSVC library
 
 #### 0.9.0 - 23.9.2023
 - Breaking changes: 
