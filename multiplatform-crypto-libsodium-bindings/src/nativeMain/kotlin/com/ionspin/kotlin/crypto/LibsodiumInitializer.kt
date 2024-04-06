@@ -4,7 +4,7 @@ package com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import libsodium.sodium_init
-import kotlin.native.concurrent.AtomicInt
+import kotlin.concurrent.AtomicInt
 
 actual object LibsodiumInitializer {
 
