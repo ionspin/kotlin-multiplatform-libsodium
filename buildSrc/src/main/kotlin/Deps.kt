@@ -27,7 +27,9 @@ object Versions {
     val ktor = "1.3.2"
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
-    val resourceLoader = "2.0.2"
+    // Fork that deletes temporary folders resource loader creates
+    // https://github.com/ionspin/resource-loader/tree/delete-temp-folder
+    val resourceLoader = "2.0.3-SNAPSHOT"
 
 
 

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.scalarmult
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.pin
 import libsodium.crypto_scalarmult
@@ -25,7 +26,7 @@ actual object ScalarMultiplication {
         val secretKeyNPinned = secretKeyN.pin()
         val publicKeyPPinned = publicKeyP.pin()
 
-        crypto_scalarmult(resultPinned.toPtr(), secretKeyNPinned.toPtr(), publicKeyPPinned.toPtr())
+        crypto_scalarmult(resultPinned.toPtr(), secretKeyNPinned.toPtr(), publicKeyPPinned.toPtr()).ensureLibsodiumSuccess()
 
         resultPinned.unpin()
         secretKeyNPinned.unpin()
@@ -47,7 +48,7 @@ actual object ScalarMultiplication {
         val resultPinned = result.pin()
         val secretKeyNPinned = secretKeyN.pin()
 
-        crypto_scalarmult_base(resultPinned.toPtr(), secretKeyNPinned.toPtr())
+        crypto_scalarmult_base(resultPinned.toPtr(), secretKeyNPinned.toPtr()).ensureLibsodiumSuccess()
 
         resultPinned.unpin()
         secretKeyNPinned.unpin()

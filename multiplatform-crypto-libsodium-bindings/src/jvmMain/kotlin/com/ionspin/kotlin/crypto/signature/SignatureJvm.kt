@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.signature
 
 import com.ionspin.kotlin.crypto.Ed25519SignatureState
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual typealias SignatureState = Ed25519SignatureState
@@ -11,7 +12,7 @@ actual object Signature {
     }
 
     actual fun update(state: SignatureState, data: UByteArray) {
-        sodiumJna.crypto_sign_update(state, data.asByteArray(), data.size.toLong())
+        sodiumJna.crypto_sign_update(state, data.asByteArray(), data.size.toLong()).ensureLibsodiumSuccess()
     }
 
     actual fun finalCreate(
@@ -24,7 +25,7 @@ actual object Signature {
             signature.asByteArray(),
             null,
             secretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return signature
     }
 
@@ -53,7 +54,7 @@ actual object Signature {
         sodiumJna.crypto_sign_keypair(
             publicKey.asByteArray(),
             secretKey.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return SignatureKeyPair(publicKey, secretKey)
     }
 
@@ -71,7 +72,7 @@ actual object Signature {
             publicKey.asByteArray(),
             secretKey.asByteArray(),
             seed.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return SignatureKeyPair(publicKey, secretKey)
     }
 
@@ -88,7 +89,7 @@ actual object Signature {
             message.asByteArray(),
             message.size.toLong(),
             secretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return signedMessage
     }
@@ -127,7 +128,7 @@ actual object Signature {
             message.asByteArray(),
             message.size.toLong(),
             secretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return signature
     }
@@ -162,7 +163,7 @@ actual object Signature {
         sodiumJna.crypto_sign_ed25519_pk_to_curve25519(
             x25519PublicKey.asByteArray(),
             ed25519PublicKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return x25519PublicKey
     }
 
@@ -171,7 +172,7 @@ actual object Signature {
         sodiumJna.crypto_sign_ed25519_sk_to_curve25519(
             x25519SecretKey.asByteArray(),
             ed25519SecretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return x25519SecretKey
     }
 
@@ -185,7 +186,7 @@ actual object Signature {
         sodiumJna.crypto_sign_ed25519_sk_to_seed(
             seed.asByteArray(),
             secretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return seed
 
@@ -201,7 +202,7 @@ actual object Signature {
         sodiumJna.crypto_sign_ed25519_sk_to_pk(
             publicKey.asByteArray(),
             secretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return publicKey
     }

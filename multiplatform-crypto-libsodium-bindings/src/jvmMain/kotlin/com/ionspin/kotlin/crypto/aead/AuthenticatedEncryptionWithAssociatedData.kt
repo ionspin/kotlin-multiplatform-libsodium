@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.aead
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object AuthenticatedEncryptionWithAssociatedData {
@@ -24,7 +25,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -71,7 +72,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }
 
@@ -117,7 +118,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -164,7 +165,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }
 
@@ -210,7 +211,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -257,7 +258,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null,
             nonce.asByteArray(),
             key.asByteArray(),
-        )
+        ).ensureLibsodiumSuccess()
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }
 

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.util
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -53,7 +54,7 @@ actual object LibsodiumUtil {
             unpaddedData.size.convert(),
             blocksize.convert(),
             resultingSize.convert()
-        )
+        ).ensureLibsodiumSuccess()
         paddedDataPinned.unpin()
         return paddedData
     }
@@ -68,7 +69,7 @@ actual object LibsodiumUtil {
             paddedDataCopyPinned.toPtr(),
             paddedData.size.convert(),
             blocksize.convert()
-        )
+        ).ensureLibsodiumSuccess()
         val unpaddedSize = newSizeULong[0]
         if (unpaddedSize > Int.MAX_VALUE.toULong()) {
             throw RuntimeException("Unsupported array size (larger than Integer max value) $unpaddedSize")
@@ -131,7 +132,7 @@ actual object LibsodiumUtil {
             null,
             variant.value
 
-        )
+        ).ensureLibsodiumSuccess()
         binLenPinned.unpin()
         intermediaryResultPinned.unpin()
 
@@ -154,7 +155,7 @@ actual object LibsodiumUtil {
             null,
             null,
             null
-        )
+        ).ensureLibsodiumSuccess()
         resultPinned.unpin()
         return result
     }

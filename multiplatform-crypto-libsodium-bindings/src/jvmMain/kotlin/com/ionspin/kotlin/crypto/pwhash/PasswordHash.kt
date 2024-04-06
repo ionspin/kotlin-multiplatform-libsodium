@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.pwhash
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object PasswordHash {
@@ -30,7 +31,7 @@ actual object PasswordHash {
             opsLimit.toLong(),
             memLimit.toLong(),
             algorithm
-        )
+        ).ensureLibsodiumSuccess()
 
         return hashedPassword
     }
@@ -53,7 +54,7 @@ actual object PasswordHash {
             password.length.toLong(),
             opslimit.toLong(),
             memlimit.toLong()
-        )
+        ).ensureLibsodiumSuccess()
         return output.decodeToString()
     }
 

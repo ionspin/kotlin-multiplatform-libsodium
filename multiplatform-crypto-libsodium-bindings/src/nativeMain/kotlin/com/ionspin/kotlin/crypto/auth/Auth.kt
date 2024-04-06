@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.auth
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -34,7 +35,7 @@ actual object Auth {
             messagePinned.toPtr(),
             message.size.convert(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         macPinned.unpin()
         messagePinned.unpin()
@@ -80,7 +81,7 @@ actual object Auth {
             messagePinned.toPtr(),
             message.size.convert(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         macPinned.unpin()
         messagePinned.unpin()
@@ -131,7 +132,7 @@ actual object Auth {
             messagePinned.toPtr(),
             message.size.convert(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         macPinned.unpin()
         messagePinned.unpin()

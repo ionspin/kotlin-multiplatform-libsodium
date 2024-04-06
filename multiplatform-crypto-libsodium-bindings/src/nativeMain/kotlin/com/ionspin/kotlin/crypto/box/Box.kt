@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.box
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -26,7 +27,7 @@ actual object Box {
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
-        crypto_box_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr())
+        crypto_box_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr()).ensureLibsodiumSuccess()
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
         return BoxKeyPair(publicKey, secretKey)
@@ -41,7 +42,7 @@ actual object Box {
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
         val seedPinned = seed.pin()
-        crypto_box_seed_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr(), seedPinned.toPtr())
+        crypto_box_seed_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr(), seedPinned.toPtr()).ensureLibsodiumSuccess()
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
         seedPinned.unpin()
@@ -76,7 +77,7 @@ actual object Box {
             noncePinned.toPtr(),
             recipientsPublicKeyPinned.toPtr(),
             sendersSecretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
         messagePinned.unpin()
@@ -141,7 +142,7 @@ actual object Box {
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
 
-        crypto_box_beforenm(sessionKeyPinned.toPtr(), publicKeyPinned.toPtr(), secretKeyPinned.toPtr())
+        crypto_box_beforenm(sessionKeyPinned.toPtr(), publicKeyPinned.toPtr(), secretKeyPinned.toPtr()).ensureLibsodiumSuccess()
 
         sessionKeyPinned.unpin()
         publicKeyPinned.unpin()
@@ -171,7 +172,7 @@ actual object Box {
             message.size.convert(),
             noncePinned.toPtr(),
             precomputedKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
         messagePinned.unpin()
@@ -249,7 +250,7 @@ actual object Box {
             noncePinned.toPtr(),
             recipientsPublicKeyPinned.toPtr(),
             sendersSecretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
         tagPinned.unpin()
@@ -319,7 +320,7 @@ actual object Box {
             messagePinned.toPtr(),
             message.size.convert(),
             recipientsPublicKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextWithPublicKeyPinned.unpin()
         messagePinned.unpin()

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.generichash
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
@@ -40,7 +41,7 @@ actual object GenericHash {
             message.size.convert(),
             pinnedKey?.toPtr(),
             (key?.size ?: 0).convert()
-        )
+        ).ensureLibsodiumSuccess()
         pinnedHash.unpin()
         pinnedKey?.unpin()
         pinnedMessage.unpin()
@@ -59,7 +60,7 @@ actual object GenericHash {
             pinnedKey?.toPtr(),
             (key?.size ?: 0).convert(),
             requestedHashLength.convert()
-        )
+        ).ensureLibsodiumSuccess()
         pinnedKey?.unpin()
         return GenericHashState(requestedHashLength, statePointed)
     }
@@ -73,7 +74,7 @@ actual object GenericHash {
             state.internalState.ptr,
             pinnedMessage.toPtr(),
             messagePart.size.convert()
-        )
+        ).ensureLibsodiumSuccess()
         pinnedMessage.unpin()
     }
 
@@ -84,7 +85,7 @@ actual object GenericHash {
             state.internalState.ptr,
             hashResultPinned.toPtr(),
             state.hashLength.convert()
-        )
+        ).ensureLibsodiumSuccess()
         hashResultPinned.unpin()
         return hashResult
     }

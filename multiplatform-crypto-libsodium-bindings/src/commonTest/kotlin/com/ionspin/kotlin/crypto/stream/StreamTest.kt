@@ -67,25 +67,25 @@ class StreamTest {
         }
     }
 
-//    @Test
-//    fun testXChaCha20IetfStream() = runTest {
-//        LibsodiumInitializer.initializeWithCallback {
-//            val message = "This is a cha cha message".encodeToUByteArray()
-//            val nonce = LibsodiumRandom.bufDeterministic(crypto_stream_xchacha20_NONCEBYTES, seed)
-//            val key = Stream.xChacha20Keygen()
-//            val encryptedUsingLibsodium = Stream.xChacha20Xor(message, nonce, key)
-//            val encryptedUsingLibsodiumWithInitialCounter = Stream.xChacha20XorIc(message, nonce, 0U, key)
-//            println(encryptedUsingLibsodium.toHexString())
-//            println(encryptedUsingLibsodiumWithInitialCounter.toHexString())
-//            assertTrue {
-//                encryptedUsingLibsodium.contentEquals(encryptedUsingLibsodiumWithInitialCounter)
-//            }
-//            val decryptedUsingLibsodium = Stream.xChacha20Xor(encryptedUsingLibsodium, nonce, key)
-//            println(message.toHexString())
-//            println(decryptedUsingLibsodium.toHexString())
-//            assertTrue {
-//                decryptedUsingLibsodium.contentEquals(message)
-//            }
-//        }
-//    }
+    @Test
+    fun testXChaCha20IetfStream() = runTest {
+        LibsodiumInitializer.initializeWithCallback {
+            val message = "This is a cha cha message".encodeToUByteArray()
+            val nonce = LibsodiumRandom.bufDeterministic(crypto_stream_xchacha20_NONCEBYTES, seed)
+            val key = Stream.xChacha20Keygen()
+            val encryptedUsingLibsodium = Stream.xChacha20Xor(message, nonce, key)
+            val encryptedUsingLibsodiumWithInitialCounter = Stream.xChacha20XorIc(message, nonce, 0U, key)
+            println(encryptedUsingLibsodium.toHexString())
+            println(encryptedUsingLibsodiumWithInitialCounter.toHexString())
+            assertTrue {
+                encryptedUsingLibsodium.contentEquals(encryptedUsingLibsodiumWithInitialCounter)
+            }
+            val decryptedUsingLibsodium = Stream.xChacha20Xor(encryptedUsingLibsodium, nonce, key)
+            println(message.toHexString())
+            println(decryptedUsingLibsodium.toHexString())
+            assertTrue {
+                decryptedUsingLibsodium.contentEquals(message)
+            }
+        }
+    }
 }

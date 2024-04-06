@@ -1,8 +1,27 @@
 package com.ionspin.kotlin.crypto.signature
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
-import kotlinx.cinterop.*
-import libsodium.*
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.pin
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.reinterpret
+import libsodium.crypto_sign
+import libsodium.crypto_sign_detached
+import libsodium.crypto_sign_ed25519_pk_to_curve25519
+import libsodium.crypto_sign_ed25519_sk_to_curve25519
+import libsodium.crypto_sign_ed25519_sk_to_pk
+import libsodium.crypto_sign_ed25519_sk_to_seed
+import libsodium.crypto_sign_ed25519ph_state
+import libsodium.crypto_sign_final_create
+import libsodium.crypto_sign_final_verify
+import libsodium.crypto_sign_init
+import libsodium.crypto_sign_keypair
+import libsodium.crypto_sign_open
+import libsodium.crypto_sign_seed_keypair
+import libsodium.crypto_sign_update
+import libsodium.crypto_sign_verify_detached
 import platform.posix.malloc
 
 actual typealias SignatureState = crypto_sign_ed25519ph_state
@@ -11,13 +30,13 @@ actual object Signature {
     actual fun init(): SignatureState {
         val stateAllocated = malloc(SignatureState.size.convert())
         val statePointed = stateAllocated!!.reinterpret<SignatureState>().pointed
-        crypto_sign_init(statePointed.ptr)
+        crypto_sign_init(statePointed.ptr).ensureLibsodiumSuccess()
         return statePointed
     }
 
     actual fun update(state: SignatureState, data: UByteArray) {
         val dataPinned = data.pin()
-        crypto_sign_update(state.ptr, dataPinned.toPtr(), data.size.convert())
+        crypto_sign_update(state.ptr, dataPinned.toPtr(), data.size.convert()).ensureLibsodiumSuccess()
         dataPinned.unpin()
     }
 
@@ -33,7 +52,7 @@ actual object Signature {
             signaturePinned.toPtr(),
             null,
             secretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         secretKeyPinned.unpin()
         signaturePinned.unpin()
         return signature
@@ -72,7 +91,7 @@ actual object Signature {
         crypto_sign_keypair(
             publicKeyPinned.toPtr(),
             secretKeyPinned.toPtr(),
-        )
+        ).ensureLibsodiumSuccess()
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
         return SignatureKeyPair(publicKey, secretKey)
@@ -93,7 +112,7 @@ actual object Signature {
             publicKeyPinned.toPtr(),
             secretKeyPinned.toPtr(),
             seedPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         seedPinned.unpin()
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
@@ -115,7 +134,7 @@ actual object Signature {
             messagePinned.toPtr(),
             message.size.convert(),
             secretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         signedMessagePinned.unpin()
         messagePinned.unpin()
         secretKeyPinned.unpin()
@@ -165,7 +184,7 @@ actual object Signature {
             messagePinned.toPtr(),
             message.size.convert(),
             secretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         signaturePinned.unpin()
         messagePinned.unpin()
         secretKeyPinned.unpin()
@@ -210,7 +229,7 @@ actual object Signature {
         crypto_sign_ed25519_pk_to_curve25519(
             x25519PublicKeyPinned.toPtr(),
             ed25519PublicKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         x25519PublicKeyPinned.unpin()
         ed25519PublicKeyPinned.unpin()
         return x25519PublicKey
@@ -223,7 +242,7 @@ actual object Signature {
         crypto_sign_ed25519_sk_to_curve25519(
             x25519SecretKeyPinned.toPtr(),
             ed25519SecretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         x25519SecretKeyPinned.unpin()
         ed25519SecretKeyPinned.unpin()
         return x25519SecretKey
@@ -242,7 +261,7 @@ actual object Signature {
         crypto_sign_ed25519_sk_to_seed(
             seedPinned.toPtr(),
             secretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         secretKeyPinned.unpin()
         seedPinned.unpin()
@@ -264,7 +283,7 @@ actual object Signature {
         crypto_sign_ed25519_sk_to_pk(
             publicKeyPinned.toPtr(),
             secretKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         secretKeyPinned.unpin()
         publicKeyPinned.unpin()

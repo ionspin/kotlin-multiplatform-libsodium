@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.box
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object Box {
@@ -11,7 +12,7 @@ actual object Box {
     actual fun keypair(): BoxKeyPair {
         val publicKey = UByteArray(crypto_box_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
-        sodiumJna.crypto_box_keypair(publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_box_keypair(publicKey.asByteArray(), secretKey.asByteArray()).ensureLibsodiumSuccess()
         return BoxKeyPair(publicKey, secretKey)
     }
 
@@ -21,7 +22,7 @@ actual object Box {
     actual fun seedKeypair(seed: UByteArray): BoxKeyPair {
         val publicKey = UByteArray(crypto_box_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_box_SECRETKEYBYTES)
-        sodiumJna.crypto_box_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
+        sodiumJna.crypto_box_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray()).ensureLibsodiumSuccess()
         return BoxKeyPair(publicKey, secretKey)
     }
 
@@ -46,7 +47,7 @@ actual object Box {
             nonce.asByteArray(),
             recipientsPublicKey.asByteArray(),
             sendersSecretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -85,7 +86,7 @@ actual object Box {
      */
     actual fun beforeNM(publicKey: UByteArray, secretKey: UByteArray): UByteArray {
         val sessionKey = UByteArray(crypto_box_BEFORENMBYTES)
-        sodiumJna.crypto_box_beforenm(sessionKey.asByteArray(), publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_box_beforenm(sessionKey.asByteArray(), publicKey.asByteArray(), secretKey.asByteArray()).ensureLibsodiumSuccess()
         return sessionKey
     }
 
@@ -105,7 +106,7 @@ actual object Box {
             message.size.toLong(),
             nonce.asByteArray(),
             precomputedKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return ciphertext
     }
@@ -157,7 +158,7 @@ actual object Box {
             nonce.asByteArray(),
             recipientsPublicKey.asByteArray(),
             sendersSecretKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return BoxEncryptedDataAndTag(ciphertext, tag)
     }
@@ -201,7 +202,7 @@ actual object Box {
             message.asByteArray(),
             message.size.toLong(),
             recipientsPublicKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertextWithPublicKey
     }
 

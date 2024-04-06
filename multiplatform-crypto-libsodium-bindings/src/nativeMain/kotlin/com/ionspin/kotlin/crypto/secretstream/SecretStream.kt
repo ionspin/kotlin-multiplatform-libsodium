@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.secretstream
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -30,7 +31,7 @@ actual object SecretStream {
             statePointed.ptr,
             headerPinned.toPtr(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         headerPinned.unpin()
         keyPinned.unpin()
         return SecretStreamStateAndHeader(statePointed, header)
@@ -60,7 +61,7 @@ actual object SecretStream {
             associatedDataPinned?.toPtr(),
             associatedData.size.convert(),
             tag
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
         messagePinned.unpin()
@@ -80,7 +81,7 @@ actual object SecretStream {
             statePointed.ptr,
             headerPinned.toPtr(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         headerPinned.unpin()
         keyPinned.unpin()
         return SecretStreamStateAndHeader(statePointed, header)

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.secretbox
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object SecretBox {
@@ -11,7 +12,7 @@ actual object SecretBox {
             message.size.toLong(),
             nonce.asByteArray(),
             key.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -48,7 +49,7 @@ actual object SecretBox {
             message.size.toLong(),
             nonce.asByteArray(),
             key.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return SecretBoxEncryptedDataAndTag(ciphertext, authenticationTag)
     }
 

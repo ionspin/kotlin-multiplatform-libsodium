@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.kdf
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
@@ -41,7 +42,7 @@ actual object Kdf {
             subkeyId.convert(),
             contextEncodedAndPinned.addressOf(0),
             masterKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         contextEncodedAndPinned.unpin()
         masterKeyPinned.unpin()

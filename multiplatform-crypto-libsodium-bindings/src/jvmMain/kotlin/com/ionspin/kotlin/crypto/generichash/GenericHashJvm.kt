@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.generichash
 
 import com.ionspin.kotlin.crypto.Blake2bState
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 /**
@@ -24,7 +25,7 @@ actual object GenericHash {
             message.size.toLong(),
             key?.asByteArray() ?: ByteArray(0),
             (key?.size ?: 0)
-        )
+        ).ensureLibsodiumSuccess()
         return hash
     }
 
@@ -33,7 +34,7 @@ actual object GenericHash {
         key: UByteArray?
     ): GenericHashState {
         val state = GenericHashStateInternal()
-        sodiumJna.crypto_generichash_init(state, key?.asByteArray() ?: ByteArray(0), key?.size ?: 0, requestedHashLength)
+        sodiumJna.crypto_generichash_init(state, key?.asByteArray() ?: ByteArray(0), key?.size ?: 0, requestedHashLength).ensureLibsodiumSuccess()
         return GenericHashState(requestedHashLength, state)
     }
 
@@ -41,12 +42,12 @@ actual object GenericHash {
         state: GenericHashState,
         messagePart: UByteArray
     ) {
-        sodiumJna.crypto_generichash_update(state.internalState, messagePart.asByteArray(), messagePart.size.toLong())
+        sodiumJna.crypto_generichash_update(state.internalState, messagePart.asByteArray(), messagePart.size.toLong()).ensureLibsodiumSuccess()
     }
 
     actual fun genericHashFinal(state: GenericHashState): UByteArray {
         val hashResult = ByteArray(state.hashLength)
-        sodiumJna.crypto_generichash_final(state.internalState, hashResult, state.hashLength)
+        sodiumJna.crypto_generichash_final(state.internalState, hashResult, state.hashLength).ensureLibsodiumSuccess()
         return hashResult.asUByteArray()
     }
 

@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto
 
 import com.goterl.resourceloader.SharedLibraryLoader
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import java.io.File
@@ -49,13 +50,13 @@ actual object LibsodiumInitializer {
     lateinit var sodiumJna : JnaLibsodiumInterface
     actual suspend fun initialize() {
         sodiumJna = loadLibrary()
-        sodiumJna.sodium_init()
+        sodiumJna.sodium_init().ensureLibsodiumSuccess()
         isPlatformInitialized = true
     }
 
     actual fun initializeWithCallback(done: () -> Unit) {
         sodiumJna = loadLibrary()
-        sodiumJna.sodium_init()
+        sodiumJna.sodium_init().ensureLibsodiumSuccess()
         isPlatformInitialized = true
         done()
     }

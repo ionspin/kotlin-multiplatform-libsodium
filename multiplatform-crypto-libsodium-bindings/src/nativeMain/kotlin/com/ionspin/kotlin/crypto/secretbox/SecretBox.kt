@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.secretbox
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -76,7 +77,7 @@ actual object SecretBox {
             message.size.convert(),
             noncePinned.toPtr(),
             keyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
         ciphertextPinned.unpin()
         authenticationTagPinned.unpin()
         messagePinned.unpin()

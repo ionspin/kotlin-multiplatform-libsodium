@@ -9,8 +9,6 @@ actual typealias Sha512State = Any
 
 actual object Hash {
 
-    //Not present in LazySodium
-    //fun hash(data: UByteArray) : UByteArray
     actual fun sha256(data: UByteArray): UByteArray {
         return getSodium().crypto_hash_sha256(data.toUInt8Array()).toUByteArray()
     }

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.secretstream
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.ionspin.kotlin.crypto.SecretStreamXChaCha20Poly1305State
 
@@ -9,7 +10,7 @@ actual object SecretStream {
     actual fun xChaCha20Poly1305InitPush(key: UByteArray): SecretStreamStateAndHeader {
         val state = SecretStreamState()
         val header = UByteArray(sodiumJna.crypto_secretstream_xchacha20poly1305_headerbytes())
-        sodiumJna.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray())
+        sodiumJna.crypto_secretstream_xchacha20poly1305_init_push(state, header.asByteArray(), key.asByteArray()).ensureLibsodiumSuccess()
         return SecretStreamStateAndHeader(state, header)
     }
 
@@ -29,7 +30,7 @@ actual object SecretStream {
             associatedData.asByteArray(),
             associatedData.size.toLong(),
             tag.toByte()
-        )
+        ).ensureLibsodiumSuccess()
         return ciphertext
     }
 
@@ -38,7 +39,7 @@ actual object SecretStream {
         header: UByteArray
     ): SecretStreamStateAndHeader {
         val state = SecretStreamState()
-        sodiumJna.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(), key.asByteArray())
+        sodiumJna.crypto_secretstream_xchacha20poly1305_init_pull(state, header.asByteArray(), key.asByteArray()).ensureLibsodiumSuccess()
         return SecretStreamStateAndHeader(state, header)
     }
 

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.pwhash
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
@@ -69,7 +70,7 @@ actual object PasswordHash {
             password.length.convert(),
             opslimit,
             memlimit.convert()
-        )
+        ).ensureLibsodiumSuccess()
         outputPinned.unpin()
 
         return output.decodeToString()

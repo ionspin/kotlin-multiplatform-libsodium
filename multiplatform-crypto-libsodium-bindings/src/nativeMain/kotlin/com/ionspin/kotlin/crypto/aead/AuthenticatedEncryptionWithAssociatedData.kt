@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.aead
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -48,8 +49,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 
@@ -129,8 +129,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 
@@ -209,8 +208,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 
@@ -290,8 +288,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 
@@ -370,8 +367,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 
@@ -451,8 +447,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             null, // nsec not used in this construct
             noncePinned.toPtr(),
             keyPinned.toPtr()
-
-        )
+        ).ensureLibsodiumSuccess()
 
         ciphertextPinned.unpin()
 

@@ -2,6 +2,7 @@
 
 package com.ionspin.kotlin.crypto
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import libsodium.sodium_init
 import kotlin.native.concurrent.AtomicInt
 
@@ -11,7 +12,7 @@ actual object LibsodiumInitializer {
 
     actual suspend fun initialize() {
         if (isPlatformInitialized.compareAndSet(0, 1)) {
-            sodium_init()
+            sodium_init().ensureLibsodiumSuccess()
         }
 
 
@@ -19,7 +20,7 @@ actual object LibsodiumInitializer {
 
     actual fun initializeWithCallback(done: () -> Unit) {
         if (isPlatformInitialized.compareAndSet(0, 1)) {
-            sodium_init()
+            sodium_init().ensureLibsodiumSuccess()
         }
         done()
     }

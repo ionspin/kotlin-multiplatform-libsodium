@@ -38,6 +38,7 @@ val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 
 }

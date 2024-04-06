@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.keyexchange
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object KeyExchange {
@@ -13,7 +14,7 @@ actual object KeyExchange {
             clientPublicKey.asByteArray(),
             clientSecretKey.asByteArray(),
             serverPublicKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
 
 
@@ -25,7 +26,7 @@ actual object KeyExchange {
         val secretKey = UByteArray(crypto_kx_SECRETKEYBYTES)
 
 
-        sodiumJna.crypto_kx_keypair(publicKey.asByteArray(), secretKey.asByteArray())
+        sodiumJna.crypto_kx_keypair(publicKey.asByteArray(), secretKey.asByteArray()).ensureLibsodiumSuccess()
 
 
         return KeyExchangeKeyPair(publicKey, secretKey)
@@ -35,7 +36,7 @@ actual object KeyExchange {
         val publicKey = UByteArray(crypto_kx_PUBLICKEYBYTES)
         val secretKey = UByteArray(crypto_kx_SECRETKEYBYTES)
 
-        sodiumJna.crypto_kx_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray())
+        sodiumJna.crypto_kx_seed_keypair(publicKey.asByteArray(), secretKey.asByteArray(), seed.asByteArray()).ensureLibsodiumSuccess()
 
         return KeyExchangeKeyPair(publicKey, secretKey)
     }
@@ -50,7 +51,7 @@ actual object KeyExchange {
             serverPublicKey.asByteArray(),
             serverSecretKey.asByteArray(),
             clientPublicKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return KeyExchangeSessionKeyPair(receiveKey, sendKey)
     }

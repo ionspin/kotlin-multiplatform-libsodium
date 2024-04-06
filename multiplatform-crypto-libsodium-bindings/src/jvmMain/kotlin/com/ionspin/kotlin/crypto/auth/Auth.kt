@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.auth
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object Auth {
@@ -16,7 +17,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return mac
     }
 
@@ -42,7 +43,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return mac
     }
 
@@ -72,7 +73,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
         return mac
     }
 

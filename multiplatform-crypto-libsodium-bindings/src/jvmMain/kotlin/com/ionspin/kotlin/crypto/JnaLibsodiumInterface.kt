@@ -82,6 +82,8 @@ interface JnaLibsodiumInterface : Library {
     // ---- Utils ----
     fun sodium_version_string(): String
 
+    // void
+    // randombytes_buf(void * const buf, const size_t size)
     fun randombytes_buf(buffer: ByteArray, bufferSize: Int)
 
     //    void randombytes_buf_deterministic(void * const buf, const size_t size,
@@ -147,7 +149,7 @@ interface JnaLibsodiumInterface : Library {
         buffer: ByteArray,
         paddedBufferLength: Int,
         blockSize: Int
-    )
+    ) : Int
 
 
     //    char *sodium_bin2base64(char * const b64, const size_t b64_maxlen,
@@ -431,7 +433,7 @@ interface JnaLibsodiumInterface : Library {
         nsec: ByteArray?,
         npub: ByteArray,
         key: ByteArray
-    )
+    ) : Int
 
     //    int crypto_aead_chacha20poly1305_ietf_decrypt(
     //    unsigned char *m,
@@ -809,7 +811,7 @@ interface JnaLibsodiumInterface : Library {
 //    // ---- Box ----
 //
     //    int crypto_box_keypair(unsigned char *pk, unsigned char *sk)
-    fun crypto_box_keypair(publicKey: ByteArray, secretKey: ByteArray)
+    fun crypto_box_keypair(publicKey: ByteArray, secretKey: ByteArray): Int
 
     //    int crypto_box_seed_keypair(unsigned char *pk, unsigned char *sk,
     //    const unsigned char *seed)
@@ -1037,7 +1039,7 @@ interface JnaLibsodiumInterface : Library {
     //    int crypto_sign_keypair(unsigned char *pk, unsigned char *sk)
     fun crypto_sign_keypair(
         publicKey: ByteArray, secretKey: ByteArray
-    )
+    ): Int
 
     //    int crypto_sign_seed_keypair(unsigned char *pk, unsigned char *sk,
     //    const unsigned char *seed)
@@ -1066,7 +1068,7 @@ interface JnaLibsodiumInterface : Library {
         subkeyId: Long,
         context: ByteArray,
         key: ByteArray
-    )
+    ): Int
 
     //    void crypto_kdf_keygen(unsigned char k[crypto_kdf_KEYBYTES])
     fun crypto_kdf_keygen(
@@ -1135,7 +1137,7 @@ interface JnaLibsodiumInterface : Library {
     fun crypto_kx_keypair(
         publicKey: ByteArray,
         secretKey: ByteArray
-    )
+    ): Int
 
 
     //    int crypto_kx_seed_keypair(unsigned char pk[crypto_kx_PUBLICKEYBYTES],
@@ -1145,7 +1147,7 @@ interface JnaLibsodiumInterface : Library {
         publicKey: ByteArray,
         secretKey: ByteArray,
         seed: ByteArray
-    )
+    ): Int
     //    int crypto_kx_client_session_keys(unsigned char rx[crypto_kx_SESSIONKEYBYTES],
     //    unsigned char tx[crypto_kx_SESSIONKEYBYTES],
     //    const unsigned char client_pk[crypto_kx_PUBLICKEYBYTES],
@@ -1157,7 +1159,7 @@ interface JnaLibsodiumInterface : Library {
         clientPublicKey: ByteArray,
         clientSecretKey: ByteArray,
         serverPublicKey: ByteArray
-    )
+    ): Int
     //    int crypto_kx_server_session_keys(unsigned char rx[crypto_kx_SESSIONKEYBYTES],
     //    unsigned char tx[crypto_kx_SESSIONKEYBYTES],
     //    const unsigned char server_pk[crypto_kx_PUBLICKEYBYTES],
@@ -1169,7 +1171,7 @@ interface JnaLibsodiumInterface : Library {
         serverPublicKey: ByteArray,
         serverSecretKey: ByteArray,
         clientPublicKey: ByteArray
-    )
+    ): Int
 
 //
 //    // ---- Key exchange end ----
@@ -1286,9 +1288,9 @@ interface JnaLibsodiumInterface : Library {
 //
     //    int crypto_scalarmult(unsigned char *q, const unsigned char *n,
     //    const unsigned char *p)
-    fun crypto_scalarmult(q: ByteArray, n: ByteArray, p: ByteArray)
+    fun crypto_scalarmult(q: ByteArray, n: ByteArray, p: ByteArray): Int
     //    int crypto_scalarmult_base(unsigned char *q, const unsigned char *n)
-    fun crypto_scalarmult_base(q: ByteArray, b: ByteArray)
+    fun crypto_scalarmult_base(q: ByteArray, b: ByteArray): Int
 //
 //    // ---- Scalar multiplication end ----
 }

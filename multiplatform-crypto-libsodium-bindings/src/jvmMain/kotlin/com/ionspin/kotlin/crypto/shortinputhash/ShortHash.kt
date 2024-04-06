@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.shortinputhash
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.sun.jna.NativeLong
 
@@ -13,13 +14,13 @@ import com.sun.jna.NativeLong
 actual object ShortHash {
     actual fun shortHash(data: UByteArray, key: UByteArray): UByteArray {
         val hashResult = UByteArray(crypto_shorthash_BYTES)
-        sodiumJna.crypto_shorthash(hashResult.asByteArray(), data.asByteArray(), data.size.toLong(), key.asByteArray())
+        sodiumJna.crypto_shorthash(hashResult.asByteArray(), data.asByteArray(), data.size.toLong(), key.asByteArray()).ensureLibsodiumSuccess()
         return hashResult
     }
 
     actual fun shortHashKeygen(): UByteArray {
         val key = UByteArray(crypto_shorthash_KEYBYTES)
-        sodiumJna.crypto_shorthash_keygen(key.asByteArray())
+        sodiumJna.crypto_shorthash_keygen(key.asByteArray()).ensureLibsodiumSuccess()
         return key
     }
 

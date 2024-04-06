@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.kdf
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
 actual object Kdf {
@@ -32,7 +33,7 @@ actual object Kdf {
             subkeyId.toLong(),
             contextEncoded,
             masterKey.asByteArray()
-        )
+        ).ensureLibsodiumSuccess()
 
         return subkey
     }

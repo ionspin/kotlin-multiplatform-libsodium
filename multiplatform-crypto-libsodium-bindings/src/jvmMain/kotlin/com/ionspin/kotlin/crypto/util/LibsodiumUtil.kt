@@ -1,9 +1,8 @@
 package com.ionspin.kotlin.crypto.util
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.sun.jna.ptr.IntByReference
-import java.lang.RuntimeException
-import java.util.*
 
 actual object LibsodiumUtil {
     actual fun memcmp(first: UByteArray, second: UByteArray): Boolean {
@@ -53,7 +52,7 @@ actual object LibsodiumUtil {
             paddedDataCopy,
             paddedData.size,
             blocksize
-        )
+        ).ensureLibsodiumSuccess()
 
         val unpadded = paddedDataCopy.sliceArray(0 until unpaddedSize.value).asUByteArray()
 
@@ -72,7 +71,7 @@ actual object LibsodiumUtil {
             data.asByteArray(),
             data.size,
             variant.value
-        )
+        ).ensureLibsodiumSuccess()
         //Drop terminating char \0
         return String(result.sliceArray(0 until result.size - 1))
     }

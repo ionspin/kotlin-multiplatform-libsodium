@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.keyexchange
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.pin
 import libsodium.crypto_kx_client_session_keys
@@ -29,7 +30,7 @@ actual object KeyExchange {
             clientPublicKeyPinned.toPtr(),
             clientSecretKeyPinned.toPtr(),
             serverPublicKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         clientPublicKeyPinned.unpin()
         clientSecretKeyPinned.unpin()
@@ -46,7 +47,7 @@ actual object KeyExchange {
 
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
-        crypto_kx_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr())
+        crypto_kx_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr()).ensureLibsodiumSuccess()
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
 
@@ -61,7 +62,7 @@ actual object KeyExchange {
         val publicKeyPinned = publicKey.pin()
         val secretKeyPinned = secretKey.pin()
 
-        crypto_kx_seed_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr(), seedPinned.toPtr())
+        crypto_kx_seed_keypair(publicKeyPinned.toPtr(), secretKeyPinned.toPtr(), seedPinned.toPtr()).ensureLibsodiumSuccess()
 
         publicKeyPinned.unpin()
         secretKeyPinned.unpin()
@@ -86,7 +87,7 @@ actual object KeyExchange {
             serverPublicKeyPinned.toPtr(),
             serverSecretKeyPinned.toPtr(),
             clientPublicKeyPinned.toPtr()
-        )
+        ).ensureLibsodiumSuccess()
 
         serverPublicKeyPinned.unpin()
         serverSecretKeyPinned.unpin()
