@@ -2,6 +2,7 @@
 (All dates are DD.MM.YYYY)
 
 #### 0.9.1-SNAPSHOT - current development snapshot
+- Fix #42, return values from libsodium calls are now checked
 
 #### 0.9.0 - 23.9.2023
 - Breaking changes: 
