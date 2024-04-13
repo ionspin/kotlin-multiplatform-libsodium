@@ -1,7 +1,10 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.2-SNAPSHOT - current development snapshot
+#### 0.9.3-SNAPSHOT - current development snapshot
+
+#### 0.9.2 - 13.4.2024
+- Use 2.0.2 release of resource loader instead of forked snapshot
 
 #### 0.9.1 - 6.4.2024
 - Fix #42, return values from libsodium calls are now checked
