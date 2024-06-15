@@ -25,8 +25,8 @@ data class XChaCha20EncryptionResult(val nonce: UByteArray, val encryptionData: 
 
         other as XChaCha20EncryptionResult
 
-        if (nonce != other.nonce) return false
-        if (encryptionData != other.encryptionData) return false
+        if (!nonce.contentEquals(other.nonce)) return false
+        if (!encryptionData.contentEquals(other.encryptionData)) return false
 
         return true
     }
