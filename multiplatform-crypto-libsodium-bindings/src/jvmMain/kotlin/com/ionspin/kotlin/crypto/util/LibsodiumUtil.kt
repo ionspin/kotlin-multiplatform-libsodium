@@ -71,7 +71,7 @@ actual object LibsodiumUtil {
             data.asByteArray(),
             data.size,
             variant.value
-        ).ensureLibsodiumSuccess()
+        )
         //Drop terminating char \0
         return String(result.sliceArray(0 until result.size - 1))
     }

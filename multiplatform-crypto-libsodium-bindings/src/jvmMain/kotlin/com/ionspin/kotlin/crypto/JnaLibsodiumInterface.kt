@@ -161,7 +161,7 @@ interface JnaLibsodiumInterface : Library {
         bin: ByteArray,
         binLength: Int,
         variant: Int
-    ): Int
+    )
 
     //    int sodium_base642bin(
     //    unsigned char * const bin, const size_t bin_maxlen,
