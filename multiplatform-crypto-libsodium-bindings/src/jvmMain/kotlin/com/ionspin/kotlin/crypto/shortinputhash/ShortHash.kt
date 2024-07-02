@@ -20,7 +20,7 @@ actual object ShortHash {
 
     actual fun shortHashKeygen(): UByteArray {
         val key = UByteArray(crypto_shorthash_KEYBYTES)
-        sodiumJna.crypto_shorthash_keygen(key.asByteArray()).ensureLibsodiumSuccess()
+        sodiumJna.crypto_shorthash_keygen(key.asByteArray())
         return key
     }
 
