@@ -161,7 +161,7 @@ interface JnaLibsodiumInterface : Library {
         bin: ByteArray,
         binLength: Int,
         variant: Int
-    ): Int
+    )
 
     //    int sodium_base642bin(
     //    unsigned char * const bin, const size_t bin_maxlen,
@@ -274,7 +274,7 @@ interface JnaLibsodiumInterface : Library {
     fun crypto_shorthash(out: ByteArray, input: ByteArray, inlen: Long, key: ByteArray): Int
 
     //    void crypto_shorthash_keygen(unsigned char k[crypto_shorthash_KEYBYTES])
-    fun crypto_shorthash_keygen(key: ByteArray): Int
+    fun crypto_shorthash_keygen(key: ByteArray)
 
 //
 // ---- Short hash end ----

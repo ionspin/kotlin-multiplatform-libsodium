@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.pwhash
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual object PasswordHash {
     /**
@@ -88,7 +89,7 @@ actual object PasswordHash {
             password.length.toLong()
         )
 
-        return result == 0
+        return result.isLibsodiumSuccessCode()
     }
 
 }

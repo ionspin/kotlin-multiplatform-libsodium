@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.aead
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -94,7 +95,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
@@ -177,7 +178,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
@@ -253,7 +254,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
@@ -336,7 +337,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
@@ -412,7 +413,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
@@ -495,7 +496,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         noncePinned.unpin()
         keyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
 
