@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.secretstream
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -116,7 +117,7 @@ actual object SecretStream {
         messagePinned.unpin()
         associatedDataPinned?.unpin()
         tagPinned.unpin()
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw SecretStreamCorruptedOrTamperedDataException()
         }
         return DecryptedDataAndTag(message, tag[0])

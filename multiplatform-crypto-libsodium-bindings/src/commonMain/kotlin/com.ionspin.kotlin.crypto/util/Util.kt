@@ -36,3 +36,16 @@ fun UByteArray.hexColumnsPrint(chunk: Int = 16) {
     val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
     printout.forEach { println(it.joinToString(separator = " ") { it.uppercase() }) }
 }
+
+/**
+ * Functions returning an int return 0 on success and -1 to indicate an error.
+ *
+ * This will throw an [IllegalStateException] if the return code is invalid/unknown.
+ */
+fun Int.isLibsodiumSuccessCode(): Boolean {
+    return when (this) {
+        0 -> true
+        -1 -> false
+        else -> throw IllegalStateException("Libsodium returned an unexpected return code $this")
+    }
+}

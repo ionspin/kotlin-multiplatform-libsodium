@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.util
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -30,7 +31,7 @@ actual object LibsodiumUtil {
         val result = sodium_memcmp(firstPinned.toPtr(), secondPinned.toPtr(), first.size.convert())
         firstPinned.unpin()
         secondPinned.unpin()
-        return result == 0
+        return result.isLibsodiumSuccessCode()
     }
 
     actual fun memzero(target: UByteArray) {

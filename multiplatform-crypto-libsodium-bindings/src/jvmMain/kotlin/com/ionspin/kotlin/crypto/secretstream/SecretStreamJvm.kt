@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.secretstream
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 import com.ionspin.kotlin.crypto.SecretStreamXChaCha20Poly1305State
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual typealias SecretStreamState = SecretStreamXChaCha20Poly1305State
 
@@ -60,7 +61,7 @@ actual object SecretStream {
             associatedData.asByteArray(),
             associatedData.size.toLong()
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw SecretStreamCorruptedOrTamperedDataException()
         }
         return DecryptedDataAndTag(result, tagArray[0])

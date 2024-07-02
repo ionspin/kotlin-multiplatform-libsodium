@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.secretbox
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual object SecretBox {
     actual fun easy(message: UByteArray, nonce: UByteArray, key: UByteArray): UByteArray {
@@ -29,7 +30,7 @@ actual object SecretBox {
             nonce.asByteArray(),
             key.asByteArray()
             )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey()
         }
         return decrypted
@@ -68,7 +69,7 @@ actual object SecretBox {
             nonce.asByteArray(),
             key.asByteArray()
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey()
         }
         return message

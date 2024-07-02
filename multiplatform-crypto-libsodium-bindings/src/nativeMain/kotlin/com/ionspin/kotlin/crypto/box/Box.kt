@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.box
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -124,7 +125,7 @@ actual object Box {
         sendersPublicKeyPinned.unpin()
         recipientsSecretKeyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -212,7 +213,7 @@ actual object Box {
         noncePinned.unpin()
         precomputedKeyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -301,7 +302,7 @@ actual object Box {
         recipientsSecretKeyPinned.unpin()
         sendersPublicKeyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -351,7 +352,7 @@ actual object Box {
         recipientsPublicKeyPinned.unpin()
         recipientsSecretKeyPinned.unpin()
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 

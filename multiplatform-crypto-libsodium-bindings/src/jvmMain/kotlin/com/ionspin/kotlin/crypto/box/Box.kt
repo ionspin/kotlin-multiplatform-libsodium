@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.box
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual object Box {
     /**
@@ -73,7 +74,7 @@ actual object Box {
             sendersPublicKey.asByteArray(),
             recipientsSecretKey.asByteArray()
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -128,7 +129,7 @@ actual object Box {
             precomputedKey.asByteArray()
         )
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -188,7 +189,7 @@ actual object Box {
             recipientsSecretKey.asByteArray()
         )
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 
@@ -216,7 +217,7 @@ actual object Box {
             recipientsSecretKey.asByteArray()
         )
 
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw BoxCorruptedOrTamperedDataException()
         }
 

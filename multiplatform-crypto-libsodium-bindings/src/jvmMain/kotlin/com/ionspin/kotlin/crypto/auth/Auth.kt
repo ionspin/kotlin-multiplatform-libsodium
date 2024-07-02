@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.auth
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual object Auth {
     actual fun authKeygen(): UByteArray {
@@ -27,7 +28,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        ) == 0
+        ).isLibsodiumSuccessCode()
     }
 
     actual fun authHmacSha256Keygen(): UByteArray {
@@ -57,7 +58,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        ) == 0
+        ).isLibsodiumSuccessCode()
     }
 
     actual fun authHmacSha512Keygen(): UByteArray {
@@ -87,7 +88,7 @@ actual object Auth {
             message.asByteArray(),
             message.size.toLong(),
             key.asByteArray()
-        ) == 0
+        ).isLibsodiumSuccessCode()
     }
 
 }

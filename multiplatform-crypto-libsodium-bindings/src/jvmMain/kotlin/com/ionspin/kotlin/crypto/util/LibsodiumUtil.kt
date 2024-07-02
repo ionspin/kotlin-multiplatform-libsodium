@@ -9,7 +9,7 @@ actual object LibsodiumUtil {
         if (first.size != second.size) {
             throw RuntimeException("Sodium memcmp() only supports comparing same length arrays")
         }
-        return sodiumJna.sodium_memcmp(first.asByteArray(), second.asByteArray(), first.size) == 0
+        return sodiumJna.sodium_memcmp(first.asByteArray(), second.asByteArray(), first.size).isLibsodiumSuccessCode()
     }
 
     actual fun memzero(target: UByteArray) {
@@ -34,7 +34,7 @@ actual object LibsodiumUtil {
             blocksize,
             newSize
         )
-        if (resultCode != 0) {
+        if (!resultCode.isLibsodiumSuccessCode()) {
             throw RuntimeException("Padding failed")
         }
 
@@ -104,7 +104,7 @@ actual object LibsodiumUtil {
             binLenReference.pointer,
             null
         )
-        if (resultCode != 0) {
+        if (!resultCode.isLibsodiumSuccessCode()) {
             throw ConversionException()
         }
         return result.slice(0 until binLenReference.value).toByteArray().asUByteArray()
@@ -129,7 +129,7 @@ actual object LibsodiumUtil {
             variant.value
         )
 
-        if (resultCode != 0) {
+        if (!resultCode.isLibsodiumSuccessCode()) {
             throw ConversionException()
         }
 

@@ -3,6 +3,7 @@ package com.ionspin.kotlin.crypto.signature
 import com.ionspin.kotlin.crypto.Ed25519SignatureState
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual typealias SignatureState = Ed25519SignatureState
 
@@ -39,7 +40,7 @@ actual object Signature {
             signature.asByteArray(),
             publicKey.asByteArray()
         )
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
     }
@@ -108,7 +109,7 @@ actual object Signature {
             signedMessage.size.toLong(),
             publicKey.asByteArray()
         )
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
         return message
@@ -150,7 +151,7 @@ actual object Signature {
             publicKey.asByteArray()
         )
 
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
     }

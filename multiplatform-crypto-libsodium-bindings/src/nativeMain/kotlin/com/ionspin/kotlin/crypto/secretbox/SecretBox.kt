@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.secretbox
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -52,7 +53,7 @@ actual object SecretBox {
         messagePinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
-        if (verificationResult != 0) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey()
         }
         return message
@@ -110,7 +111,7 @@ actual object SecretBox {
         messagePinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
-        if (verificationResult != 0) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey()
         }
         return message

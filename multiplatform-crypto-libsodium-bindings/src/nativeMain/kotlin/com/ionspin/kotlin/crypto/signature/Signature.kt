@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.signature
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pin
@@ -74,7 +75,7 @@ actual object Signature {
         signaturePinned.unpin()
         publicKeyPinned.unpin()
 
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
     }
@@ -162,7 +163,7 @@ actual object Signature {
         messagePinned.unpin()
         signedMessagePinned.unpin()
         publicKeyPinned.unpin()
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
         return message
@@ -214,7 +215,7 @@ actual object Signature {
         messagePinned.unpin()
         publicKeyPinned.unpin()
 
-        if (verificationResult == -1) {
+        if (!verificationResult.isLibsodiumSuccessCode()) {
             throw InvalidSignatureException()
         }
     }
