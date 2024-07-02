@@ -27,7 +27,7 @@ object JsSodiumLoader {
 
     }
 
-    suspend fun load() = suspendCoroutine<Unit> { continuation ->
+    suspend fun load() = suspendCoroutine { continuation ->
         if (!getSodiumLoaded()) {
             _libsodiumPromise.then<dynamic> {
                 sodium_init()

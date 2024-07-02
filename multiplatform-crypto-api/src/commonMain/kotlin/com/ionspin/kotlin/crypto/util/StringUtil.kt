@@ -7,22 +7,22 @@ package com.ionspin.kotlin.crypto.util
  */
 fun Array<Byte>.hexColumsPrint() {
     val printout = this.map { it.toString(16) }.chunked(16)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+    printout.forEach { println(it.joinToString(separator = " ") { it.uppercase() }) }
 }
 
 fun Array<UByte>.hexColumsPrint(chunk : Int = 16) {
     val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+    printout.forEach { println(it.joinToString(separator = " ") { it.uppercase() }) }
 }
 
 fun UByteArray.hexColumsPrint(chunk : Int = 16) {
     val printout = this.map { it.toString(16).padStart(2, '0') }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+    printout.forEach { println(it.joinToString(separator = " ") { it.uppercase() }) }
 }
 
 fun Array<ULong>.hexColumsPrint(chunk: Int = 3) {
     val printout = this.map { it.toString(16) }.chunked(chunk)
-    printout.forEach { println(it.joinToString(separator = " ") { it.toUpperCase() }) }
+    printout.forEach { println(it.joinToString(separator = " ") { it.uppercase() }) }
 }
 
 fun String.hexStringToTypedUByteArray() : Array<UByte> {
