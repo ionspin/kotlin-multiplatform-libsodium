@@ -27,7 +27,7 @@ actual object Kdf {
     ): UByteArray {
         return getSodium().crypto_kdf_derive_from_key(
             subkeyLength.toUInt(),
-            subkeyId.toUInt(),
+            subkeyId,
             context,
             masterKey.toUInt8Array()
         ).toUByteArray()

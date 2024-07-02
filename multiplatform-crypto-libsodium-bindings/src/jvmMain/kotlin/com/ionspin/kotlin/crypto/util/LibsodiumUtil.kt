@@ -93,7 +93,7 @@ actual object LibsodiumUtil {
     actual fun fromHex(data: String): UByteArray {
         val binLenReference = IntByReference(0)
         val binSize = (data.length + 1) / 2 // -1 for terminator char
-        val hex = data.toCharArray().map { it.toByte() }.toByteArray()
+        val hex = data.toCharArray().map { it.code.toByte() }.toByteArray()
         val result = ByteArray(binSize)
         val resultCode = sodiumJna.sodium_hex2bin(
             result,

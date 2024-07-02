@@ -8,7 +8,7 @@ import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 actual object PasswordHash {
     /**
      * The crypto_pwhash() function derives an outlen bytes long key from a password passwd whose length is passwdlen
-     * and a salt salt whose fixed length is crypto_pwhash_SALTBYTES bytes. passwdlen should be at least crypto_pwhash_
+     * and a salt whose fixed length is crypto_pwhash_SALTBYTES bytes. passwdlen should be at least crypto_pwhash_
      * PASSWD_MIN and crypto_pwhash_PASSWD_MAX. outlen should be at least crypto_pwhash_BYTES_MIN = 16 (128 bits) and
      * at most crypto_pwhash_BYTES_MAX.
      *

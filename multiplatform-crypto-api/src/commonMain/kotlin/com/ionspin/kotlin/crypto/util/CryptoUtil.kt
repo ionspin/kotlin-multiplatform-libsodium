@@ -8,13 +8,13 @@ package com.ionspin.kotlin.crypto.util
 val _emit = IntArray(0)
 
 fun UByteArray.overwriteWithZeroes() {
-    for (i in 0 until size) {
+    for (i in indices) {
         this[i] = 0U
     }
 }
 
 fun UIntArray.overwriteWithZeroes() {
-    for (i in 0 until size) {
+    for (i in indices) {
         this[i] = 0U
     }
 }
