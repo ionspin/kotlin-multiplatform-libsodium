@@ -2,6 +2,7 @@ package com.ionspin.kotlin.crypto.aead
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 
 actual object AuthenticatedEncryptionWithAssociatedData {
 
@@ -47,7 +48,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message
@@ -95,7 +96,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message
@@ -140,7 +141,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message
@@ -188,7 +189,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message
@@ -233,7 +234,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message
@@ -281,7 +282,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
             nonce.asByteArray(),
             key.asByteArray(),
         )
-        if (validationResult != 0) {
+        if (!validationResult.isLibsodiumSuccessCode()) {
             throw AeadCorrupedOrTamperedDataException()
         }
         return message

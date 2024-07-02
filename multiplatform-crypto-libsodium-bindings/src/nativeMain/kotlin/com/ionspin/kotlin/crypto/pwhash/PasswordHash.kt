@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.pwhash
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.util.isLibsodiumSuccessCode
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
@@ -44,7 +45,7 @@ actual object PasswordHash {
         )
         saltPinned.unpin()
         hashedPasswordPinned.unpin()
-        if (hashingResult != 0) {
+        if (!hashingResult.isLibsodiumSuccessCode()) {
             throw PasswordHashingFailed()
         }
 
@@ -108,7 +109,7 @@ actual object PasswordHash {
             password,
             password.length.convert()
         )
-        return result == 0
+        return result.isLibsodiumSuccessCode()
     }
 
 }
