@@ -363,5 +363,54 @@ external object JsSodiumInterface {
     // ---- Scalar multiplication end ----
 
 
+    //
+    // ---- Ristretto255 ----
 
+    @JsName("crypto_core_ristretto255_is_valid_point")
+    fun crypto_core_ristretto255_is_valid_point(p: Uint8Array): Boolean
+
+    @JsName("crypto_core_ristretto255_random")
+    fun crypto_core_ristretto255_random(): Uint8Array
+
+    @JsName("crypto_core_ristretto255_from_hash")
+    fun crypto_core_ristretto255_from_hash(r: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_add")
+    fun crypto_core_ristretto255_add(p: Uint8Array, q: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_sub")
+    fun crypto_core_ristretto255_sub(p: Uint8Array, q: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_random")
+    fun crypto_core_ristretto255_scalar_random(): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_reduce")
+    fun crypto_core_ristretto255_scalar_reduce(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_invert")
+    fun crypto_core_ristretto255_scalar_invert(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_negate")
+    fun crypto_core_ristretto255_scalar_negate(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_complement")
+    fun crypto_core_ristretto255_scalar_complement(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_add")
+    fun crypto_core_ristretto255_scalar_add(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_sub")
+    fun crypto_core_ristretto255_scalar_sub(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ristretto255_scalar_mul")
+    fun crypto_core_ristretto255_scalar_mul(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ristretto255")
+    fun crypto_scalarmult_ristretto255(n: Uint8Array, p: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ristretto255_base")
+    fun crypto_scalarmult_ristretto255_base(n: Uint8Array): Uint8Array
+
+    //
+    // ---- Ristretto255 end ----
 }

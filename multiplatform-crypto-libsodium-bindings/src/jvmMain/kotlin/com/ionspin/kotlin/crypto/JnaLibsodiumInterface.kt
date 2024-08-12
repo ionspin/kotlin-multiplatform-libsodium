@@ -1293,4 +1293,40 @@ interface JnaLibsodiumInterface : Library {
     fun crypto_scalarmult_base(q: ByteArray, b: ByteArray): Int
 //
 //    // ---- Scalar multiplication end ----
+
+//
+//    // ---- Ristretto255 ----
+
+    fun crypto_core_ristretto255_is_valid_point(p: ByteArray): Int
+
+    fun crypto_core_ristretto255_random(p: ByteArray)
+
+    fun crypto_core_ristretto255_from_hash(p: ByteArray, r: ByteArray): Int
+
+    fun crypto_core_ristretto255_add(r: ByteArray, p: ByteArray, q: ByteArray): Int
+
+    fun crypto_core_ristretto255_sub(r: ByteArray, p: ByteArray, q: ByteArray): Int
+
+    fun crypto_core_ristretto255_scalar_random(r: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_reduce(r: ByteArray, s: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_invert(recip: ByteArray, s: ByteArray): Int
+
+    fun crypto_core_ristretto255_scalar_negate(neg: ByteArray, s: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_complement(comp: ByteArray, s: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_add(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_sub(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_core_ristretto255_scalar_mul(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_scalarmult_ristretto255(q: ByteArray, n: ByteArray, p: ByteArray): Int
+
+    fun crypto_scalarmult_ristretto255_base(q: ByteArray, n: ByteArray): Int
+
+//
+//    // ---- Ristretto255 end ----
 }
