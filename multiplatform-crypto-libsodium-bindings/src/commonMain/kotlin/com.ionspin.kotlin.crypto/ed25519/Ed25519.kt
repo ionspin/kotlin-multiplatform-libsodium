@@ -101,7 +101,7 @@ object Ed25519 : Ed25519LowLevel() {
 
     companion object {
       val IDENTITY: Point = Point(UByteArray(crypto_core_ed25519_BYTES))
-      val BASE: Point = scalarMultiplicationBase(Scalar.ONE)
+      val BASE: Point = scalarMultiplicationBaseNoClamp(Scalar.ONE)
 
       fun fromHash(hash: UByteArray): Point = pointFromHash(hash)
 

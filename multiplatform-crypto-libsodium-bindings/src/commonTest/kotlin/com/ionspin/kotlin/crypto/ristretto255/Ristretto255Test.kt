@@ -94,6 +94,10 @@ class Ristretto255Test {
       assertNotEquals(p, q)
       assertNotEquals(q, r)
       assertNotEquals(r, p)
+
+      assertTrue { Ristretto255.isValidPoint(p.encoded) }
+      assertTrue { Ristretto255.isValidPoint(q.encoded) }
+      assertTrue { Ristretto255.isValidPoint(r.encoded) }
     }
   }
 
@@ -161,7 +165,7 @@ class Ristretto255Test {
         val outPoint = Ristretto255.Point.fromHex(output)
         val hash = Hash.sha512(input.encodeToUByteArray())
 
-        assertEquals(outPoint, Ristretto255.pointFromHash(hash))
+        assertEquals(outPoint, Ristretto255.Point.fromHash(hash))
       }
     }
   }
