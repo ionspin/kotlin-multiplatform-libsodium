@@ -413,4 +413,65 @@ external object JsSodiumInterface {
 
     //
     // ---- Ristretto255 end ----
+
+
+    //
+    // ---- Ed25519 ----
+
+    @JsName("crypto_core_ed25519_is_valid_point")
+    fun crypto_core_ed25519_is_valid_point(p: Uint8Array): Boolean
+
+    @JsName("crypto_core_ed25519_random")
+    fun crypto_core_ed25519_random(): Uint8Array
+
+    @JsName("crypto_core_ed25519_from_hash")
+    fun crypto_core_ed25519_from_hash(r: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_from_uniform")
+    fun crypto_core_ed25519_from_uniform(r: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_add")
+    fun crypto_core_ed25519_add(p: Uint8Array, q: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_sub")
+    fun crypto_core_ed25519_sub(p: Uint8Array, q: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_random")
+    fun crypto_core_ed25519_scalar_random(): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_reduce")
+    fun crypto_core_ed25519_scalar_reduce(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_invert")
+    fun crypto_core_ed25519_scalar_invert(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_negate")
+    fun crypto_core_ed25519_scalar_negate(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_complement")
+    fun crypto_core_ed25519_scalar_complement(s: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_add")
+    fun crypto_core_ed25519_scalar_add(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_sub")
+    fun crypto_core_ed25519_scalar_sub(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_core_ed25519_scalar_mul")
+    fun crypto_core_ed25519_scalar_mul(x: Uint8Array, y: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ed25519")
+    fun crypto_scalarmult_ed25519(n: Uint8Array, p: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ed25519_noclamp")
+    fun crypto_scalarmult_ed25519_noclamp(n: Uint8Array, p: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ed25519_base")
+    fun crypto_scalarmult_ed25519_base(n: Uint8Array): Uint8Array
+
+    @JsName("crypto_scalarmult_ed25519_base_noclamp")
+    fun crypto_scalarmult_ed25519_base_noclamp(n: Uint8Array): Uint8Array
+
+    //
+    // ---- Ed25519 end ----
 }

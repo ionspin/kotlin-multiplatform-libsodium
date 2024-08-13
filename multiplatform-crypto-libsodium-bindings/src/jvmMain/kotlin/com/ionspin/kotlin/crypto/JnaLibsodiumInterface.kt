@@ -1329,4 +1329,46 @@ interface JnaLibsodiumInterface : Library {
 
 //
 //    // ---- Ristretto255 end ----
+
+//
+//    // ---- Ed25519 ----
+
+    fun crypto_core_ed25519_is_valid_point(p: ByteArray): Int
+
+    fun crypto_core_ed25519_random(p: ByteArray)
+
+    fun crypto_core_ed25519_from_hash(p: ByteArray, r: ByteArray): Int
+
+    fun crypto_core_ed25519_from_uniform(p: ByteArray, r: ByteArray): Int
+
+    fun crypto_core_ed25519_add(r: ByteArray, p: ByteArray, q: ByteArray): Int
+
+    fun crypto_core_ed25519_sub(r: ByteArray, p: ByteArray, q: ByteArray): Int
+
+    fun crypto_core_ed25519_scalar_random(r: ByteArray)
+
+    fun crypto_core_ed25519_scalar_reduce(r: ByteArray, s: ByteArray)
+
+    fun crypto_core_ed25519_scalar_invert(recip: ByteArray, s: ByteArray): Int
+
+    fun crypto_core_ed25519_scalar_negate(neg: ByteArray, s: ByteArray)
+
+    fun crypto_core_ed25519_scalar_complement(comp: ByteArray, s: ByteArray)
+
+    fun crypto_core_ed25519_scalar_add(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_core_ed25519_scalar_sub(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_core_ed25519_scalar_mul(z: ByteArray, x: ByteArray, y: ByteArray)
+
+    fun crypto_scalarmult_ed25519(q: ByteArray, n: ByteArray, p: ByteArray): Int
+
+    fun crypto_scalarmult_ed25519_noclamp(q: ByteArray, n: ByteArray, p: ByteArray): Int
+
+    fun crypto_scalarmult_ed25519_base(q: ByteArray, n: ByteArray): Int
+
+    fun crypto_scalarmult_ed25519_base_noclamp(q: ByteArray, n: ByteArray): Int
+
+//
+//    // ---- Ed25519 end ----
 }

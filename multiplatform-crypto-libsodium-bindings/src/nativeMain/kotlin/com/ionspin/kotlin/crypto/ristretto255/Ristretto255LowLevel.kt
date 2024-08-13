@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.ristretto255
 
+import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.usePinned
 import libsodium.crypto_core_ristretto255_add
@@ -74,7 +75,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     usePinned { crypto_core_ristretto255_scalar_random(it.toPtr()) }
   }
 
-  actual fun invert(scalar: UByteArray): UByteArray {
+  actual fun invertScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     result.usePinned { resultPinned ->
@@ -87,7 +88,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun negate(scalar: UByteArray): UByteArray {
+  actual fun negateScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     result.usePinned { resultPinned ->
@@ -100,7 +101,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun complement(scalar: UByteArray): UByteArray {
+  actual fun complementScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     result.usePinned { resultPinned ->
@@ -154,7 +155,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun reduce(scalar: UByteArray): UByteArray {
+  actual fun reduceScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     result.usePinned { resultPinned ->
@@ -173,6 +174,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
       n.usePinned { nPinned ->
         p.usePinned { pPinned ->
           crypto_scalarmult_ristretto255(resultPinned.toPtr(), nPinned.toPtr(), pPinned.toPtr())
+            .ensureLibsodiumSuccess()
         }
       }
     }
@@ -187,6 +189,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     result.usePinned { resultPinned ->
       n.usePinned { nPinned ->
         crypto_scalarmult_ristretto255_base(resultPinned.toPtr(), nPinned.toPtr())
+          .ensureLibsodiumSuccess()
       }
     }
 

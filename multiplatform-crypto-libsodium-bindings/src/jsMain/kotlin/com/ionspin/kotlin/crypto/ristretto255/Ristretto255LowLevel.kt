@@ -38,19 +38,19 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result.toUByteArray()
   }
 
-  actual fun invert(scalar: UByteArray): UByteArray {
+  actual fun invertScalar(scalar: UByteArray): UByteArray {
     val result = getSodium().crypto_core_ristretto255_scalar_invert(scalar.toUint8Array())
 
     return result.toUByteArray()
   }
 
-  actual fun negate(scalar: UByteArray): UByteArray {
+  actual fun negateScalar(scalar: UByteArray): UByteArray {
     val result = getSodium().crypto_core_ristretto255_scalar_negate(scalar.toUint8Array())
 
     return result.toUByteArray()
   }
 
-  actual fun complement(scalar: UByteArray): UByteArray {
+  actual fun complementScalar(scalar: UByteArray): UByteArray {
     val result = getSodium().crypto_core_ristretto255_scalar_complement(scalar.toUint8Array())
 
     return result.toUByteArray()
@@ -74,7 +74,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result.toUByteArray()
   }
 
-  actual fun reduce(scalar: UByteArray): UByteArray {
+  actual fun reduceScalar(scalar: UByteArray): UByteArray {
     val result = getSodium().crypto_core_ristretto255_scalar_reduce(scalar.toUint8Array())
 
     return result.toUByteArray()

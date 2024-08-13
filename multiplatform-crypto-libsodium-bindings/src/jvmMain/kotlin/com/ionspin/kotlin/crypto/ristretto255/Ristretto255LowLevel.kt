@@ -42,7 +42,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     sodiumJna.crypto_core_ristretto255_scalar_random(it.asByteArray())
   }
 
-  actual fun invert(scalar: UByteArray): UByteArray {
+  actual fun invertScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     sodiumJna.crypto_core_ristretto255_scalar_invert(result.asByteArray(), scalar.asByteArray()).ensureLibsodiumSuccess()
@@ -50,7 +50,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun negate(scalar: UByteArray): UByteArray {
+  actual fun negateScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     sodiumJna.crypto_core_ristretto255_scalar_negate(result.asByteArray(), scalar.asByteArray())
@@ -58,7 +58,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun complement(scalar: UByteArray): UByteArray {
+  actual fun complementScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     sodiumJna.crypto_core_ristretto255_scalar_complement(result.asByteArray(), scalar.asByteArray())
@@ -90,7 +90,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result
   }
 
-  actual fun reduce(scalar: UByteArray): UByteArray {
+  actual fun reduceScalar(scalar: UByteArray): UByteArray {
     val result = UByteArray(crypto_core_ristretto255_SCALARBYTES)
 
     sodiumJna.crypto_core_ristretto255_scalar_reduce(result.asByteArray(), scalar.asByteArray())
@@ -102,6 +102,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     val result = UByteArray(crypto_core_ristretto255_BYTES)
 
     sodiumJna.crypto_scalarmult_ristretto255(result.asByteArray(), n.asByteArray(), p.asByteArray())
+      .ensureLibsodiumSuccess()
 
     return result
   }
@@ -110,6 +111,7 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     val result = UByteArray(crypto_core_ristretto255_BYTES)
 
     sodiumJna.crypto_scalarmult_ristretto255_base(result.asByteArray(), n.asByteArray())
+      .ensureLibsodiumSuccess()
 
     return result
   }
