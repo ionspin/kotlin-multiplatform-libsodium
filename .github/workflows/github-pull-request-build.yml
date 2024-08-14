@@ -18,6 +18,8 @@ jobs:
       - run:  ./linuxBuild.sh
   Build-And-Test-Mac:
     runs-on: [self-hosted, macOS, ARM64]
+    env:
+      LIBSODIUM_FULL_BUILD: 1
     steps:
       - uses: actions/checkout@v3
         with:
