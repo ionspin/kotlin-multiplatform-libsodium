@@ -2,7 +2,6 @@ package com.ionspin.kotlin.crypto.ed25519
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
-import com.ionspin.kotlin.crypto.util.toCString
 
 actual abstract class Ed25519LowLevel actual constructor() {
   actual fun isValidPoint(encoded: UByteArray): Boolean =
@@ -22,36 +21,6 @@ actual abstract class Ed25519LowLevel actual constructor() {
 
     sodiumJna.crypto_core_ed25519_sub(result.asByteArray(), p.asByteArray(), q.asByteArray())
       .ensureLibsodiumSuccess()
-
-    return result
-  }
-
-  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ed25519_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    sodiumJna.crypto_core_ed25519_from_string(
-      result.asByteArray(),
-      ctxEncoded?.asByteArray(),
-      msg.asByteArray(),
-      msg.size,
-      hashAlg.id
-    ).ensureLibsodiumSuccess()
-
-    return result
-  }
-
-  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ed25519_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    sodiumJna.crypto_core_ed25519_from_string_ro(
-      result.asByteArray(),
-      ctxEncoded?.asByteArray(),
-      msg.asByteArray(),
-      msg.size,
-      hashAlg.id
-    ).ensureLibsodiumSuccess()
 
     return result
   }

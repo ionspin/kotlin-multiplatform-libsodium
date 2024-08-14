@@ -1,11 +1,9 @@
 package com.ionspin.kotlin.crypto.ed25519
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
-import com.ionspin.kotlin.crypto.util.toCString
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.usePinned
 import libsodium.crypto_core_ed25519_add
-import libsodium.crypto_core_ed25519_from_string
 import libsodium.crypto_core_ed25519_from_uniform
 import libsodium.crypto_core_ed25519_is_valid_point
 import libsodium.crypto_core_ed25519_random
@@ -52,59 +50,6 @@ actual abstract class Ed25519LowLevel actual constructor() {
         q.usePinned { qPinned ->
           crypto_core_ed25519_sub(resultPinned.toPtr(), pPinned.toPtr(), qPinned.toPtr())
             .ensureLibsodiumSuccess()
-        }
-      }
-    }
-
-    return result
-  }
-
-  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ed25519_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    result.usePinned { resultPinned ->
-      msg.usePinned { msgPinned ->
-        if (ctxEncoded == null) {
-          crypto_core_ed25519_from_string(resultPinned.toPtr(), null, msgPinned.toPtr(), msg.size, hashAlg.id)
-            .ensureLibsodiumSuccess()
-        } else {
-          ctxEncoded.usePinned { ctxPinned ->
-            crypto_core_ed25519_from_string(
-              resultPinned.toPtr(),
-              ctxPinned.toPtr(),
-              msgPinned.toPtr(),
-              msg.size,
-              hashAlg.id
-            )
-              .ensureLibsodiumSuccess()
-          }
-        }
-      }
-    }
-
-    return result
-  }
-
-  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ed25519_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    result.usePinned { resultPinned ->
-      msg.usePinned { msgPinned ->
-        if (ctxEncoded == null) {
-          crypto_core_ed25519_from_string_ro(resultPinned.toPtr(), null, msgPinned.toPtr(), msg.size, hashAlg.id)
-            .ensureLibsodiumSuccess()
-        } else {
-          ctxEncoded.usePinned { ctxPinned ->
-            crypto_core_ed25519_from_string_ro(
-              resultPinned.toPtr(),
-              ctxPinned.toPtr(),
-              msgPinned.toPtr(),
-              msg.size,
-              hashAlg.id
-            ).ensureLibsodiumSuccess()
-          }
         }
       }
     }

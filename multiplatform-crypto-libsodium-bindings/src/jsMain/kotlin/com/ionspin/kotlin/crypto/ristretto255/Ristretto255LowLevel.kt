@@ -26,18 +26,6 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     return result.toUByteArray()
   }
 
-  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = getSodium().crypto_core_ristretto255_from_string(ctx, msg.toUInt8Array(), hashAlg.id)
-
-    return result.toUByteArray()
-  }
-
-  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = getSodium().crypto_core_ristretto255_from_string_ro(ctx, msg.toUInt8Array(), hashAlg.id)
-
-    return result.toUByteArray()
-  }
-
   actual fun randomEncodedPoint(): UByteArray {
     val result = getSodium().crypto_core_ristretto255_random()
 

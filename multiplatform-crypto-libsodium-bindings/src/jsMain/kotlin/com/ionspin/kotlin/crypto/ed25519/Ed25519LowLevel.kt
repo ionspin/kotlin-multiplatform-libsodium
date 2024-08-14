@@ -20,18 +20,6 @@ actual abstract class Ed25519LowLevel actual constructor() {
     return result.toUByteArray()
   }
 
-  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = getSodium().crypto_core_ed25519_from_string(ctx, msg.toUInt8Array(), hashAlg.id)
-
-    return result.toUByteArray()
-  }
-
-  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = getSodium().crypto_core_ed25519_from_string_ro(ctx, msg.toUInt8Array(), hashAlg.id)
-
-    return result.toUByteArray()
-  }
-
   actual fun encodedPointFromUniform(uniform: UByteArray): UByteArray {
     val result = getSodium().crypto_core_ed25519_from_uniform(uniform.toUInt8Array())
 

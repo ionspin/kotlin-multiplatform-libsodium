@@ -375,12 +375,6 @@ external object JsSodiumInterface {
     @JsName("crypto_core_ristretto255_from_hash")
     fun crypto_core_ristretto255_from_hash(r: Uint8Array): Uint8Array
 
-    @JsName("crypto_core_ristretto255_from_string")
-    fun crypto_core_ed25519_from_string(ctx: String?, message: Uint8Array, hashAlg: Int): Uint8Array
-
-    @JsName("crypto_core_ristretto255_from_string_ro")
-    fun crypto_core_ed25519_from_string_ro(ctx: String?, message: Uint8Array, hashAlg: Int): Uint8Array
-
     @JsName("crypto_core_ristretto255_add")
     fun crypto_core_ristretto255_add(p: Uint8Array, q: Uint8Array): Uint8Array
 
@@ -429,12 +423,6 @@ external object JsSodiumInterface {
 
     @JsName("crypto_core_ed25519_random")
     fun crypto_core_ed25519_random(): Uint8Array
-
-    @JsName("crypto_core_ed25519_from_string")
-    fun crypto_core_ed25519_from_string(ctx: String, message: Uint8Array, hashAlg: Int): Uint8Array
-
-    @JsName("crypto_core_ed25519_from_string_ro")
-    fun crypto_core_ed25519_from_string_ro(ctx: String, message: Uint8Array, hashAlg: Int): Uint8Array
 
     @JsName("crypto_core_ed25519_from_uniform")
     fun crypto_core_ed25519_from_uniform(r: Uint8Array): Uint8Array

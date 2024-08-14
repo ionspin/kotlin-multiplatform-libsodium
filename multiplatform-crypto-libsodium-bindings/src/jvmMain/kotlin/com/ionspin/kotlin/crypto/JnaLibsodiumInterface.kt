@@ -1309,22 +1309,6 @@ interface JnaLibsodiumInterface : Library {
 
   fun crypto_core_ristretto255_from_hash(p: ByteArray, r: ByteArray): Int
 
-  fun crypto_core_ristretto255_from_string(
-    p: ByteArray,
-    ctx: ByteArray?,
-    msg: ByteArray,
-    msgLen: Int,
-    hashAlg: Int,
-  ): Int
-
-  fun crypto_core_ristretto255_from_string_ro(
-    p: ByteArray,
-    ctx: ByteArray?,
-    msg: ByteArray,
-    msgLen: Int,
-    hashAlg: Int,
-  ): Int
-
   fun crypto_core_ristretto255_add(r: ByteArray, p: ByteArray, q: ByteArray): Int
 
   fun crypto_core_ristretto255_sub(r: ByteArray, p: ByteArray, q: ByteArray): Int
@@ -1358,10 +1342,6 @@ interface JnaLibsodiumInterface : Library {
   fun crypto_core_ed25519_is_valid_point(p: ByteArray): Int
 
   fun crypto_core_ed25519_random(p: ByteArray)
-
-  fun crypto_core_ed25519_from_string(p: ByteArray, ctx: ByteArray?, msg: ByteArray, msgLen: Int, hashAlg: Int): Int
-
-  fun crypto_core_ed25519_from_string_ro(p: ByteArray, ctx: ByteArray?, msg: ByteArray, msgLen: Int, hashAlg: Int): Int
 
   fun crypto_core_ed25519_from_uniform(p: ByteArray, r: ByteArray): Int
 

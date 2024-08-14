@@ -2,8 +2,6 @@ package com.ionspin.kotlin.crypto.ristretto255
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
-import com.ionspin.kotlin.crypto.ed25519.HashToCurveAlgorithm
-import com.ionspin.kotlin.crypto.util.toCString
 
 actual abstract class Ristretto255LowLevel actual constructor() {
   actual fun isValidPoint(encoded: UByteArray): Boolean =
@@ -31,36 +29,6 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     val result = UByteArray(crypto_core_ristretto255_BYTES)
 
     sodiumJna.crypto_core_ristretto255_from_hash(result.asByteArray(), hash.asByteArray())
-
-    return result
-  }
-
-  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ristretto255_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    sodiumJna.crypto_core_ristretto255_from_string(
-      result.asByteArray(),
-      ctxEncoded?.asByteArray(),
-      msg.asByteArray(),
-      msg.size,
-      hashAlg.id
-    ).ensureLibsodiumSuccess()
-
-    return result
-  }
-
-  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
-    val result = UByteArray(crypto_core_ristretto255_BYTES)
-    val ctxEncoded = ctx?.toCString()
-
-    sodiumJna.crypto_core_ristretto255_from_string_ro(
-      result.asByteArray(),
-      ctxEncoded?.asByteArray(),
-      msg.asByteArray(),
-      msg.size,
-      hashAlg.id
-    ).ensureLibsodiumSuccess()
 
     return result
   }

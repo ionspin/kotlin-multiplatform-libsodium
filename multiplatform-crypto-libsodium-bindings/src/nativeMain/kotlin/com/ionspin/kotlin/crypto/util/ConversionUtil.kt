@@ -17,14 +17,3 @@ fun Pinned<UByteArray>.toPtr() : CPointer<UByteVar>? {
         null
     }
 }
-
-fun String.toCString(): UByteArray {
-    val encoded = encodeToUByteArray()
-    val cStr = UByteArray(encoded.size + 1)
-
-    encoded.copyInto(cStr)
-
-    LibsodiumUtil.memzero(encoded)
-
-    return cStr
-}
