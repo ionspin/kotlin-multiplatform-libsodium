@@ -17,11 +17,17 @@ const val crypto_core_ed25519_NONREDUCEDSCALARBYTES = 64
 const val crypto_scalarmult_ed25519_BYTES = 32U
 const val crypto_scalarmult_ed25519_SCALARBYTES = 32U
 
+enum class HashToCurveAlgorithm(val id: Int) {
+  SHA256(1),
+  SHA512(2),
+}
+
 expect abstract class Ed25519LowLevel() {
   fun isValidPoint(encoded: UByteArray): Boolean
   fun addPoints(p: UByteArray, q: UByteArray): UByteArray
   fun subtractPoints(p: UByteArray, q: UByteArray): UByteArray
-  fun encodedPointFromHash(hash: UByteArray): UByteArray
+  fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray
+  fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray
   fun encodedPointFromUniform(uniform: UByteArray): UByteArray
   fun randomEncodedPoint(): UByteArray
   fun randomEncodedScalar(): UByteArray
@@ -45,7 +51,11 @@ object Ed25519 : Ed25519LowLevel() {
   fun subtract(p: Point, q: Point): Point =
     Point(subtractPoints(p.encoded, q.encoded))
 
-  fun pointFromHash(hash: UByteArray): Point = Point(encodedPointFromHash(hash))
+  fun pointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): Point =
+    Point(encodedPointFromString(ctx, msg, hashAlg))
+
+  fun pointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): Point =
+    Point(encodedPointFromStringRo(ctx, msg, hashAlg))
 
   fun pointFromUniform(uniform: UByteArray): Point = Point(encodedPointFromUniform(uniform))
 
@@ -102,8 +112,6 @@ object Ed25519 : Ed25519LowLevel() {
     companion object {
       val IDENTITY: Point = Point(UByteArray(crypto_core_ed25519_BYTES))
       val BASE: Point = scalarMultiplicationBaseNoClamp(Scalar.ONE)
-
-      fun fromHash(hash: UByteArray): Point = pointFromHash(hash)
 
       fun fromUniform(uniform: UByteArray): Point = pointFromUniform(uniform)
 

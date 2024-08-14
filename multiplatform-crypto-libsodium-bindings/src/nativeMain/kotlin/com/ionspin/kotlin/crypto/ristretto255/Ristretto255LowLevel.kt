@@ -1,10 +1,14 @@
 package com.ionspin.kotlin.crypto.ristretto255
 
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
+import com.ionspin.kotlin.crypto.ed25519.HashToCurveAlgorithm
+import com.ionspin.kotlin.crypto.util.toCString
 import com.ionspin.kotlin.crypto.util.toPtr
 import kotlinx.cinterop.usePinned
 import libsodium.crypto_core_ristretto255_add
 import libsodium.crypto_core_ristretto255_from_hash
+import libsodium.crypto_core_ristretto255_from_string
+import libsodium.crypto_core_ristretto255_from_string_ro
 import libsodium.crypto_core_ristretto255_is_valid_point
 import libsodium.crypto_core_ristretto255_random
 import libsodium.crypto_core_ristretto255_scalar_add
@@ -61,6 +65,59 @@ actual abstract class Ristretto255LowLevel actual constructor() {
     result.usePinned { resultPinned ->
       hash.usePinned { hashPinned ->
         crypto_core_ristretto255_from_hash(resultPinned.toPtr(), hashPinned.toPtr())
+      }
+    }
+
+    return result
+  }
+
+  actual fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
+    val result = UByteArray(crypto_core_ristretto255_BYTES)
+    val ctxEncoded = ctx?.toCString()
+
+    result.usePinned { resultPinned ->
+      msg.usePinned { msgPinned ->
+        if (ctxEncoded == null) {
+          crypto_core_ristretto255_from_string(resultPinned.toPtr(), null, msgPinned.toPtr(), msg.size, hashAlg.id)
+            .ensureLibsodiumSuccess()
+        } else {
+          ctxEncoded.usePinned { ctxPinned ->
+            crypto_core_ristretto255_from_string(
+              resultPinned.toPtr(),
+              ctxPinned.toPtr(),
+              msgPinned.toPtr(),
+              msg.size,
+              hashAlg.id
+            )
+              .ensureLibsodiumSuccess()
+          }
+        }
+      }
+    }
+
+    return result
+  }
+
+  actual fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray {
+    val result = UByteArray(crypto_core_ristretto255_BYTES)
+    val ctxEncoded = ctx?.toCString()
+
+    result.usePinned { resultPinned ->
+      msg.usePinned { msgPinned ->
+        if (ctxEncoded == null) {
+          crypto_core_ristretto255_from_string_ro(resultPinned.toPtr(), null, msgPinned.toPtr(), msg.size, hashAlg.id)
+            .ensureLibsodiumSuccess()
+        } else {
+          ctxEncoded.usePinned { ctxPinned ->
+            crypto_core_ristretto255_from_string_ro(
+              resultPinned.toPtr(),
+              ctxPinned.toPtr(),
+              msgPinned.toPtr(),
+              msg.size,
+              hashAlg.id
+            ).ensureLibsodiumSuccess()
+          }
+        }
       }
     }
 

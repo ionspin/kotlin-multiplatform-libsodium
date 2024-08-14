@@ -4,7 +4,6 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.Pinned
 import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.toCPointer
 
 /**
  * Created by Ugljesa Jovanovic
@@ -17,4 +16,15 @@ fun Pinned<UByteArray>.toPtr() : CPointer<UByteVar>? {
     } catch (outOfBounds : ArrayIndexOutOfBoundsException) {
         null
     }
+}
+
+fun String.toCString(): UByteArray {
+    val encoded = encodeToUByteArray()
+    val cStr = UByteArray(encoded.size + 1)
+
+    encoded.copyInto(cStr)
+
+    LibsodiumUtil.memzero(encoded)
+
+    return cStr
 }

@@ -1,9 +1,7 @@
 package com.ionspin.kotlin.crypto.ed25519
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
-import com.ionspin.kotlin.crypto.hash.Hash
 import com.ionspin.kotlin.crypto.util.LibsodiumUtil
-import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -179,18 +177,6 @@ class Ed25519Test {
         assertEquals(p, Ed25519.scalarMultiplicationBase(n))
         assertEquals(p, Ed25519.scalarMultiplication(b, n))
         assertEquals(p, n.multiplyWithBase())
-      }
-    }
-  }
-
-  @Test
-  fun testPointFromHash() = runTest {
-    LibsodiumInitializer.initializeWithCallback {
-      for ((input, output) in fromHashTestVectors) {
-        val outPoint = Ed25519.Point.fromHex(output)
-        val hash = Hash.sha512(input.encodeToUByteArray())
-
-        assertEquals(outPoint, Ed25519.Point.fromHash(hash))
       }
     }
   }

@@ -1,5 +1,6 @@
 package com.ionspin.kotlin.crypto.ristretto255
 
+import com.ionspin.kotlin.crypto.ed25519.HashToCurveAlgorithm
 import com.ionspin.kotlin.crypto.util.LibsodiumUtil
 import kotlin.UByteArray
 
@@ -22,6 +23,8 @@ expect abstract class Ristretto255LowLevel() {
   fun addPoints(p: UByteArray, q: UByteArray): UByteArray
   fun subtractPoints(p: UByteArray, q: UByteArray): UByteArray
   fun encodedPointFromHash(hash: UByteArray): UByteArray
+  fun encodedPointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray
+  fun encodedPointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): UByteArray
   fun randomEncodedPoint(): UByteArray
   fun randomEncodedScalar(): UByteArray
   fun invertScalar(scalar: UByteArray): UByteArray
@@ -43,6 +46,12 @@ object Ristretto255 : Ristretto255LowLevel() {
     Point(subtractPoints(p.encoded, q.encoded))
 
   fun pointFromHash(hash: UByteArray): Point = Point(encodedPointFromHash(hash))
+
+  fun pointFromString(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): Point =
+    Point(encodedPointFromString(ctx, msg, hashAlg))
+
+  fun pointFromStringRo(ctx: String?, msg: UByteArray, hashAlg: HashToCurveAlgorithm): Point =
+   Point(encodedPointFromStringRo(ctx, msg, hashAlg))
 
   fun randomPoint(): Point = Point(randomEncodedPoint())
 

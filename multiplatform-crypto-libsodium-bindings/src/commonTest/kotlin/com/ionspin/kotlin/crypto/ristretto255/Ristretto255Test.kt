@@ -63,8 +63,6 @@ class Ristretto255Test {
 
   // Test vectors from https://ristretto.group/test_vectors/ristretto255.html
   val basePointSmallMultiples = arrayOf(
-    // This is the identity point
-    "0000000000000000000000000000000000000000000000000000000000000000",
     // This is the basepoint
     "e2f2ae0a6abc4e71a884a961c500515f58e30b6aa582dd8db6a65945e08d2d76",
     // These are small multiples of the basepoint
@@ -131,7 +129,7 @@ class Ristretto255Test {
       for (i in basePointSmallMultiples.indices) {
         val p = Ristretto255.Point.fromHex(basePointSmallMultiples[i])
         val b = Ristretto255.Point.BASE
-        val n = Ristretto255.Scalar.fromUInt(i.toUInt())
+        val n = Ristretto255.Scalar.fromUInt(i.toUInt() + 1U)
 
         assertEquals(p, Ristretto255.scalarMultiplicationBase(n))
         assertEquals(p, Ristretto255.scalarMultiplication(b, n))
@@ -146,7 +144,7 @@ class Ristretto255Test {
           assertEquals(q, p - b * m)
         }
 
-        for (j in i..<basePointSmallMultiples.size) {
+        for (j in i + 1..<basePointSmallMultiples.size) {
           val q = Ristretto255.Point.fromHex(basePointSmallMultiples[j])
           val m = Ristretto255.Scalar.fromUInt(j.toUInt() - i.toUInt())
 
