@@ -1,6 +1,6 @@
 ./configureMacos64.sh
 cd libsodium
-./dist-build/apple-xcframework.sh
+LIBSODIUM_FULL_BUILD=1 ./dist-build/apple-xcframework.sh
 
 mkdir ../static-ios
 mkdir ../static-ios-simulators
