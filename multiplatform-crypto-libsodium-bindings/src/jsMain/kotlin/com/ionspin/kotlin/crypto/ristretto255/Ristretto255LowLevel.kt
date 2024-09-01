@@ -4,7 +4,7 @@ import com.ionspin.kotlin.crypto.getSodium
 import ext.libsodium.com.ionspin.kotlin.crypto.toUByteArray
 import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 
-actual abstract class Ristretto255LowLevel actual constructor() {
+actual object Ristretto255LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean =
         getSodium().crypto_core_ristretto255_is_valid_point(encoded.toUInt8Array())
 

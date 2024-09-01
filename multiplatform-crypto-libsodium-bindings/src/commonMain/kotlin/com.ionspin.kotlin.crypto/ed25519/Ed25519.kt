@@ -84,6 +84,8 @@ object Ed25519 {
 
             fun invert(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.invertScalar(scalar.encoded))
 
+            fun negate(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.negateScalar(scalar.encoded))
+
             fun reduce(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.reduceScalar(scalar.encoded))
 
             fun complement(scalar: Scalar) : Scalar = Scalar(Ed25519LowLevel.complementScalar(scalar.encoded))
@@ -137,7 +139,7 @@ object Ed25519 {
         operator fun div(y: UInt): Scalar = this / fromUInt(y)
         operator fun div(y: ULong): Scalar = this / fromULong(y)
 
-        operator fun unaryMinus(): Scalar = Scalar(Ed25519LowLevel.negateScalar(this.encoded))
+        operator fun unaryMinus(): Scalar = negate(this)
 
         operator fun times(p: Point): Point = p.times(this)
         fun times(p: Point, clamp: Boolean): Point =

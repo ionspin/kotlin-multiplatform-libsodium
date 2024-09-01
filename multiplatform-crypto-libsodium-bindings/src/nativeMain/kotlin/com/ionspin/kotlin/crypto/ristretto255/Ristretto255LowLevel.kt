@@ -20,7 +20,7 @@ import libsodium.crypto_scalarmult_ristretto255
 import libsodium.crypto_scalarmult_ristretto255_base
 
 
-actual abstract class Ristretto255LowLevel actual constructor() {
+actual object Ristretto255LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean {
         return encoded.usePinned { crypto_core_ristretto255_is_valid_point(it.toPtr()) == 1 }
     }

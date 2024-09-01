@@ -96,9 +96,9 @@ class Ristretto255Test {
 
 
 
-            assertTrue { Ristretto255.isValidPoint(p.encoded) }
-            assertTrue { Ristretto255.isValidPoint(q.encoded) }
-            assertTrue { Ristretto255.isValidPoint(r.encoded) }
+            assertTrue { Ristretto255.Point.isValid(p) }
+            assertTrue { Ristretto255.Point.isValid(q) }
+            assertTrue { Ristretto255.Point.isValid(r) }
         }
     }
 
@@ -117,11 +117,11 @@ class Ristretto255Test {
     fun testIsValidPoint() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             for (hexEncoded in badEncodings) {
-                assertFalse { Ristretto255.isValidPoint(LibsodiumUtil.fromHex(hexEncoded)) }
+                assertFalse { Ristretto255.Point.isValid(Ristretto255.Point.fromHex(hexEncoded)) }
             }
 
             for (hexEncoded in basePointSmallMultiples) {
-                assertTrue { Ristretto255.isValidPoint(LibsodiumUtil.fromHex(hexEncoded)) }
+                assertTrue { Ristretto255.Point.isValid(Ristretto255.Point.fromHex(hexEncoded)) }
             }
         }
     }
@@ -134,8 +134,8 @@ class Ristretto255Test {
                 val b = Ristretto255.Point.BASE
                 val n = Ristretto255.Scalar.fromUInt(i.toUInt() + 1U)
 
-                assertEquals(p, Ristretto255.scalarMultiplicationBase(n))
-                assertEquals(p, Ristretto255.scalarMultiplication(b, n))
+                assertEquals(p, Ristretto255.Point.multiplyBase(n))
+                assertEquals(p, b.times(n))
                 assertEquals(p, n.multiplyWithBase())
 
                 for (j in 0..<i) {

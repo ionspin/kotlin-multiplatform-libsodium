@@ -3,7 +3,7 @@ package com.ionspin.kotlin.crypto.ristretto255
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
-actual abstract class Ristretto255LowLevel actual constructor() {
+actual object Ristretto255LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean =
         sodiumJna.crypto_core_ristretto255_is_valid_point(encoded.asByteArray()) == 1
 
