@@ -3,7 +3,7 @@ package com.ionspin.kotlin.crypto.ed25519
 import com.ionspin.kotlin.crypto.GeneralLibsodiumException.Companion.ensureLibsodiumSuccess
 import com.ionspin.kotlin.crypto.LibsodiumInitializer.sodiumJna
 
-actual abstract class Ed25519LowLevel actual constructor() {
+actual object Ed25519LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean =
         sodiumJna.crypto_core_ed25519_is_valid_point(encoded.asByteArray()) == 1
 

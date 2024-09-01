@@ -98,9 +98,9 @@ class Ed25519Test {
             assertNotEquals(q, r)
             assertNotEquals(r, p)
 
-            assertTrue { Ed25519.isValidPoint(p.encoded) }
-            assertTrue { Ed25519.isValidPoint(q.encoded) }
-            assertTrue { Ed25519.isValidPoint(r.encoded) }
+            assertTrue { Ed25519.Point.isValid(p) }
+            assertTrue { Ed25519.Point.isValid(q) }
+            assertTrue { Ed25519.Point.isValid(r) }
         }
     }
 
@@ -119,15 +119,15 @@ class Ed25519Test {
     fun testIsValidPoint() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             for (hexEncoded in badEncodings) {
-                assertFalse { Ed25519.isValidPoint(LibsodiumUtil.fromHex(hexEncoded)) }
+                assertFalse { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
             }
 
             for (hexEncoded in basePointSmallMultiplesNoClamp) {
-                assertTrue { Ed25519.isValidPoint(LibsodiumUtil.fromHex(hexEncoded)) }
+                assertTrue { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
             }
 
             for (hexEncoded in basePointSmallMultiplesClamped) {
-                assertTrue { Ed25519.isValidPoint(LibsodiumUtil.fromHex(hexEncoded)) }
+                assertTrue { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
             }
         }
     }
@@ -140,8 +140,8 @@ class Ed25519Test {
                 val b = Ed25519.Point.BASE
                 val n = Ed25519.Scalar.fromUInt(i.toUInt() + 1U)
 
-                assertEquals(p, Ed25519.scalarMultiplicationBaseNoClamp(n))
-                assertEquals(p, Ed25519.scalarMultiplicationNoClamp(b, n))
+                assertEquals(p, Ed25519.Point.multiplyBaseNoClamp(n))
+                assertEquals(p, b.times(n, false))
                 assertEquals(p, n.multiplyWithBaseNoClamp())
 
                 for (j in 0..<i) {
@@ -174,8 +174,8 @@ class Ed25519Test {
                 val b = Ed25519.Point.BASE
                 val n = Ed25519.Scalar.fromUInt(i.toUInt() * 4U + 1U)
 
-                assertEquals(p, Ed25519.scalarMultiplicationBase(n))
-                assertEquals(p, Ed25519.scalarMultiplication(b, n))
+                assertEquals(p, Ed25519.Point.multiplyBase(n))
+                assertEquals(p, b.times(n))
                 assertEquals(p, n.multiplyWithBase())
             }
         }

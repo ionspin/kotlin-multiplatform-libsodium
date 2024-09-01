@@ -4,7 +4,7 @@ import com.ionspin.kotlin.crypto.getSodium
 import ext.libsodium.com.ionspin.kotlin.crypto.toUByteArray
 import ext.libsodium.com.ionspin.kotlin.crypto.toUInt8Array
 
-actual abstract class Ed25519LowLevel actual constructor() {
+actual object Ed25519LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean =
         getSodium().crypto_core_ed25519_is_valid_point(encoded.toUInt8Array())
 

@@ -22,7 +22,7 @@ import libsodium.crypto_scalarmult_ed25519_base_noclamp
 import libsodium.crypto_scalarmult_ed25519_noclamp
 
 
-actual abstract class Ed25519LowLevel actual constructor() {
+actual object Ed25519LowLevel {
     actual fun isValidPoint(encoded: UByteArray): Boolean {
         return encoded.usePinned { crypto_core_ed25519_is_valid_point(it.toPtr()) == 1 }
     }

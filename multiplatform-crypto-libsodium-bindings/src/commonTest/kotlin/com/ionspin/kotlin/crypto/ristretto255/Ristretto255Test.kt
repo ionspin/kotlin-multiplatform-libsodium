@@ -1,6 +1,7 @@
 package com.ionspin.kotlin.crypto.ristretto255
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
+import com.ionspin.kotlin.crypto.ed25519.Ed25519
 import com.ionspin.kotlin.crypto.hash.Hash
 import com.ionspin.kotlin.crypto.util.LibsodiumUtil
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
@@ -92,6 +93,8 @@ class Ristretto255Test {
             assertNotEquals(p, q)
             assertNotEquals(q, r)
             assertNotEquals(r, p)
+
+
 
             assertTrue { Ristretto255.isValidPoint(p.encoded) }
             assertTrue { Ristretto255.isValidPoint(q.encoded) }
