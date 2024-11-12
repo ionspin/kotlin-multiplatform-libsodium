@@ -20,9 +20,9 @@ expect object Ristretto255LowLevel {
     fun isValidPoint(encoded: UByteArray): Boolean
     fun addPoints(p: UByteArray, q: UByteArray): UByteArray
     fun subtractPoints(p: UByteArray, q: UByteArray): UByteArray
-    fun encodedPointFromHash(hash: UByteArray): UByteArray
-    fun randomEncodedPoint(): UByteArray
-    fun randomEncodedScalar(): UByteArray
+    fun pointFromHash(hash: UByteArray): UByteArray
+    fun randomPoint(): UByteArray
+    fun randomScalar(): UByteArray
     fun invertScalar(scalar: UByteArray): UByteArray
     fun negateScalar(scalar: UByteArray): UByteArray
     fun complementScalar(scalar: UByteArray): UByteArray
@@ -35,61 +35,22 @@ expect object Ristretto255LowLevel {
 }
 
 object Ristretto255 {
-//    fun add(p: Point, q: Point): Point =
-//        Point(addPoints(p.encoded, q.encoded))
-//
-//    fun subtract(p: Point, q: Point): Point =
-//        Point(subtractPoints(p.encoded, q.encoded))
-//
-//    fun pointFromHash(hash: UByteArray): Point = Point(encodedPointFromHash(hash))
-//
-//    fun randomPoint(): Point = Point(randomEncodedPoint())
-//
-//    fun randomScalar(): Scalar = Scalar(randomEncodedScalar())
-//
-//    fun invert(scalar: Scalar): Scalar =
-//        Scalar(invertScalar(scalar.encoded))
-//
-//    fun negate(scalar: Scalar): Scalar =
-//        Scalar(negateScalar(scalar.encoded))
-//
-//    fun complement(scalar: Scalar): Scalar =
-//        Scalar(complementScalar(scalar.encoded))
-//
-//    fun add(x: Scalar, y: Scalar): Scalar =
-//        Scalar(addScalars(x.encoded, y.encoded))
-//
-//    fun subtract(x: Scalar, y: Scalar): Scalar =
-//        Scalar(subtractScalars(x.encoded, y.encoded))
-//
-//    fun multiply(x: Scalar, y: Scalar): Scalar =
-//        Scalar(multiplyScalars(x.encoded, y.encoded))
-//
-//    fun reduce(scalar: Scalar): Scalar =
-//        Scalar(reduceScalar(scalar.encoded))
-//
-//    fun scalarMultiplication(p: Point, n: Scalar): Point =
-//        Point(scalarMultiplication(n.encoded, p.encoded))
-//
-//    fun scalarMultiplicationBase(n: Scalar): Point =
-//        Point(scalarMultiplicationBase(n.encoded))
-
     data class Point(val encoded: UByteArray) {
-
         companion object {
             val IDENTITY: Point = Point(UByteArray(crypto_core_ristretto255_BYTES))
             val BASE: Point = multiplyBase(Scalar.ONE)
 
-            fun fromHash(hash: UByteArray): Point = Point(Ristretto255LowLevel.encodedPointFromHash(hash))
+            fun fromHash(hash: UByteArray): Point = Point(Ristretto255LowLevel.pointFromHash(hash))
 
-            fun random(): Point = Point(Ristretto255LowLevel.randomEncodedPoint())
+            fun random(): Point = Point(Ristretto255LowLevel.randomPoint())
 
             fun multiplyBase(n: Scalar): Point = Point(Ristretto255LowLevel.scalarMultiplicationBase(n.encoded))
 
             fun fromHex(hex: String): Point = Point(LibsodiumUtil.fromHex(hex))
-            
-            fun isValid(point: Point) : Boolean = Ristretto255LowLevel.isValidPoint(point.encoded)
         }
+
+        val isValid: Boolean
+            get() = Ristretto255LowLevel.isValidPoint(this.encoded)
 
         operator fun plus(q: Point): Point = Point(Ristretto255LowLevel.addPoints(this.encoded, q.encoded))
         operator fun minus(q: Point): Point = Point(Ristretto255LowLevel.subtractPoints(this.encoded, q.encoded))
@@ -100,61 +61,16 @@ object Ristretto255 {
 
         override fun equals(other: Any?): Boolean = (other as? Point)?.encoded?.contentEquals(encoded) == true
         override fun hashCode(): Int = encoded.contentHashCode()
-
-
     }
 
     data class Scalar(val encoded: UByteArray) {
-        operator fun plus(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.addScalars(this.encoded, y.encoded))
-        operator fun plus(y: UInt): Scalar = this + fromUInt(y)
-        operator fun plus(y: ULong): Scalar = this + fromULong(y)
-
-        operator fun minus(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.subtractScalars(this.encoded, y.encoded))
-        operator fun minus(y: UInt): Scalar = this - fromUInt(y)
-        operator fun minus(y: ULong): Scalar = this - fromULong(y)
-
-        operator fun times(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.multiplyScalars(this.encoded, y.encoded))
-        operator fun times(y: UInt): Scalar = this * fromUInt(y)
-        operator fun times(y: ULong): Scalar = this * fromULong(y)
-
-        operator fun div(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.multiplyScalars(this.encoded, y.invert().encoded))
-        operator fun div(y: UInt): Scalar = this / fromUInt(y)
-        operator fun div(y: ULong): Scalar = this / fromULong(y)
-
-        operator fun unaryMinus(): Scalar = negate(this)
-
-        operator fun times(p: Point): Point = p.times(this)
-
-        fun reduce(): Scalar = reduce(this)
-        fun invert(): Scalar = invert(this)
-        fun complement(): Scalar = complement(this)
-
-        fun multiplyWithBase(): Point = Point.multiplyBase(this)
-
-        fun toHex(): String = LibsodiumUtil.toHex(encoded)
-
-        override fun equals(other: Any?): Boolean = (other as? Scalar)?.encoded?.contentEquals(encoded) == true
-        override fun hashCode(): Int = encoded.contentHashCode()
-
         companion object {
             val ZERO = fromUInt(0U)
             val ONE = fromUInt(1U)
             val TWO = fromUInt(2U)
 
-            fun random(): Scalar = Scalar(Ristretto255LowLevel.randomEncodedScalar())
+            fun random(): Scalar = Scalar(Ristretto255LowLevel.randomScalar())
 
-            fun invert(scalar: Scalar): Scalar =
-                Scalar(Ristretto255LowLevel.invertScalar(scalar.encoded))
-
-            fun negate(scalar: Scalar): Scalar =
-                Scalar(Ristretto255LowLevel.negateScalar(scalar.encoded))
-
-            fun reduce(scalar: Scalar): Scalar =
-                Scalar(Ristretto255LowLevel.reduceScalar(scalar.encoded))
-
-            fun complement(scalar: Scalar): Scalar =
-                Scalar(Ristretto255LowLevel.complementScalar(scalar.encoded))
-            
             fun fromUInt(i: UInt): Scalar = fromULong(i.toULong())
 
             fun fromULong(l: ULong): Scalar {
@@ -188,5 +104,38 @@ object Ristretto255 {
                 }
             }
         }
+
+        operator fun plus(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.addScalars(this.encoded, y.encoded))
+        operator fun plus(y: UInt): Scalar = this + fromUInt(y)
+        operator fun plus(y: ULong): Scalar = this + fromULong(y)
+
+        operator fun minus(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.subtractScalars(this.encoded, y.encoded))
+        operator fun minus(y: UInt): Scalar = this - fromUInt(y)
+        operator fun minus(y: ULong): Scalar = this - fromULong(y)
+
+        operator fun times(y: Scalar): Scalar = Scalar(Ristretto255LowLevel.multiplyScalars(this.encoded, y.encoded))
+        operator fun times(y: UInt): Scalar = this * fromUInt(y)
+        operator fun times(y: ULong): Scalar = this * fromULong(y)
+
+        operator fun div(y: Scalar): Scalar =
+            Scalar(Ristretto255LowLevel.multiplyScalars(this.encoded, y.invert().encoded))
+
+        operator fun div(y: UInt): Scalar = this / fromUInt(y)
+        operator fun div(y: ULong): Scalar = this / fromULong(y)
+
+        operator fun unaryMinus(): Scalar = Scalar(Ristretto255LowLevel.negateScalar(this.encoded))
+
+        operator fun times(p: Point): Point = p.times(this)
+
+        fun reduce(): Scalar = Scalar(Ristretto255LowLevel.reduceScalar(this.encoded))
+        fun invert(): Scalar = Scalar(Ristretto255LowLevel.invertScalar(this.encoded))
+        fun complement(): Scalar = Scalar(Ristretto255LowLevel.complementScalar(this.encoded))
+
+        fun multiplyWithBase(): Point = Point.multiplyBase(this)
+
+        fun toHex(): String = LibsodiumUtil.toHex(encoded)
+
+        override fun equals(other: Any?): Boolean = (other as? Scalar)?.encoded?.contentEquals(encoded) == true
+        override fun hashCode(): Int = encoded.contentHashCode()
     }
 }

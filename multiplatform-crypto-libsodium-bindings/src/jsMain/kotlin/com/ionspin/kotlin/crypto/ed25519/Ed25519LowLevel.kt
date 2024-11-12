@@ -20,19 +20,19 @@ actual object Ed25519LowLevel {
         return result.toUByteArray()
     }
 
-    actual fun encodedPointFromUniform(uniform: UByteArray): UByteArray {
+    actual fun pointFromUniform(uniform: UByteArray): UByteArray {
         val result = getSodium().crypto_core_ed25519_from_uniform(uniform.toUInt8Array())
 
         return result.toUByteArray()
     }
 
-    actual fun randomEncodedPoint(): UByteArray {
+    actual fun randomPoint(): UByteArray {
         val result = getSodium().crypto_core_ed25519_random()
 
         return result.toUByteArray()
     }
 
-    actual fun randomEncodedScalar(): UByteArray {
+    actual fun randomScalar(): UByteArray {
         val result = getSodium().crypto_core_ed25519_scalar_random()
 
         return result.toUByteArray()

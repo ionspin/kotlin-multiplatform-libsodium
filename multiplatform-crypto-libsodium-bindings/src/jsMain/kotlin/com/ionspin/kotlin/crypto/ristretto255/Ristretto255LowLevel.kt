@@ -20,19 +20,19 @@ actual object Ristretto255LowLevel {
         return result.toUByteArray()
     }
 
-    actual fun encodedPointFromHash(hash: UByteArray): UByteArray {
+    actual fun pointFromHash(hash: UByteArray): UByteArray {
         val result = getSodium().crypto_core_ristretto255_from_hash(hash.toUInt8Array())
 
         return result.toUByteArray()
     }
 
-    actual fun randomEncodedPoint(): UByteArray {
+    actual fun randomPoint(): UByteArray {
         val result = getSodium().crypto_core_ristretto255_random()
 
         return result.toUByteArray()
     }
 
-    actual fun randomEncodedScalar(): UByteArray {
+    actual fun randomScalar(): UByteArray {
         val result = getSodium().crypto_core_ristretto255_scalar_random()
 
         return result.toUByteArray()

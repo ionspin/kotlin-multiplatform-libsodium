@@ -57,7 +57,7 @@ actual object Ed25519LowLevel {
         return result
     }
 
-    actual fun encodedPointFromUniform(uniform: UByteArray): UByteArray {
+    actual fun pointFromUniform(uniform: UByteArray): UByteArray {
         val result = UByteArray(crypto_core_ed25519_BYTES)
 
         result.usePinned { resultPinned ->
@@ -70,11 +70,11 @@ actual object Ed25519LowLevel {
         return result
     }
 
-    actual fun randomEncodedPoint(): UByteArray = UByteArray(crypto_core_ed25519_BYTES).apply {
+    actual fun randomPoint(): UByteArray = UByteArray(crypto_core_ed25519_BYTES).apply {
         usePinned { crypto_core_ed25519_random(it.toPtr()) }
     }
 
-    actual fun randomEncodedScalar(): UByteArray = UByteArray(crypto_core_ed25519_SCALARBYTES).apply {
+    actual fun randomScalar(): UByteArray = UByteArray(crypto_core_ed25519_SCALARBYTES).apply {
         usePinned { crypto_core_ed25519_scalar_random(it.toPtr()) }
     }
 

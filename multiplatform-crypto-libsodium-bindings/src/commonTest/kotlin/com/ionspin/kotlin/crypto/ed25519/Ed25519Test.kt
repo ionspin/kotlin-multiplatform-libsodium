@@ -21,16 +21,6 @@ class Ed25519Test {
     )
 
     // Test vectors generated with sodium.js
-    private val fromHashTestVectors = arrayOf(
-        "The sodium crypto library compiled to WebAssembly and pure JavaScript" to "50127230808e661643a11badce3c7220ab8de25f890528694f5155ab9c5d5339",
-        "using Emscripten, with automatically generated wrappers to" to "546d28c823c00b7d1c355c2f3ed6faaed2b7f406b45568c83f14b00ad88c212d",
-        "make it easy to use in web applications." to "69f1db12b628f6a0573c3ca440dbfe23c161d0a832cf4ca263ed33d15f337780",
-        "The complete library weighs 188 KB" to "9ad2302066752dccc14e26d7da4bb7a839c211a7e46f558ff106c632106d8f71",
-        "(minified, gzipped, includes pure JS + WebAssembly versions)" to "07787c86d65d8157b0e7bbf634c46e638f7dc88c560f60dfd1f5e85de64d681c",
-        "and can run in a web browser as well as server-side." to "c33fedca4b8e6fdd7ecc4109ec624f81900d8c207e1497297f4ca87c154c0640",
-    )
-
-    // Test vectors generated with sodium.js
     private val fromUniformTestVectors = arrayOf(
         "d5d31a04bf9cd6b4f3f014ab57f95d439a0bd741e71f1ecb580143235545255e" to "cb9fff40134270e80e0dcfcdc66aa4ebf02cd27c9d9d26adfdf78d0012ad1b62",
         "9d2e8fc82097672be7b3eb9b9ac74d0cd22087ce04a202a51e88702dceab88a1" to "6b1f76c95d2a201a25b77e73de875637e250acb8e22c44230b2c21bb5a45bb15",
@@ -98,9 +88,9 @@ class Ed25519Test {
             assertNotEquals(q, r)
             assertNotEquals(r, p)
 
-            assertTrue { Ed25519.Point.isValid(p) }
-            assertTrue { Ed25519.Point.isValid(q) }
-            assertTrue { Ed25519.Point.isValid(r) }
+            assertTrue { p.isValid }
+            assertTrue { q.isValid }
+            assertTrue { r.isValid }
         }
     }
 
@@ -119,15 +109,15 @@ class Ed25519Test {
     fun testIsValidPoint() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             for (hexEncoded in badEncodings) {
-                assertFalse { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
+                assertFalse { Ed25519.Point.fromHex(hexEncoded).isValid }
             }
 
             for (hexEncoded in basePointSmallMultiplesNoClamp) {
-                assertTrue { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
+                assertTrue { Ed25519.Point.fromHex(hexEncoded).isValid }
             }
 
             for (hexEncoded in basePointSmallMultiplesClamped) {
-                assertTrue { Ed25519.Point.isValid(Ed25519.Point.fromHex(hexEncoded)) }
+                assertTrue { Ed25519.Point.fromHex(hexEncoded).isValid }
             }
         }
     }

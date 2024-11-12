@@ -1,9 +1,7 @@
 package com.ionspin.kotlin.crypto.ristretto255
 
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
-import com.ionspin.kotlin.crypto.ed25519.Ed25519
 import com.ionspin.kotlin.crypto.hash.Hash
-import com.ionspin.kotlin.crypto.util.LibsodiumUtil
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.runTest
 import kotlin.test.Test
@@ -95,10 +93,9 @@ class Ristretto255Test {
             assertNotEquals(r, p)
 
 
-
-            assertTrue { Ristretto255.Point.isValid(p) }
-            assertTrue { Ristretto255.Point.isValid(q) }
-            assertTrue { Ristretto255.Point.isValid(r) }
+            assertTrue { p.isValid }
+            assertTrue { q.isValid }
+            assertTrue { r.isValid }
         }
     }
 
@@ -117,11 +114,11 @@ class Ristretto255Test {
     fun testIsValidPoint() = runTest {
         LibsodiumInitializer.initializeWithCallback {
             for (hexEncoded in badEncodings) {
-                assertFalse { Ristretto255.Point.isValid(Ristretto255.Point.fromHex(hexEncoded)) }
+                assertFalse { Ristretto255.Point.fromHex(hexEncoded).isValid }
             }
 
             for (hexEncoded in basePointSmallMultiples) {
-                assertTrue { Ristretto255.Point.isValid(Ristretto255.Point.fromHex(hexEncoded)) }
+                assertTrue { Ristretto255.Point.fromHex(hexEncoded).isValid }
             }
         }
     }

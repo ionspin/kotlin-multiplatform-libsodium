@@ -55,7 +55,7 @@ actual object Ristretto255LowLevel {
         return result
     }
 
-    actual fun encodedPointFromHash(hash: UByteArray): UByteArray {
+    actual fun pointFromHash(hash: UByteArray): UByteArray {
         val result = UByteArray(crypto_core_ristretto255_BYTES)
 
         result.usePinned { resultPinned ->
@@ -67,11 +67,11 @@ actual object Ristretto255LowLevel {
         return result
     }
 
-    actual fun randomEncodedPoint(): UByteArray = UByteArray(crypto_core_ristretto255_BYTES).apply {
+    actual fun randomPoint(): UByteArray = UByteArray(crypto_core_ristretto255_BYTES).apply {
         usePinned { crypto_core_ristretto255_random(it.toPtr()) }
     }
 
-    actual fun randomEncodedScalar(): UByteArray = UByteArray(crypto_core_ristretto255_SCALARBYTES).apply {
+    actual fun randomScalar(): UByteArray = UByteArray(crypto_core_ristretto255_SCALARBYTES).apply {
         usePinned { crypto_core_ristretto255_scalar_random(it.toPtr()) }
     }
 

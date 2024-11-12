@@ -21,9 +21,9 @@ expect object Ed25519LowLevel {
     fun isValidPoint(encoded: UByteArray): Boolean
     fun addPoints(p: UByteArray, q: UByteArray): UByteArray
     fun subtractPoints(p: UByteArray, q: UByteArray): UByteArray
-    fun encodedPointFromUniform(uniform: UByteArray): UByteArray
-    fun randomEncodedPoint(): UByteArray
-    fun randomEncodedScalar(): UByteArray
+    fun pointFromUniform(uniform: UByteArray): UByteArray
+    fun randomPoint(): UByteArray
+    fun randomScalar(): UByteArray
     fun invertScalar(scalar: UByteArray): UByteArray
     fun negateScalar(scalar: UByteArray): UByteArray
     fun complementScalar(scalar: UByteArray): UByteArray
@@ -38,16 +38,14 @@ expect object Ed25519LowLevel {
 }
 
 object Ed25519 {
-
-    data class Point(private val encoded: UByteArray) {
-
+    data class Point(val encoded: UByteArray) {
         companion object {
             val IDENTITY: Point = Point(UByteArray(crypto_core_ed25519_BYTES))
             val BASE: Point = multiplyBaseNoClamp(Scalar.ONE)
 
-            fun fromUniform(uniform: UByteArray): Point = Point(Ed25519LowLevel.encodedPointFromUniform(uniform))
+            fun fromUniform(uniform: UByteArray): Point = Point(Ed25519LowLevel.pointFromUniform(uniform))
 
-            fun random(): Point = Point(Ed25519LowLevel.randomEncodedPoint())
+            fun random(): Point = Point(Ed25519LowLevel.randomPoint())
 
             fun multiplyBase(n: Scalar): Point = Point(Ed25519LowLevel.scalarMultiplicationBase(n.encoded))
 
@@ -55,9 +53,10 @@ object Ed25519 {
                 Point(Ed25519LowLevel.scalarMultiplicationBaseNoClamp(n.encoded))
 
             fun fromHex(hex: String): Point = Point(LibsodiumUtil.fromHex(hex))
-
-            fun isValid(point: Point) : Boolean = Ed25519LowLevel.isValidPoint(point.encoded)
         }
+
+        val isValid: Boolean
+            get() = Ed25519LowLevel.isValidPoint(encoded)
 
         operator fun plus(q: Point): Point = Point(Ed25519LowLevel.addPoints(this.encoded, q.encoded))
         operator fun minus(q: Point): Point = Point(Ed25519LowLevel.subtractPoints(this.encoded, q.encoded))
@@ -73,22 +72,12 @@ object Ed25519 {
     }
 
     data class Scalar(val encoded: UByteArray) {
-
         companion object {
             val ZERO = fromUInt(0U)
             val ONE = fromUInt(1U)
             val TWO = fromUInt(2U)
 
-
-            fun random(): Scalar = Scalar(Ed25519LowLevel.randomEncodedScalar())
-
-            fun invert(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.invertScalar(scalar.encoded))
-
-            fun negate(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.negateScalar(scalar.encoded))
-
-            fun reduce(scalar: Scalar): Scalar = Scalar(Ed25519LowLevel.reduceScalar(scalar.encoded))
-
-            fun complement(scalar: Scalar) : Scalar = Scalar(Ed25519LowLevel.complementScalar(scalar.encoded))
+            fun random(): Scalar = Scalar(Ed25519LowLevel.randomScalar())
 
             fun fromUInt(i: UInt): Scalar = fromULong(i.toULong())
 
@@ -135,19 +124,19 @@ object Ed25519 {
         operator fun times(y: UInt): Scalar = this * fromUInt(y)
         operator fun times(y: ULong): Scalar = this * fromULong(y)
 
-        operator fun div(y: Scalar): Scalar = times(invert(y))
+        operator fun div(y: Scalar): Scalar = times(y.invert())
         operator fun div(y: UInt): Scalar = this / fromUInt(y)
         operator fun div(y: ULong): Scalar = this / fromULong(y)
 
-        operator fun unaryMinus(): Scalar = negate(this)
+        operator fun unaryMinus(): Scalar = Scalar(Ed25519LowLevel.negateScalar(this.encoded))
 
         operator fun times(p: Point): Point = p.times(this)
         fun times(p: Point, clamp: Boolean): Point =
             if (clamp) p.times(this) else p.times(this, clamp)
 
-        fun reduce(): Scalar = reduce(this)
-        fun invert(): Scalar = invert(this)
-        fun complement(): Scalar = complement(this)
+        fun reduce(): Scalar = Scalar(Ed25519LowLevel.reduceScalar(this.encoded))
+        fun invert(): Scalar = Scalar(Ed25519LowLevel.invertScalar(this.encoded))
+        fun complement(): Scalar = Scalar(Ed25519LowLevel.complementScalar(this.encoded))
 
         fun multiplyWithBase(): Point = Point.multiplyBase(this)
 
@@ -157,7 +146,5 @@ object Ed25519 {
 
         override fun equals(other: Any?): Boolean = (other as? Scalar)?.encoded?.contentEquals(encoded) == true
         override fun hashCode(): Int = encoded.contentHashCode()
-
-
     }
 }

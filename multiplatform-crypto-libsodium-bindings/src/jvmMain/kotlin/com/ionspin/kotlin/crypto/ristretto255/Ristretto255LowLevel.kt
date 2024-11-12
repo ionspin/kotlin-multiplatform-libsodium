@@ -25,7 +25,7 @@ actual object Ristretto255LowLevel {
         return result
     }
 
-    actual fun encodedPointFromHash(hash: UByteArray): UByteArray {
+    actual fun pointFromHash(hash: UByteArray): UByteArray {
         val result = UByteArray(crypto_core_ristretto255_BYTES)
 
         sodiumJna.crypto_core_ristretto255_from_hash(result.asByteArray(), hash.asByteArray())
@@ -33,11 +33,11 @@ actual object Ristretto255LowLevel {
         return result
     }
 
-    actual fun randomEncodedPoint(): UByteArray = UByteArray(crypto_core_ristretto255_BYTES).also {
+    actual fun randomPoint(): UByteArray = UByteArray(crypto_core_ristretto255_BYTES).also {
         sodiumJna.crypto_core_ristretto255_random(it.asByteArray())
     }
 
-    actual fun randomEncodedScalar(): UByteArray = UByteArray(crypto_core_ristretto255_SCALARBYTES).also {
+    actual fun randomScalar(): UByteArray = UByteArray(crypto_core_ristretto255_SCALARBYTES).also {
         sodiumJna.crypto_core_ristretto255_scalar_random(it.asByteArray())
     }
 

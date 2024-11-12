@@ -25,7 +25,7 @@ actual object Ed25519LowLevel {
         return result
     }
 
-    actual fun encodedPointFromUniform(uniform: UByteArray): UByteArray {
+    actual fun pointFromUniform(uniform: UByteArray): UByteArray {
         val result = UByteArray(crypto_core_ed25519_BYTES)
 
         sodiumJna.crypto_core_ed25519_from_uniform(result.asByteArray(), uniform.asByteArray())
@@ -34,11 +34,11 @@ actual object Ed25519LowLevel {
         return result
     }
 
-    actual fun randomEncodedPoint(): UByteArray = UByteArray(crypto_core_ed25519_BYTES).also {
+    actual fun randomPoint(): UByteArray = UByteArray(crypto_core_ed25519_BYTES).also {
         sodiumJna.crypto_core_ed25519_random(it.asByteArray())
     }
 
-    actual fun randomEncodedScalar(): UByteArray = UByteArray(crypto_core_ed25519_SCALARBYTES).also {
+    actual fun randomScalar(): UByteArray = UByteArray(crypto_core_ed25519_SCALARBYTES).also {
         sodiumJna.crypto_core_ed25519_scalar_random(it.asByteArray())
     }
 
