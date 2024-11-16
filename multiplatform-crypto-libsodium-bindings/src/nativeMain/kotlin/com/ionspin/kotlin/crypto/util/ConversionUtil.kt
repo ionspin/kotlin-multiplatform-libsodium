@@ -4,7 +4,6 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.Pinned
 import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.toCPointer
 
 /**
  * Created by Ugljesa Jovanovic

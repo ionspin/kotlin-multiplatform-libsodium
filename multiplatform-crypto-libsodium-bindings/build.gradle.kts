@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.dokka.Platform
 
 plugins {
     kotlin(PluginsDeps.multiplatform)
@@ -672,15 +671,16 @@ tasks {
 
     }
 
-    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
-        val jvmTest by getting(Test::class) {
-            testLogging {
-                events("PASSED", "FAILED", "SKIPPED")
-                exceptionFormat = TestExceptionFormat.FULL
-                showStandardStreams = true
-                showStackTraces = true
-            }
+    val jvmTest by getting(Test::class) {
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
+            exceptionFormat = TestExceptionFormat.FULL
+            showStandardStreams = true
+            showStackTraces = true
         }
+    }
+
+    if (getHostOsName() == "linux" && getHostArchitecture() == "x86-64") {
 
         val linuxX64Test by getting(KotlinNativeTest::class) {
 
