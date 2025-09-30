@@ -21,7 +21,7 @@ object Versions {
     val kotlinSerializationPlugin = kotlin
     val taskTreePlugin = "1.5"
     val kotlinBigNumVersion = "0.3.7"
-    val jna = "5.13.0"
+    val jna = "5.18.1"
 
     val sampleLibsodiumBindings = "0.8.8-SNAPSHOT"
     val ktor = "1.3.2"
@@ -36,7 +36,7 @@ object Versions {
 
 object ReleaseInfo {
     val group = "com.ionspin.kotlin"
-    val bindingsVersion = "0.9.3-SNAPSHOT"
+    val bindingsVersion = "0.9.4-SNAPSHOT"
 }
 
 object Deps {

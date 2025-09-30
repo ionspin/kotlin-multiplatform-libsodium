@@ -13,7 +13,7 @@ attack surfaces, bugs and other issues and you shouldn't use it in production un
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.2")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.3")
 ```
 
 #### Snapshot builds
@@ -21,7 +21,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.2
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.3-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.4-SNAPSHOT")
 
 ```
 
@@ -165,6 +165,12 @@ Clone the git, init the submodule and run `./gradlew build`. Note that current b
 - Needs android sdk
 - Git needs long file path enabled
 - msys2 needs to be installed and `pacman update` executed
+
+# Audits
+
+A personal audit of version 0.9.2 was done by Renee Vandervelde (@ReneeVandervelde), you can find it here https://reneevandervelde.com/publications/expect-fun/audit-ionspin-kmp-libsodium.html
+
+Thanks Renee!
 
 
 

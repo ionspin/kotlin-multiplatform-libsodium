@@ -523,7 +523,7 @@ kotlin {
                 kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
             }
             dependencies {
-                implementation("net.java.dev.jna:jna:5.12.1@aar")
+                implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(Deps.Jvm.resourceLoader) {
                     exclude("net.java.dev.jna", "jna")
                 }
@@ -543,8 +543,6 @@ kotlin {
                 implementation(Deps.Jvm.resourceLoader)
 
                 implementation(Deps.Jvm.Delegated.jna)
-
-                implementation("org.slf4j:slf4j-api:1.7.30")
             }
         }
         val jvmTest by getting {
