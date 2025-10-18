@@ -32,8 +32,8 @@ plugins {
 
 }
 
-val sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-val sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
+val sonatypeStaging = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+val sonatypeSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
 
 val sonatypePassword: String? by project
 
@@ -523,7 +523,7 @@ kotlin {
                 kotlin.srcDirs("src/androidSpecific", "src/jvmMain/kotlin")
             }
             dependencies {
-                implementation("net.java.dev.jna:jna:5.12.1@aar")
+                implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(Deps.Jvm.resourceLoader) {
                     exclude("net.java.dev.jna", "jna")
                 }
@@ -543,8 +543,6 @@ kotlin {
                 implementation(Deps.Jvm.resourceLoader)
 
                 implementation(Deps.Jvm.Delegated.jna)
-
-                implementation("org.slf4j:slf4j-api:1.7.30")
             }
         }
         val jvmTest by getting {

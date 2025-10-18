@@ -1,7 +1,12 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.3-SNAPSHOT - current development snapshot
+#### 0.9.4-SNAPSHOT - current development snapshot
+
+#### 0.9.3 - 2025-10-18
+- Add Ristretto255 (Libsodium's Finite Field Arithmetic API) support (thanks to Johannes Leupold @Traderjoe95 for the contribution #52)
+- Update JNA dependency
+- Rebuild libsodium with latest stable branch - commit 3eabeb547fd7f91f4f8a15885050eb2a8e0272d5 (fixes #59)
 
 #### 0.9.2 - 13.4.2024
 - Use 2.0.2 release of resource loader instead of forked snapshot
