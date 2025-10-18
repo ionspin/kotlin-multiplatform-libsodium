@@ -1,1 +1,1 @@
-curl -X POST https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/manual/upload/repository/com.ionspin.kotlin
+curl -X POST https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.ionspin.kotlin -H "Authorization: Bearer $SONATYPE_BASE64"
