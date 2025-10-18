@@ -168,7 +168,7 @@ Clone the git, init the submodule and run `./gradlew build`. Note that current b
 
 # Audits
 
-A personal audit of version 0.9.2 was done by Renee Vandervelde (@ReneeVandervelde), you can find it here https://reneevandervelde.com/publications/expect-fun/audit-ionspin-kmp-libsodium.html
+A personal audit of version 0.9.2 was done by [Renee Vandervelde](https://github.com/ReneeVandervelde), you can find it here https://reneevandervelde.com/publications/expect-fun/audit-ionspin-kmp-libsodium.html
 
 Thanks Renee!
 
