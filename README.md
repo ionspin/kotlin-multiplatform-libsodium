@@ -19,7 +19,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.3
 #### Snapshot builds
 ```kotlin
 repositories {
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
 implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.4-SNAPSHOT")
 
