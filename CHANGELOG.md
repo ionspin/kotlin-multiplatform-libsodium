@@ -1,7 +1,10 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.4-SNAPSHOT - current development snapshot
+#### 0.9.5-SNAPSHOT - current development snapshot
+
+#### 0.9.4 - 2025-10-21
+- Rerelease with updated android libraries, which is now automated correctly (fixes #59)
 
 #### 0.9.3 - 2025-10-18
 - Add Ristretto255 (Libsodium's Finite Field Arithmetic API) support (thanks to Johannes Leupold @Traderjoe95 for the contribution #52)
