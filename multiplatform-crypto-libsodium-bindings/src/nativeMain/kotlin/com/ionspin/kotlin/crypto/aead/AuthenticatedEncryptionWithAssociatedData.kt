@@ -138,6 +138,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         associatedDataPinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
+        authenticationTagPinned.unpin()
 
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }
@@ -297,6 +298,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         associatedDataPinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
+        authenticationTagPinned.unpin()
 
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }
@@ -456,6 +458,7 @@ actual object AuthenticatedEncryptionWithAssociatedData {
         associatedDataPinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
+        authenticationTagPinned.unpin()
 
         return AeadEncryptedDataAndTag(ciphertext, authenticationTag)
     }

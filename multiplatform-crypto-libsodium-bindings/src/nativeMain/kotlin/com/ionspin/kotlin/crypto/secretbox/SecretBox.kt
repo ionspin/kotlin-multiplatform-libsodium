@@ -111,6 +111,7 @@ actual object SecretBox {
         messagePinned.unpin()
         noncePinned.unpin()
         keyPinned.unpin()
+        tagPinned.unpin()
         if (!verificationResult.isLibsodiumSuccessCode()) {
             throw SecretBoxCorruptedOrTamperedDataExceptionOrInvalidKey()
         }

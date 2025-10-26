@@ -37,6 +37,7 @@ actual object LibsodiumUtil {
     actual fun memzero(target: UByteArray) {
         val targetPinned = target.pin()
         sodium_memzero(targetPinned.toPtr(), target.size.convert())
+        targetPinned.unpin()
     }
 
     actual fun pad(unpaddedData : UByteArray, blocksize: Int) : UByteArray {
@@ -72,12 +73,14 @@ actual object LibsodiumUtil {
             blocksize.convert()
         ).ensureLibsodiumSuccess()
         val unpaddedSize = newSizeULong[0]
+
+        paddedDataCopyPinned.unpin()
+        newSizePinned.unpin()
+
         if (unpaddedSize > Int.MAX_VALUE.toULong()) {
             throw RuntimeException("Unsupported array size (larger than Integer max value) $unpaddedSize")
         }
         val unpadded = paddedDataCopy.sliceArray(0 until unpaddedSize.toInt())
-        paddedDataCopyPinned.unpin()
-        newSizePinned.unpin()
         return unpadded
     }
 
