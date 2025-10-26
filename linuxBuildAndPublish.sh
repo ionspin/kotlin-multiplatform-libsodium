@@ -13,6 +13,7 @@ then
   sudo ln -s $CLANG_BIN/ld.lld /usr/bin/ld
 fi
 ./makeLinuxArm64.sh
+./makeAndroid.sh
 #now we can do the delegated build
 cd ..
 #build libsodium bindings
