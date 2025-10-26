@@ -7,6 +7,7 @@ import kotlinx.cinterop.pin
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
 import libsodium.crypto_hash
 import libsodium.crypto_hash_sha256
 import libsodium.crypto_hash_sha256_final
@@ -44,14 +45,16 @@ actual object Hash {
     }
 
     actual fun sha256Update(state: Sha256State, data: UByteArray) {
-        val dataPinned = data.pin()
-        crypto_hash_sha256_update(state.ptr, dataPinned.toPtr(), data.size.convert())
+        data.usePinned { dataPinned ->
+            crypto_hash_sha256_update(state.ptr, dataPinned.toPtr(), data.size.convert())
+        }
     }
 
     actual fun sha256Final(state: Sha256State): UByteArray {
         val hashResult = UByteArray(crypto_hash_sha256_BYTES)
-        val hashResultPinned = hashResult.pin()
-        crypto_hash_sha256_final(state.ptr, hashResultPinned.toPtr()).ensureLibsodiumSuccess()
+        hashResult.usePinned { hashResultPinned ->
+            crypto_hash_sha256_final(state.ptr, hashResultPinned.toPtr()).ensureLibsodiumSuccess()
+        }
         return hashResult
     }
 
@@ -74,14 +77,16 @@ actual object Hash {
     }
 
     actual fun sha512Update(state: Sha512State, data: UByteArray) {
-        val dataPinned = data.pin()
-        crypto_hash_sha512_update(state.ptr, dataPinned.toPtr(), data.size.convert()).ensureLibsodiumSuccess()
+        data.usePinned { dataPinned ->
+            crypto_hash_sha512_update(state.ptr, dataPinned.toPtr(), data.size.convert()).ensureLibsodiumSuccess()
+        }
     }
 
     actual fun sha512Final(state: Sha512State): UByteArray {
         val hashResult = UByteArray(crypto_hash_sha512_BYTES)
-        val hashResultPinned = hashResult.pin()
-        crypto_hash_sha512_final(state.ptr, hashResultPinned.toPtr()).ensureLibsodiumSuccess()
+        hashResult.usePinned { hashResultPinned ->
+            crypto_hash_sha512_final(state.ptr, hashResultPinned.toPtr()).ensureLibsodiumSuccess()
+        }
         return hashResult
     }
 
