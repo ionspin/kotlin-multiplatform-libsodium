@@ -1,7 +1,11 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.5-SNAPSHOT - current development snapshot
+#### 0.9.6-SNAPSHOT - current development snapshot
+
+#### 0.9.5 - 2025-11-22
+- Rerelease with a lower minimum sdk set when building libsodium (minimum is now SDK level 26)
+- Fixed potential memory leaks, thanks @ReneeVandervelde for the contribution #66!
 
 #### 0.9.4 - 2025-10-21
 - Rerelease with updated android libraries, which is now automated correctly (fixes #59)

@@ -13,7 +13,7 @@ attack surfaces, bugs and other issues and you shouldn't use it in production un
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.4")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.5")
 ```
 
 #### Snapshot builds
@@ -21,7 +21,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.4
 repositories {
     maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.5-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.6-SNAPSHOT")
 
 ```
 
