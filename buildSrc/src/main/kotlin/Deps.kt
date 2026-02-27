@@ -66,7 +66,7 @@ object Deps {
 
 
         object Npm {
-            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.13")
+            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.8.2")
 
         }
 
