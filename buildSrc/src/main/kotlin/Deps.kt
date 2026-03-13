@@ -67,7 +67,9 @@ object Deps {
 
         object Npm {
             val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.8.2")
-
+            // Pin the underlying libsodium-sumo version to avoid semver range resolution
+            // libsodium-wrappers-sumo depends on libsodium-sumo: ^0.8.0
+            val libsodiumSumo = Pair("libsodium-sumo", "0.8.2")
         }
 
     }

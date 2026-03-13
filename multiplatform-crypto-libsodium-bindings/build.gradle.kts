@@ -560,6 +560,7 @@ kotlin {
                 dependencies {
                     implementation(kotlin(Deps.Js.stdLib))
                     implementation(npm(Deps.Js.Npm.libsodiumWrappers.first, Deps.Js.Npm.libsodiumWrappers.second))
+                    implementation(npm(Deps.Js.Npm.libsodiumSumo.first, Deps.Js.Npm.libsodiumSumo.second))
                 }
             }
             val jsTest by getting {
