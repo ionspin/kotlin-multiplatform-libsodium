@@ -400,7 +400,7 @@ kotlin {
                     println("Setting macos cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -419,7 +419,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -438,7 +438,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -457,7 +457,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -476,7 +476,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -495,7 +495,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -514,7 +514,7 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include/Clibsodium")
                     }
                     compileTaskProvider.configure {
                         compilerOptions.freeCompilerArgs.addAll(
@@ -604,7 +604,6 @@ kotlin {
         runningOnMacos {
             println("Configuring Macos source sets")
             val macosX64Main by getting {
-                dependsOn(nativeMain)
                 if (ideaActive) {
                     kotlin.srcDir("src/nativeMain/kotlin")
                 }
@@ -672,8 +671,6 @@ tasks.whenTaskAdded {
 }
 
 
-// Several source sets share source directories (jvm/android, native workarounds), which Dokka rejects,
-// so only one source set per directory is documented
 dokka {
     dokkaSourceSets.configureEach {
         suppress.set(name.removeSuffix("Main") !in setOf("common", "jvm", "js", "native"))
