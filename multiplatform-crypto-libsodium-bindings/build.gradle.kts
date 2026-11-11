@@ -56,6 +56,7 @@ version = ReleaseInfo.bindingsVersion
 val ideaActive = isInIdea()
 println("Idea active: $ideaActive")
 android {
+    namespace = "com.ionspin.kotlin.mutliplatform_crypto_libsodium_bindings"
     compileSdk = AndroidPluginConfiguration.sdkVersion
     defaultConfig {
         minSdk = AndroidPluginConfiguration.minVersion
@@ -76,6 +77,7 @@ android {
 
     lint {
         abortOnError = false
+        ignoreTestSources = true
     }
 }
 
@@ -116,9 +118,11 @@ kotlin {
                     defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
                     compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-linux-x86-64/include/")
                 }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
-                )
+                compileTaskProvider.configure {
+                    compilerOptions.freeCompilerArgs.addAll(
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-linux-x86-64/lib/libsodium.a"
+                    )
+                }
             }
             binaries {
                 staticLib {
@@ -245,20 +249,22 @@ kotlin {
                     defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
                     compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/include")
                 }
-                kotlinOptions.freeCompilerArgs = listOf(
-                    "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
-                )
+                compileTaskProvider.configure {
+                    compilerOptions.freeCompilerArgs.addAll(
+                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-mingw-x86-64/lib/libsodium.a"
+                    )
+                }
             }
         } else {
             // Disable cross compilation until https://youtrack.jetbrains.com/issue/KT-30498 is supported
             compilations.all {
                 cinterops.all {
-                    project.tasks[interopProcessingTaskName].enabled = false
+                    projectRef.tasks[interopProcessingTaskName].enabled = false
                 }
-                compileKotlinTask.enabled = false
+                compileTaskProvider.configure { enabled = false }
             }
             binaries.all {
-                linkTask.enabled = false
+                linkTaskProvider.configure { enabled = false }
             }
             mavenPublication(
                 Action {
@@ -291,7 +297,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
-                implementation(kotlin(Deps.Common.testAnnotation))
                 implementation(Deps.Common.coroutines)
             }
         }
@@ -374,12 +379,12 @@ kotlin {
                         )
                     )
 
-                    compilations.getByName("main") {
-                        val libsodiumCinterop by cinterops.creating {
-                            defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                            compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-arm64/include/")
-                        }
-                        kotlinOptions.freeCompilerArgs = listOf(
+                    val libsodiumCinterop by cinterops.creating {
+                        defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-arm64/include/")
+                    }
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
                             "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-arm64/lib/libsodium.a"
                         )
                     }
@@ -395,11 +400,13 @@ kotlin {
                     println("Setting macos cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-macos/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-macos/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-macos/lib/libsodium.a"
+                        )
+                    }
                 }
                 //All ioses share the same static library
                 if (iosArm.contains(this@withType.name)) {
@@ -412,11 +419,13 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios/lib/libsodium.a"
+                        )
+                    }
                 }
 
                 if (iosSimulator.contains(this@withType.name)) {
@@ -429,11 +438,13 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-ios-simulators/lib/libsodium.a"
+                        )
+                    }
                 }
 
                 if (tvosArm.contains(this@withType.name)) {
@@ -446,11 +457,13 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos/lib/libsodium.a"
+                        )
+                    }
                 }
 
                 if (tvosSimulator.contains(this@withType.name)) {
@@ -463,11 +476,13 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-tvos-simulators/lib/libsodium.a"
+                        )
+                    }
                 }
 
                 if (watchosArm.contains(this@withType.name)) {
@@ -480,11 +495,13 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary", "${projectRef.rootDir}/sodiumWrapper/static-watchos/lib/libsodium.a"
+                        )
+                    }
                 }
 
                 if (watchosSimulator.contains(this@withType.name)) {
@@ -497,12 +514,14 @@ kotlin {
                     println("Setting ios cinterop for $this")
                     val libsodiumCinterop by cinterops.creating {
                         defFile(projectRef.file("src/nativeInterop/cinterop/libsodium.def"))
-                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include")
+                        compilerOpts.add("-I${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/include/Clibsodium")
                     }
-                    kotlinOptions.freeCompilerArgs = listOf(
-                        "-include-binary",
-                        "${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
-                    )
+                    compileTaskProvider.configure {
+                        compilerOptions.freeCompilerArgs.addAll(
+                            "-include-binary",
+                            "${projectRef.rootDir}/sodiumWrapper/static-watchos-simulators/lib/libsodium.a"
+                        )
+                    }
                 }
 
 
@@ -585,7 +604,6 @@ kotlin {
         runningOnMacos {
             println("Configuring Macos source sets")
             val macosX64Main by getting {
-                dependsOn(nativeMain)
                 if (ideaActive) {
                     kotlin.srcDir("src/nativeMain/kotlin")
                 }
@@ -636,7 +654,6 @@ kotlin {
 
 
         all {
-            languageSettings.enableLanguageFeature("InlineClasses")
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
@@ -647,9 +664,16 @@ kotlin {
 }
 
 tasks.whenTaskAdded {
-    if ("DebugUnitTest" in name || "ReleaseUnitTest" in name) {
+    if (("DebugUnitTest" in name || "ReleaseUnitTest" in name) && "Lint" !in name) {
         enabled =
             false // https://youtrack.jetbrains.com/issue/KT-34662 otherwise common tests fail, because we require native android libs to be loaded
+    }
+}
+
+
+dokka {
+    dokkaSourceSets.configureEach {
+        suppress.set(name.removeSuffix("Main") !in setOf("common", "jvm", "js", "native"))
     }
 }
 
@@ -657,16 +681,8 @@ tasks {
 
 
     create<Jar>("javadocJar") {
-        dependsOn(dokkaHtml)
         archiveClassifier.set("javadoc")
-        from(dokkaHtml.get().outputDirectory)
-    }
-
-    dokkaHtml {
-        println("Dokka !")
-        dokkaSourceSets {
-        }
-
+        from(dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
     }
 
     val jvmTest by getting(Test::class) {
@@ -755,6 +771,10 @@ signing {
     sign(publishing.publications)
 }
 
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    mustRunAfter(tasks.withType<Sign>())
+}
+
 publishing {
     publications.withType(MavenPublication::class) {
         artifact(tasks["javadocJar"])
@@ -804,6 +824,3 @@ publishing {
         }
     }
 }
-
-
-

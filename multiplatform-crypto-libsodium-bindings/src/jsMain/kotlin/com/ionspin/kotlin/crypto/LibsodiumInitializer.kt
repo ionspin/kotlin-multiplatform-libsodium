@@ -5,7 +5,10 @@ import ext.libsodium.com.ionspin.kotlin.crypto.JsSodiumLoader
 
 var sodiumLoaded: Boolean = false
 
-fun getSodium() : JsSodiumInterface = JsSodiumInterface
+internal var sodiumModule: JsSodiumInterface? = null
+
+fun getSodium() : JsSodiumInterface = sodiumModule
+    ?: throw IllegalStateException("Libsodium is not initialized, call LibsodiumInitializer.initialize() first")
 
 fun getSodiumLoaded() : Boolean = sodiumLoaded
 

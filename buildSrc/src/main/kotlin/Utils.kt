@@ -103,6 +103,7 @@ fun NamedDomainObjectContainer<KotlinSourceSet>.createWorkaroundNativeMainSource
 ): KotlinSourceSet {
 
     return create("${name}Workaround") {
+        dependsOn(getByName("commonMain"))
         if (!isInIdea()) {
             kotlin.srcDir("src/nativeMain")
             dependencies {

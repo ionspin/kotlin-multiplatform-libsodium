@@ -2,8 +2,7 @@
   ~ Copyright (c) 2020 Ugljesa Jovanovic (ugljesa.jovanovic@ionspin.com)
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ionspin.kotlin.crypto.sample">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application

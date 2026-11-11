@@ -36,6 +36,6 @@ fun testBlocking(block : suspend () -> Unit) {
     block.startCoroutine(continuation)
 }
 
-expect fun runTest(block: suspend (scope : CoroutineScope) -> Unit)
+expect class TestResult
 
-
+expect fun runTest(block: suspend (scope : CoroutineScope) -> Unit): TestResult

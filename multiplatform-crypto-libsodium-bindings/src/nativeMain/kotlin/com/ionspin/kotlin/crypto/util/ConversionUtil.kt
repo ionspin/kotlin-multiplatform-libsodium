@@ -13,7 +13,7 @@ import kotlinx.cinterop.addressOf
 fun Pinned<UByteArray>.toPtr() : CPointer<UByteVar>? {
     return try {
         addressOf(0)
-    } catch (outOfBounds : ArrayIndexOutOfBoundsException) {
+    } catch (outOfBounds : IndexOutOfBoundsException) {
         null
     }
 }

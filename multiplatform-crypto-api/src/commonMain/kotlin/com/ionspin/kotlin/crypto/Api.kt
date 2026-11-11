@@ -3,15 +3,13 @@ package com.ionspin.kotlin.crypto
 import com.ionspin.kotlin.crypto.hash.MultipartHash
 import com.ionspin.kotlin.crypto.hash.encodeToUByteArray
 import com.ionspin.kotlin.crypto.util.toHexString
-import kotlin.jvm.JvmInline
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 23-Jun-2020
  */
-@JvmInline
-value class EncryptableString(val content: String) : Encryptable<EncryptableString> {
+class EncryptableString(val content: String) : Encryptable<EncryptableString> {
     override fun toEncryptableForm(): UByteArray {
         return content.encodeToUByteArray()
     }

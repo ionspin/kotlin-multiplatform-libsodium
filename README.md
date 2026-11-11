@@ -148,8 +148,8 @@ Currently supported native platforms (Apple Silicon is supported since 0.8.5) :
 ### Where do the compiled libraries used by JVM and Android come from
 Android .so files come from running dist-build scripts in libsodium which you can find in the libsodium submodule
 Java Linux Arm/X86_64 and Mac so and dylib are the same as produced by multiplatform builds, also based on the same submodule commit
-Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.19-stable-msvc.zip
-Javascript is from libsodium-wrappers-sumo npm package version 0.7.13 (https://github.com/jedisct1/libsodium.js)
+Java Windows dll is from https://download.libsodium.org/libsodium/releases/libsodium-1.0.22-stable-msvc.zip
+Javascript is from libsodium-wrappers-sumo npm package version 0.8.4 (https://github.com/jedisct1/libsodium.js)
 
 ### TODO:
 - Improve documentation
