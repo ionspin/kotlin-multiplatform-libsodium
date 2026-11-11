@@ -40,7 +40,7 @@ kotlin {
     runningOnLinuxx86_64 {
         jvm()
         js(IR) {
-           browser {
+            browser {
                 testTask {
                     enabled = false //Until I sort out testing on travis
                     useKarma {
@@ -111,7 +111,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
-                implementation(kotlin(Deps.Common.testAnnotation))
             }
         }
 
@@ -163,7 +162,6 @@ kotlin {
         }
 
         all {
-            languageSettings.enableLanguageFeature("InlineClasses")
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
@@ -202,9 +200,3 @@ tasks {
     }
 
 }
-
-
-
-
-
-

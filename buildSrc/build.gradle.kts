@@ -28,9 +28,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
-    implementation("com.android.tools.build:gradle:7.2.2")
-    implementation ("org.jetbrains.dokka:dokka-gradle-plugin:1.9.20")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21")
+    implementation("com.android.tools.build:gradle:8.13.0")
+    implementation ("org.jetbrains.dokka:dokka-gradle-plugin:2.1.0")
 }
 
 System.setProperty("PROJECT_PATH", project.projectDir.parentFile.toString())

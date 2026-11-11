@@ -146,7 +146,7 @@ kotlin {
             // The fat framework must have the same base name as the initial frameworks.
             baseName = "LibsodiumBindings"
             // The default destination directory is '<build directory>/fat-framework'.
-            destinationDir = File(buildDir, "xcode-frameworks")
+            destinationDirProperty.set(layout.buildDirectory.dir("xcode-frameworks"))
             // Specify the frameworks to be merged.
             from(
                 iosX64Target.binaries.getFramework(mode),
@@ -182,7 +182,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin(Deps.Common.test))
-                implementation(kotlin(Deps.Common.testAnnotation))
             }
         }
 
@@ -337,7 +336,6 @@ kotlin {
 
 
         all {
-            languageSettings.enableLanguageFeature("InlineClasses")
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
@@ -347,6 +345,7 @@ kotlin {
 }
 
 android {
+    namespace = "com.ionspin.kotlin.crypto.sample"
     compileSdkVersion(AndroidPluginConfiguration.sdkVersion)
     defaultConfig {
         applicationId = "com.ionspin.kotlin.crypto.sample"
@@ -377,8 +376,8 @@ android {
         exclude("META-INF/ktor-*")
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "1.8"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
         }
     }
 
@@ -481,17 +480,9 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.Executable.windowsResources(rcFileNam
         commandLine("$konanLlvmDir/windres", inFile, "-D_${buildType.name}", "-O", "coff", "-o", outFile)
         environment("PATH", "$konanLlvmDir;${System.getenv("PATH")}")
 
-        dependsOn(compilation.compileKotlinTask)
+        dependsOn(compilation.compileTaskProvider)
     }
 
-    linkTask.dependsOn(windresTask)
+    linkTaskProvider.configure { dependsOn(windresTask) }
     linkerOpts(outFile.toString())
 }
-
-
-
-
-
-
-
-

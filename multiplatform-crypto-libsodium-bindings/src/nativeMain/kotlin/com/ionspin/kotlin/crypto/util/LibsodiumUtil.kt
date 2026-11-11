@@ -99,7 +99,7 @@ actual object LibsodiumUtil {
         dataPinned.unpin()
         resultPinned.unpin()
         //Drop '\0'
-        return result.map { it.toChar() }.dropLast(1).joinToString("")
+        return result.map { it.toInt().toChar() }.dropLast(1).joinToString("")
     }
 
     actual fun toHex(data: UByteArray): String {
@@ -116,7 +116,7 @@ actual object LibsodiumUtil {
         resultPinned.unpin()
         dataPinned.unpin()
         //Drop \0 termination
-        return result.map { it.toChar() }.dropLast(1).joinToString("")
+        return result.map { it.toInt().toChar() }.dropLast(1).joinToString("")
     }
 
     actual fun fromBase64(data: String, variant : Base64Variants): UByteArray {

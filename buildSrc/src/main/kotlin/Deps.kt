@@ -16,7 +16,7 @@
 
 object Versions {
     val kotlinCoroutines = "1.8.0"
-    val kotlin = "1.9.23"
+    val kotlin = "2.4.21"
     val kotlinSerialization = "1.6.3"
     val kotlinSerializationPlugin = kotlin
     val taskTreePlugin = "1.5"
@@ -42,9 +42,8 @@ object ReleaseInfo {
 object Deps {
 
     object Common {
-        val stdLib = "stdlib-common"
-        val test = "test-common"
-        val testAnnotation = "test-annotations-common"
+        val stdLib = "stdlib"
+        val test = "test"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
         val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinSerialization}"
 
@@ -133,4 +132,3 @@ object PluginsDeps {
     val kotlinAndroid = "kotlin-android"
     val kapt = "kotlin-kapt"
 }
-
