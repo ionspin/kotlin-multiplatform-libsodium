@@ -1,7 +1,11 @@
 ## Descriptive changelog
 (All dates are DD.MM.YYYY)
 
-#### 0.9.6-SNAPSHOT - current development snapshot
+#### 0.9.7-SNAPSHOT - Current development snapshot
+
+#### 0.9.6 - 2026-11-11
+- Bump kotlin to 2.4.21
+- Fix issue #69, failing JS initialization
 
 #### 0.9.5 - 2025-11-22
 - Rerelease with a lower minimum sdk set when building libsodium (minimum is now SDK level 26)

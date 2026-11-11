@@ -16,7 +16,7 @@ We do not accept AI (LLM) generated or AI (LLM) assisted contributions at this t
 
 #### Gradle
 ```kotlin
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.5")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.6")
 ```
 
 #### Snapshot builds
@@ -24,7 +24,7 @@ implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.5
 repositories {
     maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
-implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.6-SNAPSHOT")
+implementation("com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings:0.9.7-SNAPSHOT")
 
 ```
 
