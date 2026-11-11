@@ -3,16 +3,16 @@ package ext.libsodium.com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.box.BoxKeyPair
 import org.khronos.webgl.Uint8Array
+import kotlin.js.Promise
 
 /**
  * Created by Ugljesa Jovanovic
  * ugljesa.jovanovic@ionspin.com
  * on 27-May-2020
  */
-@JsModule("libsodium-wrappers-sumo")
-@JsNonModule
-external object JsSodiumInterface {
+external interface JsSodiumInterface {
 
+    val ready: Promise<dynamic>
 
     @JsName("crypto_generichash")
     fun crypto_generichash(hashLength: Int, inputMessage: Uint8Array, key: Uint8Array): Uint8Array

@@ -23,7 +23,7 @@ object Versions {
     val kotlinBigNumVersion = "0.3.7"
     val jna = "5.18.1"
 
-    val sampleLibsodiumBindings = "0.8.8-SNAPSHOT"
+    val sampleLibsodiumBindings = ReleaseInfo.bindingsVersion
     val ktor = "1.3.2"
     val timber = "4.7.1"
     val kodeinVersion = "7.1.0"
@@ -65,7 +65,7 @@ object Deps {
 
 
         object Npm {
-            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.7.13")
+            val libsodiumWrappers = Pair("libsodium-wrappers-sumo", "0.8.4")
 
         }
 

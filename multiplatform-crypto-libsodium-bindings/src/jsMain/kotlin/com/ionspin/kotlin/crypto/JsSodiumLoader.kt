@@ -2,13 +2,9 @@ package ext.libsodium.com.ionspin.kotlin.crypto
 
 import com.ionspin.kotlin.crypto.getSodiumLoaded
 import com.ionspin.kotlin.crypto.sodiumLoaded
-import ext.libsodium._libsodiumPromise
-import ext.libsodium.crypto_generichash
-import ext.libsodium.crypto_hash_sha256
-import ext.libsodium.crypto_hash_sha256_init
-import ext.libsodium.crypto_hash_sha512
-import ext.libsodium.sodium_init
+import com.ionspin.kotlin.crypto.sodiumModule
 import kotlin.coroutines.suspendCoroutine
+import kotlin.js.Promise
 
 /**
  * Created by Ugljesa Jovanovic
@@ -17,25 +13,27 @@ import kotlin.coroutines.suspendCoroutine
  */
 object JsSodiumLoader {
 
-    class _EmitJsSodiumFunction {
-        init {
-            println(::crypto_generichash)
-            println(::crypto_hash_sha256)
-            println(::crypto_hash_sha512)
-            println(::crypto_hash_sha256_init)
-        }
+    private fun importSodium(): Promise<JsSodiumInterface> {
+        val modulePromise = js("import('libsodium-wrappers-sumo')").unsafeCast<Promise<dynamic>>()
+        return modulePromise.then<JsSodiumInterface> { module ->
+            val sodium = (module.default ?: module)
+            val sodiumWhenReady: dynamic = sodium.ready.then { sodium }
+            sodiumWhenReady
 
+        }.unsafeCast<Promise<JsSodiumInterface>>()
     }
+
 
     suspend fun load() = suspendCoroutine { continuation ->
         if (!getSodiumLoaded()) {
-            _libsodiumPromise.then<dynamic> {
-                sodium_init()
+            importSodium().then<dynamic> { sodium ->
+                sodiumModule = sodium
                 sodiumLoaded = true
                 continuation.resumeWith(Result.success(Unit))
             }.catch { e ->
                 continuation.resumeWith(Result.failure(e))
             }
+
         } else {
             continuation.resumeWith(Result.success(Unit))
         }
@@ -43,8 +41,8 @@ object JsSodiumLoader {
 
     fun loadWithCallback(doneCallback: () -> (Unit)) {
         if (!getSodiumLoaded()) {
-            _libsodiumPromise.then<dynamic> {
-                sodium_init()
+            importSodium().then<dynamic> { sodium ->
+                sodiumModule = sodium
                 sodiumLoaded = true
                 doneCallback.invoke()
             }

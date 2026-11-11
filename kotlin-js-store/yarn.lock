@@ -2013,17 +2013,17 @@ launch-editor@^2.14.1:
     picocolors "^1.1.1"
     shell-quote "^1.10.0"
 
-libsodium-sumo@^0.7.13:
-  version "0.7.13"
-  resolved "https://registry.yarnpkg.com/libsodium-sumo/-/libsodium-sumo-0.7.13.tgz#533b97d2be44b1277e59c1f9f60805978ac5542d"
-  integrity sha512-zTGdLu4b9zSNLfovImpBCbdAA4xkpkZbMnSQjP8HShyOutnGjRHmSOKlsylh1okao6QhLiz7nG98EGn+04cZjQ==
+libsodium-sumo@^0.8.0:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/libsodium-sumo/-/libsodium-sumo-0.8.4.tgz#6d4687781fa0ad398af14a7df872d5c27cf8cd31"
+  integrity sha512-TMtHShQfVVsaxDygyapvUC3o7YsPgXa/hRWeIgzyFz6w5k/1hirGptCxp1U7XwW3rCskaTTYKgV10v86UiGgNw==
 
-libsodium-wrappers-sumo@0.7.13:
-  version "0.7.13"
-  resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.7.13.tgz#a33aea845a0bb56db067548f04feba28c730ab8e"
-  integrity sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==
+libsodium-wrappers-sumo@0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.8.4.tgz#6656a3e7e0551ecce08ddee4bfb501a092eac6fa"
+  integrity sha512-ql7hcgulKZ3ekfa2DGAogcCKsWU0diA/0nArz1CFzh93WQdb46/Kj18ka/Hifq6uA3Ush34Pc6vU/6HXeRwUkg==
   dependencies:
-    libsodium-sumo "^0.7.13"
+    libsodium-sumo "^0.8.0"
 
 loader-runner@^4.3.2:
   version "4.3.2"

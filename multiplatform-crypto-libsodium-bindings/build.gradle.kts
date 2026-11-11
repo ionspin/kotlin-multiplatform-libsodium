@@ -665,9 +665,18 @@ kotlin {
 }
 
 tasks.whenTaskAdded {
-    if (("DebugUnitTest" in name || "ReleaseUnitTest" in name) && ("Lint" in name).not()) {
+    if (("DebugUnitTest" in name || "ReleaseUnitTest" in name) && "Lint" !in name) {
         enabled =
             false // https://youtrack.jetbrains.com/issue/KT-34662 otherwise common tests fail, because we require native android libs to be loaded
+    }
+}
+
+
+// Several source sets share source directories (jvm/android, native workarounds), which Dokka rejects,
+// so only one source set per directory is documented
+dokka {
+    dokkaSourceSets.configureEach {
+        suppress.set(name.removeSuffix("Main") !in setOf("common", "jvm", "js", "native"))
     }
 }
 
@@ -763,6 +772,10 @@ allprojects {
 signing {
     isRequired = false
     sign(publishing.publications)
+}
+
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    mustRunAfter(tasks.withType<Sign>())
 }
 
 publishing {
