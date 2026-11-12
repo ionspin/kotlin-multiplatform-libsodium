@@ -1,6 +1,6 @@
 set -e
 #!/bin/sh
-PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-30}
+PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-60}
 
 publish() {
   ./gradlew "$1"

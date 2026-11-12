@@ -19,7 +19,7 @@ cd ..
 #build libsodium bindings
 ./gradlew multiplatform-crypto-libsodium-bindings:build
 
-PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-30}
+PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-90}
 
 publish() {
   ./gradlew "$1"
