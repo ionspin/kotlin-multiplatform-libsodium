@@ -1,18 +1,26 @@
 set -e
 #!/bin/sh
-./gradlew multiplatform-crypto-libsodium-bindings:publishMacosX64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishMacosArm64PublicationToSnapshotRepository
+PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-30}
 
-./gradlew multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishIosX64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishIosSimulatorArm64PublicationToSnapshotRepository
+publish() {
+  ./gradlew "$1"
+  echo "Waiting $PUBLISH_DELAY_SECONDS seconds before the next upload"
+  sleep "$PUBLISH_DELAY_SECONDS"
+}
 
-./gradlew multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishWatchosSimulatorArm64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishMacosX64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishMacosArm64PublicationToSnapshotRepository
 
-./gradlew multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishTvosX64PublicationToSnapshotRepository \
-multiplatform-crypto-libsodium-bindings:publishTvosSimulatorArm64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishIosX64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishIosSimulatorArm64PublicationToSnapshotRepository
+
+publish multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishWatchosSimulatorArm64PublicationToSnapshotRepository
+
+publish multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishTvosX64PublicationToSnapshotRepository
+publish multiplatform-crypto-libsodium-bindings:publishTvosSimulatorArm64PublicationToSnapshotRepository
 
 set +e

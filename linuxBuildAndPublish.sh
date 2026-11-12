@@ -19,8 +19,19 @@ cd ..
 #build libsodium bindings
 ./gradlew multiplatform-crypto-libsodium-bindings:build
 
-./gradlew publishJvmPublicationToSnapshotRepository publishJsPublicationToSnapshotRepository \
-publishKotlinMultiplatformPublicationToSnapshotRepository publishLinuxX64PublicationToSnapshotRepository \
-publishLinuxArm64PublicationToSnapshotRepository \
-publishAndroidDebugPublicationToSnapshotRepository publishAndroidReleasePublicationToSnapshotRepository
+PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-30}
+
+publish() {
+  ./gradlew "$1"
+  echo "Waiting $PUBLISH_DELAY_SECONDS seconds before the next upload"
+  sleep "$PUBLISH_DELAY_SECONDS"
+}
+
+publish publishJvmPublicationToSnapshotRepository
+publish publishJsPublicationToSnapshotRepository
+publish publishKotlinMultiplatformPublicationToSnapshotRepository
+publish publishLinuxX64PublicationToSnapshotRepository
+publish publishLinuxArm64PublicationToSnapshotRepository
+publish publishAndroidDebugPublicationToSnapshotRepository
+publish publishAndroidReleasePublicationToSnapshotRepository
 set +e
