@@ -1,26 +1,18 @@
 set -e
 #!/bin/sh
-PUBLISH_DELAY_SECONDS=${PUBLISH_DELAY_SECONDS:-60}
 
-publish() {
-  ./gradlew "$1"
-  echo "Waiting $PUBLISH_DELAY_SECONDS seconds before the next upload"
-  sleep "$PUBLISH_DELAY_SECONDS"
-}
-
-publish multiplatform-crypto-libsodium-bindings:publishMacosX64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishMacosArm64PublicationToSnapshotRepository
-
-publish multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishIosX64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishIosSimulatorArm64PublicationToSnapshotRepository
-
-publish multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishWatchosSimulatorArm64PublicationToSnapshotRepository
-
-publish multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishTvosX64PublicationToSnapshotRepository
-publish multiplatform-crypto-libsodium-bindings:publishTvosSimulatorArm64PublicationToSnapshotRepository
+rm -rf multiplatform-crypto-libsodium-bindings/build/snapshot-staging
+./gradlew multiplatform-crypto-libsodium-bindings:publishMacosX64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishMacosArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishIosArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishIosX64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishIosSimulatorArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishWatchosArm32PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishWatchosArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishWatchosSimulatorArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishTvosArm64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishTvosX64PublicationToSnapshotStagingRepository \
+multiplatform-crypto-libsodium-bindings:publishTvosSimulatorArm64PublicationToSnapshotStagingRepository
+./gradlew multiplatform-crypto-libsodium-bindings:uploadStagedSnapshots
 
 set +e

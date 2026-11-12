@@ -34,6 +34,8 @@ plugins {
 
 val sonatypeStaging = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+// Snapshots are published to this directory first and uploaded from it by uploadStagedSnapshots
+val snapshotStagingDirectory = layout.buildDirectory.dir("snapshot-staging").get().asFile
 
 val sonatypePassword: String? by project
 
@@ -822,5 +824,31 @@ publishing {
                 password = sonatypePassword ?: sonatypePasswordEnv ?: ""
             }
         }
+
+        maven {
+            name = "snapshotStaging"
+            url = snapshotStagingDirectory.toURI()
+        }
+    }
+}
+
+// Gradle uploads all the files of a publication as fast as it can, which gets us 429 Too Many Requests
+// from the maven central snapshot repository. So for snapshots we publish to a local directory
+// (publish<Publication>PublicationToSnapshotStagingRepository) and then upload that directory with
+// a pause between requests. The pause can be changed with -PsnapshotUploadIntervalMillis=<millis>
+tasks.register("uploadStagedSnapshots") {
+    group = "publishing"
+    description = "Uploads the snapshots published to the snapshotStaging repository, one request at a time"
+    mustRunAfter(tasks.withType<PublishToMavenRepository>())
+    doLast {
+        PacedSnapshotUploader.upload(
+            stagingDirectory = snapshotStagingDirectory,
+            repositoryUrl = sonatypeSnapshots,
+            username = sonatypeUsername ?: sonatypeUsernameEnv ?: "",
+            password = sonatypePassword ?: sonatypePasswordEnv ?: "",
+            intervalMillis = (findProperty("snapshotUploadIntervalMillis") as String?)?.toLong() ?: 1000,
+            log = { logger.lifecycle(it) }
+        )
+        delete(snapshotStagingDirectory)
     }
 }

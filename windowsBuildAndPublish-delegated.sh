@@ -13,7 +13,9 @@ echo "completed libsodium build"
 #now we can do the delegated build
 cd ..
 ./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:build || exit 1
-./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:publishMingwX64PublicationToSnapshotRepository || exit 1
+
+rm -rf multiplatform-crypto-libsodium-bindings/build/snapshot-staging
+./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:publishMingwX64PublicationToSnapshotStagingRepository || exit 1
+./gradlew --no-daemon multiplatform-crypto-libsodium-bindings:uploadStagedSnapshots || exit 1
 echo "Script completed"
 exit 0
-
